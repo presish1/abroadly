@@ -1757,14 +1757,13 @@ export default function ChatPage() {
               );
             })}
           </ul>
-          <button
-            type="button"
-            onClick={() => setDocPanelOpen(true)}
+          <Link
+            href="/chat/documents"
             className="ab-focus mt-3 inline-flex w-full items-center justify-center gap-1.5 rounded-md border border-[#E8E5DD] bg-white py-2 text-[12px] font-semibold text-[#1B1916] transition hover:border-[#0A6E45] hover:text-[#0A6E45]"
           >
             <FolderIcon />
             Open document manager
-          </button>
+          </Link>
         </section>
 
         {/* Section 3 · To-do (top 3 pending) */}
