@@ -973,7 +973,7 @@ function RecentChat({ history }: { history: ChatTurn[] }) {
 
 /* ── Page ─────────────────────────────────────────────────────────────── */
 
-/* preview-only mock (rendered for /dashboard?preview=1, never for real users) */
+/* Public fallback shown when a visitor has not signed in on this browser. */
 const MOCK_STUDENT = {
   full_name: "Sita Sharma",
   profile_completed: true,
@@ -998,17 +998,13 @@ export default function DashboardPage() {
   const [activeCountry, setActiveCountry] = useState<CountryCode>("UK");
 
   useEffect(() => {
-    if (typeof window !== "undefined" && window.location.search.includes("preview")) {
+    const sid = typeof window !== "undefined" ? window.localStorage.getItem("abroadly_student_id") : null;
+    if (!sid) {
       setStudent(MOCK_STUDENT);
       setDocuments(MOCK_DOCS);
       setHistory([]);
       setActiveCountry("UK");
       setLoading(false);
-      return;
-    }
-    const sid = typeof window !== "undefined" ? window.localStorage.getItem("abroadly_student_id") : null;
-    if (!sid) {
-      router.push("/onboarding");
       return;
     }
     Promise.all([
