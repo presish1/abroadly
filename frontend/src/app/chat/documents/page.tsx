@@ -15,261 +15,14 @@ import {
   uploadFile,
   type StudentDocument,
 } from "@/lib/api";
+import {
+  ESSENTIAL_SLOTS,
+  OPTIONAL_SLOTS,
+  computeDocReadiness,
+  type DocSlot as Slot,
+  type OptionalDocSlot as OptionalSlot,
+} from "@/lib/document-catalog";
 
-/* ── Type model ─────────────────────────────────────────────────────── */
-
-type Slot = {
-  id: string;
-  label: string;
-  desc: string;
-  accept: string;
-  sampleSlug?: string;
-  samplePages?: number;
-  requirements: string[];
-  tip: string;
-};
-
-const ESSENTIAL_SLOTS: Slot[] = [
-  {
-    id: "grade_sheet",
-    label: "Grade sheet / Transcript",
-    desc: "Your most recent academic record (NEB, A-Level, Bachelors).",
-    accept: ".pdf,.jpg,.jpeg,.png",
-    requirements: [
-      "Most recent official transcript or grade sheet.",
-      "All subjects with marks/grades visible.",
-      "School/college stamp and signature if printed.",
-    ],
-    tip: "If it's a +2 mark sheet, both year-one and year-two pages help us check your GPA accurately.",
-  },
-  {
-    id: "citizenship",
-    label: "Citizenship",
-    desc: "Front + back of your Nepali citizenship card.",
-    accept: ".pdf,.jpg,.jpeg,.png",
-    requirements: [
-      "Both sides of the citizenship card.",
-      "Clear, no glare, all four corners visible.",
-      "Issue date and citizenship number legible.",
-    ],
-    tip: "Phone photos work fine — daylight, flat surface, no flash.",
-  },
-  {
-    id: "passport",
-    label: "Passport",
-    desc: "Bio-data page (the one with your photo).",
-    accept: ".pdf,.jpg,.jpeg,.png",
-    requirements: [
-      "Bio-data page with photo and personal details.",
-      "Expiry date at least 12 months in the future.",
-      "If renewing soon, mention it in chat so we plan ahead.",
-    ],
-    tip: "If you don't have one yet, that's okay — we'll guide you through the application later.",
-  },
-  {
-    id: "sop",
-    label: "Statement of Purpose (SOP)",
-    desc: "Your draft personal statement. We'll review structure & tone.",
-    accept: ".pdf,.doc,.docx,.txt",
-    sampleSlug: "sop",
-    samplePages: 3,
-    requirements: [
-      "1–2 pages, focused on why this course in this country.",
-      "Specific examples, not generic ambition.",
-      "Honest about gaps — they're easier to address than to hide.",
-    ],
-    tip: "First draft is fine. The AI will suggest edits, not rewrite it for you.",
-  },
-  {
-    id: "recommendation",
-    label: "Recommendation letter",
-    desc: "From a teacher, professor, or supervisor who knows your work.",
-    accept: ".pdf,.doc,.docx",
-    sampleSlug: "recommendation",
-    samplePages: 1,
-    requirements: [
-      "On official letterhead with signature.",
-      "From someone who taught/supervised you directly.",
-      "Specific anecdotes beat vague praise.",
-    ],
-    tip: "Two LORs is typical — academic + work, or two academic.",
-  },
-  {
-    id: "financial",
-    label: "Financial documents",
-    desc: "Bank balance, income proofs, sponsor docs.",
-    accept: ".pdf,.jpg,.jpeg,.png",
-    sampleSlug: "bank-balance",
-    samplePages: 1,
-    requirements: [
-      "Bank balance certificate from your sponsor's bank.",
-      "Income proof of the sponsor (salary, business, rental, pension — whichever applies).",
-      "Cover at least the first year's tuition + living costs.",
-    ],
-    tip: "More income-proof types are in the Additional section below — upload whichever match your case.",
-  },
-  {
-    id: "ielts",
-    label: "IELTS / PTE / TOEFL",
-    desc: "Your English-test result. Upload as soon as you have it.",
-    accept: ".pdf,.jpg,.jpeg,.png",
-    requirements: [
-      "Official score report (TRF for IELTS, score report for others).",
-      "All four module scores visible.",
-      "Test date within the last 2 years.",
-    ],
-    tip: "No score yet? Tell the AI when you plan to test — it'll plan your timeline around it.",
-  },
-  {
-    id: "other",
-    label: "Other / Cover letter",
-    desc: "Anything else — visa cover letter, custom docs.",
-    accept: ".pdf,.doc,.docx,.jpg,.jpeg,.png",
-    sampleSlug: "visa-cover",
-    samplePages: 1,
-    requirements: [
-      "Visa cover letter, itinerary, or anything case-specific.",
-      "If unsure where it belongs, drop it here and we'll re-categorise.",
-    ],
-    tip: "When in doubt, upload here — better to have it on file than miss a step.",
-  },
-];
-
-type OptionalSlot = Slot & { group: string };
-
-const OPTIONAL_SLOTS: OptionalSlot[] = [
-  // Income proofs
-  { group: "Income proofs", id: "income_rental", label: "Rental income certificate",
-    desc: "If your sponsor has rental income.",
-    accept: ".pdf,.jpg,.jpeg,.png",
-    sampleSlug: "income-rental", samplePages: 1,
-    requirements: ["Ward-issued certificate stating annual rental income.", "Matching rental agreement helps."],
-    tip: "Common when the sponsor owns shutters or a flat that's rented out." },
-  { group: "Income proofs", id: "income_agriculture", label: "Agriculture income certificate",
-    desc: "Ward verification of farming income.",
-    accept: ".pdf,.jpg,.jpeg,.png",
-    sampleSlug: "income-agriculture", samplePages: 1,
-    requirements: ["Ward-issued certificate stating annual agriculture income.", "Land ownership doc strengthens it."],
-    tip: "Important for rural sponsors — visa officers expect this if the sponsor lists farming." },
-  { group: "Income proofs", id: "income_business", label: "Business income statement",
-    desc: "PAN, business registration + income.",
-    accept: ".pdf,.jpg,.jpeg,.png",
-    sampleSlug: "income-business", samplePages: 2,
-    requirements: ["Business PAN/VAT certificate.", "Annual income statement, ideally CA-attested.", "Business registration."],
-    tip: "If sponsor is self-employed, this is the strongest income proof you can give." },
-  { group: "Income proofs", id: "income_pension", label: "Pension income certificate",
-    desc: "For retired-government-employee sponsors.",
-    accept: ".pdf,.jpg,.jpeg,.png",
-    sampleSlug: "income-pension", samplePages: 1,
-    requirements: ["Pension book or government pension slip.", "Last 6–12 months of pension credits."],
-    tip: "Often combined with rental or other income to hit the funding threshold." },
-  { group: "Income proofs", id: "income_abroad", label: "Abroad income (remittance)",
-    desc: "If sponsor works overseas.",
-    accept: ".pdf,.jpg,.jpeg,.png",
-    sampleSlug: "income-abroad", samplePages: 2,
-    requirements: ["Employment contract from the foreign employer.", "Last 6 months of salary slips.", "Remittance receipts into Nepali bank."],
-    tip: "Pair with the sponsor's foreign work visa/permit copy." },
-  { group: "Income proofs", id: "income_salary", label: "Salary income statement",
-    desc: "Monthly salary from Nepali employer.",
-    accept: ".pdf,.jpg,.jpeg,.png",
-    sampleSlug: "income-salary", samplePages: 1,
-    requirements: ["Employer letter on letterhead with monthly salary.", "Last 3 months of salary slips."],
-    tip: "Add the sponsor's tax-clearance certificate if available — it strengthens the case." },
-  { group: "Income proofs", id: "income_lease", label: "Lease income certificate",
-    desc: "Income from long-term lease arrangements.",
-    accept: ".pdf,.jpg,.jpeg,.png",
-    sampleSlug: "income-lease", samplePages: 1,
-    requirements: ["Ward-issued lease income certificate.", "Underlying lease agreement."],
-    tip: "Less common than rental, but valid for agricultural/commercial land." },
-  { group: "Income proofs", id: "educational_loan", label: "Educational loan letter",
-    desc: "Bank approval-in-principle for a study loan.",
-    accept: ".pdf",
-    sampleSlug: "educational-loan", samplePages: 2,
-    requirements: ["Bank letter approving the loan amount.", "Repayment terms and collateral noted."],
-    tip: "Strong supplement when sponsor income alone doesn't cover total cost." },
-
-  // Affidavits
-  { group: "Affidavits of support", id: "affidavit_general", label: "Applicant's affidavit of support",
-    desc: "Sponsor's commitment to fund your studies.",
-    accept: ".pdf,.doc,.docx",
-    sampleSlug: "affidavit-support", samplePages: 2,
-    requirements: ["Notarised statement of financial support.", "Sponsor's identity proof attached."],
-    tip: "Usually paired with the bank balance and income certificates." },
-  { group: "Affidavits of support", id: "affidavit_children", label: "Support affidavit (children)",
-    desc: "Parent → child support affidavit.",
-    accept: ".pdf,.doc,.docx",
-    sampleSlug: "affidavit-children", samplePages: 1,
-    requirements: ["Parent's notarised statement of support."],
-    tip: "Common when one parent is the primary sponsor." },
-  { group: "Affidavits of support", id: "affidavit_husband", label: "Support affidavit (spouse)",
-    desc: "Spouse-funded applicants.",
-    accept: ".pdf,.doc,.docx",
-    sampleSlug: "affidavit-husband", samplePages: 1,
-    requirements: ["Spouse's notarised statement of support.", "Marriage certificate must also be on file."],
-    tip: "Pair this with the marriage certificate in the next group." },
-
-  // Relationship
-  { group: "Relationship & marriage", id: "marriage_cert", label: "Marriage certificate",
-    desc: "If you're married or claiming spouse support.",
-    accept: ".pdf,.jpg,.jpeg,.png",
-    sampleSlug: "marriage-cert", samplePages: 1,
-    requirements: ["Official marriage certificate.", "English translation if the original is in Nepali."],
-    tip: "Required for dependent visas and spouse-sponsored applications." },
-  { group: "Relationship & marriage", id: "relationship_cert", label: "Relationship certificate",
-    desc: "Proves your relationship to your sponsor.",
-    accept: ".pdf,.jpg,.jpeg,.png",
-    sampleSlug: "relationship-cert", samplePages: 1,
-    requirements: ["Ward-issued certificate stating the relationship.", "Both names and relationship type clearly stated."],
-    tip: "Essential when sponsor is anyone other than your direct parent." },
-  { group: "Relationship & marriage", id: "defacto", label: "De-facto relationship doc",
-    desc: "Unmarried partner / long-term relationship cases.",
-    accept: ".pdf,.doc,.docx",
-    sampleSlug: "defacto", samplePages: 2,
-    requirements: ["Statutory declaration from both partners.", "Shared evidence (lease, bills, photos)."],
-    tip: "Mostly relevant for Australia and similar destinations that recognise de-facto." },
-
-  // Visa extras
-  { group: "Visa application extras", id: "itinerary", label: "Travel itinerary",
-    desc: "Indicative flight/travel plan.",
-    accept: ".pdf,.doc,.docx",
-    sampleSlug: "itinerary", samplePages: 1,
-    requirements: ["Indicative dates of travel.", "Intended port of entry."],
-    tip: "Don't book tickets until the visa is granted." },
-  { group: "Visa application extras", id: "stat_dec", label: "Statutory declaration",
-    desc: "Genuine-temporary-entrant declaration where required.",
-    accept: ".pdf,.doc,.docx",
-    sampleSlug: "stat-dec", samplePages: 1,
-    requirements: ["Notarised declaration as per destination country format."],
-    tip: "Australia specifically asks for this for some visa subclasses." },
-  { group: "Visa application extras", id: "moi", label: "Means of identification (MOI)",
-    desc: "Self-identification declaration.",
-    accept: ".pdf,.jpg,.jpeg,.png",
-    sampleSlug: "moi", samplePages: 1,
-    requirements: ["Notarised declaration linking variant spellings of your name."],
-    tip: "Important if your name appears differently across documents (e.g. transcript vs passport)." },
-
-  // Australia-specific
-  { group: "Australia-specific", id: "ward_au", label: "Ward documents (Australia)",
-    desc: "Bundle ward-issued docs Australia expects.",
-    accept: ".pdf,.jpg,.jpeg,.png",
-    sampleSlug: "ward-au", samplePages: 2,
-    requirements: ["Ward income, relationship, and identity certificates."],
-    tip: "Australia DHA expects ward-issued docs even when you have other proofs — include them anyway." },
-
-  // Professional
-  { group: "Professional", id: "cv", label: "CV / Résumé",
-    desc: "Your study and work history.",
-    accept: ".pdf,.doc,.docx",
-    sampleSlug: "cv", samplePages: 1,
-    requirements: ["Reverse-chronological work + education history.", "1–2 pages, no photos."],
-    tip: "Even if not asked for, several countries expect it for skilled or postgrad applications." },
-  { group: "Professional", id: "experience_letter", label: "Work experience letter",
-    desc: "For applicants with work history.",
-    accept: ".pdf,.doc,.docx",
-    sampleSlug: "experience-letter", samplePages: 1,
-    requirements: ["On official letterhead with HR signature.", "Role, dates, and responsibilities specified."],
-    tip: "Important for MBA and postgrad applications — and visa applications that ask about work history." },
-];
 
 /* ── Small icon set ──────────────────────────────────────────────────── */
 
@@ -555,7 +308,7 @@ export default function DocumentsPage() {
   const [documents, setDocuments] = useState<StudentDocument[]>([]);
   const [loading, setLoading] = useState(true);
   const [sampleSlot, setSampleSlot] = useState<Slot | null>(null);
-  const [openGroup, setOpenGroup] = useState<string | null>("Income proofs");
+  const [openGroup, setOpenGroup] = useState<string | null>(null);
 
   useEffect(() => {
     const sid = typeof window !== "undefined" ? localStorage.getItem("abroadly_student_id") : null;
@@ -576,20 +329,19 @@ export default function DocumentsPage() {
 
   useEffect(() => { if (studentId) refresh(); }, [studentId, refresh]);
 
-  const uploadedByType = useMemo(() => {
-    const map = new Map<string, StudentDocument>();
-    for (const d of documents) {
-      const existing = map.get(d.doc_type);
-      if (!existing || new Date(d.uploaded_at) > new Date(existing.uploaded_at)) map.set(d.doc_type, d);
-    }
-    return map;
-  }, [documents]);
-
-  const essentialsDone = ESSENTIAL_SLOTS.filter((s) => uploadedByType.has(s.id)).length;
-  const essentialsTotal = ESSENTIAL_SLOTS.length;
-  const pct = Math.round((essentialsDone / essentialsTotal) * 100);
-  const nextSlot = ESSENTIAL_SLOTS.find((s) => !uploadedByType.has(s.id));
-  const optionalDone = OPTIONAL_SLOTS.filter((s) => uploadedByType.has(s.id)).length;
+  const readiness = useMemo(() => computeDocReadiness(documents), [documents]);
+  const {
+    index: uploadedByType,
+    essentialsDone,
+    essentialsTotal,
+    optionalDone,
+    optionalTotal,
+    totalDone,
+    totalSlots,
+    pct,
+    nextEssential: nextSlot,
+  } = readiness;
+  const essentialsPct = essentialsTotal === 0 ? 0 : Math.round((essentialsDone / essentialsTotal) * 100);
 
   const optionalByGroup = useMemo(() => {
     const groups: Record<string, OptionalSlot[]> = {};
@@ -629,23 +381,53 @@ export default function DocumentsPage() {
 
         <div className="docs-scroll">
           <div className="docs-progress">
-            <div className="flex items-baseline justify-between gap-4">
-              <div>
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div className="min-w-0">
                 <p className="text-[10.5px] font-bold uppercase tracking-[0.1em] text-[#0A6E45]">Readiness</p>
-                <p className="mt-1 text-[18px] font-bold tracking-[-0.01em] text-[#1B1916]">
-                  {essentialsDone} of {essentialsTotal} essentials ready
+                <p className="mt-1 text-[20px] font-extrabold tracking-[-0.015em] text-[#1B1916]">
+                  {totalDone} <span className="text-[#8A847B] font-bold">of</span> {totalSlots} <span className="text-[#6B655C] font-bold">documents on file</span>
                 </p>
-                <p className="mt-0.5 text-[12px] text-[#6B655C]">
-                  {nextSlot ? <>Next up: <span className="font-semibold text-[#1B1916]">{nextSlot.label}</span></> : <>All essentials uploaded — strong shape.</>}
-                  {optionalDone > 0 && <span> · +{optionalDone} additional on file</span>}
+                <p className="mt-1 text-[12px] text-[#6B655C]">
+                  {nextSlot ? (
+                    <>Next essential: <span className="font-semibold text-[#1B1916]">{nextSlot.label}</span></>
+                  ) : (
+                    <>All 8 essentials done — every additional doc you upload strengthens your case.</>
+                  )}
                 </p>
               </div>
-              <div className="text-right">
-                <p className="text-[26px] font-extrabold tracking-[-0.025em] text-[#0A6E45]">{pct}%</p>
+              <div className="text-right shrink-0">
+                <p className="text-[28px] font-extrabold tracking-[-0.025em] text-[#0A6E45] leading-none">{pct}%</p>
+                <p className="mt-1 text-[10.5px] font-semibold uppercase tracking-[0.08em] text-[#8A847B]">overall</p>
               </div>
             </div>
+
             <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-[#EFECE4]">
               <div className="h-full rounded-full bg-[#0A6E45] transition-all duration-700" style={{ width: `${pct}%` }} />
+            </div>
+
+            <div className="mt-4 grid grid-cols-2 gap-3">
+              <div className="rounded-[10px] border border-[#E8E5DD] bg-[#FAF9F6] px-3 py-2.5">
+                <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#0A6E45]">Essentials</p>
+                <div className="mt-1 flex items-baseline gap-1.5">
+                  <span className="text-[16px] font-extrabold tracking-[-0.01em] text-[#1B1916]">{essentialsDone}</span>
+                  <span className="text-[12px] font-semibold text-[#6B655C]">/ {essentialsTotal}</span>
+                  <span className="ml-auto text-[10.5px] font-bold text-[#0A6E45]">{essentialsPct}%</span>
+                </div>
+                <div className="mt-1.5 h-1 w-full overflow-hidden rounded-full bg-[#EFECE4]">
+                  <div className="h-full rounded-full bg-[#0A6E45]" style={{ width: `${essentialsPct}%` }} />
+                </div>
+              </div>
+              <div className="rounded-[10px] border border-[#E8E5DD] bg-[#FAF9F6] px-3 py-2.5">
+                <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#0A6E45]">Additional</p>
+                <div className="mt-1 flex items-baseline gap-1.5">
+                  <span className="text-[16px] font-extrabold tracking-[-0.01em] text-[#1B1916]">{optionalDone}</span>
+                  <span className="text-[12px] font-semibold text-[#6B655C]">/ {optionalTotal}</span>
+                  <span className="ml-auto text-[10.5px] font-bold text-[#6B655C]">on file</span>
+                </div>
+                <div className="mt-1.5 h-1 w-full overflow-hidden rounded-full bg-[#EFECE4]">
+                  <div className="h-full rounded-full bg-[#6B655C]" style={{ width: `${optionalTotal === 0 ? 0 : Math.round((optionalDone / optionalTotal) * 100)}%` }} />
+                </div>
+              </div>
             </div>
           </div>
 
