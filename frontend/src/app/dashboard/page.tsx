@@ -22,6 +22,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { AntdDashboard } from "./antd-dashboard";
 import {
   getStudent,
   getStudentDocuments,
@@ -972,6 +973,21 @@ function RecentChat({ history }: { history: ChatTurn[] }) {
 
 /* ── Page ─────────────────────────────────────────────────────────────── */
 
+/* preview-only mock (rendered for /dashboard?preview=1, never for real users) */
+const MOCK_STUDENT = {
+  full_name: "Sita Sharma",
+  profile_completed: true,
+  gpa: 3.4,
+  expected_gpa: null,
+  target_countries: ["United Kingdom", "Australia"],
+  preferred_field: "Computer Science",
+} as unknown as StudentOut;
+const MOCK_DOCS = [
+  { doc_type: "grade_sheet" },
+  { doc_type: "passport" },
+  { doc_type: "ielts" },
+] as unknown as StudentDocument[];
+
 export default function DashboardPage() {
   const router = useRouter();
   const [student, setStudent] = useState<StudentOut | null>(null);
@@ -982,6 +998,14 @@ export default function DashboardPage() {
   const [activeCountry, setActiveCountry] = useState<CountryCode>("UK");
 
   useEffect(() => {
+    if (typeof window !== "undefined" && window.location.search.includes("preview")) {
+      setStudent(MOCK_STUDENT);
+      setDocuments(MOCK_DOCS);
+      setHistory([]);
+      setActiveCountry("UK");
+      setLoading(false);
+      return;
+    }
     const sid = typeof window !== "undefined" ? window.localStorage.getItem("abroadly_student_id") : null;
     if (!sid) {
       router.push("/onboarding");
@@ -1046,60 +1070,14 @@ export default function DashboardPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#FAF9F6] text-[#1B1916]">
-      {/* Header */}
-      <header className="border-b border-[#E8E5DD] bg-white">
-        <div className="mx-auto flex max-w-3xl items-center justify-between px-5 py-4 sm:px-8">
-          <Link href="/" className="ab-focus flex items-center gap-3 rounded-md">
-            <img src="/images/abroadly-logo.png" alt="Abroadly" className="h-8 w-8 rounded-md" />
-            <span className="text-base font-bold">Abroadly</span>
-          </Link>
-          <nav className="flex items-center gap-2 text-sm">
-            <Link
-              href="/chat"
-              className="ab-focus inline-flex items-center gap-1.5 rounded-md border border-[#E8E5DD] bg-white px-3 py-1.5 font-semibold text-[#1B1916] transition hover:border-[#0A6E45] hover:text-[#0A6E45]"
-            >
-              Open chat <ArrowRight />
-            </Link>
-          </nav>
-        </div>
-      </header>
-
-      {/* Country switcher row */}
-      <div className="mx-auto max-w-3xl px-5 pt-7 sm:px-8">
-        <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#8A847B]">Your plan</p>
-        <div className="mt-2 flex flex-wrap items-center gap-3">
-          <CountrySwitcher
-            countries={supportedCountries}
-            active={activeCountry}
-            onChange={setActiveCountry}
-          />
-          <p className="text-[11.5px] text-[#8A847B]">
-            Switch to see how visa, deadlines, and scholarships differ.
-          </p>
-        </div>
-      </div>
-
-      {/* Main scrollable content — single column, sectioned narrative */}
-      <article className="mx-auto max-w-3xl px-5 pb-20 pt-6 sm:px-8">
-        <div className="flex flex-col gap-14 sm:gap-16">
-          <HeroModule student={student} docs={documents} country={countryProfile} onSendQuery={onSendQuery} />
-          <ProgressModule student={student} docs={documents} />
-          <FactStrip country={countryProfile} />
-          <TimelineModule country={countryProfile} />
-          <UniversitiesModule student={student} country={activeCountry} onSendQuery={onSendQuery} />
-          <DocumentsModule documents={documents} />
-          <RecommendationLetterModule />
-          <ScholarshipsModule country={countryProfile} onSendQuery={onSendQuery} />
-          <CostModule country={countryProfile} />
-          <RecentChat history={history} />
-        </div>
-
-        <p className="mt-14 text-center text-[11px] text-[#8A847B]">
-          Abroadly is a free guide — for binding decisions, always check the official university or
-          government immigration portal.
-        </p>
-      </article>
-    </main>
+    <AntdDashboard
+      student={student}
+      documents={documents}
+      history={history}
+      activeCountry={activeCountry}
+      countries={supportedCountries}
+      onSelectCountry={setActiveCountry}
+      onSendQuery={onSendQuery}
+    />
   );
 }
