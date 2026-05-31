@@ -1233,19 +1233,28 @@ function RightSideTabs({
   firstName,
   uploadedCount,
   phoneRequired,
+  callConsented,
   onProfile,
   onDocuments,
+  onCounselorCall,
 }: {
   firstName: string;
   uploadedCount: number;
   phoneRequired: boolean;
+  callConsented: boolean;
   onProfile: () => void;
   onDocuments: () => void;
+  onCounselorCall: () => void;
 }) {
   return (
     <aside className="chat-right-rail" aria-label="Chat shortcuts">
+      <Link href="/" className="ab-focus chat-left-brand">
+        <img src="/images/abroadly-logo.png" alt="Abroadly" className="h-9 w-9 rounded-[10px]" />
+        <span>Abroadly</span>
+      </Link>
+
       <p className="chat-right-rail-kicker">Quick tabs</p>
-      <nav className="mt-3 flex flex-col gap-2">
+      <nav className="mt-3 flex flex-col gap-2.5">
         <button
           type="button"
           onClick={onProfile}
@@ -1298,6 +1307,23 @@ function RightSideTabs({
           </span>
         </Link>
       </nav>
+
+      <div className="chat-left-counselor">
+        <p className="chat-left-counselor-kicker">Counsellor</p>
+        <h2>Need human help?</h2>
+        <p>Ask for a no-pressure callback when you want a real person to review your situation.</p>
+        {callConsented ? (
+          <div className="chat-left-counselor-status">
+            <CheckCircleIcon />
+            <span>Request received</span>
+          </div>
+        ) : (
+          <button type="button" onClick={onCounselorCall} className="ab-focus chat-left-counselor-btn">
+            <PhoneIcon />
+            Request a call
+          </button>
+        )}
+      </div>
     </aside>
   );
 }
@@ -1627,77 +1653,12 @@ export default function ChatPage() {
   return (
     <main className="chat-layout">
       {/* ── Sidebar ───────────────────────────────────────────────────
-          Three focused sections on a paper-2 band: Counsellor / Documents
-          / To-do. The chat header has a Dashboard link for the fuller surface.
+          A compact right-side work rail for documents and to-do. The left rail
+          owns brand, quick tabs, and human-help CTA.
           Hidden below lg; on mobile, the chat-header buttons (Dashboard,
           Docs) cover the same affordances. */}
       <aside className="chat-sidebar">
-        {/* Tiny header — logo + profile chip */}
-        <div className="border-b border-[#E8E5DD] bg-[#FAF9F6] px-5 py-4">
-          <Link href="/" className="ab-focus flex items-center gap-2.5 rounded-md">
-            <div className="h-7 w-7 shrink-0 overflow-hidden rounded-[8px]">
-              <img src="/images/abroadly-logo.png" alt="Ab" className="h-full w-full object-cover" />
-            </div>
-            <span className="text-[13px] font-bold tracking-[-0.005em] text-[#1B1916]">Abroadly</span>
-          </Link>
-          {student && (
-            <button
-              type="button"
-              onClick={() => setProfileOpen(true)}
-              className="ab-focus mt-3 flex w-full items-center gap-2 rounded-md px-1 py-1 text-left transition hover:bg-[#F4F2EC]"
-            >
-              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-[#12244a] text-[10px] font-bold text-white">
-                {userInitial}
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-[11.5px] font-semibold text-[#1B1916]">{firstName || "Your profile"}</p>
-                <p className={`truncate text-[10px] ${phoneRequired ? "font-semibold text-[#B42318]" : "text-[#8A847B]"}`}>
-                  {phoneRequired
-                    ? "Phone required"
-                    : [student.education_level?.replace(/_/g, " "), (student.target_countries || [])[0]].filter(Boolean).join(" · ") || "Tap to edit"}
-                </p>
-              </div>
-              <ArrowRightSm />
-            </button>
-          )}
-        </div>
-
-        {/* Section 1 · Counsellor */}
-        <section className="border-b border-[#E8E5DD] px-5 py-6">
-          <p className="text-[10.5px] font-bold uppercase tracking-[0.1em] text-[#0A6E45]">Counsellor</p>
-          <div className="mt-3 flex items-start gap-3">
-            <div
-              aria-hidden
-              className="h-9 w-9 shrink-0 overflow-hidden rounded-full ring-1 ring-black/5"
-            >
-              <img src={COUNSELOR.photo} alt="" className="h-full w-full object-cover" />
-            </div>
-            <div className="min-w-0">
-              <p className="truncate text-[13px] font-bold tracking-[-0.005em] text-[#1B1916]">{COUNSELOR.name}</p>
-              <p className="mt-0.5 text-[11px] leading-tight text-[#6B655C]">Study-Abroad Counsellor</p>
-              <p className="mt-1 text-[10.5px] leading-tight text-[#8A847B]">{COUNSELOR.experience}</p>
-            </div>
-          </div>
-          {callConsented ? (
-            <div className="mt-3 flex items-center gap-1.5 rounded-md bg-[#E8F2EC] px-2.5 py-2 text-[11px] font-semibold leading-[1.4] text-[#0A6E45]">
-              <CheckCircleIcon />
-              <span>Requested · we&apos;ll reach out within 1 working day</span>
-            </div>
-          ) : (
-            <button
-              type="button"
-              onClick={grantCounselorCall}
-              className="ab-focus mt-3 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-md border border-[#0A6E45] bg-[#0A6E45] px-3 py-2.5 text-[12.5px] font-bold text-white shadow-[0_8px_18px_rgba(10,110,69,0.22)] transition hover:-translate-y-0.5 hover:bg-[#075B39] hover:shadow-[0_10px_22px_rgba(10,110,69,0.26)] active:translate-y-0"
-            >
-              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white/15">
-                <PhoneIcon />
-              </span>
-              <span>Request a call</span>
-            </button>
-          )}
-        </section>
-
-        {/* Section 2 · Documents (compact 7-row status — each row is a quick-upload checkbox) */}
+        {/* Documents (compact 7-row status — each row is a quick-upload checkbox) */}
         <section className="border-b border-[#E8E5DD] px-5 py-6">
           <div className="flex items-baseline justify-between">
             <p className="text-[10.5px] font-bold uppercase tracking-[0.1em] text-[#0A6E45]">Documents</p>
@@ -1766,7 +1727,7 @@ export default function ChatPage() {
           </Link>
         </section>
 
-        {/* Section 3 · To-do (top 3 pending) */}
+        {/* To-do (top 3 pending) */}
         <section className="px-5 py-6">
           <p className="text-[10.5px] font-bold uppercase tracking-[0.1em] text-[#0A6E45]">To-do</p>
           {sidebarTodos.length === 0 ? (
@@ -2047,8 +2008,10 @@ export default function ChatPage() {
         firstName={firstName}
         uploadedCount={uploadedCount}
         phoneRequired={phoneRequired}
+        callConsented={callConsented}
         onProfile={() => setProfileOpen(true)}
         onDocuments={() => setDocPanelOpen(true)}
+        onCounselorCall={grantCounselorCall}
       />
 
       <DocumentPanel
