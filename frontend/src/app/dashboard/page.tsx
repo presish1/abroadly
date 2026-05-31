@@ -606,7 +606,7 @@ function UniversitiesModule({
   );
 
   return (
-    <section className="mx-auto max-w-3xl">
+    <section id="universities" className="mx-auto max-w-3xl scroll-mt-6">
       <div className="flex flex-wrap items-end justify-between gap-2">
         <div>
           <SectionEyebrow>Universities &middot; {COUNTRY_PROFILES[country].name}</SectionEyebrow>

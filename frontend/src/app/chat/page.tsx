@@ -343,6 +343,34 @@ function PhoneIcon() {
   );
 }
 
+function ProfileTabIcon() {
+  return (
+    <svg viewBox="0 0 20 20" className="h-[18px] w-[18px]" fill="none">
+      <circle cx="10" cy="7" r="3" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M4.5 16.5a5.5 5.5 0 0 1 11 0" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function DashboardTabIcon() {
+  return (
+    <svg viewBox="0 0 20 20" className="h-[18px] w-[18px]" fill="none">
+      <rect x="3" y="3" width="6" height="8" rx="1.5" stroke="currentColor" strokeWidth="1.6" />
+      <rect x="11" y="3" width="6" height="5" rx="1.5" stroke="currentColor" strokeWidth="1.6" />
+      <rect x="3" y="13" width="6" height="4" rx="1.5" stroke="currentColor" strokeWidth="1.6" />
+      <rect x="11" y="10" width="6" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.6" />
+    </svg>
+  );
+}
+
+function UniversitiesTabIcon() {
+  return (
+    <svg viewBox="0 0 20 20" className="h-[18px] w-[18px]" fill="none">
+      <path d="M3 8.2 10 4l7 4.2M5 8.8v6.7M9 8.8v6.7M11 8.8v6.7M15 8.8v6.7M3.5 16h13" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 /* Compact 7-row document slot for the chat sidebar (and dashboard). Same IDs
  * used by both surfaces so they stay in sync. */
 const SIDEBAR_DOC_SLOTS = [
@@ -1201,6 +1229,79 @@ function CounselorCard({
   );
 }
 
+function RightSideTabs({
+  firstName,
+  uploadedCount,
+  phoneRequired,
+  onProfile,
+  onDocuments,
+}: {
+  firstName: string;
+  uploadedCount: number;
+  phoneRequired: boolean;
+  onProfile: () => void;
+  onDocuments: () => void;
+}) {
+  return (
+    <aside className="chat-right-rail" aria-label="Chat shortcuts">
+      <p className="chat-right-rail-kicker">Quick tabs</p>
+      <nav className="mt-3 flex flex-col gap-2">
+        <button
+          type="button"
+          onClick={onProfile}
+          title="Open profile"
+          className="ab-focus chat-right-tab"
+        >
+          <span className="chat-right-tab-icon"><ProfileTabIcon /></span>
+          <span className="chat-right-tab-copy">
+            <span className="chat-right-tab-label">Profile</span>
+            <span className={`chat-right-tab-hint ${phoneRequired ? "text-[#B42318]" : ""}`}>
+              {phoneRequired ? "Phone needed" : firstName || "Edit details"}
+            </span>
+          </span>
+        </button>
+
+        <Link
+          href="/dashboard"
+          title="Open dashboard"
+          className="ab-focus chat-right-tab"
+        >
+          <span className="chat-right-tab-icon"><DashboardTabIcon /></span>
+          <span className="chat-right-tab-copy">
+            <span className="chat-right-tab-label">Dashboard</span>
+            <span className="chat-right-tab-hint">Progress</span>
+          </span>
+        </Link>
+
+        <button
+          type="button"
+          onClick={onDocuments}
+          title="Open document manager"
+          className="ab-focus chat-right-tab"
+        >
+          <span className="chat-right-tab-icon"><FolderIcon /></span>
+          <span className="chat-right-tab-copy">
+            <span className="chat-right-tab-label">Documents</span>
+            <span className="chat-right-tab-hint">{uploadedCount} / {SIDEBAR_DOC_SLOTS.length}</span>
+          </span>
+        </button>
+
+        <Link
+          href="/dashboard#universities"
+          title="Open university shortlist"
+          className="ab-focus chat-right-tab"
+        >
+          <span className="chat-right-tab-icon"><UniversitiesTabIcon /></span>
+          <span className="chat-right-tab-copy">
+            <span className="chat-right-tab-label">Universities</span>
+            <span className="chat-right-tab-hint">Shortlist</span>
+          </span>
+        </Link>
+      </nav>
+    </aside>
+  );
+}
+
 /* ── Main page ────────────────────────────────────────────────────── */
 
 export default function ChatPage() {
@@ -1744,9 +1845,18 @@ export default function ChatPage() {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setProfileOpen(true)}
+              className="ab-focus chat-header-btn flex items-center gap-1.5 lg:hidden"
+              title="Open profile"
+            >
+              <ProfileTabIcon />
+              <span className="hidden sm:inline">Profile</span>
+            </button>
             <Link
               href="/dashboard"
-              className="ab-focus chat-header-btn flex items-center gap-1.5"
+              className="ab-focus chat-header-btn flex items-center gap-1.5 xl:hidden"
               title="Open your full dashboard — to-do, recommended universities, timeline"
             >
               <svg viewBox="0 0 20 20" className="h-3.5 w-3.5" fill="none">
@@ -1759,7 +1869,7 @@ export default function ChatPage() {
             </Link>
             <button type="button" onClick={() => setDocPanelOpen(true)} className="ab-focus chat-header-btn flex items-center gap-1.5 lg:hidden">
               <FolderIcon />
-              <span>Docs</span>
+              <span className="hidden sm:inline">Docs</span>
               {uploadedCount > 0 && <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-red-100 px-1 text-[9px] font-bold text-red-700">{uploadedCount}</span>}
             </button>
             <button
@@ -1768,7 +1878,7 @@ export default function ChatPage() {
               className="ab-focus chat-header-btn flex items-center gap-1.5"
             >
               <svg viewBox="0 0 20 20" className="h-3.5 w-3.5" fill="none"><path d="M8 17H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3M13 14l4-4-4-4M17 10H8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>
-              Logout
+              <span className="hidden sm:inline">Logout</span>
             </button>
           </div>
         </header>
@@ -1934,6 +2044,13 @@ export default function ChatPage() {
           dashboard grew rich enough (universities, courses, timeline, costs) that 360px
           could no longer hold it comfortably. dashboard-panel.tsx is retained in the
           repo as a reference but is no longer rendered. */}
+      <RightSideTabs
+        firstName={firstName}
+        uploadedCount={uploadedCount}
+        phoneRequired={phoneRequired}
+        onProfile={() => setProfileOpen(true)}
+        onDocuments={() => setDocPanelOpen(true)}
+      />
 
       <DocumentPanel
         open={docPanelOpen}
