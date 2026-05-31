@@ -123,12 +123,13 @@ body {
 
 .chat-sidebar {
   display: none;
+  order: 3;
   width: 280px;
   flex-shrink: 0;
   flex-direction: column;
   overflow-y: auto;
   background: #F4F2EC;
-  border-right: 1px solid #E8E5DD;
+  border-left: 1px solid #E8E5DD;
 }
 
 @media (min-width: 1024px) {
@@ -151,16 +152,17 @@ body {
   background: rgba(0, 0, 0, 0.15);
 }
 
-/* ── Right-side shortcut tabs ──────────────────────────────────────── */
+/* ── Left-side shortcut tabs ───────────────────────────────────────── */
 
 .chat-right-rail {
   display: none;
+  order: 1;
   width: 148px;
   flex-shrink: 0;
   flex-direction: column;
   padding: 18px 14px;
   background: #fff;
-  border-left: 1px solid #E8E5DD;
+  border-right: 1px solid #E8E5DD;
 }
 
 @media (min-width: 1280px) {
@@ -195,7 +197,7 @@ body {
 .chat-right-tab:hover {
   background: #F4F2EC;
   border-color: #E8E5DD;
-  transform: translateX(-1px);
+  transform: translateX(1px);
 }
 
 .chat-right-tab-icon {
@@ -235,6 +237,7 @@ body {
 
 .chat-main {
   display: flex;
+  order: 2;
   flex-direction: column;
   flex: 1;
   min-width: 0;
