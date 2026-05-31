@@ -27,6 +27,7 @@ import {
   resolveTargetCountries,
   type PendingTodo,
 } from "@/lib/country-data";
+import { ESSENTIAL_SLOTS, computeDocReadiness } from "@/lib/document-catalog";
 
 /* Abroadly's own human counsellor (placeholder identity — operator can edit). */
 const COUNSELOR = {
@@ -371,22 +372,17 @@ function UniversitiesTabIcon() {
   );
 }
 
-/* Compact 7-row document slot for the chat sidebar (and dashboard). Same IDs
- * used by both surfaces so they stay in sync. */
-const SIDEBAR_DOC_SLOTS = [
-  { id: "grade_sheet", label: "Transcript" },
-  { id: "passport", label: "Passport" },
-  { id: "ielts", label: "English test" },
-  { id: "sop", label: "Statement of purpose" },
-  { id: "recommendation", label: "Recommendation letters" },
-  { id: "financial", label: "Financial proof" },
-  { id: "other", label: "Other" },
-];
+/* The compact sidebar checklist now comes from the shared catalog so its
+ * count matches the full-screen /chat/documents page exactly (8 essentials). */
+const SIDEBAR_DOC_SLOTS = ESSENTIAL_SLOTS.map((s) => ({ id: s.id, label: s.shortLabel ?? s.label }));
 
-/* Accept attribute per doc id (the sidebar quick-upload reuses the docTypes config). */
-const DOC_ACCEPT_BY_ID: Record<string, string> = Object.fromEntries(
-  docTypes.map((d) => [d.id, d.accept]),
-);
+/* Accept attribute per doc id — prefer the catalog, fall back to the legacy
+ * inline docTypes config for any ids the sidebar uses but the catalog hasn't
+ * mapped yet. */
+const DOC_ACCEPT_BY_ID: Record<string, string> = {
+  ...Object.fromEntries(docTypes.map((d) => [d.id, d.accept])),
+  ...Object.fromEntries(ESSENTIAL_SLOTS.map((s) => [s.id, s.accept])),
+};
 
 /* ── Typing indicator ─────────────────────────────────────────────── */
 
@@ -1385,7 +1381,12 @@ export default function ChatPage() {
 
   const firstName = useMemo(() => (student?.full_name || "").trim().split(/\s+/)[0] || "", [student]);
   const userInitial = (firstName || "Y").charAt(0).toUpperCase();
-  const uploadedCount = documents.length;
+  const docReadiness = useMemo(() => computeDocReadiness(documents), [documents]);
+  /* uploadedCount = number of essentials with at least one upload (matches the
+   * /chat/documents readiness strip). optionalUploadedCount surfaces as a +N
+   * badge alongside it. */
+  const uploadedCount = docReadiness.essentialsDone;
+  const optionalUploadedCount = docReadiness.optionalDone;
   const phoneRequired = Boolean(student && !student.phone?.trim());
 
   const refreshDocuments = useCallback(async (sid: string) => {
@@ -1663,7 +1664,10 @@ export default function ChatPage() {
           <div className="flex items-baseline justify-between">
             <p className="text-[10.5px] font-bold uppercase tracking-[0.1em] text-[#0A6E45]">Documents</p>
             <p className="text-[10.5px] font-semibold text-[#6B655C]">
-              {uploadedCount} / {SIDEBAR_DOC_SLOTS.length}
+              {uploadedCount}<span className="text-[#A8A29A]"> / </span>{SIDEBAR_DOC_SLOTS.length} essentials
+              {optionalUploadedCount > 0 && (
+                <span className="ml-1.5 rounded-full bg-[#E8F2EC] px-1.5 py-px text-[9.5px] font-bold text-[#0A6E45]">+{optionalUploadedCount}</span>
+              )}
             </p>
           </div>
           <ul className="mt-3 flex flex-col gap-0.5">
@@ -1677,7 +1681,7 @@ export default function ChatPage() {
                     type="button"
                     disabled={isUploadingSlot}
                     onClick={() => {
-                      if (uploaded) { setDocPanelOpen(true); return; }
+                      if (uploaded) { router.push("/chat/documents"); return; }
                       sidebarFileRefs.current[slot.id]?.click();
                     }}
                     title={uploaded ? `${slot.label} — view or replace` : `Upload ${slot.label}`}
@@ -1827,11 +1831,11 @@ export default function ChatPage() {
               </svg>
               <span className="hidden sm:inline">Dashboard</span>
             </Link>
-            <button type="button" onClick={() => setDocPanelOpen(true)} className="ab-focus chat-header-btn flex items-center gap-1.5 lg:hidden">
+            <Link href="/chat/documents" className="ab-focus chat-header-btn flex items-center gap-1.5 lg:hidden">
               <FolderIcon />
               <span className="hidden sm:inline">Docs</span>
-              {uploadedCount > 0 && <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-red-100 px-1 text-[9px] font-bold text-red-700">{uploadedCount}</span>}
-            </button>
+              {uploadedCount > 0 && <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-[#E8F2EC] px-1 text-[9px] font-bold text-[#0A6E45]">{uploadedCount}</span>}
+            </Link>
             <button
               type="button"
               onClick={() => { logoutStudent().finally(() => { localStorage.removeItem("abroadly_student_id"); router.push("/onboarding"); }); }}
@@ -1872,13 +1876,13 @@ export default function ChatPage() {
                   ))}
                 </div>
 
-                <button type="button" onClick={() => setDocPanelOpen(true)} className="ab-focus chat-upload-nudge">
-                  <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#FDECEE] text-[#E11D2A]"><FolderIcon /></span>
+                <Link href="/chat/documents" className="ab-focus chat-upload-nudge">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#E8F2EC] text-[#0A6E45]"><FolderIcon /></span>
                   <span className="text-left">
                     <span className="block text-[13px] font-semibold text-[var(--ab-ink)]">Upload your documents</span>
                     <span className="block text-[11px] text-[#8A847B]">Marksheet, passport, IELTS — for answers tailored to you</span>
                   </span>
-                </button>
+                </Link>
               </div>
             )}
 
@@ -1983,9 +1987,9 @@ export default function ChatPage() {
                 <button type="button" onClick={() => fileRef.current?.click()} disabled={uploading} title="Quick upload" aria-label="Quick upload" className="ab-focus chat-action-btn">
                   <PaperclipIcon />
                 </button>
-                <button type="button" onClick={() => setDocPanelOpen(true)} title="Upload documents" aria-label="Upload documents" className="ab-focus chat-action-btn">
+                <Link href="/chat/documents" title="Upload documents" aria-label="Upload documents" className="ab-focus chat-action-btn">
                   <FolderIcon />
-                </button>
+                </Link>
                 <div className="flex-1" />
                 <span className="text-[10px] text-[#B5B0A6] font-medium hidden sm:block">Enter to send</span>
                 <button type="button" onClick={() => sendMessage()} disabled={thinking || !input.trim()} title="Send message" aria-label="Send message" className="ab-focus chat-send-btn">
@@ -2010,7 +2014,7 @@ export default function ChatPage() {
         phoneRequired={phoneRequired}
         callConsented={callConsented}
         onProfile={() => setProfileOpen(true)}
-        onDocuments={() => setDocPanelOpen(true)}
+        onDocuments={() => router.push("/chat/documents")}
         onCounselorCall={grantCounselorCall}
       />
 
