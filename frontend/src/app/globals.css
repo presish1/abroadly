@@ -151,6 +151,86 @@ body {
   background: rgba(0, 0, 0, 0.15);
 }
 
+/* ── Right-side shortcut tabs ──────────────────────────────────────── */
+
+.chat-right-rail {
+  display: none;
+  width: 148px;
+  flex-shrink: 0;
+  flex-direction: column;
+  padding: 18px 14px;
+  background: #fff;
+  border-left: 1px solid #E8E5DD;
+}
+
+@media (min-width: 1280px) {
+  .chat-right-rail {
+    display: flex;
+  }
+}
+
+.chat-right-rail-kicker {
+  padding: 0 4px;
+  color: #0A6E45;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.chat-right-tab {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 54px;
+  width: 100%;
+  padding: 9px 10px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  color: #1B1916;
+  text-align: left;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.chat-right-tab:hover {
+  background: #F4F2EC;
+  border-color: #E8E5DD;
+  transform: translateX(-1px);
+}
+
+.chat-right-tab-icon {
+  display: flex;
+  height: 32px;
+  width: 32px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: #F2FBF6;
+  color: #0A6E45;
+}
+
+.chat-right-tab-copy {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-right-tab-label {
+  color: #1B1916;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.chat-right-tab-hint {
+  margin-top: 3px;
+  color: #8A847B;
+  font-size: 10.5px;
+  font-weight: 650;
+  line-height: 1.2;
+}
+
 /* ── Chat main area ────────────────────────────────────────────────── */
 
 .chat-main {
