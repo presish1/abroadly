@@ -436,16 +436,7 @@ export default function UniversitiesPage() {
       }),
     [fitFilter, pickedUniversities, studentPct],
   );
-
-  const fitCounts = useMemo(() => {
-    return pickedUniversities.reduce<Record<AdmissionFit, number>>(
-      (acc, university) => {
-        acc[classifyFit(studentPct, university.entry_pct_min)] += 1;
-        return acc;
-      },
-      { reach: 0, match: 0, safety: 0, unknown: 0 },
-    );
-  }, [pickedUniversities, studentPct]);
+  const visibleFilters: FitFilter[] = studentPct ? ["all", "match", "safety", "reach"] : ["all", "unknown"];
 
   if (loading) {
     return (
@@ -488,15 +479,14 @@ export default function UniversitiesPage() {
 
       <main className="chat-main overflow-y-auto bg-[#F4F2EC]">
         <div className="mx-auto max-w-[1440px] px-5 py-5 lg:px-8">
-          <header className="rounded-[22px] border border-[#E4E2DD] bg-[#FAFAF8] p-5 shadow-[0_1px_2px_rgba(15,15,15,0.04)]">
-            <div className="flex flex-wrap items-start justify-between gap-4">
-              <div className="max-w-2xl">
-                <p className="text-[11px] font-black uppercase tracking-[0.08em] text-[#0A6E45]">Universities · {COUNTRY_PROFILES[activeCountry].name}</p>
-                <h1 className="mt-2 text-[30px] font-black leading-[1.04] tracking-[-0.035em] text-[#171612] sm:text-[38px]">
-                  Build a realistic university shortlist.
+          <header className="rounded-[18px] border border-[#E4E2DD] bg-[#FAFAF8] px-5 py-4 shadow-[0_1px_2px_rgba(15,15,15,0.04)]">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <h1 className="text-[25px] font-black leading-tight tracking-[-0.03em] text-[#171612]">
+                  Universities
                 </h1>
-                <p className="mt-3 max-w-xl text-[14px] leading-[1.7] text-[#5B5852]">
-                  Compare official links, realistic fit, fees, IELTS, location and courses in one clean place. Start broad, then ask Abroadly to pressure-test your final five.
+                <p className="mt-1 text-[13px] font-semibold text-[#6B655C]">
+                  {COUNTRY_PROFILES[activeCountry].name} shortlist, courses, fees and official links.
                 </p>
               </div>
 
@@ -520,29 +510,11 @@ export default function UniversitiesPage() {
                 ))}
               </div>
             </div>
-
-            <div className="mt-5 grid gap-2 sm:grid-cols-3">
-              <div className="rounded-[14px] border border-[#E8E5DD] bg-white p-3.5">
-                <p className="text-[10px] font-black uppercase tracking-[0.08em] text-[#8A847B]">Profile basis</p>
-                <p className="mt-1 text-[15px] font-black text-[#171612]">{studentPct ? `${studentPct}% approx` : "GPA needed"}</p>
-                <p className="mt-0.5 text-[11.5px] font-semibold text-[#6B655C]">{student.preferred_field || "Add preferred field"}</p>
-              </div>
-              <div className="rounded-[14px] border border-[#E8E5DD] bg-white p-3.5">
-                <p className="text-[10px] font-black uppercase tracking-[0.08em] text-[#8A847B]">Shortlist mix</p>
-                <p className="mt-1 text-[15px] font-black text-[#171612]">{fitCounts.match} match · {fitCounts.safety} safe · {fitCounts.reach} reach</p>
-                <p className="mt-0.5 text-[11.5px] font-semibold text-[#6B655C]">Aim for 2 reach, 2 match, 1 safe</p>
-              </div>
-              <div className="rounded-[14px] border border-[#E8E5DD] bg-white p-3.5">
-                <p className="text-[10px] font-black uppercase tracking-[0.08em] text-[#8A847B]">Official checks</p>
-                <p className="mt-1 text-[15px] font-black text-[#171612]">Admissions, courses, scholarships</p>
-                <p className="mt-0.5 text-[11.5px] font-semibold text-[#6B655C]">Every profile links to university pages</p>
-              </div>
-            </div>
           </header>
 
           <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
             <div className="flex flex-wrap gap-2">
-              {(["all", "match", "safety", "reach", "unknown"] as FitFilter[]).map((filter) => (
+              {visibleFilters.map((filter) => (
                 <button
                   key={filter}
                   type="button"
@@ -558,7 +530,7 @@ export default function UniversitiesPage() {
               ))}
             </div>
             <p className="text-[11.5px] font-semibold text-[#6B655C]">
-              Showing {filteredUniversities.length} universities and {courseRows.length} course starters.
+              {filteredUniversities.length} universities · {courseRows.length} course starters
             </p>
           </div>
 
