@@ -717,7 +717,7 @@ function DocumentPanel({
         )}
 
         <div className="doc-panel-body">
-          <div className="space-y-2">
+          <div className="grid grid-cols-2 gap-2.5">
             {docTypes.map((dt) => {
               const isUploading = uploadingId === dt.id;
               const uploadedDoc = uploadedByType.get(dt.id);
@@ -725,70 +725,60 @@ function DocumentPanel({
                 ? getStudentDocumentDownloadUrl(studentId, uploadedDoc.doc_id)
                 : null;
               const isDragTarget = dragOver === dt.id;
-              const isExpanded = expandedId === dt.id && !uploadedDoc;
+              const TINT: Record<string, string> = {
+                grade_sheet: "linear-gradient(135deg,#E8F0FB,#D6E6F7)",
+                passport: "linear-gradient(135deg,#E1E7F4,#D0DAEF)",
+                ielts: "linear-gradient(135deg,#FBF1DF,#F6E6C8)",
+                sop: "linear-gradient(135deg,#E3F5EC,#CFEEDD)",
+                recommendation: "linear-gradient(135deg,#F0EBFA,#E2D8F4)",
+                financial: "linear-gradient(135deg,#E0F3F1,#CCEAE6)",
+                other: "linear-gradient(135deg,#F1EFEA,#E6E2D9)",
+              };
               return (
-                <div key={dt.id}>
-                  <div
-                    className={`doc-card ${isDragTarget ? "doc-card-drag" : ""} ${uploadedDoc ? "doc-card-done" : ""}`}
-                    onDragOver={(e) => { e.preventDefault(); setDragOver(dt.id); }}
-                    onDragLeave={() => setDragOver(null)}
-                    onDrop={(e) => handleDrop(dt, e)}
-                  >
+                <div
+                  key={dt.id}
+                  onDragOver={(e) => { e.preventDefault(); setDragOver(dt.id); }}
+                  onDragLeave={() => setDragOver(null)}
+                  onDrop={(e) => handleDrop(dt, e)}
+                  className={`group flex flex-col overflow-hidden rounded-2xl border bg-white transition ${isDragTarget ? "border-[#E11D2A] ring-2 ring-[#FDECEE]" : uploadedDoc ? "border-[#CDE6DB]" : "border-[var(--ab-line)] hover:-translate-y-0.5 hover:border-[#E11D2A]/40 hover:shadow-[0_10px_24px_-14px_rgba(27,25,22,0.25)]"}`}
+                >
+                  {/* sample-preview "photo" */}
+                  <div className="relative flex h-[84px] items-center justify-center overflow-hidden" style={{ background: TINT[dt.id] ?? TINT.other }}>
                     {uploadedDoc && thumbUrl ? (
-                      <img src={thumbUrl} alt={uploadedDoc.filename} className="doc-thumb" />
+                      <img src={thumbUrl} alt={uploadedDoc.filename} className="h-full w-full object-cover" />
                     ) : (
-                      <span className="text-xl leading-none shrink-0">{dt.icon}</span>
+                      <div className="flex h-[52px] w-[40px] flex-col items-center justify-center gap-[5px] rounded-md bg-white/95 shadow-[0_3px_10px_rgba(0,0,0,0.13)]">
+                        <span className="text-[17px] leading-none">{dt.icon}</span>
+                        <span className="h-[3px] w-6 rounded-full bg-[#C9C3B8]" />
+                        <span className="h-[3px] w-4 rounded-full bg-[#D8D3C8]" />
+                      </div>
                     )}
-                    <div className="min-w-0 flex-1">
-                      <p className="text-[13px] font-semibold text-[var(--ab-ink)] truncate">{dt.label}</p>
-                      {uploadedDoc ? (
-                        <div>
-                          <p className="text-[11px] text-[#6B655C] truncate">{uploadedDoc.filename}</p>
-                          <p className="text-[10px] text-[#8A847B] mt-0.5">
-                            {uploadedDoc.ext.replace(".", "").toUpperCase()} {"·"} {formatBytes(uploadedDoc.size_bytes)}
-                          </p>
-                        </div>
-                      ) : (
-                        <p className="text-[11px] text-[#8A847B] truncate">{dt.desc}</p>
-                      )}
-                    </div>
+                    <span className={`absolute right-1.5 top-1.5 rounded-full px-1.5 py-[2px] text-[9px] font-bold ${uploadedDoc ? "bg-[#0A6E45] text-white" : "bg-white/85 text-[#6B655C]"}`}>
+                      {uploadedDoc ? "✓ Done" : "Needed"}
+                    </span>
+                  </div>
+                  {/* info + clear upload */}
+                  <div className="flex flex-1 flex-col p-2.5">
+                    <p className="text-[12px] font-bold leading-[1.2] tracking-[-0.01em] text-[var(--ab-ink)]">{dt.label}</p>
+                    <p className="mt-0.5 flex-1 truncate text-[10px] text-[#8A847B]">{uploadedDoc ? uploadedDoc.filename : dt.desc}</p>
                     {uploadedDoc ? (
-                      <div className="flex items-center gap-2 shrink-0">
-                        <button type="button" onClick={() => onDiscuss(dt)} className="rounded-lg bg-[#FDECEE] px-2.5 py-1.5 text-[11px] font-bold text-[#E11D2A] hover:bg-[#fbdce0] transition-colors">Ask AI</button>
-                        <button type="button" onClick={() => fileRefs.current[dt.id]?.click()} className="text-[11px] font-semibold text-[#8A847B] hover:text-[#E11D2A] transition-colors">Replace</button>
+                      <div className="mt-2 flex items-center gap-1.5">
+                        <button type="button" onClick={() => onDiscuss(dt)} className="flex-1 rounded-lg bg-[#FDECEE] px-2 py-1.5 text-[11px] font-bold text-[#E11D2A] transition-colors hover:bg-[#fbdce0]">Ask AI</button>
+                        <button type="button" onClick={() => fileRefs.current[dt.id]?.click()} className="rounded-lg border border-[var(--ab-line)] px-2 py-1.5 text-[11px] font-semibold text-[#6B655C] transition-colors hover:border-[#E11D2A] hover:text-[#E11D2A]">Replace</button>
                       </div>
                     ) : isUploading ? (
-                      <div className="shrink-0"><div className="h-5 w-5 rounded-full border-2 border-[#E11D2A] border-t-transparent animate-spin" /></div>
+                      <div className="mt-2 flex justify-center py-1"><div className="h-5 w-5 rounded-full border-2 border-[#E11D2A] border-t-transparent animate-spin" /></div>
                     ) : (
-                      <button type="button" onClick={() => setExpandedId(isExpanded ? null : dt.id)} aria-expanded={isExpanded} className="doc-upload-btn shrink-0">{isExpanded ? "Close" : "Upload"}</button>
+                      <button type="button" onClick={() => fileRefs.current[dt.id]?.click()} className="mt-2 rounded-lg bg-[#E11D2A] px-2 py-1.5 text-[11px] font-bold text-white transition-colors hover:bg-[#C0121F]">Upload</button>
                     )}
                     <input
                       ref={(el) => { fileRefs.current[dt.id] = el; }}
                       type="file"
                       accept={dt.accept}
                       className="hidden"
-                      onChange={(e) => { const file = e.target.files?.[0]; if (file) handleFile(dt, file); e.target.value = ""; setExpandedId(null); }}
+                      onChange={(e) => { const file = e.target.files?.[0]; if (file) handleFile(dt, file); e.target.value = ""; }}
                     />
                   </div>
-                  {isExpanded && (
-                    <div className="mt-1.5 rounded-[12px] border border-[#EFECE4] bg-[#FAF9F6] px-3.5 py-3">
-                      <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#8A847B]">What counts</p>
-                      <ul className="mt-1.5 space-y-1">
-                        {dt.requirements.map((r, i) => (
-                          <li key={i} className="flex gap-1.5 text-[12px] leading-[1.5] text-[#3F3A33]">
-                            <span aria-hidden className="mt-[6px] h-1 w-1 shrink-0 rounded-full bg-[#E11D2A]" />
-                            <span>{r}</span>
-                          </li>
-                        ))}
-                      </ul>
-                      <p className="mt-2 text-[11.5px] leading-[1.5] text-[#6B655C]"><span className="font-semibold text-[#1B1916]">Tip · </span>{dt.tip}</p>
-                      <div className="mt-3 flex items-center gap-2">
-                        <button type="button" onClick={() => fileRefs.current[dt.id]?.click()} className="rounded-lg bg-[#E11D2A] px-3.5 py-2 text-[12px] font-bold text-white transition-colors hover:bg-[#C0121F]">Choose file</button>
-                        <button type="button" onClick={() => setExpandedId(null)} className="rounded-lg px-2.5 py-2 text-[12px] font-semibold text-[#8A847B] transition-colors hover:text-[#1B1916]">Cancel</button>
-                        <span className="ml-auto text-[10px] text-[#B5B0A6]">{dt.accept.replace(/\./g, "").replace(/,/g, " · ").toUpperCase()}</span>
-                      </div>
-                    </div>
-                  )}
                 </div>
               );
             })}
