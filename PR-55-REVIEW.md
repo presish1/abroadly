@@ -7,15 +7,73 @@
 
 ---
 
-## What it does (one paragraph)
+## What changed in simple terms
 
-Three things, all on the chat path: (1) a cheap Groq classifier decides if the
-reply should be **short / medium / long** so Gemini stops writing essays to every
-question, with per-bucket token caps; (2) the **backend** now decides when to
-offer the counsellor (the frontend no longer scans the answer text with a regex
-that prompt edits could silently break); (3) **abuse + cost hygiene** — rate
-limiting, a spam prefilter that runs before any LLM token, and structured logs
-+ a `/admin/metrics` endpoint. Plus unit tests + an eval-suite quality gate.
+### Question Evaluation Layer
+
+We added a "screening step" before Gemini answers anything. Every question a
+student sends now goes through a small, fast AI model (Groq's `llama-3.1-8b`)
+first — think of it as a cheap receptionist that reads the question before
+passing it to the expensive expert (Gemini). This receptionist decides three
+things: how long should the answer be, is this question worth answering at
+all, and does it contain any lead signals (signs the student is serious about
+studying abroad). Based on this, Gemini gets clear instructions — write 1–2
+sentences for simple questions, a medium paragraph for moderate ones, and a
+full detailed response only for complex ones. If the question is spam,
+gibberish, or contains URLs/profanity, it gets rejected right here and Gemini
+never even sees it — saving both time and money.
+
+### Lead Signals & Counselor Card
+
+Previously, the frontend was scanning Gemini's actual answer text using keyword
+matching to decide when to show the "Talk to a Counselor" card. This was
+fragile — if Gemini rephrased something slightly, or if we changed the prompt,
+the card could stop appearing without anyone noticing. Now the backend tracks
+meaningful signals across every turn in the conversation — things like asking
+about visa requirements, tuition costs, application deadlines, or funding
+options. These signals accumulate in the database per student. Once a student
+crosses a threshold (2 strong signals, or 3 good ones, or 4 standard ones),
+the backend itself sends a flag saying "offer the counselor now." The frontend
+just listens for that flag. This means the counselor offer is now consistent,
+reliable, and completely immune to how Gemini words its answers.
+
+### Rate Limiting & Abuse Protection
+
+Before this update, anyone could send unlimited messages to the chat endpoint
+with no restrictions. We added a three-layer protection system. **First
+layer — hard limits**: 20 messages per minute per user, 40 per minute per IP.
+If someone hits this, they get a "slow down" response (HTTP 429). **Second
+layer — cooldown**: if someone keeps hitting the limit repeatedly, they get a
+15-minute cooldown where every request is rejected. **Third layer — abuse
+flag**: if they persist even after the cooldown, they get flagged in the
+database for admin review. All of this runs before any LLM is called, so
+abusive traffic costs nothing. On top of this, there's a deterministic spam
+prefilter (no AI involved) that instantly catches URL floods, random
+gibberish, and profanity — again, before Gemini even wakes up.
+
+### Observability (Admin Visibility)
+
+Before this update the backend was essentially a black box — there was no way
+to tell what was happening inside in real time. Now every single chat request
+is broken down and timed stage by stage: how long did the spam check take,
+how long did retrieval take, did the question evaluator use AI or fall back
+to rules, did Gemini answer or did the Groq fallback kick in. All of this
+gets saved to the database per request. There's also a new admin-only
+endpoint (`/admin/metrics`) that shows live counters — total chats handled,
+spam attempts blocked, Gemini calls made, Groq fallback hits, rate limit
+triggers — giving a real-time health dashboard for the chat system without
+needing to dig through logs.
+
+---
+
+## What it does — short version
+
+Three things on the chat path: (1) a cheap Groq classifier decides reply
+length so Gemini stops writing essays to every question; (2) the backend now
+decides when to offer the counsellor (the frontend no longer scans answer
+text with a regex); (3) abuse + cost hygiene — rate limiting, spam
+prefilter, structured logs + a `/admin/metrics` endpoint. Plus unit tests
+and an eval-suite quality gate.
 
 ---
 
