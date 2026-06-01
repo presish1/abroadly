@@ -399,54 +399,25 @@ export default function DocumentsPage() {
 
         <div className="docs-scroll">
           <div className="docs-progress">
-            <div className="flex flex-wrap items-start justify-between gap-4">
-              <div className="min-w-0">
-                <p className="text-[10.5px] font-bold uppercase tracking-[0.1em] text-[#0A6E45]">Readiness</p>
-                <p className="mt-1 text-[20px] font-extrabold tracking-[-0.015em] text-[#1B1916]">
-                  {totalDone} <span className="text-[#8A847B] font-bold">of</span> {totalSlots} <span className="text-[#6B655C] font-bold">documents on file</span>
-                </p>
-                <p className="mt-1 text-[12px] text-[#6B655C]">
-                  {nextSlot ? (
-                    <>Next essential: <span className="font-semibold text-[#1B1916]">{nextSlot.label}</span></>
-                  ) : (
-                    <>All 8 essentials done — every additional doc you upload strengthens your case.</>
-                  )}
-                </p>
+            <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+              <div className="flex items-baseline gap-2">
+                <span className="text-[10.5px] font-bold uppercase tracking-[0.1em] text-[#0A6E45]">Readiness</span>
+                <span className="text-[15px] font-extrabold tracking-[-0.01em] text-[#1B1916]">{totalDone}<span className="font-bold text-[#8A847B]"> / </span>{totalSlots}</span>
+                <span className="text-[12px] text-[#6B655C]">on file</span>
               </div>
-              <div className="text-right shrink-0">
-                <p className="text-[28px] font-extrabold tracking-[-0.025em] text-[#0A6E45] leading-none">{pct}%</p>
-                <p className="mt-1 text-[10.5px] font-semibold uppercase tracking-[0.08em] text-[#8A847B]">overall</p>
+              <div className="flex items-center gap-2.5 text-[11px] font-semibold text-[#6B655C]">
+                <span>Essentials <b className="text-[#1B1916]">{essentialsDone}/{essentialsTotal}</b></span>
+                <span className="text-[#D8D3C8]">·</span>
+                <span>Additional <b className="text-[#1B1916]">{optionalDone}/{optionalTotal}</b></span>
+                <span className="text-[14px] font-extrabold text-[#0A6E45]">{pct}%</span>
               </div>
             </div>
-
-            <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-[#EFECE4]">
+            <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-[#EFECE4]">
               <div className="h-full rounded-full bg-[#0A6E45] transition-all duration-700" style={{ width: `${pct}%` }} />
             </div>
-
-            <div className="mt-4 grid grid-cols-2 gap-3">
-              <div className="rounded-[10px] border border-[#E8E5DD] bg-[#FAF9F6] px-3 py-2.5">
-                <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#0A6E45]">Essentials</p>
-                <div className="mt-1 flex items-baseline gap-1.5">
-                  <span className="text-[16px] font-extrabold tracking-[-0.01em] text-[#1B1916]">{essentialsDone}</span>
-                  <span className="text-[12px] font-semibold text-[#6B655C]">/ {essentialsTotal}</span>
-                  <span className="ml-auto text-[10.5px] font-bold text-[#0A6E45]">{essentialsPct}%</span>
-                </div>
-                <div className="mt-1.5 h-1 w-full overflow-hidden rounded-full bg-[#EFECE4]">
-                  <div className="h-full rounded-full bg-[#0A6E45]" style={{ width: `${essentialsPct}%` }} />
-                </div>
-              </div>
-              <div className="rounded-[10px] border border-[#E8E5DD] bg-[#FAF9F6] px-3 py-2.5">
-                <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#0A6E45]">Additional</p>
-                <div className="mt-1 flex items-baseline gap-1.5">
-                  <span className="text-[16px] font-extrabold tracking-[-0.01em] text-[#1B1916]">{optionalDone}</span>
-                  <span className="text-[12px] font-semibold text-[#6B655C]">/ {optionalTotal}</span>
-                  <span className="ml-auto text-[10.5px] font-bold text-[#6B655C]">on file</span>
-                </div>
-                <div className="mt-1.5 h-1 w-full overflow-hidden rounded-full bg-[#EFECE4]">
-                  <div className="h-full rounded-full bg-[#6B655C]" style={{ width: `${optionalTotal === 0 ? 0 : Math.round((optionalDone / optionalTotal) * 100)}%` }} />
-                </div>
-              </div>
-            </div>
+            {nextSlot && (
+              <p className="mt-1.5 text-[11px] text-[#6B655C]">Next: <span className="font-semibold text-[#1B1916]">{nextSlot.label}</span></p>
+            )}
           </div>
 
           <h2 className="docs-section-title">Essentials</h2>
@@ -480,7 +451,7 @@ export default function DocumentsPage() {
           <div className="docs-accordion">
             {Object.entries(optionalByGroup).map(([group, slots]) => {
               const doneInGroup = slots.filter((s) => uploadedByType.has(s.id)).length;
-              const isOpen = openGroup === group;
+              const isOpen = true;
               return (
                 <div key={group} className={`docs-accordion-item ${isOpen ? "is-open" : ""}`}>
                   <button
