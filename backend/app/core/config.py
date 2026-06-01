@@ -39,6 +39,9 @@ class Settings(BaseSettings):
     # Global AI toggle (runtime, not persisted across restarts)
     ai_globally_paused: bool = False
 
+    # qeval feature flags
+    qeval_use_llm: bool = False  # flip to True in Phase 3 when Groq eval is wired
+
     # Uploads
     upload_dir: str = "./uploads"
     max_upload_mb: int = 15

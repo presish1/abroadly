@@ -26,6 +26,8 @@ from app.eval.evaluator import default_evaluator
 from app.eval.types import Decision, EvalDecision
 from app.models.student import ChatTurnModel, ChatTurnOut, StudentModel
 from app.normalizer import default_normalizer
+from app.qeval import default_question_evaluator
+from app.qeval import rules as qeval_rules
 from app.rag.generator import generate_answer, _clean_title
 from app.rag.reranker import rerank
 from app.rag.retriever import retrieve
@@ -189,25 +191,35 @@ async def chat_endpoint(
 
     history = await _load_history(db, sid, HISTORY_TURN_LIMIT)
 
-    # Phase 5 — language normalization. Hinglish / Nepali-romanized in,
-    # clean English out. Pure-English passes through unchanged.
+    # --- qeval entry point 1: prefilter on the ORIGINAL message ---
+    # Runs before normalization so slurs/spam can't be sanitized away (C3).
+    # Catches both spam (junk/URL floods/zero-alpha) and profanity.
+    pf = qeval_rules.prefilter(req.message)
+    if pf["is_profanity"] or pf["is_spam"]:
+        reason_key = "profanity" if pf["is_profanity"] else "spam"
+        await _persist_turn(db, student_id=sid, role="user", content=req.message)
+        await db.commit()
+        return ChatResponse(
+            request_id=request_id, trace_id=trace_id,
+            decision=Decision.OUT_OF_SCOPE, confidence=0.0,
+            answer=policies.REFUSAL_TEMPLATES.get(reason_key, policies.REFUSAL_TEMPLATES["default"]),
+            sources=[], reason=reason_key,
+        )
+
+    # Language normalization — Hinglish/Nepali-romanized → English.
     normalization = await default_normalizer.normalize(req.message)
     original_message = normalization.original
     query = normalization.normalized
     normalized_query_for_audit = query if normalization.was_changed else None
 
-    # Check profanity on the ORIGINAL message before normalization can sanitize it
-    from app.eval.scope_check import classify_scope
-    raw_scope = classify_scope(original_message)
-    if raw_scope == "profanity":
-        await _persist_turn(db, student_id=sid, role="user", content=original_message)
-        await db.commit()
-        return ChatResponse(
-            request_id=request_id, trace_id=trace_id,
-            decision=Decision.OUT_OF_SCOPE, confidence=0.0,
-            answer=policies.REFUSAL_TEMPLATES.get("profanity", policies.REFUSAL_TEMPLATES["default"]),
-            sources=[], reason="profanity",
-        )
+    # --- qeval entry point 2: full question verdict (after normalize, before retrieve) ---
+    # Produces a directive (length, lead_signal, quality, action).
+    # verdict.length is threaded into generation in Phase 2.
+    verdict = default_question_evaluator.evaluate(
+        original=original_message,
+        normalized=query,
+        history=history,
+    )
 
     retrieved = await retrieve(query=query, student_id=req.student_id)
     retrieved = await rerank(query=query, retrieved=retrieved)
