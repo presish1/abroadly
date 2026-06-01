@@ -28,6 +28,7 @@ from app.models.student import ChatTurnModel, ChatTurnOut, StudentModel
 from app.normalizer import default_normalizer
 from app.qeval import default_question_evaluator
 from app.qeval import rules as qeval_rules
+from app.qeval.lead import accumulate_lead
 from app.rag.generator import generate_answer, _clean_title
 from app.rag.reranker import rerank
 from app.rag.retriever import retrieve
@@ -63,6 +64,12 @@ class ChatResponse(BaseModel):
     sources: list[Source] = []
     reason: str
     debug: dict | None = None  # only populated in dev
+    # New optional fields (all have safe defaults so old clients are unaffected — C9)
+    answer_length: str | None = None          # "short" | "medium" | "long"
+    offer_counselor: bool = False             # server-authoritative handoff signal
+    offer_reason: str | None = None           # "qualified" | "question" | None
+    lead_status: str | None = None            # "new" | "engaged" | "qualified"
+    handoff_target: str | None = None         # "prisma" | "partner"
 
 
 async def _persist_audit(
@@ -78,6 +85,12 @@ async def _persist_audit(
     eval_decision: str,
     eval_confidence: float,
     model_used: str,
+    qeval_action: str | None = None,
+    qeval_length: str | None = None,
+    qeval_lead_signal: str | None = None,
+    qeval_source: str | None = None,
+    latency_ms: int | None = None,   # populated in Phase 6 observability
+    provider: str | None = None,      # populated in Phase 6 observability
 ) -> None:
     """Async INSERT into chat_audit. `query` is the raw student input;
     `normalized_query` is the post-normalizer English version used for retrieval."""
@@ -86,11 +99,17 @@ async def _persist_audit(
         INSERT INTO chat_audit
             (request_id, trace_id, student_id, query, normalized_query,
              chunk_ids, retrieval_scores,
-             eval_decision, eval_confidence, model_used, created_at)
+             eval_decision, eval_confidence, model_used,
+             qeval_action, qeval_length, qeval_lead_signal, qeval_source,
+             latency_ms, provider,
+             created_at)
         VALUES
             (:request_id, :trace_id, :student_id, :query, :normalized_query,
              :chunk_ids, :retrieval_scores,
-             :eval_decision, :eval_confidence, :model_used, :created_at)
+             :eval_decision, :eval_confidence, :model_used,
+             :qeval_action, :qeval_length, :qeval_lead_signal, :qeval_source,
+             :latency_ms, :provider,
+             :created_at)
         """
     ).bindparams(
         bindparam("chunk_ids", type_=SAJsonb()),
@@ -109,6 +128,12 @@ async def _persist_audit(
             "eval_decision": eval_decision,
             "eval_confidence": eval_confidence,
             "model_used": model_used,
+            "qeval_action": qeval_action,
+            "qeval_length": qeval_length,
+            "qeval_lead_signal": qeval_lead_signal,
+            "qeval_source": qeval_source,
+            "latency_ms": latency_ms,
+            "provider": provider,
             "created_at": datetime.utcnow(),
         },
     )
@@ -235,6 +260,10 @@ async def chat_endpoint(
         for c in retrieved.chunks
     ]
 
+    # model_used reflects the primary provider (Gemini when key present, else Groq fallback).
+    # The audit is written before generation, so this is the expected model, not confirmed.
+    _model_used = "gemini/gemini-2.5-flash" if settings.gemini_api_key else "groq/llama-3.3-70b-versatile"
+
     await _persist_audit(
         db,
         request_id=request_id,
@@ -246,7 +275,11 @@ async def chat_endpoint(
         retrieval_scores=[c.score for c in retrieved.chunks],
         eval_decision=decision.decision,
         eval_confidence=decision.confidence,
-        model_used="groq/llama-3.3-70b-versatile",
+        model_used=_model_used,
+        qeval_action=verdict.action.value,
+        qeval_length=verdict.length.value,
+        qeval_lead_signal=verdict.lead_signal.value,
+        qeval_source=verdict.source,
     )
 
     # User turn stored as what they actually typed — preserves their voice in history.
@@ -270,8 +303,36 @@ async def chat_endpoint(
                 content=resp.answer,
                 eval_decision=str(resp.decision),
             )
+
+        # Lead accumulation — only on real answers, never on refusals.
+        answering = (
+            resp.answer is not None
+            and resp.decision not in (Decision.OUT_OF_SCOPE, Decision.ESCALATE)
+        )
+        if answering:
+            accumulate_lead(student_model, verdict.lead_signal.value)
+
+        # Server-authoritative counselor offer (replaces frontend regex heuristic).
+        # Checked AFTER accumulation so this-turn qualification is captured.
+        offer_counselor = False
+        offer_reason: str | None = None
+        if not student_model.call_consent:
+            if student_model.lead_status == "qualified":
+                offer_counselor = True
+                offer_reason = "qualified"
+            elif verdict.lead_signal.value == "strong":
+                offer_counselor = True
+                offer_reason = "question"
+
         await db.commit()
-        return resp
+
+        return resp.model_copy(update={
+            "answer_length": verdict.length.value if resp.answer else None,
+            "offer_counselor": offer_counselor,
+            "offer_reason": offer_reason,
+            "lead_status": student_model.lead_status,
+            "handoff_target": settings.handoff_target,
+        })
 
     if decision.decision == Decision.PROCEED:
         answer = await generate_answer(

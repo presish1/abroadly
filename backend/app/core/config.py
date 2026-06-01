@@ -42,6 +42,11 @@ class Settings(BaseSettings):
     # qeval feature flags
     qeval_use_llm: bool = True  # set QEVAL_USE_LLM=false to kill-switch the Groq eval call
 
+    # Counselor handoff — "prisma" (default) or "partner" (changes frontend label/CTA only).
+    # Future seam: make this a persisted runtime setting (like ai_globally_paused)
+    # so an admin can toggle it without a redeploy.
+    handoff_target: str = "prisma"
+
     # Uploads
     upload_dir: str = "./uploads"
     max_upload_mb: int = 15

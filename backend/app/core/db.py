@@ -142,6 +142,30 @@ EXCEPTION WHEN OTHERS THEN NULL;
 END $$;
 """
 
+# --- Lead qualification columns on students ---
+_ADD_LEAD_COLUMNS = """
+ALTER TABLE students ADD COLUMN IF NOT EXISTS lead_score INT DEFAULT 0;
+ALTER TABLE students ADD COLUMN IF NOT EXISTS lead_strong_count INT DEFAULT 0;
+ALTER TABLE students ADD COLUMN IF NOT EXISTS lead_good_count INT DEFAULT 0;
+ALTER TABLE students ADD COLUMN IF NOT EXISTS lead_standard_count INT DEFAULT 0;
+ALTER TABLE students ADD COLUMN IF NOT EXISTS lead_status TEXT DEFAULT 'new';
+ALTER TABLE students ADD COLUMN IF NOT EXISTS qualified_at TIMESTAMPTZ;
+"""
+
+_ADD_ABUSE_FLAGGED = """
+ALTER TABLE students ADD COLUMN IF NOT EXISTS abuse_flagged BOOLEAN DEFAULT FALSE;
+"""
+
+# --- qeval verdict + observability columns on chat_audit ---
+_ADD_CHAT_AUDIT_QEVAL = """
+ALTER TABLE chat_audit ADD COLUMN IF NOT EXISTS qeval_action TEXT;
+ALTER TABLE chat_audit ADD COLUMN IF NOT EXISTS qeval_length TEXT;
+ALTER TABLE chat_audit ADD COLUMN IF NOT EXISTS qeval_lead_signal TEXT;
+ALTER TABLE chat_audit ADD COLUMN IF NOT EXISTS qeval_source TEXT;
+ALTER TABLE chat_audit ADD COLUMN IF NOT EXISTS latency_ms INT;
+ALTER TABLE chat_audit ADD COLUMN IF NOT EXISTS provider TEXT;
+"""
+
 
 async def create_tables() -> None:
     """Create all application tables if they don't exist + run idempotent migrations."""
@@ -158,3 +182,6 @@ async def create_tables() -> None:
         await conn.execute(text(_BACKFILL_PROFILE_COMPLETED))
         await conn.execute(text(_SET_PROFILE_COMPLETED_DEFAULT))
         await conn.execute(text(_FIX_ROLE_CONSTRAINT))
+        await conn.execute(text(_ADD_LEAD_COLUMNS))
+        await conn.execute(text(_ADD_ABUSE_FLAGGED))
+        await conn.execute(text(_ADD_CHAT_AUDIT_QEVAL))

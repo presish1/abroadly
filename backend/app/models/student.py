@@ -6,7 +6,7 @@ from datetime import datetime
 from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
-from sqlalchemy import Boolean, Column, Float, ForeignKey, Index, String, Text
+from sqlalchemy import Boolean, Column, Float, ForeignKey, Index, Integer, String, Text
 from sqlalchemy.dialects.postgresql import JSONB, TIMESTAMP, UUID
 from sqlalchemy.orm import DeclarativeBase
 
@@ -38,6 +38,15 @@ class StudentModel(Base):
     ai_paused = Column(Boolean, default=False, server_default="false")
     profile_completed = Column(Boolean, default=True, server_default="true")
     call_consent = Column(Boolean, default=False, server_default="false")
+    # Lead qualification columns (accumulated per chat turn)
+    lead_score = Column(Integer, default=0, server_default="0")
+    lead_strong_count = Column(Integer, default=0, server_default="0")
+    lead_good_count = Column(Integer, default=0, server_default="0")
+    lead_standard_count = Column(Integer, default=0, server_default="0")
+    lead_status = Column(String(16), default="new", server_default="'new'")
+    qualified_at = Column(TIMESTAMP(timezone=True), nullable=True)
+    # Throttle Tier 3: flagged for admin review after persistent abuse
+    abuse_flagged = Column(Boolean, default=False, server_default="false")
     created_at = Column(TIMESTAMP(timezone=True), default=datetime.utcnow)
     updated_at = Column(TIMESTAMP(timezone=True), default=datetime.utcnow)
 
@@ -96,6 +105,9 @@ class StudentOut(StudentBase):
     ai_paused: bool = False
     profile_completed: bool = True
     call_consent: bool = False
+    lead_score: int = 0
+    lead_status: str = "new"
+    abuse_flagged: bool = False
     created_at: datetime
     updated_at: datetime
 
