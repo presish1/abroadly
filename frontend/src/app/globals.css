@@ -199,10 +199,10 @@ body {
 .chat-right-rail {
   display: none;
   order: 1;
-  width: 204px;
+  width: 272px;
   flex-shrink: 0;
   flex-direction: column;
-  padding: 18px 12px 14px;
+  padding: 18px 20px 14px;
   background: #FAFAF8;
   border-right: 1px solid #E9E7E2;
 }
