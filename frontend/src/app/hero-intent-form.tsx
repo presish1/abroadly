@@ -41,7 +41,7 @@ function GoogleMark() {
 }
 
 const selectClass =
-  "ab-focus cursor-pointer appearance-none rounded-xl border border-white/15 bg-white/[0.07] py-2.5 pl-4 pr-10 text-[16px] font-bold text-white transition hover:border-white/35 focus:border-[#F2682C] sm:text-[17px]";
+  "ab-focus cursor-pointer appearance-none [-webkit-appearance:none] [-moz-appearance:none] rounded-xl border border-white/15 bg-white/[0.07] py-2.5 pl-4 pr-10 text-[16px] font-bold text-white transition hover:border-white/35 focus:border-[#F2682C] sm:text-[17px]";
 
 const OPTION_CLASS = "bg-[#15294C] text-white";
 
