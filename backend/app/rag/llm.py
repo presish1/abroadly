@@ -40,6 +40,13 @@ class LLMProvider(Protocol):
 
     async def normalize(self, system: str, query: str) -> str: ...
 
+    async def evaluate_question(
+        self,
+        system: str,
+        message: str,
+        history: ChatHistory | None = None,
+    ) -> dict: ...
+
 
 # Tuning for the normalizer call — much smaller + cheaper than generate().
 NORMALIZER_MAX_TOKENS = 200
@@ -230,6 +237,55 @@ class GroqGeminiLLM:
             ),
         )
         return (response.text or "").strip()
+
+    async def evaluate_question(
+        self,
+        system: str,
+        message: str,
+        history: ChatHistory | None = None,
+    ) -> dict:
+        """Classify a student question using Groq llama-3.1-8b-instant (JSON mode).
+
+        Uses temperature=0.0 for deterministic output. Raises on any failure so
+        the caller (evaluator.py) can fall back to the rules verdict — never 500s.
+        """
+        import json
+
+        from groq import AsyncGroq
+
+        if not settings.groq_api_key:
+            raise RuntimeError("evaluate_question: no GROQ_API_KEY")
+
+        client = AsyncGroq(api_key=settings.groq_api_key)
+
+        # Include last 2 turns as context so the classifier handles follow-ups.
+        user_content = message
+        if history:
+            recent = history[-2:]
+            ctx_lines = [
+                f"{t['role']}: {t['content'][:120]}"
+                for t in recent
+                if t.get("role") in ("user", "assistant") and t.get("content")
+            ]
+            if ctx_lines:
+                user_content = (
+                    "[Recent conversation]\n"
+                    + "\n".join(ctx_lines)
+                    + f"\n\n[Question to classify]\n{message}"
+                )
+
+        resp = await client.chat.completions.create(
+            model="llama-3.1-8b-instant",
+            messages=[
+                {"role": "system", "content": system},
+                {"role": "user", "content": user_content},
+            ],
+            temperature=0.0,
+            max_tokens=120,
+            response_format={"type": "json_object"},
+        )
+        raw = (resp.choices[0].message.content or "").strip()
+        return json.loads(raw)  # raises json.JSONDecodeError on bad output → caller falls back
 
 
 # Single instance — swap this to change the provider for the whole app.

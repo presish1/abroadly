@@ -215,7 +215,7 @@ async def chat_endpoint(
     # --- qeval entry point 2: full question verdict (after normalize, before retrieve) ---
     # Produces a directive (length, lead_signal, quality, action).
     # verdict.length is threaded into generation in Phase 2.
-    verdict = default_question_evaluator.evaluate(
+    verdict = await default_question_evaluator.evaluate(
         original=original_message,
         normalized=query,
         history=history,

@@ -40,7 +40,7 @@ class Settings(BaseSettings):
     ai_globally_paused: bool = False
 
     # qeval feature flags
-    qeval_use_llm: bool = False  # flip to True in Phase 3 when Groq eval is wired
+    qeval_use_llm: bool = True  # set QEVAL_USE_LLM=false to kill-switch the Groq eval call
 
     # Uploads
     upload_dir: str = "./uploads"
