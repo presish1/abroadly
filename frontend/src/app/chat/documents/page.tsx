@@ -22,6 +22,7 @@ import {
   type DocSlot as Slot,
   type OptionalDocSlot as OptionalSlot,
 } from "@/lib/document-catalog";
+import { StudentQuickTabs } from "@/components/student-quick-tabs";
 
 
 /* ── Small icon set ──────────────────────────────────────────────────── */
@@ -355,7 +356,7 @@ export default function DocumentsPage() {
   if (!studentId) {
     return (
       <div className="chat-layout">
-        <DocsSidebar active="documents" />
+        <StudentQuickTabs active="documents" uploadedCount={0} documentTotal={ESSENTIAL_SLOTS.length} />
         <section className="chat-main flex items-center justify-center text-[13px] text-[#6B655C]">Loading…</section>
       </div>
     );
@@ -363,7 +364,7 @@ export default function DocumentsPage() {
 
   return (
     <div className="chat-layout">
-      <DocsSidebar active="documents" />
+      <StudentQuickTabs active="documents" uploadedCount={essentialsDone} documentTotal={essentialsTotal} />
 
       <section className="chat-main docs-main">
         <header className="docs-page-header">

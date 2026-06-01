@@ -28,6 +28,7 @@ import {
   type PendingTodo,
 } from "@/lib/country-data";
 import { ESSENTIAL_SLOTS, computeDocReadiness } from "@/lib/document-catalog";
+import { StudentQuickTabs } from "@/components/student-quick-tabs";
 
 /* Abroadly's own human counsellor (placeholder identity — operator can edit). */
 const COUNSELOR = {
@@ -1207,105 +1208,6 @@ function CounselorCard({
   );
 }
 
-function RightSideTabs({
-  firstName,
-  uploadedCount,
-  phoneRequired,
-  callConsented,
-  onProfile,
-  onDocuments,
-  onCounselorCall,
-}: {
-  firstName: string;
-  uploadedCount: number;
-  phoneRequired: boolean;
-  callConsented: boolean;
-  onProfile: () => void;
-  onDocuments: () => void;
-  onCounselorCall: () => void;
-}) {
-  return (
-    <aside className="chat-right-rail" aria-label="Chat shortcuts">
-      <Link href="/" className="ab-focus chat-left-brand">
-        <img src="/images/abroadly-logo.png" alt="Abroadly" className="h-9 w-9 rounded-[10px]" />
-        <span>Abroadly</span>
-      </Link>
-
-      <p className="chat-right-rail-kicker">Quick tabs</p>
-      <nav className="mt-3 flex flex-col gap-2.5">
-        <button
-          type="button"
-          onClick={onProfile}
-          title="Open profile"
-          className="ab-focus chat-right-tab"
-        >
-          <span className="chat-right-tab-icon"><ProfileTabIcon /></span>
-          <span className="chat-right-tab-copy">
-            <span className="chat-right-tab-label">Profile</span>
-            <span className={`chat-right-tab-hint ${phoneRequired ? "text-[#B42318]" : ""}`}>
-              {phoneRequired ? "Phone needed" : firstName || "Edit details"}
-            </span>
-          </span>
-        </button>
-
-        <Link
-          href="/dashboard"
-          title="Open dashboard"
-          className="ab-focus chat-right-tab"
-        >
-          <span className="chat-right-tab-icon"><DashboardTabIcon /></span>
-          <span className="chat-right-tab-copy">
-            <span className="chat-right-tab-label">Dashboard</span>
-            <span className="chat-right-tab-hint">Progress</span>
-          </span>
-        </Link>
-
-        <button
-          type="button"
-          onClick={onDocuments}
-          title="Open document manager"
-          className="ab-focus chat-right-tab"
-        >
-          <span className="chat-right-tab-icon"><FolderIcon /></span>
-          <span className="chat-right-tab-copy">
-            <span className="chat-right-tab-label">Documents</span>
-            <span className="chat-right-tab-hint">{uploadedCount} / {SIDEBAR_DOC_SLOTS.length}</span>
-          </span>
-        </button>
-
-        <Link
-          href="/dashboard#universities"
-          title="Open university shortlist"
-          className="ab-focus chat-right-tab"
-        >
-          <span className="chat-right-tab-icon"><UniversitiesTabIcon /></span>
-          <span className="chat-right-tab-copy">
-            <span className="chat-right-tab-label">Universities</span>
-            <span className="chat-right-tab-hint">Shortlist</span>
-          </span>
-        </Link>
-      </nav>
-
-      <div className="chat-left-counselor">
-        <p className="chat-left-counselor-kicker">Counsellor</p>
-        <h2>Need human help?</h2>
-        <p>Ask for a no-pressure callback when you want a real person to review your situation.</p>
-        {callConsented ? (
-          <div className="chat-left-counselor-status">
-            <CheckCircleIcon />
-            <span>Request received</span>
-          </div>
-        ) : (
-          <button type="button" onClick={onCounselorCall} className="ab-focus chat-left-counselor-btn">
-            <PhoneIcon />
-            Request a call
-          </button>
-        )}
-      </div>
-    </aside>
-  );
-}
-
 /* ── Main page ────────────────────────────────────────────────────── */
 
 export default function ChatPage() {
@@ -1340,20 +1242,23 @@ export default function ChatPage() {
 
   // URL deep links
   //   ?docs=open    → opens the document upload panel (existing behaviour)
+  //   ?profile=open → opens the profile editor (used by shared Quick Tabs)
   //   ?send=<query> → auto-sends a question on landing (used by /dashboard's
   //                   "Ask Abroadly" buttons to deep-link a specific prompt into chat)
   useEffect(() => {
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
     if (params.get("docs") === "open") setDocPanelOpen(true);
+    if (params.get("profile") === "open") setProfileOpen(true);
     const pendingSend = params.get("send");
     if (pendingSend) {
       const q = pendingSend;
       setTimeout(() => sendMessageRef.current?.(q), 300);
     }
-    if (params.get("docs") || params.get("send") || params.get("panel")) {
+    if (params.get("docs") || params.get("profile") || params.get("send") || params.get("panel")) {
       const next = new URL(window.location.href);
       next.searchParams.delete("docs");
+      next.searchParams.delete("profile");
       next.searchParams.delete("send");
       next.searchParams.delete("panel");
       window.history.replaceState({}, "", next.toString());
@@ -1990,13 +1895,14 @@ export default function ChatPage() {
           dashboard grew rich enough (universities, courses, timeline, costs) that 360px
           could no longer hold it comfortably. dashboard-panel.tsx is retained in the
           repo as a reference but is no longer rendered. */}
-      <RightSideTabs
+      <StudentQuickTabs
+        active="chat"
         firstName={firstName}
         uploadedCount={uploadedCount}
+        documentTotal={docReadiness.essentialsTotal}
         phoneRequired={phoneRequired}
         callConsented={callConsented}
-        onProfile={() => setProfileOpen(true)}
-        onDocuments={() => router.push("/chat/documents")}
+        onProfileClick={() => setProfileOpen(true)}
         onCounselorCall={grantCounselorCall}
       />
 

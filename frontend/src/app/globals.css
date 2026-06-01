@@ -270,6 +270,18 @@ body {
   transform: none;
 }
 
+.chat-right-tab-active,
+.chat-right-tab[aria-current="page"] {
+  background: #F1F0EC;
+  color: #111111;
+}
+
+.chat-right-tab-active .chat-right-tab-icon,
+.chat-right-tab[aria-current="page"] .chat-right-tab-icon {
+  background: #FFFFFF;
+  color: #2D2B27;
+}
+
 .chat-right-tab-icon {
   display: flex;
   height: 28px;

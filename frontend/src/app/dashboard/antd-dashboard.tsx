@@ -17,6 +17,8 @@ import {
 } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { abroadlyAntdTheme } from "@/lib/antd-theme";
+import { StudentQuickTabs } from "@/components/student-quick-tabs";
+import { ESSENTIAL_SLOTS } from "@/lib/document-catalog";
 import {
   classifyFit,
   currencySymbol,
@@ -139,6 +141,10 @@ export function AntdDashboard({ student, documents, activeCountry, countries, on
 
   const docTypes = useMemo(() => new Set(documents.map((d) => d.doc_type)), [documents]);
   const docCount = docTypes.size;
+  const essentialDocCount = useMemo(
+    () => ESSENTIAL_SLOTS.filter((slot) => docTypes.has(slot.id)).length,
+    [docTypes],
+  );
   const studentPct = gpaToPercentage(student.gpa, student.expected_gpa);
   const field = inferField(student.preferred_field);
   const unis = useMemo(() => pickUniversities(country.code as University["country"], studentPct, field, 6), [country.code, studentPct, field]);
@@ -221,7 +227,18 @@ export function AntdDashboard({ student, documents, activeCountry, countries, on
 
   return (
     <ConfigProvider theme={abroadlyAntdTheme}>
-      <div className="min-h-screen bg-[#F4F2EC] text-[#1B1916]">
+      <div className="chat-layout">
+        <StudentQuickTabs
+          active="dashboard"
+          firstName={firstName}
+          uploadedCount={essentialDocCount}
+          documentTotal={ESSENTIAL_SLOTS.length}
+          phoneRequired={!student.phone?.trim()}
+          callConsented={student.call_consent}
+        />
+
+        <section className="chat-main overflow-y-auto bg-[#F4F2EC]">
+          <div className="min-h-screen bg-[#F4F2EC] text-[#1B1916]">
         {/* ── Top bar ─────────────────────────────────────────────── */}
         <header className="sticky top-0 z-20 border-b border-[#E8E5DD] bg-[#FAF9F6]/90 backdrop-blur">
           <div className="mx-auto flex max-w-[1280px] items-center justify-between gap-4 px-5 py-3 lg:px-8">
@@ -446,6 +463,8 @@ export function AntdDashboard({ student, documents, activeCountry, countries, on
             </main>
           </div>
         </div>
+          </div>
+        </section>
       </div>
     </ConfigProvider>
   );
