@@ -167,6 +167,42 @@ export function AntdDashboard({ student, documents, activeCountry, countries, on
   ];
   const timelineColor: Record<string, string> = { prep: "#A8A29A", test: "#E0A21B", deadline: "#E11D2A", visa: "#1F3D78", intake: "#0A6E45" };
 
+  // Timeline: if no documents are on file yet, target an intake with realistic
+  // runway (~5 months) and begin the list at the current month — not past prep steps.
+  const tlNow = new Date();
+  const tlPlanFrom = docCount === 0 ? new Date(tlNow.getFullYear(), tlNow.getMonth() + 5, 1) : tlNow;
+  const timelineIntake = nextIntakeFor(country.code, tlPlanFrom);
+  const tlYear = timelineIntake.date.getFullYear();
+  const tlNowAbs = tlNow.getFullYear() * 12 + tlNow.getMonth();
+  const timelineItems = [
+    ...(docCount === 0
+      ? [{
+          color: "#0A6E45",
+          children: (
+            <div>
+              <p className="text-[10.5px] font-bold uppercase tracking-[0.05em] text-[#0A6E45]">This month · start here</p>
+              <p className="text-[13px] font-bold tracking-[-0.01em] text-[#1B1916]">Get your documents ready</p>
+              <p className="text-[12px] leading-[1.5] text-[#6B655C]">Upload your transcript, passport and English score — the dates below lock to your real progress once you do.</p>
+            </div>
+          ),
+        }]
+      : []),
+    ...country.timeline
+      .map((e) => ({ e, abs: (tlYear + e.yearOffset) * 12 + e.monthIdx }))
+      .filter((x) => x.abs >= tlNowAbs)
+      .sort((a, b) => a.abs - b.abs)
+      .map(({ e, abs }) => ({
+        color: timelineColor[e.kind] ?? "#A8A29A",
+        children: (
+          <div>
+            <p className="text-[10.5px] font-bold uppercase tracking-[0.05em] text-[#8A847B]">{MONTHS[((abs % 12) + 12) % 12]} {Math.floor(abs / 12)}</p>
+            <p className="text-[13px] font-bold tracking-[-0.01em] text-[#1B1916]">{e.title}</p>
+            <p className="text-[12px] leading-[1.5] text-[#6B655C]">{e.detail}</p>
+          </div>
+        ),
+      })),
+  ];
+
   return (
     <ConfigProvider theme={abroadlyAntdTheme}>
       <div className="chat-layout">
@@ -359,21 +395,8 @@ export function AntdDashboard({ student, documents, activeCountry, countries, on
               </Panel>
 
               {/* formalities timeline — full width */}
-              <Panel eyebrow={`Formalities · ${country.name}`} title={`Timeline to ${intake.label}`}>
-                <Timeline
-                  items={[...country.timeline]
-                    .sort((a, b) => (intake.date.getFullYear() + a.yearOffset) * 12 + a.monthIdx - ((intake.date.getFullYear() + b.yearOffset) * 12 + b.monthIdx))
-                    .map((e) => ({
-                      color: timelineColor[e.kind] ?? "#A8A29A",
-                      children: (
-                        <div>
-                          <p className="text-[10.5px] font-bold uppercase tracking-[0.05em] text-[#8A847B]">{MONTHS[e.monthIdx]} {intake.date.getFullYear() + e.yearOffset}</p>
-                          <p className="text-[13px] font-bold tracking-[-0.01em] text-[#1B1916]">{e.title}</p>
-                          <p className="text-[12px] leading-[1.5] text-[#6B655C]">{e.detail}</p>
-                        </div>
-                      ),
-                    }))}
-                />
+              <Panel eyebrow={`Formalities · ${country.name}`} title={`Timeline to ${timelineIntake.label}`}>
+                <Timeline items={timelineItems} />
               </Panel>
 
               {/* scholarships | cost */}
