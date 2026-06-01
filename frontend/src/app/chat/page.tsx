@@ -138,8 +138,8 @@ interface DocType {
   desc: string;
   accept: string;
   // Shown in the doc panel when a row is expanded ("what counts" + a Nepal-specific tip).
-  requirements: string[];
-  tip: string;
+  requirements?: string[];
+  tip?: string;
 }
 
 const docTypes: DocType[] = [
@@ -203,6 +203,27 @@ const docTypes: DocType[] = [
     ],
     tip: "The UK needs funds held ~28 days; Australia and Canada differ. Ask me the exact amount for your country.",
   },
+  { id: "provisional", label: "Provisional certificate", icon: "📄", desc: "Board / university provisional", accept: ".pdf,.jpg,.jpeg,.png" },
+  { id: "character_cert", label: "Character certificate", icon: "📜", desc: "From your last school / college", accept: ".pdf,.jpg,.jpeg,.png" },
+  { id: "migration", label: "Migration certificate", icon: "🔁", desc: "When switching board / university", accept: ".pdf,.jpg,.jpeg,.png" },
+  { id: "degree_cert", label: "Degree certificate", icon: "🎓", desc: "Final or provisional degree", accept: ".pdf,.jpg,.jpeg,.png" },
+  { id: "citizenship", label: "Citizenship", icon: "🪪", desc: "Both sides, clear scan", accept: ".pdf,.jpg,.jpeg,.png" },
+  { id: "photos", label: "Passport photos", icon: "📷", desc: "Recent passport-size photos", accept: ".jpg,.jpeg,.png" },
+  { id: "moi", label: "Medium of instruction", icon: "🗣️", desc: "MOI letter from your college", accept: ".pdf,.jpg,.jpeg,.png" },
+  { id: "gre_gmat", label: "GRE / GMAT", icon: "🧮", desc: "If your program requires it", accept: ".pdf,.jpg,.jpeg,.png" },
+  { id: "cv", label: "CV / résumé", icon: "📋", desc: "One-page academic CV", accept: ".pdf,.txt" },
+  { id: "experience_letter", label: "Experience letter", icon: "💼", desc: "Work / internship letter", accept: ".pdf,.jpg,.jpeg,.png" },
+  { id: "portfolio", label: "Portfolio", icon: "🎨", desc: "Design / architecture / arts", accept: ".pdf,.jpg,.jpeg,.png" },
+  { id: "research_proposal", label: "Research proposal", icon: "🔬", desc: "For research / PhD applications", accept: ".pdf,.txt" },
+  { id: "bank_statement", label: "Bank statement", icon: "🏦", desc: "Recent 6-month statement", accept: ".pdf,.jpg,.jpeg,.png" },
+  { id: "balance_cert", label: "Balance certificate", icon: "💳", desc: "Bank balance certificate", accept: ".pdf,.jpg,.jpeg,.png" },
+  { id: "sponsor_letter", label: "Sponsor letter", icon: "🤝", desc: "Affidavit of support", accept: ".pdf,.jpg,.jpeg,.png" },
+  { id: "income_source", label: "Income source", icon: "🧾", desc: "CA report / income proof", accept: ".pdf,.jpg,.jpeg,.png" },
+  { id: "property_valuation", label: "Property valuation", icon: "🏠", desc: "Valuation of family assets", accept: ".pdf,.jpg,.jpeg,.png" },
+  { id: "loan_letter", label: "Loan sanction", icon: "🏛️", desc: "Education loan approval", accept: ".pdf,.jpg,.jpeg,.png" },
+  { id: "offer_letter", label: "Offer letter", icon: "🎟️", desc: "Offer / CAS / I-20", accept: ".pdf,.jpg,.jpeg,.png" },
+  { id: "medical", label: "Medical report", icon: "🩺", desc: "Health / vaccination check", accept: ".pdf,.jpg,.jpeg,.png" },
+  { id: "police_clearance", label: "Police clearance", icon: "👮", desc: "Police clearance report", accept: ".pdf,.jpg,.jpeg,.png" },
   {
     id: "other", label: "Other", icon: "\u{1F4CE}",
     desc: "Any other relevant document", accept: ".pdf,.txt,.jpg,.jpeg,.png",
@@ -213,6 +234,17 @@ const docTypes: DocType[] = [
     ],
     tip: "Not sure if it matters? Upload it anyway — I'll tell you whether it's useful.",
   },
+];
+
+const DOC_TINTS = [
+  "linear-gradient(135deg,#E8F0FB,#D6E6F7)",
+  "linear-gradient(135deg,#E3F5EC,#CFEEDD)",
+  "linear-gradient(135deg,#FBF1DF,#F6E6C8)",
+  "linear-gradient(135deg,#F0EBFA,#E2D8F4)",
+  "linear-gradient(135deg,#E0F3F1,#CCEAE6)",
+  "linear-gradient(135deg,#FBEAEC,#F6D7DC)",
+  "linear-gradient(135deg,#E1E7F4,#D0DAEF)",
+  "linear-gradient(135deg,#F1EFEA,#E6E2D9)",
 ];
 
 const EDUCATION_OPTIONS: { value: EducationLevel; label: string }[] = [
@@ -718,22 +750,14 @@ function DocumentPanel({
 
         <div className="doc-panel-body">
           <div className="grid grid-cols-2 gap-2.5">
-            {docTypes.map((dt) => {
+            {docTypes.map((dt, idx) => {
               const isUploading = uploadingId === dt.id;
               const uploadedDoc = uploadedByType.get(dt.id);
               const thumbUrl = uploadedDoc && uploadedDoc.is_image
                 ? getStudentDocumentDownloadUrl(studentId, uploadedDoc.doc_id)
                 : null;
               const isDragTarget = dragOver === dt.id;
-              const TINT: Record<string, string> = {
-                grade_sheet: "linear-gradient(135deg,#E8F0FB,#D6E6F7)",
-                passport: "linear-gradient(135deg,#E1E7F4,#D0DAEF)",
-                ielts: "linear-gradient(135deg,#FBF1DF,#F6E6C8)",
-                sop: "linear-gradient(135deg,#E3F5EC,#CFEEDD)",
-                recommendation: "linear-gradient(135deg,#F0EBFA,#E2D8F4)",
-                financial: "linear-gradient(135deg,#E0F3F1,#CCEAE6)",
-                other: "linear-gradient(135deg,#F1EFEA,#E6E2D9)",
-              };
+              const tint = DOC_TINTS[idx % DOC_TINTS.length];
               return (
                 <div
                   key={dt.id}
@@ -743,7 +767,7 @@ function DocumentPanel({
                   className={`group flex flex-col overflow-hidden rounded-2xl border bg-white transition ${isDragTarget ? "border-[#E11D2A] ring-2 ring-[#FDECEE]" : uploadedDoc ? "border-[#CDE6DB]" : "border-[var(--ab-line)] hover:-translate-y-0.5 hover:border-[#E11D2A]/40 hover:shadow-[0_10px_24px_-14px_rgba(27,25,22,0.25)]"}`}
                 >
                   {/* sample-preview "photo" */}
-                  <div className="relative flex h-[84px] items-center justify-center overflow-hidden" style={{ background: TINT[dt.id] ?? TINT.other }}>
+                  <div className="relative flex h-[84px] items-center justify-center overflow-hidden" style={{ background: tint }}>
                     {uploadedDoc && thumbUrl ? (
                       <img src={thumbUrl} alt={uploadedDoc.filename} className="h-full w-full object-cover" />
                     ) : (
