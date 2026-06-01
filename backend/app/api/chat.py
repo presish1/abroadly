@@ -10,27 +10,45 @@ Every turn (user + assistant) is persisted to chat_turns for conversation memory
 """
 from __future__ import annotations
 
+import logging
+import time
 import uuid
 from datetime import datetime
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
+from slowapi.errors import RateLimitExceeded
 from sqlalchemy import bindparam, select, text
 from sqlalchemy.dialects.postgresql import JSONB as SAJsonb
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
 from app.core.db import get_session
+from app.core.limiter import limiter, _get_ip_and_student
+from app.core.metrics import increment as metric_inc
+from app.core.throttle import is_cooling_down, record_over_limit, should_flag_for_admin
 from app.eval import policies
 from app.eval.evaluator import default_evaluator
 from app.eval.types import Decision, EvalDecision
 from app.models.student import ChatTurnModel, ChatTurnOut, StudentModel
 from app.normalizer import default_normalizer
+from app.qeval import default_question_evaluator
+from app.qeval import rules as qeval_rules
+from app.qeval.lead import accumulate_lead
 from app.rag.generator import generate_answer, _clean_title
 from app.rag.reranker import rerank
 from app.rag.retriever import retrieve
 
+log = logging.getLogger("abroadly.chat")
+
 router = APIRouter()
+
+
+def _ms(start: float) -> int:
+    """Elapsed milliseconds since `start` (from time.monotonic())."""
+    return int((time.monotonic() - start) * 1000)
+
 
 # How many prior turns to feed the LLM. Keeps the prompt small and the
 # token bill predictable; bump if conversations consistently outgrow it.
@@ -61,6 +79,12 @@ class ChatResponse(BaseModel):
     sources: list[Source] = []
     reason: str
     debug: dict | None = None  # only populated in dev
+    # New optional fields (all have safe defaults so old clients are unaffected — C9)
+    answer_length: str | None = None          # "short" | "medium" | "long"
+    offer_counselor: bool = False             # server-authoritative handoff signal
+    offer_reason: str | None = None           # "qualified" | "question" | None
+    lead_status: str | None = None            # "new" | "engaged" | "qualified"
+    handoff_target: str | None = None         # "prisma" | "partner"
 
 
 async def _persist_audit(
@@ -76,6 +100,12 @@ async def _persist_audit(
     eval_decision: str,
     eval_confidence: float,
     model_used: str,
+    qeval_action: str | None = None,
+    qeval_length: str | None = None,
+    qeval_lead_signal: str | None = None,
+    qeval_source: str | None = None,
+    latency_ms: int | None = None,   # populated in Phase 6 observability
+    provider: str | None = None,      # populated in Phase 6 observability
 ) -> None:
     """Async INSERT into chat_audit. `query` is the raw student input;
     `normalized_query` is the post-normalizer English version used for retrieval."""
@@ -84,11 +114,17 @@ async def _persist_audit(
         INSERT INTO chat_audit
             (request_id, trace_id, student_id, query, normalized_query,
              chunk_ids, retrieval_scores,
-             eval_decision, eval_confidence, model_used, created_at)
+             eval_decision, eval_confidence, model_used,
+             qeval_action, qeval_length, qeval_lead_signal, qeval_source,
+             latency_ms, provider,
+             created_at)
         VALUES
             (:request_id, :trace_id, :student_id, :query, :normalized_query,
              :chunk_ids, :retrieval_scores,
-             :eval_decision, :eval_confidence, :model_used, :created_at)
+             :eval_decision, :eval_confidence, :model_used,
+             :qeval_action, :qeval_length, :qeval_lead_signal, :qeval_source,
+             :latency_ms, :provider,
+             :created_at)
         """
     ).bindparams(
         bindparam("chunk_ids", type_=SAJsonb()),
@@ -107,6 +143,12 @@ async def _persist_audit(
             "eval_decision": eval_decision,
             "eval_confidence": eval_confidence,
             "model_used": model_used,
+            "qeval_action": qeval_action,
+            "qeval_length": qeval_length,
+            "qeval_lead_signal": qeval_lead_signal,
+            "qeval_source": qeval_source,
+            "latency_ms": latency_ms,
+            "provider": provider,
             "created_at": datetime.utcnow(),
         },
     )
@@ -144,12 +186,30 @@ async def _persist_turn(
 
 
 @router.post("", response_model=ChatResponse)
+@limiter.limit(settings.rate_limit_chat_ip)
+@limiter.limit(settings.rate_limit_chat_student, key_func=_get_ip_and_student)
 async def chat_endpoint(
+    request: Request,
     req: ChatRequest,
     db: AsyncSession = Depends(get_session),
 ) -> ChatResponse:
+    # --- Tier 2 cooldown check (before any LLM/DB work) ---
+    _client_ip = request.headers.get("X-Forwarded-For", "").split(",")[0].strip() or str(request.client.host)
+    if is_cooling_down(_client_ip) or is_cooling_down(req.student_id):
+        return JSONResponse(
+            status_code=429,
+            content={"detail": "Too many requests. Please wait before trying again."},
+            headers={"Retry-After": str(settings.throttle_cooldown_s)},
+        )
+
+    # Store student_id on request.state so the composite key_func can read it.
+    request.state.student_id = req.student_id
+    metric_inc("chat_total")
+
     request_id = str(uuid.uuid4())
     trace_id = req.trace_id or str(uuid.uuid4())
+    _t0 = time.monotonic()
+    _stage_ms: dict[str, int] = {}
 
     # Load real student profile from PG
     try:
@@ -189,28 +249,50 @@ async def chat_endpoint(
 
     history = await _load_history(db, sid, HISTORY_TURN_LIMIT)
 
-    # Phase 5 — language normalization. Hinglish / Nepali-romanized in,
-    # clean English out. Pure-English passes through unchanged.
-    normalization = await default_normalizer.normalize(req.message)
-    original_message = normalization.original
-    query = normalization.normalized
-    normalized_query_for_audit = query if normalization.was_changed else None
-
-    # Check profanity on the ORIGINAL message before normalization can sanitize it
-    from app.eval.scope_check import classify_scope
-    raw_scope = classify_scope(original_message)
-    if raw_scope == "profanity":
-        await _persist_turn(db, student_id=sid, role="user", content=original_message)
+    # --- qeval entry point 1: prefilter on the ORIGINAL message ---
+    # Runs before normalization so slurs/spam can't be sanitized away (C3).
+    # Catches both spam (junk/URL floods/zero-alpha) and profanity.
+    pf = qeval_rules.prefilter(req.message)
+    if pf["is_profanity"] or pf["is_spam"]:
+        reason_key = "profanity" if pf["is_profanity"] else "spam"
+        metric_inc("spam_rejects")
+        log.info(
+            '{"event":"chat","request_id":"%s","trace_id":"%s","prefilter_reject":true,'
+            '"reason":"%s","total_ms":%d}',
+            request_id, trace_id, reason_key, _ms(_t0),
+        )
+        await _persist_turn(db, student_id=sid, role="user", content=req.message)
         await db.commit()
         return ChatResponse(
             request_id=request_id, trace_id=trace_id,
             decision=Decision.OUT_OF_SCOPE, confidence=0.0,
-            answer=policies.REFUSAL_TEMPLATES.get("profanity", policies.REFUSAL_TEMPLATES["default"]),
-            sources=[], reason="profanity",
+            answer=policies.REFUSAL_TEMPLATES.get(reason_key, policies.REFUSAL_TEMPLATES["default"]),
+            sources=[], reason=reason_key,
         )
 
+    # Language normalization — Hinglish/Nepali-romanized → English.
+    _ts = time.monotonic()
+    normalization = await default_normalizer.normalize(req.message)
+    _stage_ms["normalize"] = _ms(_ts)
+    original_message = normalization.original
+    query = normalization.normalized
+    normalized_query_for_audit = query if normalization.was_changed else None
+
+    # --- qeval entry point 2: full question verdict (after normalize, before retrieve) ---
+    _ts = time.monotonic()
+    verdict = await default_question_evaluator.evaluate(
+        original=original_message,
+        normalized=query,
+        history=history,
+    )
+    _stage_ms["qeval"] = _ms(_ts)
+    if verdict.source == "llm":
+        metric_inc("groq_eval_calls")
+
+    _ts = time.monotonic()
     retrieved = await retrieve(query=query, student_id=req.student_id)
     retrieved = await rerank(query=query, retrieved=retrieved)
+    _stage_ms["retrieve"] = _ms(_ts)
     decision: EvalDecision = default_evaluator.evaluate(query=query, student=student, retrieved=retrieved)
 
     sources = [
@@ -223,6 +305,11 @@ async def chat_endpoint(
         for c in retrieved.chunks
     ]
 
+    # model_used + provider reflect the primary provider (Gemini when key present).
+    # Written before generation — represents expected provider, not confirmed.
+    _provider = "gemini" if settings.gemini_api_key else "groq"
+    _model_used = "gemini/gemini-2.5-flash" if settings.gemini_api_key else "groq/llama-3.3-70b-versatile"
+
     await _persist_audit(
         db,
         request_id=request_id,
@@ -234,7 +321,12 @@ async def chat_endpoint(
         retrieval_scores=[c.score for c in retrieved.chunks],
         eval_decision=decision.decision,
         eval_confidence=decision.confidence,
-        model_used="groq/llama-3.3-70b-versatile",
+        model_used=_model_used,
+        qeval_action=verdict.action.value,
+        qeval_length=verdict.length.value,
+        qeval_lead_signal=verdict.lead_signal.value,
+        qeval_source=verdict.source,
+        provider=_provider,
     )
 
     # User turn stored as what they actually typed — preserves their voice in history.
@@ -258,17 +350,76 @@ async def chat_endpoint(
                 content=resp.answer,
                 eval_decision=str(resp.decision),
             )
+
+        # Lead accumulation — only on real answers, never on refusals.
+        answering = (
+            resp.answer is not None
+            and resp.decision not in (Decision.OUT_OF_SCOPE, Decision.ESCALATE)
+        )
+        if answering:
+            accumulate_lead(student_model, verdict.lead_signal.value)
+            metric_inc("gemini_calls" if _provider == "gemini" else "groq_fallback_hits")
+
+        # Server-authoritative counselor offer (replaces frontend regex heuristic).
+        # Checked AFTER accumulation so this-turn qualification is captured.
+        offer_counselor = False
+        offer_reason: str | None = None
+        if not student_model.call_consent:
+            if student_model.lead_status == "qualified":
+                offer_counselor = True
+                offer_reason = "qualified"
+            elif verdict.lead_signal.value == "strong":
+                offer_counselor = True
+                offer_reason = "question"
+
+        total_ms = _ms(_t0)
+        # Update audit row's latency_ms — we know it now.
+        # (provider was already written; latency_ms requires a follow-up UPDATE)
+        try:
+            await db.execute(
+                text("UPDATE chat_audit SET latency_ms=:ms WHERE request_id=:rid"),
+                {"ms": total_ms, "rid": request_id},
+            )
+        except Exception:
+            pass  # fail-open: latency column may not exist on old schema yet
+
         await db.commit()
-        return resp
+
+        # Structured per-request log — one JSON line for each chat turn.
+        log.info(
+            '{"event":"chat","request_id":"%s","trace_id":"%s",'
+            '"qeval_source":"%s","length":"%s","lead_signal":"%s","lead_status":"%s",'
+            '"decision":"%s","provider":"%s","offer_counselor":%s,'
+            '"prefilter_reject":false,'
+            '"normalize_ms":%d,"qeval_ms":%d,"retrieve_ms":%d,"total_ms":%d}',
+            request_id, trace_id,
+            verdict.source, verdict.length.value, verdict.lead_signal.value,
+            student_model.lead_status or "new",
+            str(resp.decision), _provider,
+            "true" if offer_counselor else "false",
+            _stage_ms.get("normalize", 0), _stage_ms.get("qeval", 0),
+            _stage_ms.get("retrieve", 0), total_ms,
+        )
+
+        return resp.model_copy(update={
+            "answer_length": verdict.length.value if resp.answer else None,
+            "offer_counselor": offer_counselor,
+            "offer_reason": offer_reason,
+            "lead_status": student_model.lead_status,
+            "handoff_target": settings.handoff_target,
+        })
 
     if decision.decision == Decision.PROCEED:
+        _ts = time.monotonic()
         answer = await generate_answer(
             query=query,
             retrieved=retrieved,
             student=student,
             history=history,
             mode="full",
+            length=verdict.length.value,
         )
+        _stage_ms["generate"] = _ms(_ts)
         return await _finalize(ChatResponse(**base, answer=answer, sources=sources))
 
     if decision.decision == Decision.LOW_CONFIDENCE:
@@ -287,13 +438,16 @@ async def chat_endpoint(
         has_history = len(history) > 0
         has_intent = len(query.split()) >= 3
         if decision.debug.get("partial_answer") or has_history or has_intent:
+            _ts = time.monotonic()
             answer = await generate_answer(
                 query=query,
                 retrieved=retrieved,
                 student=student,
                 history=history,
                 mode="partial",
+                length=verdict.length.value,
             )
+            _stage_ms["generate"] = _ms(_ts)
             return await _finalize(ChatResponse(**base, answer=answer, sources=sources))
         # Truly cold, contextless one-word opener — a sharp clarifier is best.
         return await _finalize(

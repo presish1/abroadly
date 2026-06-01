@@ -49,6 +49,11 @@ REFUSAL_TEMPLATES = {
         "study-abroad journey. Ask me anything about universities, visas, "
         "scholarships, or documents."
     ),
+    "spam": (
+        "That message doesn't look like a study-abroad question. "
+        "I'm here to help with universities, visas, scholarships, and documents — "
+        "feel free to ask anything about studying abroad!"
+    ),
     "default": (
         "I'm not sure I can help with that one. I'm best at study-abroad "
         "questions — things like eligibility, applications, scholarships, "

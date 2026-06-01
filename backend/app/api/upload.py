@@ -7,12 +7,13 @@ from datetime import datetime
 from pathlib import Path
 
 import google.generativeai as genai
-from fastapi import APIRouter, File, Form, HTTPException, UploadFile
+from fastapi import APIRouter, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
 from app.core.config import settings
 from app.core.db import get_chroma
+from app.core.limiter import limiter
 
 router = APIRouter()
 
@@ -190,7 +191,9 @@ def _list_student_documents(student_id: str) -> list[StudentDocument]:
 # ---------------------------------------------------------------------------
 
 @router.post("", response_model=UploadResponse)
+@limiter.limit(settings.rate_limit_upload)
 async def upload(
+    request: Request,
     student_id: str = Form(...),
     file: UploadFile = File(...),
     doc_type: str = Form("other"),
