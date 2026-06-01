@@ -126,33 +126,40 @@ export default function Home() {
         ]}
       />
 
-      {/* ── Hero (light, flat, editorial — sky motif) ──────────────────── */}
-      <section className="relative overflow-hidden border-b border-[var(--ab-line)] bg-[var(--ab-paper)]">
-        {/* a calm sky fading into the page */}
+      {/* ── Hero (dark, centered) ──────────────────────────────────────── */}
+      <section
+        className="relative overflow-hidden"
+        style={{ background: "linear-gradient(180deg, #15294C 0%, #0F1F3D 72%, #0E1B36 100%)" }}
+      >
+        {/* atmosphere — faint dot grid + a warm glow up top */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-0 h-[72%]"
-          style={{ background: "linear-gradient(180deg, #E9F1F8 0%, rgba(233,241,248,0) 100%)" }}
+          className="pointer-events-none absolute inset-0 opacity-50"
+          style={{
+            backgroundImage: "radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px)",
+            backgroundSize: "24px 24px",
+          }}
         />
-        {/* soft clouds — flat, low-key */}
-        <svg aria-hidden viewBox="0 0 120 50" className="pointer-events-none absolute left-[5%] top-[15%] hidden w-32 text-white opacity-90 sm:block" fill="currentColor">
-          <g><circle cx="34" cy="30" r="15" /><circle cx="58" cy="21" r="20" /><circle cx="84" cy="30" r="15" /><rect x="30" y="31" width="58" height="17" rx="8.5" /></g>
-        </svg>
-        <svg aria-hidden viewBox="0 0 120 50" className="pointer-events-none absolute right-[7%] top-[24%] hidden w-24 text-white opacity-75 sm:block" fill="currentColor">
-          <g><circle cx="34" cy="30" r="15" /><circle cx="58" cy="21" r="20" /><circle cx="84" cy="30" r="15" /><rect x="30" y="31" width="58" height="17" rx="8.5" /></g>
-        </svg>
+        <div
+          aria-hidden
+          className="pointer-events-none absolute left-1/2 top-[-14rem] h-[34rem] w-[52rem] -translate-x-1/2 rounded-full blur-3xl"
+          style={{ background: "radial-gradient(closest-side, rgba(242,104,44,0.18), rgba(242,104,44,0))" }}
+        />
 
-        <div className="relative mx-auto flex max-w-3xl flex-col items-center px-5 pb-16 pt-20 text-center sm:pb-20 sm:pt-28">
-          <p className="ab-fade-up ab-d1 ab-eyebrow">Built for students in Nepal</p>
+        <div className="relative mx-auto flex max-w-4xl flex-col items-center px-5 pb-16 pt-20 text-center sm:pb-20 sm:pt-28">
+          <span className="ab-fade-up ab-d1 inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/[0.07] px-3.5 py-1.5 text-[12.5px] font-semibold text-white/85 backdrop-blur">
+            <svg viewBox="0 0 16 16" aria-hidden className="h-3.5 w-3.5 text-[#FFB37A]" fill="currentColor">
+              <path d="M8 0l1.6 4.9L14.4 6 9.6 7.1 8 12 6.4 7.1 1.6 6l4.8-1.1L8 0z" />
+            </svg>
+            Built for students in Nepal
+          </span>
 
-          <h1 className="ab-fade-up ab-d2 ab-display-1 mt-5">
-            Study abroad,
-            <br className="hidden sm:block" /> <span className="text-[var(--ab-brand)]">figured out.</span>
+          <h1 className="ab-fade-up ab-d2 ab-display-1 mt-7 text-white">
+            Study abroad, <span className="text-[#FF7A3D]">figured out.</span>
           </h1>
 
-          <p className="ab-fade-up ab-d3 ab-subhead mt-6 max-w-md">
-            AI-guided answers on eligibility, documents, scholarships, and visas — grounded in
-            official sources, never an agent&apos;s sales pitch.
+          <p className="ab-fade-up ab-d3 mt-5 max-w-lg text-[15px] leading-[1.65] text-white/70 sm:text-[16px]">
+            AI-guided answers grounded in official sources — never an agent&apos;s sales pitch.
           </p>
 
           <div className="ab-fade-up ab-d4 mt-9 w-full">
@@ -160,8 +167,8 @@ export default function Home() {
           </div>
 
           {/* university trust strip */}
-          <div className="ab-fade-up ab-d5 mt-12 flex w-full flex-col items-center gap-4 border-t border-[var(--ab-line)] pt-8">
-            <p className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-[var(--ab-muted-soft)]">
+          <div className="ab-fade-up ab-d5 mt-12 flex w-full flex-col items-center gap-4 border-t border-white/10 pt-8">
+            <p className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-white/35">
               Free, independent guidance for universities like
             </p>
             <HeroUniversityStrip />
@@ -169,10 +176,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Product peek — a calm look at the real thing ───────────────── */}
+      {/* ── Product peek — the card straddles the navy → paper seam ─────── */}
       <section className="bg-[var(--ab-paper)]">
-        <div className="mx-auto max-w-2xl px-5 pb-16 pt-12 sm:px-8 sm:pb-20 sm:pt-14">
-          <ChatPreview className="ab-fade-up" />
+        <div className="mx-auto max-w-2xl px-5 pb-16 sm:px-8 sm:pb-20">
+          <ChatPreview className="ab-fade-up relative z-10 -mt-12 sm:-mt-16" />
         </div>
       </section>
 
