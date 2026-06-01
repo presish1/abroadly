@@ -11,17 +11,14 @@ import {
   Progress,
   Segmented,
   Statistic,
-  Table,
   Tag,
   Timeline,
 } from "antd";
-import type { ColumnsType } from "antd/es/table";
 import { abroadlyAntdTheme } from "@/lib/antd-theme";
 import { StudentQuickTabs } from "@/components/student-quick-tabs";
 import { ESSENTIAL_SLOTS } from "@/lib/document-catalog";
 import {
   classifyFit,
-  currencySymbol,
   gpaToPercentage,
   inferField,
   pickUniversities,
@@ -162,61 +159,6 @@ export function AntdDashboard({ student, documents, activeCountry, countries, on
 
   const focus = heroFocus(student, docTypes, country);
 
-  const uniColumns: ColumnsType<University> = [
-    {
-      title: "University",
-      key: "name",
-      render: (_: unknown, u: University) => (
-        <div className="flex items-center gap-3">
-          <UniLogo name={u.name} url={u.official_url} />
-          <div className="min-w-0">
-            <div className="truncate text-[13px] font-bold text-[#1B1916]">{u.name}</div>
-            <div className="text-[11px] text-[#8A847B]">{u.city}</div>
-          </div>
-        </div>
-      ),
-    },
-    {
-      title: "Fit",
-      key: "fit",
-      width: 86,
-      render: (_: unknown, u: University) => {
-        const fit = classifyFit(studentPct, u.entry_pct_min);
-        return <Tag color={FIT_TAG[fit].color} style={{ fontWeight: 700, marginInlineEnd: 0 }}>{FIT_TAG[fit].label}</Tag>;
-      },
-    },
-    {
-      title: "Int'l tuition / yr",
-      key: "tuition",
-      width: 130,
-      responsive: ["md"],
-      render: (_: unknown, u: University) => (
-        <span className="text-[13px] font-semibold text-[#1B1916]">
-          {currencySymbol(u.tuition_currency)}
-          {(u.tuition_min / 1000).toFixed(0)}k–{(u.tuition_max / 1000).toFixed(0)}k
-        </span>
-      ),
-    },
-    {
-      title: "IELTS",
-      key: "ielts",
-      width: 64,
-      responsive: ["lg"],
-      render: (_: unknown, u: University) => <span className="text-[13px] font-semibold text-[#1B1916]">{u.ielts_min}+</span>,
-    },
-    {
-      title: "",
-      key: "action",
-      width: 64,
-      align: "right",
-      render: (_: unknown, u: University) => (
-        <Button size="small" type="text" onClick={() => onSendQuery(`Tell me about ${u.name} for ${student.preferred_field ?? "my field"} — entry bar, fees, who fits there.`)}>
-          <span className="text-[12px] font-semibold text-[#0A6E45]">Ask</span>
-        </Button>
-      ),
-    },
-  ];
-
   const costItems = [
     { label: country.cost.tuitionLabel, value: country.cost.tuitionValue },
     { label: country.cost.livingLabel, value: country.cost.livingValue },
@@ -344,9 +286,32 @@ export function AntdDashboard({ student, documents, activeCountry, countries, on
               </div>
 
               {/* universities */}
-              <Panel eyebrow={`Universities · ${country.name}`} title="Picks worth shortlisting" bodyPad={0}
+              <Panel eyebrow="Shortlist" title="Open the full university workspace" bodyPad={18}
                 extra={studentPct ? <span className="text-[12px] text-[#6B655C]">Matched to your <b className="text-[#1B1916]">{studentPct}%</b></span> : <span className="text-[12px] text-[#9B6200]">Add GPA for sharper tags</span>}>
-                <Table rowKey="id" columns={uniColumns} dataSource={unis} pagination={false} size="middle" style={{ marginTop: 12 }} />
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                  <div className="min-w-0">
+                    <p className="max-w-2xl text-[13px] leading-[1.6] text-[#6B655C]">
+                      University profiles, official links, course starters, scholarships, and fit tags now live in the Universities tab so the dashboard can stay focused on progress.
+                    </p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {unis.slice(0, 3).map((u) => {
+                        const fit = classifyFit(studentPct, u.entry_pct_min);
+                        return (
+                          <div key={u.id} className="flex items-center gap-2 rounded-xl border border-[#EFECE4] bg-[#FAF9F6] px-3 py-2">
+                            <UniLogo name={u.name} url={u.official_url} />
+                            <div className="min-w-0">
+                              <p className="max-w-[180px] truncate text-[12px] font-bold text-[#1B1916]">{u.name}</p>
+                              <Tag color={FIT_TAG[fit].color} style={{ marginInlineEnd: 0, fontSize: 10, fontWeight: 700 }}>{FIT_TAG[fit].label}</Tag>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  <Link href="/universities" className="shrink-0">
+                    <Button type="primary">Open Universities →</Button>
+                  </Link>
+                </div>
               </Panel>
 
               {/* documents — profile-style cards with a sample preview + clear upload */}

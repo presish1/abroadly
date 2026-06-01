@@ -42,6 +42,25 @@ export interface University {
   official_url: string;
 }
 
+export interface UniversityProfile {
+  /** Short, student-facing profile copy for shortlist cards */
+  summary: string;
+  /** Practical positioning: what kind of student usually shortlists this option */
+  best_for: string[];
+  /** City/campus note useful for Nepali students comparing living style and cost */
+  campus_note: string;
+  /** Official international admissions page when it differs from the main site */
+  international_url: string;
+  /** Official course search or study-area page */
+  courses_url: string;
+  /** Official scholarships page */
+  scholarships_url: string;
+  /** Official apply/admissions page */
+  admissions_url: string;
+  /** Optional official-domain thumbnail; falls back to the university favicon */
+  thumbnail_url?: string;
+}
+
 export interface Course {
   id: string;
   university_id: string;
@@ -98,9 +117,18 @@ export const UNIVERSITIES: University[] = [
   { id: "monash", name: "Monash University", country: "Australia", city: "Melbourne", tier: "go8", tuition_min: 38000, tuition_max: 50000, tuition_currency: "AUD", entry_pct_min: 70, ielts_min: 6.5, strengths: ["cs", "engineering", "business", "nursing", "medicine"], official_url: "https://www.monash.edu/" },
   { id: "uq", name: "University of Queensland (UQ)", country: "Australia", city: "Brisbane", tier: "go8", tuition_min: 38000, tuition_max: 50000, tuition_currency: "AUD", entry_pct_min: 70, ielts_min: 6.5, strengths: ["engineering", "business", "nursing", "medicine"], official_url: "https://www.uq.edu.au/" },
   { id: "uwa", name: "University of Western Australia (UWA)", country: "Australia", city: "Perth", tier: "go8", tuition_min: 38000, tuition_max: 50000, tuition_currency: "AUD", entry_pct_min: 68, ielts_min: 6.5, strengths: ["engineering", "business", "nursing"], official_url: "https://www.uwa.edu.au/" },
+  { id: "adelaide", name: "University of Adelaide", country: "Australia", city: "Adelaide", tier: "go8", tuition_min: 39000, tuition_max: 50000, tuition_currency: "AUD", entry_pct_min: 70, ielts_min: 6.5, strengths: ["engineering", "cs", "business", "medicine", "data_science"], official_url: "https://www.adelaide.edu.au/" },
   { id: "deakin", name: "Deakin University", country: "Australia", city: "Melbourne", tier: "mid_research", tuition_min: 32000, tuition_max: 42000, tuition_currency: "AUD", entry_pct_min: 60, ielts_min: 6.0, strengths: ["business", "cs", "engineering", "nursing"], official_url: "https://www.deakin.edu.au/" },
   { id: "rmit", name: "RMIT University", country: "Australia", city: "Melbourne", tier: "mid_research", tuition_min: 32000, tuition_max: 45000, tuition_currency: "AUD", entry_pct_min: 60, ielts_min: 6.0, strengths: ["design", "engineering", "business", "cs"], official_url: "https://www.rmit.edu.au/" },
   { id: "latrobe", name: "La Trobe University", country: "Australia", city: "Melbourne", tier: "mid_research", tuition_min: 30000, tuition_max: 40000, tuition_currency: "AUD", entry_pct_min: 55, ielts_min: 6.0, strengths: ["business", "nursing", "cs"], official_url: "https://www.latrobe.edu.au/" },
+  { id: "uts", name: "University of Technology Sydney (UTS)", country: "Australia", city: "Sydney", tier: "mid_research", tuition_min: 36000, tuition_max: 50000, tuition_currency: "AUD", entry_pct_min: 65, ielts_min: 6.5, strengths: ["cs", "engineering", "business", "design", "data_science"], official_url: "https://www.uts.edu.au/study/international" },
+  { id: "macquarie", name: "Macquarie University", country: "Australia", city: "Sydney", tier: "mid_research", tuition_min: 34000, tuition_max: 47000, tuition_currency: "AUD", entry_pct_min: 62, ielts_min: 6.5, strengths: ["business", "cs", "data_science", "law", "social_science"], official_url: "https://www.mq.edu.au/study/information-for/international" },
+  { id: "qut", name: "Queensland University of Technology (QUT)", country: "Australia", city: "Brisbane", tier: "mid_research", tuition_min: 33000, tuition_max: 46000, tuition_currency: "AUD", entry_pct_min: 60, ielts_min: 6.5, strengths: ["cs", "engineering", "business", "design", "nursing"], official_url: "https://www.qut.edu.au/study/international" },
+  { id: "griffith", name: "Griffith University", country: "Australia", city: "Brisbane / Gold Coast", tier: "mid_research", tuition_min: 32000, tuition_max: 44000, tuition_currency: "AUD", entry_pct_min: 58, ielts_min: 6.5, strengths: ["nursing", "business", "engineering", "social_science", "medicine"], official_url: "https://www.griffith.edu.au/apply/international" },
+  { id: "curtin", name: "Curtin University", country: "Australia", city: "Perth", tier: "mid_research", tuition_min: 33000, tuition_max: 47000, tuition_currency: "AUD", entry_pct_min: 58, ielts_min: 6.5, strengths: ["engineering", "business", "cs", "nursing", "data_science"], official_url: "https://www.curtin.edu.au/study/international-students/" },
+  { id: "wollongong", name: "University of Wollongong", country: "Australia", city: "Wollongong", tier: "mid_research", tuition_min: 31000, tuition_max: 43000, tuition_currency: "AUD", entry_pct_min: 58, ielts_min: 6.0, strengths: ["cs", "engineering", "business", "nursing"], official_url: "https://www.uow.edu.au/study/international/" },
+  { id: "swinburne", name: "Swinburne University of Technology", country: "Australia", city: "Melbourne", tier: "modern", tuition_min: 30000, tuition_max: 41000, tuition_currency: "AUD", entry_pct_min: 55, ielts_min: 6.0, strengths: ["design", "cs", "engineering", "business"], official_url: "https://www.swinburne.edu.au/courses/international/" },
+  { id: "westernsydney", name: "Western Sydney University", country: "Australia", city: "Sydney", tier: "modern", tuition_min: 30000, tuition_max: 42000, tuition_currency: "AUD", entry_pct_min: 55, ielts_min: 6.5, strengths: ["nursing", "business", "cs", "social_science"], official_url: "https://www.westernsydney.edu.au/international" },
 
   /* ── Canada — strong picks ─────────────────────────────────────────── */
   { id: "toronto", name: "University of Toronto", country: "Canada", city: "Toronto", tier: "u15", tuition_min: 45000, tuition_max: 67000, tuition_currency: "CAD", entry_pct_min: 80, ielts_min: 6.5, strengths: ["cs", "engineering", "business", "medicine", "data_science"], official_url: "https://www.utoronto.ca/" },
@@ -156,10 +184,26 @@ export const COURSES: Course[] = [
   { id: "unsw-msit", university_id: "unsw", level: "postgraduate", name: "Master of Information Technology", field: "cs", duration_years: 2 },
   { id: "monash-bcs", university_id: "monash", level: "undergraduate", name: "Bachelor of Computer Science", field: "cs", duration_years: 3 },
   { id: "rmit-bsc-cs", university_id: "rmit", level: "undergraduate", name: "Bachelor of Information Technology", field: "cs", duration_years: 3 },
+  { id: "adelaide-bcs", university_id: "adelaide", level: "undergraduate", name: "Bachelor of Computer Science", field: "cs", duration_years: 3 },
+  { id: "uts-bit", university_id: "uts", level: "undergraduate", name: "Bachelor of Information Technology", field: "cs", duration_years: 3 },
+  { id: "macquarie-bcyber", university_id: "macquarie", level: "undergraduate", name: "Bachelor of Cyber Security", field: "cs", duration_years: 3 },
+  { id: "qut-bit", university_id: "qut", level: "undergraduate", name: "Bachelor of Information Technology", field: "cs", duration_years: 3 },
+  { id: "wollongong-bcs", university_id: "wollongong", level: "undergraduate", name: "Bachelor of Computer Science", field: "cs", duration_years: 3 },
   // Australia business
   { id: "unsw-bcom", university_id: "unsw", level: "undergraduate", name: "Bachelor of Commerce", field: "business", duration_years: 3 },
   { id: "monash-bcom", university_id: "monash", level: "undergraduate", name: "Bachelor of Business", field: "business", duration_years: 3 },
   { id: "deakin-bcom", university_id: "deakin", level: "undergraduate", name: "Bachelor of Commerce", field: "business", duration_years: 3 },
+  { id: "macquarie-bcommerce", university_id: "macquarie", level: "undergraduate", name: "Bachelor of Commerce", field: "business", duration_years: 3 },
+  { id: "qut-business", university_id: "qut", level: "undergraduate", name: "Bachelor of Business", field: "business", duration_years: 3 },
+  { id: "curtin-commerce", university_id: "curtin", level: "undergraduate", name: "Bachelor of Commerce", field: "business", duration_years: 3 },
+  // Australia engineering / health / design
+  { id: "sydney-beng", university_id: "sydney", level: "undergraduate", name: "Bachelor of Engineering Honours", field: "engineering", duration_years: 4 },
+  { id: "uq-beng", university_id: "uq", level: "undergraduate", name: "Bachelor of Engineering (Honours)", field: "engineering", duration_years: 4 },
+  { id: "curtin-beng", university_id: "curtin", level: "undergraduate", name: "Bachelor of Engineering (Honours)", field: "engineering", duration_years: 4 },
+  { id: "griffith-nursing", university_id: "griffith", level: "undergraduate", name: "Bachelor of Nursing", field: "nursing", duration_years: 3 },
+  { id: "westernsydney-nursing", university_id: "westernsydney", level: "undergraduate", name: "Bachelor of Nursing", field: "nursing", duration_years: 3 },
+  { id: "swinburne-design", university_id: "swinburne", level: "undergraduate", name: "Bachelor of Design", field: "design", duration_years: 3 },
+  { id: "rmit-master-data", university_id: "rmit", level: "postgraduate", name: "Master of Data Science", field: "data_science", duration_years: 2 },
   // Canada
   { id: "toronto-bsc-cs", university_id: "toronto", level: "undergraduate", name: "Bachelor of Science · Computer Science", field: "cs", duration_years: 4 },
   { id: "waterloo-bcs", university_id: "waterloo", level: "undergraduate", name: "Bachelor of Computer Science", field: "cs", duration_years: 4 },
@@ -172,6 +216,218 @@ export const COURSES: Course[] = [
   { id: "purdue-bs-cs", university_id: "purdue", level: "undergraduate", name: "BS Computer Science", field: "cs", duration_years: 4 },
   { id: "asu-bs-cs", university_id: "asu", level: "undergraduate", name: "BS Computer Science", field: "cs", duration_years: 4 },
 ];
+
+export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
+  melbourne: {
+    summary: "Research-heavy, globally recognised, and strongest when the student has a high academic profile and wants a Melbourne base.",
+    best_for: ["Research profile", "Melbourne city life", "Selective applicants"],
+    campus_note: "Parkville campus, close to central Melbourne. Living costs are higher, but networks and internships are strong.",
+    international_url: "https://study.unimelb.edu.au/",
+    courses_url: "https://study.unimelb.edu.au/find/",
+    scholarships_url: "https://scholarships.unimelb.edu.au/",
+    admissions_url: "https://study.unimelb.edu.au/how-to-apply",
+  },
+  sydney: {
+    summary: "A strong Sydney option for students who want a broad course catalogue, city internships, and a highly recognised university brand.",
+    best_for: ["Sydney networks", "Engineering", "Business and health"],
+    campus_note: "Main Camperdown/Darlington campus near central Sydney. Good for students who can manage a higher-cost city.",
+    international_url: "https://www.sydney.edu.au/study/international-students.html",
+    courses_url: "https://www.sydney.edu.au/courses/search.html",
+    scholarships_url: "https://www.sydney.edu.au/scholarships/",
+    admissions_url: "https://www.sydney.edu.au/study/how-to-apply/international-students.html",
+  },
+  anu: {
+    summary: "A compact, academic Canberra choice for students interested in public policy, data, research, science, and quieter student life.",
+    best_for: ["Research focus", "Canberra", "Policy and data"],
+    campus_note: "Canberra is calmer than Sydney or Melbourne and can suit students who want a focused study environment.",
+    international_url: "https://www.anu.edu.au/study/information-for/international-students",
+    courses_url: "https://programsandcourses.anu.edu.au/",
+    scholarships_url: "https://www.anu.edu.au/study/scholarships",
+    admissions_url: "https://www.anu.edu.au/study/apply",
+  },
+  unsw: {
+    summary: "A practical Sydney shortlist choice for computing, engineering, commerce, and data-focused students who want strong industry links.",
+    best_for: ["Technology", "Engineering", "Commerce"],
+    campus_note: "Kensington campus has a fast, career-focused feel. Sydney costs are high, so budget carefully.",
+    international_url: "https://www.unsw.edu.au/study/international-students",
+    courses_url: "https://www.unsw.edu.au/study/search",
+    scholarships_url: "https://www.unsw.edu.au/study/how-to-apply/scholarships",
+    admissions_url: "https://www.unsw.edu.au/study/how-to-apply/international",
+  },
+  monash: {
+    summary: "Large, flexible, and well-known with strong options across IT, engineering, business, health, and pathway-style planning.",
+    best_for: ["Flexible course paths", "Health and IT", "Melbourne suburbs"],
+    campus_note: "Clayton and Caulfield are outside the CBD, which can help with living costs compared with inner-city Melbourne.",
+    international_url: "https://www.monash.edu/study/international",
+    courses_url: "https://www.monash.edu/study/courses/find-a-course",
+    scholarships_url: "https://www.monash.edu/study/fees-scholarships/scholarships",
+    admissions_url: "https://www.monash.edu/study/how-to-apply/international-student-applications",
+  },
+  uq: {
+    summary: "A strong Brisbane option for students who want a major research university with warmer weather and comparatively calmer city life.",
+    best_for: ["Brisbane", "Engineering", "Health sciences"],
+    campus_note: "St Lucia is a classic campus environment. Brisbane is often easier to manage than Sydney/Melbourne for daily living.",
+    international_url: "https://study.uq.edu.au/international-students",
+    courses_url: "https://study.uq.edu.au/study-options/programs",
+    scholarships_url: "https://scholarships.uq.edu.au/",
+    admissions_url: "https://study.uq.edu.au/admissions",
+  },
+  uwa: {
+    summary: "A Perth-based option for students who want a quieter city, strong engineering/business pathways, and a campus-led experience.",
+    best_for: ["Perth", "Engineering", "Campus life"],
+    campus_note: "Crawley campus is near the Swan River. Perth can suit students who prefer a smaller city rhythm.",
+    international_url: "https://www.uwa.edu.au/study/international-students",
+    courses_url: "https://www.uwa.edu.au/study/courses",
+    scholarships_url: "https://www.uwa.edu.au/study/scholarships",
+    admissions_url: "https://www.uwa.edu.au/study/how-to-apply/international",
+  },
+  adelaide: {
+    summary: "A Go8 option with a more manageable city feel, useful for students comparing prestige with cost and lifestyle.",
+    best_for: ["Adelaide", "Engineering", "Computer science"],
+    campus_note: "North Terrace sits in central Adelaide. The city can feel less intense than the east-coast capitals.",
+    international_url: "https://international.adelaide.edu.au/",
+    courses_url: "https://www.adelaide.edu.au/degree-finder/",
+    scholarships_url: "https://international.adelaide.edu.au/admissions/scholarships",
+    admissions_url: "https://international.adelaide.edu.au/admissions/how-to-apply",
+  },
+  deakin: {
+    summary: "A practical Melbourne/Geelong choice for students who want applied courses, flexible campuses, and a slightly more accessible entry profile.",
+    best_for: ["Applied learning", "Business", "Nursing and IT"],
+    campus_note: "Melbourne Burwood is popular with international students; Geelong can be calmer and more affordable.",
+    international_url: "https://www.deakin.edu.au/international-students",
+    courses_url: "https://www.deakin.edu.au/courses",
+    scholarships_url: "https://www.deakin.edu.au/study/fees-and-scholarships/scholarships",
+    admissions_url: "https://www.deakin.edu.au/study/how-to-apply/international-students",
+  },
+  rmit: {
+    summary: "A city-campus university with a strong practical feel for design, IT, engineering, media, and business.",
+    best_for: ["Design", "City campus", "Practical learning"],
+    campus_note: "RMIT's Melbourne city campus is right in the CBD, good for energy and access but not the cheapest lifestyle.",
+    international_url: "https://www.rmit.edu.au/study-with-us/international-students",
+    courses_url: "https://www.rmit.edu.au/study-with-us/international-students/programs-for-international-students",
+    scholarships_url: "https://www.rmit.edu.au/students/careers-opportunities/scholarships",
+    admissions_url: "https://www.rmit.edu.au/study-with-us/international-students/apply-to-rmit-international-students",
+  },
+  latrobe: {
+    summary: "A friendly Melbourne option for students looking at nursing, business, IT, and broader pathway flexibility.",
+    best_for: ["Nursing", "Pathways", "Melbourne value"],
+    campus_note: "Bundoora is outside the CBD, which can feel calmer and may help students manage accommodation choices.",
+    international_url: "https://www.latrobe.edu.au/international",
+    courses_url: "https://www.latrobe.edu.au/courses",
+    scholarships_url: "https://www.latrobe.edu.au/international/fees/scholarships",
+    admissions_url: "https://www.latrobe.edu.au/international/apply",
+  },
+  uts: {
+    summary: "A highly urban Sydney choice for students who want technology, business, design, and practical industry-facing study.",
+    best_for: ["Sydney CBD", "Technology", "Design and business"],
+    campus_note: "UTS is in the heart of Sydney's technology precinct. Great access, but students must plan rent carefully.",
+    international_url: "https://www.uts.edu.au/study/international",
+    courses_url: "https://www.uts.edu.au/study/find-a-course",
+    scholarships_url: "https://www.uts.edu.au/study/international/essential-information/scholarships-international-students",
+    admissions_url: "https://www.uts.edu.au/study/international/how-apply",
+  },
+  macquarie: {
+    summary: "A Sydney option with a campus setting, strong business/IT pathways, and good fit for students comparing city access with space.",
+    best_for: ["Business", "Cyber security", "Campus in Sydney"],
+    campus_note: "Located in Macquarie Park, close to a business and technology precinct rather than the inner CBD.",
+    international_url: "https://www.mq.edu.au/study/information-for/international",
+    courses_url: "https://www.mq.edu.au/study/find-a-course",
+    scholarships_url: "https://www.mq.edu.au/study/admissions-and-entry/scholarships",
+    admissions_url: "https://www.mq.edu.au/study/admissions-and-entry/apply/international",
+  },
+  qut: {
+    summary: "A Brisbane university with a practical, career-oriented style across IT, engineering, business, creative industries, and health.",
+    best_for: ["Brisbane", "Career-focused study", "IT and creative industries"],
+    campus_note: "Gardens Point and Kelvin Grove give students city access without Sydney/Melbourne scale.",
+    international_url: "https://www.qut.edu.au/study/international",
+    courses_url: "https://www.qut.edu.au/study",
+    scholarships_url: "https://www.qut.edu.au/study/fees-and-scholarships/scholarships",
+    admissions_url: "https://www.qut.edu.au/study/applying/international-applying",
+  },
+  griffith: {
+    summary: "A Queensland choice for students interested in health, business, hospitality, aviation, social sciences, and Gold Coast/Brisbane life.",
+    best_for: ["Health", "Gold Coast", "Student support"],
+    campus_note: "Multiple campuses across Brisbane and the Gold Coast. Good for students considering lifestyle and part-time work access.",
+    international_url: "https://www.griffith.edu.au/international",
+    courses_url: "https://www.griffith.edu.au/study/degrees?studentType=international",
+    scholarships_url: "https://www.griffith.edu.au/international/scholarships-finance",
+    admissions_url: "https://www.griffith.edu.au/apply/international",
+  },
+  curtin: {
+    summary: "A Perth university with practical strengths in engineering, IT, business, health, and applied sciences.",
+    best_for: ["Perth", "Engineering", "Applied courses"],
+    campus_note: "Bentley campus is a large Perth campus. Good for students who want a major city with a slower pace.",
+    international_url: "https://www.curtin.edu.au/study/international-students/",
+    courses_url: "https://www.curtin.edu.au/study/search/",
+    scholarships_url: "https://www.curtin.edu.au/study/scholarships/",
+    admissions_url: "https://www.curtin.edu.au/study/international-students/apply/",
+  },
+  wollongong: {
+    summary: "A coastal NSW option with strengths in computing, engineering, business, and a more contained student-city feel.",
+    best_for: ["Coastal city", "Computer science", "Engineering"],
+    campus_note: "Wollongong is south of Sydney, often appealing to students who want NSW without inner-Sydney rent pressure.",
+    international_url: "https://www.uow.edu.au/study/international/",
+    courses_url: "https://www.uow.edu.au/study/courses/",
+    scholarships_url: "https://www.uow.edu.au/study/scholarships/",
+    admissions_url: "https://www.uow.edu.au/study/international/apply/",
+  },
+  swinburne: {
+    summary: "A Melbourne technology/design option for students who like applied learning, creative fields, and industry projects.",
+    best_for: ["Design", "Technology", "Applied learning"],
+    campus_note: "Hawthorn campus has quick train access to Melbourne CBD while feeling more neighbourhood-based.",
+    international_url: "https://www.swinburne.edu.au/courses/international/",
+    courses_url: "https://www.swinburne.edu.au/courses/find-a-course/",
+    scholarships_url: "https://www.swinburne.edu.au/courses/fees/scholarships/",
+    admissions_url: "https://www.swinburne.edu.au/courses/applying/international/",
+  },
+  westernsydney: {
+    summary: "A practical Sydney-region option for nursing, business, IT, and students who want wider campus choices across Western Sydney.",
+    best_for: ["Nursing", "Western Sydney", "Accessible options"],
+    campus_note: "Multiple campuses across Western Sydney can make commute planning important, but rent may be more flexible than inner Sydney.",
+    international_url: "https://www.westernsydney.edu.au/international",
+    courses_url: "https://www.westernsydney.edu.au/future/study/courses",
+    scholarships_url: "https://www.westernsydney.edu.au/international/home/apply/scholarships",
+    admissions_url: "https://www.westernsydney.edu.au/international/home/apply/admissions",
+  },
+};
+
+export function getUniversityProfile(university: University): UniversityProfile {
+  const profile = UNIVERSITY_PROFILES[university.id];
+  if (profile) return profile;
+  return {
+    summary: `${university.name} is worth checking if its entry requirements, tuition and course structure fit your profile.`,
+    best_for: university.strengths.slice(0, 3).map(fieldLabel),
+    campus_note: `${university.city}. Confirm campus, intake and delivery mode on the official site before applying.`,
+    international_url: university.official_url,
+    courses_url: university.official_url,
+    scholarships_url: university.official_url,
+    admissions_url: university.official_url,
+  };
+}
+
+export function universityThumbnailUrl(university: University): string {
+  const profile = UNIVERSITY_PROFILES[university.id];
+  if (profile?.thumbnail_url) return profile.thumbnail_url;
+  try {
+    return `${new URL(profile?.international_url ?? university.official_url).origin}/favicon.ico`;
+  } catch {
+    return university.official_url;
+  }
+}
+
+export function fieldLabel(field: Course["field"]): string {
+  return {
+    cs: "Computer science",
+    engineering: "Engineering",
+    business: "Business",
+    nursing: "Nursing",
+    design: "Design",
+    social_science: "Social science",
+    law: "Law",
+    medicine: "Medicine",
+    data_science: "Data science",
+  }[field];
+}
 
 /* ── Helpers ──────────────────────────────────────────────────────────── */
 

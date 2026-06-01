@@ -189,7 +189,7 @@ export function StudentQuickTabs({
         )}
 
         <Link
-          href="/dashboard#universities"
+          href="/universities"
           title="Open university shortlist"
           aria-current={active === "universities" ? "page" : undefined}
           className={tabClass(active === "universities")}
