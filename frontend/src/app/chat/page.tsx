@@ -71,7 +71,21 @@ interface CounselorCardMessage {
   handoff_target?: string | null;
 }
 
-type Message = UserMessage | AiMessage | CounselorMessage | UploadMessage | CounselorCardMessage;
+/* Inline "you should upload X" prompt that lives in the chat thread.
+ * Carries a concrete catalog slot (label, accept, sample) so the card can
+ * show a real preview and route the upload to the right doc_type. */
+interface UploadInviteMessage {
+  role: "upload_invite";
+  slotId: string;
+  slotLabel: string;
+  accept: string;
+  sampleSlug?: string;
+  whyOneLiner: string;
+  dismissed?: boolean;
+  uploaded?: boolean;
+}
+
+type Message = UserMessage | AiMessage | CounselorMessage | UploadMessage | CounselorCardMessage | UploadInviteMessage;
 
 /* ── Question launcher (empty state) + suggestion starters ─────────── */
 
@@ -610,6 +624,44 @@ function inferUploadLabel(response: ChatResponse): string {
   if (/bank|financ|sponsor|fund/.test(answer)) return "financial documents";
   if (/sop|statement of purpose/.test(answer)) return "SOP draft";
   return "documents";
+}
+
+/* Pick the catalog slot that best fits the AI's upload nudge so the inline
+ * card can show a real sample preview + route the upload to the right
+ * doc_type. Returns null if nothing matches confidently (caller should fall
+ * back to the generic upload pill instead of inventing a slot). */
+function inferUploadSlot(response: ChatResponse): UploadInviteMessage | null {
+  const answer = (response.answer ?? response.clarifying_question ?? "").toLowerCase();
+  const patterns: Array<{ re: RegExp; id: string; why: string }> = [
+    { re: /transcript|marksheet|mark.?sheet|grade.?sheet/, id: "grade_sheet",
+      why: "I'll check your GPA against the courses you're considering." },
+    { re: /\bielts\b|\bpte\b|\btoefl\b|english.?test/, id: "ielts",
+      why: "I'll confirm your scores meet each university's minimums." },
+    { re: /\bsop\b|statement of purpose|personal statement/, id: "sop",
+      why: "I'll review structure and tone, not rewrite it." },
+    { re: /recommendation|\blor\b/, id: "recommendation",
+      why: "I'll check it covers the right specifics." },
+    { re: /bank balance|bank statement|financ|sponsor|fund|cost of (study|living)/, id: "financial",
+      why: "I'll check your numbers cover the first year." },
+    { re: /passport/, id: "passport",
+      why: "I'll confirm the expiry date is far enough out." },
+    { re: /citizenship/, id: "citizenship",
+      why: "I'll match it against your other ID documents." },
+  ];
+  for (const { re, id, why } of patterns) {
+    if (!re.test(answer)) continue;
+    const slot = ESSENTIAL_SLOTS.find((s) => s.id === id);
+    if (!slot) continue;
+    return {
+      role: "upload_invite",
+      slotId: slot.id,
+      slotLabel: slot.label,
+      accept: slot.accept,
+      sampleSlug: slot.sampleSlug,
+      whyOneLiner: why,
+    };
+  }
+  return null;
 }
 
 /* ── Image compression ────────────────────────────────────────────── */
@@ -1167,6 +1219,100 @@ function ProfilePopup({
 
 /* ── Human counselor card (rendered inside chat) ──────────────────── */
 
+/* Inline "share your X" invite that lives in the chat thread. Renders a
+ * small sample thumbnail (when the catalog has one) + a one-line "why",
+ * and a single primary action that opens the file picker. The picked file
+ * is routed to the matching catalog doc_type via the parent.
+ *
+ * Three states: invite (default) → done (uploaded) → dismissed (hidden). */
+function UploadInviteCard({
+  msg,
+  studentId,
+  onPick,
+  onDismiss,
+}: {
+  msg: UploadInviteMessage;
+  studentId: string;
+  onPick: (msg: UploadInviteMessage, file: File) => void;
+  onDismiss: (msg: UploadInviteMessage) => void;
+}) {
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  if (msg.dismissed) return null;
+  const sampleSrc = msg.sampleSlug ? `/samples/${msg.sampleSlug}/page-01.webp` : null;
+
+  if (msg.uploaded) {
+    return (
+      <div className="chat-upload-invite is-done">
+        <span className="chat-upload-invite-tick"><CheckCircleIcon /></span>
+        <span className="chat-upload-invite-done-text">
+          {msg.slotLabel} on file — I&apos;ll reference it in the next answer.
+        </span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="chat-upload-invite">
+      <div className="chat-upload-invite-head">
+        <span className="chat-upload-invite-eyebrow">Suggested next step</span>
+        <button
+          type="button"
+          onClick={() => onDismiss(msg)}
+          aria-label="Dismiss"
+          className="chat-upload-invite-close"
+        >
+          <CloseIcon />
+        </button>
+      </div>
+
+      <div className="chat-upload-invite-body">
+        {sampleSrc && (
+          <div className="chat-upload-invite-sample">
+            <img src={sampleSrc} alt="" aria-hidden loading="lazy" />
+          </div>
+        )}
+        <div className="chat-upload-invite-copy">
+          <p className="chat-upload-invite-title">
+            Upload your {msg.slotLabel.toLowerCase()}
+          </p>
+          <p className="chat-upload-invite-why">{msg.whyOneLiner}</p>
+        </div>
+      </div>
+
+      <div className="chat-upload-invite-actions">
+        <button
+          type="button"
+          onClick={() => inputRef.current?.click()}
+          disabled={!studentId}
+          className="chat-upload-invite-primary"
+        >
+          <svg viewBox="0 0 16 16" className="h-3.5 w-3.5 shrink-0" fill="none">
+            <path d="M8 11V3m0 0L5 6m3-3 3 3M3 13h10" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          Upload {msg.slotLabel.toLowerCase()}
+        </button>
+        {sampleSrc && (
+          <Link href={`/chat/documents#${msg.slotId}`} className="chat-upload-invite-link">
+            View full sample
+          </Link>
+        )}
+      </div>
+
+      <input
+        ref={inputRef}
+        type="file"
+        accept={msg.accept}
+        className="hidden"
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (file) onPick(msg, file);
+          e.target.value = "";
+        }}
+      />
+    </div>
+  );
+}
+
 function CounselorCard({
   consented,
   onGrant,
@@ -1411,9 +1557,24 @@ export default function ChatPage() {
         ...h,
         { id: res.request_id || `local-ai-${Date.now()}`, role: "assistant", content: res.answer || "", eval_decision: res.decision, created_at: new Date().toISOString() },
       ]);
-      // When the AI nudges an upload, surface a clean popup (once, not while panel open).
+      // When the AI nudges an upload, surface a clean inline invite (once, not
+      // while panel open). Only when we can map the nudge to a concrete catalog
+      // slot — otherwise we fall through to the legacy modal so generic nudges
+      // still nudge.
       if (answerWantsUpload(res) && !docPanelOpen) {
-        setUploadPrompt({ label: inferUploadLabel(res) });
+        const invite = inferUploadSlot(res);
+        if (invite) {
+          setMessages((m) => {
+            // De-dupe: don't stack two invites for the same slot in a row.
+            const tail = m[m.length - 1];
+            if (tail && tail.role === "upload_invite" && tail.slotId === invite.slotId && !tail.dismissed) {
+              return m;
+            }
+            return [...m, invite];
+          });
+        } else {
+          setUploadPrompt({ label: inferUploadLabel(res) });
+        }
       }
       // Counsellor offer: backend is now authoritative (offer_counselor field).
       // Only show once per session and only when not already consented.
@@ -1514,6 +1675,40 @@ export default function ChatPage() {
       setUploadingSlot(null);
     }
   }, [studentId, refreshDocuments]);
+
+  /* Inline UploadInviteCard pick: reuses the same sidebar upload path so the
+   * file gets tagged with the right doc_type, then flips the invite to its
+   * "done" state in place (no extra pill — the invite IS the affordance). */
+  const handleInvitePick = useCallback(async (invite: UploadInviteMessage, file: File) => {
+    if (!studentId) return;
+    let fileToUpload = file;
+    try {
+      if (isImageFile(file)) fileToUpload = await compressImage(file);
+      const res = await uploadFile(studentId, fileToUpload, invite.slotId, file.name);
+      const document = res.document;
+      if (document) {
+        setDocuments((docs) => [document, ...docs.filter((d) => d.doc_id !== document.doc_id)]);
+      } else {
+        refreshDocuments(studentId).catch(() => {});
+      }
+      setMessages((m) => m.map((msg) =>
+        msg.role === "upload_invite" && msg.slotId === invite.slotId && !msg.uploaded
+          ? { ...msg, uploaded: true }
+          : msg,
+      ));
+    } catch (err: unknown) {
+      const errMsg = err instanceof Error ? err.message : "Upload failed.";
+      setMessages((m) => [...m, { role: "upload", status: "error" as const, filename: file.name, text: `Upload failed: ${errMsg}`, docType: invite.slotId }]);
+    }
+  }, [studentId, refreshDocuments]);
+
+  const handleInviteDismiss = useCallback((invite: UploadInviteMessage) => {
+    setMessages((m) => m.map((msg) =>
+      msg.role === "upload_invite" && msg.slotId === invite.slotId && !msg.dismissed
+        ? { ...msg, dismissed: true }
+        : msg,
+    ));
+  }, []);
 
   async function grantCounselorCall() {
     if (phoneRequired) {
@@ -1830,6 +2025,15 @@ export default function ChatPage() {
                     <div key={i} className="chat-row chat-row-ai" style={{ animationDelay: "0.04s" }}>
                       <AiAvatar />
                       <CounselorCard consented={callConsented} onGrant={grantCounselorCall} reason={msg.reason ?? (msg.auto ? "sequence" : undefined)} handoff_target={msg.handoff_target} />
+                    </div>
+                  );
+                }
+                if (msg.role === "upload_invite") {
+                  if (msg.dismissed) return null;
+                  return (
+                    <div key={i} className="chat-row chat-row-ai" style={{ animationDelay: "0.04s" }}>
+                      <AiAvatar />
+                      <UploadInviteCard msg={msg} studentId={studentId} onPick={handleInvitePick} onDismiss={handleInviteDismiss} />
                     </div>
                   );
                 }

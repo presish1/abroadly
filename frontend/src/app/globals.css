@@ -610,6 +610,189 @@ body {
   border: 1px solid #E8E5DD;
 }
 
+/* ── Inline upload-invite card (lives in the chat thread) ─────────── */
+
+.chat-upload-invite {
+  width: min(440px, 100%);
+  border: 1px solid #E8E5DD;
+  background: #FFFFFF;
+  border-radius: 14px;
+  padding: 12px 14px 13px;
+  box-shadow: 0 1px 0 rgba(16, 24, 40, 0.02);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.chat-upload-invite-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.chat-upload-invite-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #0A6E45;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.chat-upload-invite-eyebrow::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #0A6E45;
+}
+
+.chat-upload-invite-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 7px;
+  color: #8A847B;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.chat-upload-invite-close:hover {
+  background: #F1F0EC;
+  color: #1B1916;
+}
+
+.chat-upload-invite-body {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+}
+
+.chat-upload-invite-sample {
+  flex-shrink: 0;
+  width: 78px;
+  height: 96px;
+  border-radius: 9px;
+  overflow: hidden;
+  background: #FAF9F6;
+  border: 1px solid #E8E5DD;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+}
+
+.chat-upload-invite-sample img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+}
+
+.chat-upload-invite-copy {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.chat-upload-invite-title {
+  color: #1B1916;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: -0.005em;
+  line-height: 1.25;
+}
+
+.chat-upload-invite-why {
+  margin-top: 4px;
+  color: #6B655C;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.chat-upload-invite-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 4px;
+}
+
+.chat-upload-invite-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 9px;
+  background: #0A6E45;
+  color: #FFFFFF;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: -0.005em;
+  box-shadow: 0 6px 14px rgba(10, 110, 69, 0.18);
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.chat-upload-invite-primary:hover {
+  background: #075B39;
+  transform: translateY(-1px);
+}
+
+.chat-upload-invite-primary:disabled {
+  background: #BDC3BC;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.chat-upload-invite-link {
+  color: #3F3A33;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(63, 58, 51, 0.3);
+  transition: color 0.15s ease;
+}
+
+.chat-upload-invite-link:hover {
+  color: #0A6E45;
+  text-decoration-color: #0A6E45;
+}
+
+/* Done state — settled emerald chip, no more action buttons */
+.chat-upload-invite.is-done {
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: #ECF5EF;
+  border-color: #D5EADD;
+  width: auto;
+  max-width: 440px;
+}
+
+.chat-upload-invite-tick {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: #0A6E45;
+  color: #FFFFFF;
+}
+
+.chat-upload-invite-done-text {
+  color: #0A6E45;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  line-height: 1.45;
+}
+
 /* ── Upload pills ──────────────────────────────────────────────────── */
 
 .chat-upload-pill {
