@@ -13,14 +13,18 @@ from __future__ import annotations
 import uuid
 from datetime import datetime
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
+from slowapi.errors import RateLimitExceeded
 from sqlalchemy import bindparam, select, text
 from sqlalchemy.dialects.postgresql import JSONB as SAJsonb
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
 from app.core.db import get_session
+from app.core.limiter import limiter, _get_ip_and_student
+from app.core.throttle import is_cooling_down, record_over_limit, should_flag_for_admin
 from app.eval import policies
 from app.eval.evaluator import default_evaluator
 from app.eval.types import Decision, EvalDecision
@@ -171,10 +175,25 @@ async def _persist_turn(
 
 
 @router.post("", response_model=ChatResponse)
+@limiter.limit(settings.rate_limit_chat_ip)
+@limiter.limit(settings.rate_limit_chat_student, key_func=_get_ip_and_student)
 async def chat_endpoint(
+    request: Request,
     req: ChatRequest,
     db: AsyncSession = Depends(get_session),
 ) -> ChatResponse:
+    # --- Tier 2 cooldown check (before any LLM/DB work) ---
+    _client_ip = request.headers.get("X-Forwarded-For", "").split(",")[0].strip() or str(request.client.host)
+    if is_cooling_down(_client_ip) or is_cooling_down(req.student_id):
+        return JSONResponse(
+            status_code=429,
+            content={"detail": "Too many requests. Please wait before trying again."},
+            headers={"Retry-After": str(settings.throttle_cooldown_s)},
+        )
+
+    # Store student_id on request.state so the composite key_func can read it.
+    request.state.student_id = req.student_id
+
     request_id = str(uuid.uuid4())
     trace_id = req.trace_id or str(uuid.uuid4())
 

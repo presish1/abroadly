@@ -42,6 +42,16 @@ class Settings(BaseSettings):
     # qeval feature flags
     qeval_use_llm: bool = True  # set QEVAL_USE_LLM=false to kill-switch the Groq eval call
 
+    # Rate limiting (slowapi; per-IP and per-(IP+student) on /chat; /upload separate)
+    rate_limit_chat_ip: str = "40/minute"
+    rate_limit_chat_student: str = "20/minute"
+    rate_limit_upload: str = "10/minute"
+
+    # Throttle escalation (in-memory; acceptable for single-VPS; noted seam for Redis)
+    throttle_burst_window_s: int = 600      # rolling window to count over-limit events (10 min)
+    throttle_cooldown_s: int = 900          # Tier 2 cooldown duration (15 min)
+    throttle_flag_threshold: int = 5        # over-limit bursts before Tier 3 admin flag
+
     # Counselor handoff — "prisma" (default) or "partner" (changes frontend label/CTA only).
     # Future seam: make this a persisted runtime setting (like ai_globally_paused)
     # so an admin can toggle it without a redeploy.
