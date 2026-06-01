@@ -143,28 +143,22 @@ END $$;
 """
 
 # --- Lead qualification columns on students ---
-_ADD_LEAD_COLUMNS = """
-ALTER TABLE students ADD COLUMN IF NOT EXISTS lead_score INT DEFAULT 0;
-ALTER TABLE students ADD COLUMN IF NOT EXISTS lead_strong_count INT DEFAULT 0;
-ALTER TABLE students ADD COLUMN IF NOT EXISTS lead_good_count INT DEFAULT 0;
-ALTER TABLE students ADD COLUMN IF NOT EXISTS lead_standard_count INT DEFAULT 0;
-ALTER TABLE students ADD COLUMN IF NOT EXISTS lead_status TEXT DEFAULT 'new';
-ALTER TABLE students ADD COLUMN IF NOT EXISTS qualified_at TIMESTAMPTZ;
-"""
+_ADD_LEAD_SCORE = "ALTER TABLE students ADD COLUMN IF NOT EXISTS lead_score INT DEFAULT 0;"
+_ADD_LEAD_STRONG = "ALTER TABLE students ADD COLUMN IF NOT EXISTS lead_strong_count INT DEFAULT 0;"
+_ADD_LEAD_GOOD = "ALTER TABLE students ADD COLUMN IF NOT EXISTS lead_good_count INT DEFAULT 0;"
+_ADD_LEAD_STANDARD = "ALTER TABLE students ADD COLUMN IF NOT EXISTS lead_standard_count INT DEFAULT 0;"
+_ADD_LEAD_STATUS = "ALTER TABLE students ADD COLUMN IF NOT EXISTS lead_status TEXT DEFAULT 'new';"
+_ADD_QUALIFIED_AT = "ALTER TABLE students ADD COLUMN IF NOT EXISTS qualified_at TIMESTAMPTZ;"
 
-_ADD_ABUSE_FLAGGED = """
-ALTER TABLE students ADD COLUMN IF NOT EXISTS abuse_flagged BOOLEAN DEFAULT FALSE;
-"""
+_ADD_ABUSE_FLAGGED = "ALTER TABLE students ADD COLUMN IF NOT EXISTS abuse_flagged BOOLEAN DEFAULT FALSE;"
 
 # --- qeval verdict + observability columns on chat_audit ---
-_ADD_CHAT_AUDIT_QEVAL = """
-ALTER TABLE chat_audit ADD COLUMN IF NOT EXISTS qeval_action TEXT;
-ALTER TABLE chat_audit ADD COLUMN IF NOT EXISTS qeval_length TEXT;
-ALTER TABLE chat_audit ADD COLUMN IF NOT EXISTS qeval_lead_signal TEXT;
-ALTER TABLE chat_audit ADD COLUMN IF NOT EXISTS qeval_source TEXT;
-ALTER TABLE chat_audit ADD COLUMN IF NOT EXISTS latency_ms INT;
-ALTER TABLE chat_audit ADD COLUMN IF NOT EXISTS provider TEXT;
-"""
+_ADD_QEVAL_ACTION = "ALTER TABLE chat_audit ADD COLUMN IF NOT EXISTS qeval_action TEXT;"
+_ADD_QEVAL_LENGTH = "ALTER TABLE chat_audit ADD COLUMN IF NOT EXISTS qeval_length TEXT;"
+_ADD_QEVAL_LEAD_SIGNAL = "ALTER TABLE chat_audit ADD COLUMN IF NOT EXISTS qeval_lead_signal TEXT;"
+_ADD_QEVAL_SOURCE = "ALTER TABLE chat_audit ADD COLUMN IF NOT EXISTS qeval_source TEXT;"
+_ADD_LATENCY_MS = "ALTER TABLE chat_audit ADD COLUMN IF NOT EXISTS latency_ms INT;"
+_ADD_PROVIDER = "ALTER TABLE chat_audit ADD COLUMN IF NOT EXISTS provider TEXT;"
 
 
 async def create_tables() -> None:
@@ -182,6 +176,16 @@ async def create_tables() -> None:
         await conn.execute(text(_BACKFILL_PROFILE_COMPLETED))
         await conn.execute(text(_SET_PROFILE_COMPLETED_DEFAULT))
         await conn.execute(text(_FIX_ROLE_CONSTRAINT))
-        await conn.execute(text(_ADD_LEAD_COLUMNS))
+        await conn.execute(text(_ADD_LEAD_SCORE))
+        await conn.execute(text(_ADD_LEAD_STRONG))
+        await conn.execute(text(_ADD_LEAD_GOOD))
+        await conn.execute(text(_ADD_LEAD_STANDARD))
+        await conn.execute(text(_ADD_LEAD_STATUS))
+        await conn.execute(text(_ADD_QUALIFIED_AT))
         await conn.execute(text(_ADD_ABUSE_FLAGGED))
-        await conn.execute(text(_ADD_CHAT_AUDIT_QEVAL))
+        await conn.execute(text(_ADD_QEVAL_ACTION))
+        await conn.execute(text(_ADD_QEVAL_LENGTH))
+        await conn.execute(text(_ADD_QEVAL_LEAD_SIGNAL))
+        await conn.execute(text(_ADD_QEVAL_SOURCE))
+        await conn.execute(text(_ADD_LATENCY_MS))
+        await conn.execute(text(_ADD_PROVIDER))
