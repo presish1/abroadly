@@ -232,6 +232,14 @@ function DocumentCard({
 
   const openPicker = () => inputRef.current?.click();
   const thumb = uploaded?.is_image ? getStudentDocumentDownloadUrl(studentId, uploaded.doc_id) : null;
+  const tint = [
+    "linear-gradient(135deg,#E8F0FB,#D6E6F7)",
+    "linear-gradient(135deg,#E3F5EC,#CFEEDD)",
+    "linear-gradient(135deg,#FBF1DF,#F6E6C8)",
+    "linear-gradient(135deg,#F0EBFA,#E2D8F4)",
+    "linear-gradient(135deg,#E0F3F1,#CCEAE6)",
+    "linear-gradient(135deg,#FBEAEC,#F6D7DC)",
+  ][slot.id.split("").reduce((a, c) => a + c.charCodeAt(0), 0) % 6];
 
   return (
     <div
@@ -240,6 +248,18 @@ function DocumentCard({
       onDragLeave={() => setDragOver(false)}
       onDrop={(e) => { e.preventDefault(); setDragOver(false); const f = e.dataTransfer.files[0]; if (f) onFile(f); }}
     >
+      <button type="button" onClick={uploaded ? undefined : openPicker} disabled={isBusy} className="relative mb-3 flex h-[84px] w-full items-center justify-center overflow-hidden rounded-xl" style={{ background: tint }}>
+        {thumb ? (
+          <img src={thumb} alt="" aria-hidden className="h-full w-full object-cover" />
+        ) : (
+          <div className="flex h-[52px] w-[40px] flex-col items-center justify-center gap-[5px] rounded-md bg-white shadow-[0_3px_10px_rgba(0,0,0,0.12)]">
+            <span className="text-[17px] leading-none">📄</span>
+            <span className="h-[3px] w-6 rounded-full bg-[#C9C3B8]" />
+            <span className="h-[3px] w-4 rounded-full bg-[#D8D3C8]" />
+          </div>
+        )}
+        <span className={`absolute right-2 top-2 rounded-full px-1.5 py-[2px] text-[9px] font-bold ${uploaded ? "bg-[#0A6E45] text-white" : "bg-white/85 text-[#6B655C]"}`}>{uploaded ? "✓ Done" : "Needed"}</span>
+      </button>
       <button type="button" onClick={uploaded ? undefined : openPicker} className="docs-card-button" disabled={isBusy}>
         <div className="docs-card-status" aria-hidden>
           {isBusy ? (
@@ -263,9 +283,6 @@ function DocumentCard({
           )}
         </div>
 
-        {thumb && (
-          <img src={thumb} alt="" aria-hidden className="docs-card-thumb" />
-        )}
       </button>
 
       <div className="docs-card-actions">
@@ -280,7 +297,7 @@ function DocumentCard({
           </button>
         ) : (
           !isBusy && (
-            <button type="button" onClick={openPicker} className="ab-focus docs-card-link is-primary">
+            <button type="button" onClick={openPicker} className="ab-focus inline-flex items-center gap-1 rounded-lg bg-[#0A6E45] px-3 py-1.5 text-[12px] font-bold text-white transition-colors hover:bg-[#075B39]">
               Upload <Icon.arrowRight />
             </button>
           )
