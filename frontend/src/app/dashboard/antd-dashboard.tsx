@@ -332,47 +332,67 @@ export function AntdDashboard({ student, documents, activeCountry, countries, on
                 <Table rowKey="id" columns={uniColumns} dataSource={unis} pagination={false} size="middle" style={{ marginTop: 12 }} />
               </Panel>
 
-              {/* documents | timeline */}
-              <div className="grid gap-5 lg:grid-cols-2">
-                <Panel eyebrow="Documents" title="Your file" bodyPad={0}
-                  extra={<span className="text-[12px] font-semibold text-[#6B655C]">{docCount}/{DOC_SLOTS.length}</span>}>
-                  <div className="px-[18px] pb-1 pt-3">
-                    <Progress percent={Math.round((docCount / DOC_SLOTS.length) * 100)} strokeColor="#0A6E45" trailColor="#EFECE4" showInfo={false} size={["100%", 6]} />
-                  </div>
-                  <List
-                    dataSource={DOC_SLOTS}
-                    renderItem={(slot) => {
-                      const up = docTypes.has(slot.id);
-                      return (
-                        <List.Item style={{ padding: "10px 18px" }} actions={[<Tag key="s" color={up ? "green" : "default"} style={{ marginInlineEnd: 0 }}>{up ? "Done" : "Pending"}</Tag>]}>
-                          <List.Item.Meta
-                            avatar={<span className={`flex h-5 w-5 items-center justify-center rounded-full ${up ? "bg-[#0A6E45] text-white" : "border border-[#D1CABD] bg-white"}`}>{up && <svg viewBox="0 0 12 12" className="h-3 w-3" fill="none"><path d="M3 6.5l2 2 4-4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>}</span>}
-                            title={<span className={`text-[13px] ${up ? "font-semibold text-[#1B1916]" : "text-[#3F3A33]"}`}>{slot.label}</span>}
-                            description={<span className="text-[11px] text-[#8A847B]">{slot.hint}</span>}
-                          />
-                        </List.Item>
-                      );
-                    }}
-                  />
-                </Panel>
-
-                <Panel eyebrow={`Formalities · ${country.name}`} title={`Timeline to ${intake.label}`}>
-                  <Timeline
-                    items={[...country.timeline]
-                      .sort((a, b) => (intake.date.getFullYear() + a.yearOffset) * 12 + a.monthIdx - ((intake.date.getFullYear() + b.yearOffset) * 12 + b.monthIdx))
-                      .map((e) => ({
-                        color: timelineColor[e.kind] ?? "#A8A29A",
-                        children: (
-                          <div>
-                            <p className="text-[10.5px] font-bold uppercase tracking-[0.05em] text-[#8A847B]">{MONTHS[e.monthIdx]} {intake.date.getFullYear() + e.yearOffset}</p>
-                            <p className="text-[13px] font-bold tracking-[-0.01em] text-[#1B1916]">{e.title}</p>
-                            <p className="text-[12px] leading-[1.5] text-[#6B655C]">{e.detail}</p>
+              {/* documents — profile-style cards with a sample preview + clear upload */}
+              <Panel eyebrow="Documents" title="Your application file" bodyPad={18}
+                extra={<span className="text-[12px] font-semibold text-[#6B655C]">{docCount}/{DOC_SLOTS.length} ready</span>}>
+                <div className="mb-4">
+                  <Progress percent={Math.round((docCount / DOC_SLOTS.length) * 100)} strokeColor="#0A6E45" trailColor="#EFECE4" showInfo={false} />
+                </div>
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+                  {DOC_SLOTS.map((slot) => {
+                    const up = docTypes.has(slot.id);
+                    const META: Record<string, { emoji: string; tint: string; bar: string }> = {
+                      grade_sheet: { emoji: "\u{1F4CA}", tint: "linear-gradient(135deg,#E8F0FB,#D6E6F7)", bar: "#3B6FB0" },
+                      passport: { emoji: "\u{1F6C2}", tint: "linear-gradient(135deg,#E1E7F4,#D0DAEF)", bar: "#1F3D78" },
+                      ielts: { emoji: "\u{1F5E3}\u{FE0F}", tint: "linear-gradient(135deg,#FBF1DF,#F6E6C8)", bar: "#B8860B" },
+                      sop: { emoji: "\u{270D}\u{FE0F}", tint: "linear-gradient(135deg,#E3F5EC,#CFEEDD)", bar: "#0A6E45" },
+                      recommendation: { emoji: "\u{2709}\u{FE0F}", tint: "linear-gradient(135deg,#F0EBFA,#E2D8F4)", bar: "#6E4FB0" },
+                      financial: { emoji: "\u{1F3E6}", tint: "linear-gradient(135deg,#E0F3F1,#CCEAE6)", bar: "#0E8C7E" },
+                      other: { emoji: "\u{1F5C2}\u{FE0F}", tint: "linear-gradient(135deg,#F1EFEA,#E6E2D9)", bar: "#8A847B" },
+                    };
+                    const m = META[slot.id] ?? META.other;
+                    return (
+                      <div key={slot.id} className="group flex flex-col overflow-hidden rounded-2xl border border-[#E8E5DD] bg-white transition hover:-translate-y-0.5 hover:border-[#0A6E45]/40 hover:shadow-[0_12px_26px_-14px_rgba(27,25,22,0.25)]">
+                        <div className="relative flex h-[104px] items-center justify-center" style={{ background: m.tint }}>
+                          <div className="flex h-[62px] w-[48px] flex-col items-center justify-center gap-[5px] rounded-md bg-white/95 shadow-[0_4px_12px_rgba(0,0,0,0.14)]">
+                            <span className="text-[20px] leading-none">{m.emoji}</span>
+                            <span className="h-[3px] w-7 rounded-full" style={{ background: m.bar }} />
+                            <span className="h-[3px] w-5 rounded-full" style={{ background: m.bar, opacity: 0.55 }} />
                           </div>
-                        ),
-                      }))}
-                  />
-                </Panel>
-              </div>
+                          <span className={`absolute right-2 top-2 rounded-full px-2 py-[3px] text-[10px] font-bold ${up ? "bg-[#0A6E45] text-white" : "bg-white/85 text-[#6B655C]"}`}>
+                            {up ? "✓ Done" : "Needed"}
+                          </span>
+                        </div>
+                        <div className="flex flex-1 flex-col p-3">
+                          <p className="text-[12.5px] font-bold leading-[1.25] tracking-[-0.01em] text-[#1B1916]">{slot.label}</p>
+                          <p className="mt-0.5 flex-1 text-[10.5px] leading-[1.4] text-[#8A847B]">{slot.hint}</p>
+                          <Link href="/chat?docs=open" className="mt-2.5 block">
+                            <Button block type={up ? "default" : "primary"} size="small">{up ? "View / replace" : "Upload"}</Button>
+                          </Link>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </Panel>
+
+              {/* formalities timeline — full width */}
+              <Panel eyebrow={`Formalities · ${country.name}`} title={`Timeline to ${intake.label}`}>
+                <Timeline
+                  items={[...country.timeline]
+                    .sort((a, b) => (intake.date.getFullYear() + a.yearOffset) * 12 + a.monthIdx - ((intake.date.getFullYear() + b.yearOffset) * 12 + b.monthIdx))
+                    .map((e) => ({
+                      color: timelineColor[e.kind] ?? "#A8A29A",
+                      children: (
+                        <div>
+                          <p className="text-[10.5px] font-bold uppercase tracking-[0.05em] text-[#8A847B]">{MONTHS[e.monthIdx]} {intake.date.getFullYear() + e.yearOffset}</p>
+                          <p className="text-[13px] font-bold tracking-[-0.01em] text-[#1B1916]">{e.title}</p>
+                          <p className="text-[12px] leading-[1.5] text-[#6B655C]">{e.detail}</p>
+                        </div>
+                      ),
+                    }))}
+                />
+              </Panel>
 
               {/* scholarships | cost */}
               <div className="grid gap-5 lg:grid-cols-3">
