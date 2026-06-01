@@ -84,6 +84,12 @@ export interface ChatResponse {
   clarification_needed: boolean;
   sources: ChatSource[];
   reason: string;
+  // Backend-authoritative signals (all optional — old responses omit them safely)
+  answer_length?: "short" | "medium" | "long" | null;
+  offer_counselor?: boolean;
+  offer_reason?: "qualified" | "question" | null;
+  lead_status?: string | null;
+  handoff_target?: string | null;
 }
 
 export type ChatRole = "user" | "assistant" | "counselor";

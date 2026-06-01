@@ -64,10 +64,10 @@ interface UploadMessage {
 
 interface CounselorCardMessage {
   role: "counselor_card";
-  // Auto-injected after a few substantive turns, or after a question where
-  // a human review would be more useful than a longer AI answer.
+  // Driven by backend offer_counselor / offer_reason signal.
   auto?: boolean;
-  reason?: "question" | "sequence";
+  reason?: "question" | "qualified" | "sequence";
+  handoff_target?: string | null;
 }
 
 type Message = UserMessage | AiMessage | CounselorMessage | UploadMessage | CounselorCardMessage;
@@ -577,22 +577,6 @@ function inferUploadLabel(response: ChatResponse): string {
   if (/bank|financ|sponsor|fund/.test(answer)) return "financial documents";
   if (/sop|statement of purpose/.test(answer)) return "SOP draft";
   return "documents";
-}
-
-const COUNSELOR_HANDOFF_RE = /prisma can walk through|human counsell?or|real person|talk (?:with|to)|walk you through/i;
-const COUNSELOR_TOPIC_RE =
-  /\b(?:visa|gte|genuine student|sop|statement of purpose|financial|funds?|bank|sponsor|eligib|backlog|gap|refus|reject|offer letter|documents?|shortlist|universit|course|cost|budget|fees?|tuition|scholarship|intake)\b/i;
-const COUNSELOR_INTENT_RE =
-  /\b(?:help|confused|best|which|how|can i|eligible|review|check|suggest|recommend|compare|cost|fee|visa|apply|choose)\b/i;
-
-function shouldOfferCounselorForQuestion(question: string, response: ChatResponse): boolean {
-  const answer = response.answer ?? response.clarifying_question ?? "";
-  if (COUNSELOR_HANDOFF_RE.test(answer)) return true;
-  if (response.decision === "escalate") return true;
-  if (response.decision === "low_confidence" && question.trim().split(/\s+/).length >= 4) return true;
-
-  const q = question.toLowerCase();
-  return COUNSELOR_TOPIC_RE.test(q) && COUNSELOR_INTENT_RE.test(q) && q.length > 24;
 }
 
 /* ── Image compression ────────────────────────────────────────────── */
@@ -1172,14 +1156,22 @@ function CounselorCard({
   consented,
   onGrant,
   reason,
+  handoff_target,
 }: {
   consented: boolean;
   onGrant: () => void;
-  reason?: "question" | "sequence";
+  reason?: "question" | "qualified" | "sequence";
+  handoff_target?: string | null;
 }) {
-  const intro = reason === "question"
-    ? "This one depends on your exact profile and documents. Prisma can talk it through with you."
-    : "You've asked a few good questions. Want a real person to walk you through your options?";
+  const isPartner = handoff_target === "partner";
+  const counselorName = isPartner ? "our counsellor" : COUNSELOR.name.split(" ")[0];
+
+  const intro =
+    reason === "qualified"
+      ? "Based on your questions, you're ready for a personal walkthrough. A real person can take it from here."
+      : reason === "question"
+        ? "This one depends on your exact profile and documents. Prisma can talk it through with you."
+        : "You've asked a few good questions. Want a real person to walk you through your options?";
 
   return (
     <div className="counselor-card">
@@ -1212,12 +1204,12 @@ function CounselorCard({
       {consented ? (
         <div className="mt-3 flex items-center gap-2 rounded-xl bg-[#F2FBF6] border border-emerald-100 px-3.5 py-2.5 text-[12.5px] font-semibold text-emerald-700">
           <CheckCircleIcon />
-          <span>{COUNSELOR.name.split(" ")[0]} will reach out to call you soon.</span>
+          <span>{isPartner ? "A counsellor" : COUNSELOR.name.split(" ")[0]} will reach out to call you soon.</span>
         </div>
       ) : (
         <button type="button" onClick={onGrant} className="counselor-call-btn">
           <svg viewBox="0 0 20 20" className="h-4 w-4 shrink-0" fill="none"><path d="M4.5 3h3l1.2 3-1.6 1.2a9 9 0 0 0 4.7 4.7L13 10.3l3 1.2v3a1.5 1.5 0 0 1-1.6 1.5A12.5 12.5 0 0 1 3 4.6 1.5 1.5 0 0 1 4.5 3Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/></svg>
-          Allow {COUNSELOR.name.split(" ")[0]} to call me
+          Allow {counselorName} to call me
         </button>
       )}
       <p className="mt-2 text-[10.5px] text-[#A8A296]">Free · Abroadly&apos;s own counsellor · not a paid agent</p>
@@ -1345,9 +1337,8 @@ export default function ChatPage() {
   const [callConsented, setCallConsented] = useState(false);
   const [uploadingSlot, setUploadingSlot] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
-  // Counsellor auto-offer: after a few substantive Q&A turns, surface the card once.
+  // Counsellor offer: driven by backend offer_counselor signal; shown once per session.
   const counselorOffered = useRef(false);
-  const substantiveTurns = useRef(0);
   // Per-slot hidden inputs for the sidebar quick-upload checkboxes.
   const sidebarFileRefs = useRef<Record<string, HTMLInputElement | null>>({});
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -1505,18 +1496,19 @@ export default function ChatPage() {
       if (answerWantsUpload(res) && !docPanelOpen) {
         setUploadPrompt({ label: inferUploadLabel(res) });
       }
-      // Offer the human counsellor once: immediately for context-heavy questions,
-      // or after a few substantive turns if the student keeps exploring.
-      substantiveTurns.current += 1;
-      const counselorReason: CounselorCardMessage["reason"] | null =
-        shouldOfferCounselorForQuestion(text, res)
-          ? "question"
-          : substantiveTurns.current >= 3
-            ? "sequence"
-            : null;
-      if (!counselorOffered.current && counselorReason && !callConsented) {
+      // Counsellor offer: backend is now authoritative (offer_counselor field).
+      // Only show once per session and only when not already consented.
+      if (!counselorOffered.current && res.offer_counselor && !callConsented) {
         counselorOffered.current = true;
-        setMessages((m) => (m.length && m[m.length - 1].role === "counselor_card" ? m : [...m, { role: "counselor_card", reason: counselorReason, auto: counselorReason === "sequence" }]));
+        const cardReason: CounselorCardMessage["reason"] =
+          res.offer_reason === "question" ? "question"
+          : res.offer_reason === "qualified" ? "qualified"
+          : "sequence";
+        setMessages((m) =>
+          m.length && m[m.length - 1].role === "counselor_card"
+            ? m
+            : [...m, { role: "counselor_card", reason: cardReason, handoff_target: res.handoff_target }]
+        );
       }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Error contacting server.";
@@ -1918,7 +1910,7 @@ export default function ChatPage() {
                   return (
                     <div key={i} className="chat-row chat-row-ai" style={{ animationDelay: "0.04s" }}>
                       <AiAvatar />
-                      <CounselorCard consented={callConsented} onGrant={grantCounselorCall} reason={msg.reason ?? (msg.auto ? "sequence" : undefined)} />
+                      <CounselorCard consented={callConsented} onGrant={grantCounselorCall} reason={msg.reason ?? (msg.auto ? "sequence" : undefined)} handoff_target={msg.handoff_target} />
                     </div>
                   );
                 }
