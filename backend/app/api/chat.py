@@ -280,6 +280,7 @@ async def chat_endpoint(
             student=student,
             history=history,
             mode="full",
+            length=verdict.length.value,
         )
         return await _finalize(ChatResponse(**base, answer=answer, sources=sources))
 
@@ -305,6 +306,7 @@ async def chat_endpoint(
                 student=student,
                 history=history,
                 mode="partial",
+                length=verdict.length.value,
             )
             return await _finalize(ChatResponse(**base, answer=answer, sources=sources))
         # Truly cold, contextless one-word opener — a sharp clarifier is best.

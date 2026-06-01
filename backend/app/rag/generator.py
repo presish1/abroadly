@@ -89,12 +89,36 @@ def _clean_response(text: str) -> str:
     return text.strip()
 
 
+# Words at which a "short" answer is egregiously over-budget and gets trimmed.
+_SHORT_TRIM_THRESHOLD = 80
+
+
+def _enforce_length(text: str, length: str) -> str:
+    """Deterministic post-gen guard — no LLM.
+
+    Only acts on `short` answers that are way over the 1-2 sentence budget;
+    `medium` and `long` are capped at generation time via LENGTH_MAX_TOKENS.
+    """
+    # SEAM: low-confidence LLM answer-eval — if we later want to validate
+    # factual correctness for uncertain answers before returning, add that call
+    # here (gated on qeval verdict.quality == "low" or confidence below threshold).
+    if length != "short":
+        return text
+    words = text.split()
+    if len(words) <= _SHORT_TRIM_THRESHOLD:
+        return text
+    # Trim to first 2 sentences to stay within the short budget.
+    sentences = re.split(r"(?<=[.!?])\s+", text)
+    return (" ".join(sentences[:2])).strip() or text
+
+
 async def generate_answer(
     query: str,
     retrieved: RetrievedSet,
     student: dict,
     history: ChatHistory | None = None,
     mode: str = "full",
+    length: str = "medium",
 ) -> str:
     system = _load_system_prompt()
     context = _format_context(retrieved)
@@ -106,5 +130,7 @@ async def generate_answer(
         query=query,
         history=history,
         mode=mode,
+        length=length,
     )
-    return _clean_response(answer)
+    answer = _clean_response(answer)
+    return _enforce_length(answer, length)
