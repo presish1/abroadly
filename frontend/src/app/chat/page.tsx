@@ -628,24 +628,31 @@ function inferUploadLabel(response: ChatResponse): string {
 
 /* Pick the catalog slot that best fits the AI's upload nudge so the inline
  * card can show a real sample preview + route the upload to the right
- * doc_type. Returns null if nothing matches confidently (caller should fall
- * back to the generic upload pill instead of inventing a slot). */
+ * doc_type. Returns null when the AI didn't actually nudge an upload — to
+ * trigger, the prose has to mention BOTH an upload-intent verb (upload /
+ * share / send / provide / attach / submit) AND a recognisable doc type.
+ * This keeps the card on-point: it never fires on a passing mention. */
 function inferUploadSlot(response: ChatResponse): UploadInviteMessage | null {
   const answer = (response.answer ?? response.clarifying_question ?? "").toLowerCase();
+  // Cheap gate first — no upload verb anywhere, no card. Generous list so
+  // the AI's natural wording usually trips it.
+  const UPLOAD_VERB = /\b(upload|share|send|provide|attach|submit|drop|give us|let me see|i can see|i'?ll need|i would need|need to see|need a copy|copy of (?:your |the )?[a-z])\b/;
+  if (!UPLOAD_VERB.test(answer)) return null;
+
   const patterns: Array<{ re: RegExp; id: string; why: string }> = [
-    { re: /transcript|marksheet|mark.?sheet|grade.?sheet/, id: "grade_sheet",
+    { re: /\b(transcript|marksheet|mark.?sheet|grade.?sheet|academic record|\+2 (?:mark|result|grade))\b/, id: "grade_sheet",
       why: "I'll check your GPA against the courses you're considering." },
-    { re: /\bielts\b|\bpte\b|\btoefl\b|english.?test/, id: "ielts",
+    { re: /\b(ielts|pte|toefl|english test|english (?:proficiency|score))\b/, id: "ielts",
       why: "I'll confirm your scores meet each university's minimums." },
-    { re: /\bsop\b|statement of purpose|personal statement/, id: "sop",
+    { re: /\b(sop|statement of purpose|personal statement)\b/, id: "sop",
       why: "I'll review structure and tone, not rewrite it." },
-    { re: /recommendation|\blor\b/, id: "recommendation",
+    { re: /\b(recommendation letter|recommendation|reference letter|\blor\b)/, id: "recommendation",
       why: "I'll check it covers the right specifics." },
-    { re: /bank balance|bank statement|financ|sponsor|fund|cost of (study|living)/, id: "financial",
+    { re: /\b(bank balance|bank statement|financial (?:doc|statement|proof)|sponsor (?:doc|letter)|proof of fund|funding (?:doc|letter|proof))\b/, id: "financial",
       why: "I'll check your numbers cover the first year." },
-    { re: /passport/, id: "passport",
+    { re: /\b(passport|bio.?data page)\b/, id: "passport",
       why: "I'll confirm the expiry date is far enough out." },
-    { re: /citizenship/, id: "citizenship",
+    { re: /\b(citizenship card|nepali citizenship|citizenship certificate)\b/, id: "citizenship",
       why: "I'll match it against your other ID documents." },
   ];
   for (const { re, id, why } of patterns) {
@@ -1557,28 +1564,45 @@ export default function ChatPage() {
         ...h,
         { id: res.request_id || `local-ai-${Date.now()}`, role: "assistant", content: res.answer || "", eval_decision: res.decision, created_at: new Date().toISOString() },
       ]);
-      // When the AI nudges an upload, surface a clean inline invite (once, not
-      // while panel open). Only when we can map the nudge to a concrete catalog
-      // slot — otherwise we fall through to the legacy modal so generic nudges
-      // still nudge.
-      if (answerWantsUpload(res) && !docPanelOpen) {
+      // Inline upload invite: trigger when the AI's prose contains BOTH an
+      // upload-intent verb AND a recognisable doc type (see inferUploadSlot).
+      // Two cooldown rules keep it from being noisy:
+      //   1) same slot can't reappear within the last 6 messages
+      //   2) at most ONE active (not-dismissed, not-done) invite at a time
+      if (!docPanelOpen) {
         const invite = inferUploadSlot(res);
         if (invite) {
           setMessages((m) => {
-            // De-dupe: don't stack two invites for the same slot in a row.
-            const tail = m[m.length - 1];
-            if (tail && tail.role === "upload_invite" && tail.slotId === invite.slotId && !tail.dismissed) {
-              return m;
-            }
+            const recent = m.slice(-6);
+            const sameSlotRecent = recent.some(
+              (x) => x.role === "upload_invite" && x.slotId === invite.slotId,
+            );
+            const anyActiveInvite = m.some(
+              (x) => x.role === "upload_invite" && !x.dismissed && !x.uploaded,
+            );
+            if (sameSlotRecent || anyActiveInvite) return m;
             return [...m, invite];
           });
-        } else {
+        } else if (answerWantsUpload(res)) {
+          // The AI's structured action block says "upload something" but we
+          // couldn't pin a slot — fall back to the legacy generic modal.
           setUploadPrompt({ label: inferUploadLabel(res) });
         }
       }
-      // Counsellor offer: backend is now authoritative (offer_counselor field).
-      // Only show once per session and only when not already consented.
-      if (!counselorOffered.current && res.offer_counselor && !callConsented) {
+      // Counsellor offer: backend signal first (offer_counselor from PR #55),
+      // with a frontend safety-net so the card never gets stuck behind a
+      // backend that hasn't flipped the flag yet. Safety net fires after the
+      // student has had 5+ substantive turns (≥3 words OR a "?") — explicit
+      // turn count, never random. Either path shows the card once per
+      // session and only when not already consented.
+      const userTurnCount = chatHistory.filter((t) => {
+        if (t.role !== "user") return false;
+        const c = (t.content || "").trim();
+        return c.split(/\s+/).length >= 3 || /\?/.test(c);
+      }).length;
+      const backendSays = Boolean(res.offer_counselor);
+      const safetyNet = !backendSays && userTurnCount >= 5;
+      if (!counselorOffered.current && !callConsented && (backendSays || safetyNet)) {
         counselorOffered.current = true;
         const cardReason: CounselorCardMessage["reason"] =
           res.offer_reason === "question" ? "question"
