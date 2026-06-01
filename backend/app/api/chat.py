@@ -10,6 +10,8 @@ Every turn (user + assistant) is persisted to chat_turns for conversation memory
 """
 from __future__ import annotations
 
+import logging
+import time
 import uuid
 from datetime import datetime
 
@@ -24,6 +26,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.config import settings
 from app.core.db import get_session
 from app.core.limiter import limiter, _get_ip_and_student
+from app.core.metrics import increment as metric_inc
 from app.core.throttle import is_cooling_down, record_over_limit, should_flag_for_admin
 from app.eval import policies
 from app.eval.evaluator import default_evaluator
@@ -37,7 +40,15 @@ from app.rag.generator import generate_answer, _clean_title
 from app.rag.reranker import rerank
 from app.rag.retriever import retrieve
 
+log = logging.getLogger("abroadly.chat")
+
 router = APIRouter()
+
+
+def _ms(start: float) -> int:
+    """Elapsed milliseconds since `start` (from time.monotonic())."""
+    return int((time.monotonic() - start) * 1000)
+
 
 # How many prior turns to feed the LLM. Keeps the prompt small and the
 # token bill predictable; bump if conversations consistently outgrow it.
@@ -193,9 +204,12 @@ async def chat_endpoint(
 
     # Store student_id on request.state so the composite key_func can read it.
     request.state.student_id = req.student_id
+    metric_inc("chat_total")
 
     request_id = str(uuid.uuid4())
     trace_id = req.trace_id or str(uuid.uuid4())
+    _t0 = time.monotonic()
+    _stage_ms: dict[str, int] = {}
 
     # Load real student profile from PG
     try:
@@ -241,6 +255,12 @@ async def chat_endpoint(
     pf = qeval_rules.prefilter(req.message)
     if pf["is_profanity"] or pf["is_spam"]:
         reason_key = "profanity" if pf["is_profanity"] else "spam"
+        metric_inc("spam_rejects")
+        log.info(
+            '{"event":"chat","request_id":"%s","trace_id":"%s","prefilter_reject":true,'
+            '"reason":"%s","total_ms":%d}',
+            request_id, trace_id, reason_key, _ms(_t0),
+        )
         await _persist_turn(db, student_id=sid, role="user", content=req.message)
         await db.commit()
         return ChatResponse(
@@ -251,22 +271,28 @@ async def chat_endpoint(
         )
 
     # Language normalization — Hinglish/Nepali-romanized → English.
+    _ts = time.monotonic()
     normalization = await default_normalizer.normalize(req.message)
+    _stage_ms["normalize"] = _ms(_ts)
     original_message = normalization.original
     query = normalization.normalized
     normalized_query_for_audit = query if normalization.was_changed else None
 
     # --- qeval entry point 2: full question verdict (after normalize, before retrieve) ---
-    # Produces a directive (length, lead_signal, quality, action).
-    # verdict.length is threaded into generation in Phase 2.
+    _ts = time.monotonic()
     verdict = await default_question_evaluator.evaluate(
         original=original_message,
         normalized=query,
         history=history,
     )
+    _stage_ms["qeval"] = _ms(_ts)
+    if verdict.source == "llm":
+        metric_inc("groq_eval_calls")
 
+    _ts = time.monotonic()
     retrieved = await retrieve(query=query, student_id=req.student_id)
     retrieved = await rerank(query=query, retrieved=retrieved)
+    _stage_ms["retrieve"] = _ms(_ts)
     decision: EvalDecision = default_evaluator.evaluate(query=query, student=student, retrieved=retrieved)
 
     sources = [
@@ -279,8 +305,9 @@ async def chat_endpoint(
         for c in retrieved.chunks
     ]
 
-    # model_used reflects the primary provider (Gemini when key present, else Groq fallback).
-    # The audit is written before generation, so this is the expected model, not confirmed.
+    # model_used + provider reflect the primary provider (Gemini when key present).
+    # Written before generation — represents expected provider, not confirmed.
+    _provider = "gemini" if settings.gemini_api_key else "groq"
     _model_used = "gemini/gemini-2.5-flash" if settings.gemini_api_key else "groq/llama-3.3-70b-versatile"
 
     await _persist_audit(
@@ -299,6 +326,7 @@ async def chat_endpoint(
         qeval_length=verdict.length.value,
         qeval_lead_signal=verdict.lead_signal.value,
         qeval_source=verdict.source,
+        provider=_provider,
     )
 
     # User turn stored as what they actually typed — preserves their voice in history.
@@ -330,6 +358,7 @@ async def chat_endpoint(
         )
         if answering:
             accumulate_lead(student_model, verdict.lead_signal.value)
+            metric_inc("gemini_calls" if _provider == "gemini" else "groq_fallback_hits")
 
         # Server-authoritative counselor offer (replaces frontend regex heuristic).
         # Checked AFTER accumulation so this-turn qualification is captured.
@@ -343,7 +372,34 @@ async def chat_endpoint(
                 offer_counselor = True
                 offer_reason = "question"
 
+        total_ms = _ms(_t0)
+        # Update audit row's latency_ms — we know it now.
+        # (provider was already written; latency_ms requires a follow-up UPDATE)
+        try:
+            await db.execute(
+                text("UPDATE chat_audit SET latency_ms=:ms WHERE request_id=:rid"),
+                {"ms": total_ms, "rid": request_id},
+            )
+        except Exception:
+            pass  # fail-open: latency column may not exist on old schema yet
+
         await db.commit()
+
+        # Structured per-request log — one JSON line for each chat turn.
+        log.info(
+            '{"event":"chat","request_id":"%s","trace_id":"%s",'
+            '"qeval_source":"%s","length":"%s","lead_signal":"%s","lead_status":"%s",'
+            '"decision":"%s","provider":"%s","offer_counselor":%s,'
+            '"prefilter_reject":false,'
+            '"normalize_ms":%d,"qeval_ms":%d,"retrieve_ms":%d,"total_ms":%d}',
+            request_id, trace_id,
+            verdict.source, verdict.length.value, verdict.lead_signal.value,
+            student_model.lead_status or "new",
+            str(resp.decision), _provider,
+            "true" if offer_counselor else "false",
+            _stage_ms.get("normalize", 0), _stage_ms.get("qeval", 0),
+            _stage_ms.get("retrieve", 0), total_ms,
+        )
 
         return resp.model_copy(update={
             "answer_length": verdict.length.value if resp.answer else None,
@@ -354,6 +410,7 @@ async def chat_endpoint(
         })
 
     if decision.decision == Decision.PROCEED:
+        _ts = time.monotonic()
         answer = await generate_answer(
             query=query,
             retrieved=retrieved,
@@ -362,6 +419,7 @@ async def chat_endpoint(
             mode="full",
             length=verdict.length.value,
         )
+        _stage_ms["generate"] = _ms(_ts)
         return await _finalize(ChatResponse(**base, answer=answer, sources=sources))
 
     if decision.decision == Decision.LOW_CONFIDENCE:
@@ -380,6 +438,7 @@ async def chat_endpoint(
         has_history = len(history) > 0
         has_intent = len(query.split()) >= 3
         if decision.debug.get("partial_answer") or has_history or has_intent:
+            _ts = time.monotonic()
             answer = await generate_answer(
                 query=query,
                 retrieved=retrieved,
@@ -388,6 +447,7 @@ async def chat_endpoint(
                 mode="partial",
                 length=verdict.length.value,
             )
+            _stage_ms["generate"] = _ms(_ts)
             return await _finalize(ChatResponse(**base, answer=answer, sources=sources))
         # Truly cold, contextless one-word opener — a sharp clarifier is best.
         return await _finalize(

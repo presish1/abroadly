@@ -107,6 +107,11 @@ class QuestionEvaluator:
             )
         except Exception as exc:
             log.warning("qeval Groq call failed (%s: %s) — falling back to rules", type(exc).__name__, exc)
+            try:
+                from app.core.metrics import increment as metric_inc
+                metric_inc("qeval_llm_failures")
+            except Exception:
+                pass
             return _rules_verdict(normalized, history)
 
 

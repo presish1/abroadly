@@ -190,6 +190,21 @@ async def admin_login(req: LoginRequest) -> LoginResponse:
     return LoginResponse(access_token=token)
 
 
+# ── Observability counters ────────────────────────────────────────────
+
+@router.get("/metrics")
+async def admin_metrics(
+    _admin: str = Depends(get_current_admin),
+) -> dict:
+    """Return in-memory pipeline counters (since last restart).
+
+    SEAM: swap the dict for a Prometheus registry and expose /metrics if
+    scraping is needed in the future.
+    """
+    from app.core.metrics import snapshot
+    return {"counters": snapshot(), "note": "reset on restart; durable record is chat_audit"}
+
+
 # ── Global AI toggle ──────────────────────────────────────────────────
 
 @router.get("/ai-global")

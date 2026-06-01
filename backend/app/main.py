@@ -17,10 +17,12 @@ from app.core.throttle import record_over_limit
 async def _rate_limit_handler(request: Request, exc: RateLimitExceeded) -> JSONResponse:
     """Custom 429 handler — records the over-limit event for Tier 2/3 escalation."""
     try:
+        from app.core.metrics import increment as metric_inc
+        metric_inc("rate_limit_429s")
         ip = _get_client_ip(request)
         record_over_limit(ip)
     except Exception:
-        pass  # fail-open: throttle state update must never 500
+        pass  # fail-open: throttle/metrics update must never 500
     return JSONResponse(
         status_code=429,
         content={"detail": "Too many requests. Please slow down and try again."},
