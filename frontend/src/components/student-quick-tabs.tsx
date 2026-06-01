@@ -81,6 +81,23 @@ function tabClass(active: boolean): string {
   return `ab-focus chat-right-tab ${active ? "chat-right-tab-active" : ""}`;
 }
 
+/** A row of N tiny dots — filled ones show how many docs are uploaded.
+ * Sits under the "X / N" count to give a glanceable progress feel without
+ * adding a full bar. */
+function DocsProgressDots({ filled, total }: { filled: number; total: number }) {
+  const safeFilled = Math.max(0, Math.min(total, filled));
+  return (
+    <span className="chat-right-tab-progress" aria-hidden>
+      {Array.from({ length: total }).map((_, i) => (
+        <span
+          key={i}
+          className={`chat-right-tab-progress-dot ${i < safeFilled ? "is-filled" : ""}`}
+        />
+      ))}
+    </span>
+  );
+}
+
 export function StudentQuickTabs({
   active,
   firstName = "",
@@ -163,7 +180,7 @@ export function StudentQuickTabs({
           <button
             type="button"
             onClick={onDocumentsClick}
-            title="Open document manager"
+            title={`Open document manager — ${uploadedCount} of ${documentTotal} essentials uploaded`}
             aria-current={active === "documents" ? "page" : undefined}
             className={tabClass(active === "documents")}
           >
@@ -171,12 +188,13 @@ export function StudentQuickTabs({
             <span className="chat-right-tab-copy">
               <span className="chat-right-tab-label">Documents</span>
               <span className="chat-right-tab-hint">{uploadedCount} / {documentTotal}</span>
+              <DocsProgressDots filled={uploadedCount} total={documentTotal} />
             </span>
           </button>
         ) : (
           <Link
             href="/chat/documents"
-            title="Open document manager"
+            title={`Open document manager — ${uploadedCount} of ${documentTotal} essentials uploaded`}
             aria-current={active === "documents" ? "page" : undefined}
             className={tabClass(active === "documents")}
           >
@@ -184,6 +202,7 @@ export function StudentQuickTabs({
             <span className="chat-right-tab-copy">
               <span className="chat-right-tab-label">Documents</span>
               <span className="chat-right-tab-hint">{uploadedCount} / {documentTotal}</span>
+              <DocsProgressDots filled={uploadedCount} total={documentTotal} />
             </span>
           </Link>
         )}
