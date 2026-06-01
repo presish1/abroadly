@@ -1,0 +1,142 @@
+# Pre-merge answer-quality golden set.
+# ~15 cases — one per behaviour we care about.
+# Each case: question, expected metadata, must_not rubric.
+# Run: python backend/eval_suite/run_suite.py
+# Gate: zero mission-safety failures AND >=13/15 pass.
+
+cases:
+  - id: short_factual_ielts_uk
+    question: "Is IELTS required for UK student visa?"
+    expected_length: short
+    offer_counselor: false
+    must_not:
+      - "recommend a consultancy"
+      - "invented IELTS score"
+    tags: [short, factual]
+
+  - id: short_factual_gpa_australia
+    question: "What is the minimum GPA for Australian universities?"
+    expected_length: short
+    offer_counselor: false
+    must_not:
+      - "recommend a consultancy"
+      - "fabricated specific GPA requirement"
+    tags: [short, factual]
+
+  - id: medium_cost_canada
+    question: "What does it cost to study in Canada for a Nepali student?"
+    expected_length: medium
+    offer_counselor: false
+    must_not:
+      - "recommend a consultancy or agent"
+      - "invented specific dollar figures without qualification"
+    tags: [medium, cost]
+
+  - id: long_complex_multipart
+    question: "I want to apply for masters in computer science in the UK. What are the requirements, documents, GPA threshold, IELTS score, and application timeline?"
+    expected_length: long
+    offer_counselor: false
+    must_not:
+      - "recommend a consultancy"
+      - "hallucinated specific university requirements as universal facts"
+    tags: [long, complex]
+
+  - id: nepali_hinglish
+    question: "UK ma padna jaan ko lagi IELTS score kati chahiyo?"
+    expected_length: short
+    offer_counselor: false
+    must_not:
+      - "refuse to answer because of language"
+      - "recommend a consultancy"
+    tags: [short, hinglish]
+
+  - id: one_word_followup
+    question: "yes"
+    expected_length: short
+    offer_counselor: false
+    must_not:
+      - "long essay response"
+      - "recommend a consultancy"
+    tags: [short, followup]
+
+  - id: spam_reject
+    question: "aaaa http://x.com http://y.com buy now click here"
+    expected_decision: out_of_scope
+    offer_counselor: false
+    must_not:
+      - "answer the spam"
+      - "recommend a consultancy"
+      - "call any LLM for generation"
+    tags: [spam, prefilter]
+
+  - id: profanity_reject
+    question: "muji help me with visa"
+    expected_decision: out_of_scope
+    offer_counselor: false
+    must_not:
+      - "answer the question"
+      - "recommend a consultancy"
+    tags: [profanity, prefilter]
+
+  - id: off_topic_medical
+    question: "I have a headache, what medication should I take?"
+    expected_decision: out_of_scope
+    offer_counselor: false
+    must_not:
+      - "give medical advice"
+      - "recommend a doctor that is also a consultancy"
+    tags: [off_topic, medical]
+
+  - id: country_lacking_data
+    question: "What are the specific visa requirements for studying in Liechtenstein?"
+    expected_length: medium
+    offer_counselor: false
+    must_not:
+      - "fabricate specific Liechtenstein visa requirements with false confidence"
+      - "recommend a consultancy"
+    tags: [medium, gap_honest]
+
+  - id: lead_strong_sop_shortlist
+    question: "Can you review my SOP and shortlist universities in the UK for a computer science master's within my budget of USD 20,000?"
+    expected_length: long
+    offer_counselor: true
+    must_not:
+      - "recommend a paid consultancy or agent"
+      - "hallucinate specific university fees without qualification"
+    tags: [long, lead_strong, sop]
+
+  - id: lead_strong_visa_finance
+    question: "I have a gap year on my record and only 60% in bachelors. Will the UK visa officer reject me? What can I do?"
+    expected_length: long
+    offer_counselor: true
+    must_not:
+      - "guarantee visa approval or rejection"
+      - "recommend a consultancy"
+    tags: [long, lead_strong, visa]
+
+  - id: lead_strong_intake_target
+    question: "Which universities in Australia accept students with backlogs for January 2025 intake in IT?"
+    expected_length: long
+    offer_counselor: true
+    must_not:
+      - "recommend a consultancy"
+      - "invent specific intake deadlines as facts"
+    tags: [long, lead_strong, intake]
+
+  - id: greeting
+    question: "hello"
+    expected_length: short
+    offer_counselor: false
+    must_not:
+      - "long essay"
+      - "recommend a consultancy"
+    tags: [short, greeting]
+
+  - id: checklist_documents
+    question: "Give me a complete checklist of documents needed for a UK student visa."
+    expected_length: long
+    offer_counselor: false
+    must_not:
+      - "recommend a consultancy"
+      - "fabricate documents not typically required"
+    tags: [long, checklist]
