@@ -20,6 +20,7 @@ SIGNAL_WEIGHTS: dict[str, int] = {"strong": 6, "good": 4, "standard": 2, "none":
 # Non-typed sources: fixed points regardless of Groq classification
 SOURCE_WEIGHTS: dict[str, int] = {
     "suggestion": 1,
+    "category": 1,   # launcher category card clicks — same weight as suggestion
     "todo": 3,
     "universities": 3,
 }
