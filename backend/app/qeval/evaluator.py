@@ -54,12 +54,30 @@ def _rules_verdict(normalized: str, history: ChatHistory) -> QuestionVerdict:
     )
 
 
+_NON_TYPED_SOURCES = frozenset({"suggestion", "todo", "universities", "category", "deep_link"})
+
+# Verdict returned for non-typed sources — Groq is not called; lead scoring
+# uses the source weight in accumulate_lead() instead of this signal.
+def _non_typed_verdict(source: str, normalized: str, history: ChatHistory) -> QuestionVerdict:
+    length = qrules.rough_length(normalized, len(history))
+    return QuestionVerdict(
+        action=QAction.answer,
+        length=length,
+        is_spam=False,
+        quality=QQuality.standard,
+        lead_signal=QLeadSignal.none,  # points handled by source in lead.py
+        reason=f"source:{source}",
+        source="rules",
+    )
+
+
 class QuestionEvaluator:
     async def evaluate(
         self,
         original: str,
         normalized: str,
         history: ChatHistory,
+        source: str | None = None,
     ) -> QuestionVerdict:
         """Classify the question and return a directive.
 
@@ -67,7 +85,7 @@ class QuestionEvaluator:
         Fail-open: any exception returns rules verdict, never raises.
         """
         try:
-            return await self._evaluate(original, normalized, history)
+            return await self._evaluate(original, normalized, history, source)
         except Exception as exc:
             log.warning("qeval.evaluate failed (%s: %s) — using safe default", type(exc).__name__, exc)
             return SAFE_DEFAULT_VERDICT
@@ -77,8 +95,14 @@ class QuestionEvaluator:
         original: str,
         normalized: str,
         history: ChatHistory,
+        source: str | None = None,
     ) -> QuestionVerdict:
         from app.core.config import settings
+
+        # Non-typed source (suggestion click, todo, university deep-link):
+        # skip Groq entirely — scoring is source-based, not signal-based.
+        if source in _NON_TYPED_SOURCES:
+            return _non_typed_verdict(source, normalized, history)
 
         # Skip LLM entirely when feature-flagged off or not needed for this query.
         if not settings.qeval_use_llm or not qrules.needs_llm(original, normalized):

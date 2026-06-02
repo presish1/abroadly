@@ -14,6 +14,7 @@ import {
   getStudentDocumentDownloadUrl,
   requestCounselorCall,
   logoutStudent,
+  signalStudent,
   type ChatResponse,
   type ChatSource,
   type ChatTurn,
@@ -67,7 +68,8 @@ interface CounselorCardMessage {
   role: "counselor_card";
   // Driven by backend offer_counselor / offer_reason signal.
   auto?: boolean;
-  reason?: "question" | "qualified" | "sequence";
+  reason?: "question" | "qualified" | "sequence" | "bypass";
+  tier?: "soft" | "medium" | "strong" | "bypass" | null;
   handoff_target?: string | null;
 }
 
@@ -1324,22 +1326,28 @@ function CounselorCard({
   consented,
   onGrant,
   reason,
+  tier,
   handoff_target,
 }: {
   consented: boolean;
   onGrant: () => void;
-  reason?: "question" | "qualified" | "sequence";
+  reason?: "question" | "qualified" | "sequence" | "bypass";
+  tier?: "soft" | "medium" | "strong" | "bypass" | null;
   handoff_target?: string | null;
 }) {
   const isPartner = handoff_target === "partner";
   const counselorName = isPartner ? "our counsellor" : COUNSELOR.name.split(" ")[0];
 
   const intro =
-    reason === "qualified"
-      ? "Based on your questions, you're ready for a personal walkthrough. A real person can take it from here."
-      : reason === "question"
-        ? "This one depends on your exact profile and documents. Prisma can talk it through with you."
-        : "You've asked a few good questions. Want a real person to walk you through your options?";
+    tier === "strong" || reason === "qualified"
+      ? "Based on your questions, you're ready for a personal walkthrough."
+      : tier === "medium"
+        ? `You're clearly planning this. ${counselorName} can take it from here.`
+        : tier === "bypass" || reason === "bypass"
+          ? "You're clearly preparing. A real person can guide you from here."
+          : tier === "soft" || reason === "question"
+            ? "You've asked some good questions. Want help from a real person?"
+            : "You've asked a few good questions. Want a real person to walk you through your options?";
 
   return (
     <div className="counselor-card">
@@ -1408,6 +1416,13 @@ export default function ChatPage() {
   const fileRef = useRef<HTMLInputElement>(null);
   // Counsellor offer: driven by backend offer_counselor signal; shown once per session.
   const counselorOffered = useRef(false);
+  // Count of user-typed (not click-sourced) messages sent this session.
+  // Used for the depth-bonus calculation and the 2-session-turn gate.
+  const sessionTypedCount = useRef(0);
+  // True once a proactive upload invite has been shown this session.
+  const proactiveInviteShown = useRef(false);
+  // True once the student uploads an SOP or financial document this session.
+  const hasPriorityDoc = useRef(false);
   // Per-slot hidden inputs for the sidebar quick-upload checkboxes.
   const sidebarFileRefs = useRef<Record<string, HTMLInputElement | null>>({});
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -1415,7 +1430,7 @@ export default function ChatPage() {
 
   // Hold a ref to sendMessage so the URL-deep-link effect (below) can call the
   // latest version without re-running every time sendMessage's deps change.
-  const sendMessageRef = useRef<((text?: string) => void) | null>(null);
+  const sendMessageRef = useRef<((text?: string, source?: string) => void) | null>(null);
 
   // URL deep links
   //   ?docs=open    → opens the document upload panel (existing behaviour)
@@ -1428,16 +1443,19 @@ export default function ChatPage() {
     if (params.get("docs") === "open") setDocPanelOpen(true);
     if (params.get("profile") === "open") setProfileOpen(true);
     const pendingSend = params.get("send");
+    const pendingSource = params.get("source") || undefined;
     if (pendingSend) {
       const q = pendingSend;
-      setTimeout(() => sendMessageRef.current?.(q), 300);
+      const src = pendingSource;
+      setTimeout(() => sendMessageRef.current?.(q, src), 300);
     }
-    if (params.get("docs") || params.get("profile") || params.get("send") || params.get("panel")) {
+    if (params.get("docs") || params.get("profile") || params.get("send") || params.get("panel") || params.get("source")) {
       const next = new URL(window.location.href);
       next.searchParams.delete("docs");
       next.searchParams.delete("profile");
       next.searchParams.delete("send");
       next.searchParams.delete("panel");
+      next.searchParams.delete("source");
       window.history.replaceState({}, "", next.toString());
     }
   }, []);
@@ -1515,6 +1533,7 @@ export default function ChatPage() {
   useEffect(() => {
     if (docPanelOpen && studentId) {
       refreshDocuments(studentId).catch(() => {});
+      signalStudent(studentId, { event_type: "doc_panel_open" }).catch(() => {});
     }
   }, [docPanelOpen, studentId, refreshDocuments]);
 
@@ -1538,7 +1557,7 @@ export default function ChatPage() {
     el.style.height = Math.min(el.scrollHeight, 168) + "px";
   }
 
-  async function sendMessage(textFromPrompt?: string) {
+  async function sendMessage(textFromPrompt?: string, messageSource?: string) {
     const text = (textFromPrompt ?? input).trim();
     if (!text || !studentId || thinking) return;
     if (phoneRequired) {
@@ -1550,26 +1569,44 @@ export default function ChatPage() {
       if (taRef.current) { taRef.current.style.height = "auto"; taRef.current.focus(); }
     });
     setMessages((m) => [...m, { role: "user", text }]);
-    // Mirror into raw chat history so the dashboard "Pick up where you left off"
-    // preview stays current without a refetch.
     setChatHistory((h) => [
       ...h,
       { id: `local-user-${Date.now()}`, role: "user", content: text, eval_decision: null, created_at: new Date().toISOString() },
     ]);
+
+    // Track session turns — only typed messages count for depth bonus + 2-turn gate.
+    const isTyped = !messageSource || messageSource === "typed";
+    if (isTyped) sessionTypedCount.current += 1;
+
     setThinking(true);
     try {
-      const res = await chat(studentId, text);
+      const res = await chat(
+        studentId,
+        text,
+        undefined,
+        messageSource ?? "typed",
+        isTyped ? sessionTypedCount.current : undefined,
+      );
       setMessages((m) => [...m, { role: "ai", response: res }]);
       setChatHistory((h) => [
         ...h,
         { id: res.request_id || `local-ai-${Date.now()}`, role: "assistant", content: res.answer || "", eval_decision: res.decision, created_at: new Date().toISOString() },
       ]);
-      // Inline upload invite: trigger when the AI's prose contains BOTH an
-      // upload-intent verb AND a recognisable doc type (see inferUploadSlot).
-      // Two cooldown rules keep it from being noisy:
-      //   1) same slot can't reappear within the last 6 messages
-      //   2) at most ONE active (not-dismissed, not-done) invite at a time
-      if (!docPanelOpen) {
+
+      // ── 2-slot priority system ──────────────────────────────────────────
+      // Slot B: text-match upload invite (beats proactive)
+      // Slot A: counselor card
+      // Generic modal fires ALONE (only when no Slot B or A fires this turn).
+      // Render order: AI answer → Slot B → Slot A
+      //
+      // Session-turn gate: both slots require ≥2 session turns.
+      const turnCount = sessionTypedCount.current; // typed turns only
+      const enoughTurns = turnCount >= 2;
+
+      let slotBFired = false;
+
+      // Slot B — text-match upload invite (AI answer mentions a specific doc).
+      if (!docPanelOpen && enoughTurns) {
         const invite = inferUploadSlot(res);
         if (invite) {
           setMessages((m) => {
@@ -1581,37 +1618,71 @@ export default function ChatPage() {
               (x) => x.role === "upload_invite" && !x.dismissed && !x.uploaded,
             );
             if (sameSlotRecent || anyActiveInvite) return m;
+            slotBFired = true;
             return [...m, invite];
           });
-        } else if (answerWantsUpload(res)) {
-          // The AI's structured action block says "upload something" but we
-          // couldn't pin a slot — fall back to the legacy generic modal.
+          // Mark slotBFired synchronously for the proactive check below.
+          slotBFired = true;
+        }
+      }
+
+      // Slot B — proactive upload invite (score ≥15, 0 docs, ≥2 session turns).
+      if (!docPanelOpen && !slotBFired && !proactiveInviteShown.current && enoughTurns) {
+        const score = res.lead_score ?? 0;
+        const noDocs = documents.length === 0;
+        if (score >= 15 && noDocs) {
+          proactiveInviteShown.current = true;
+          const proactiveSlot = ESSENTIAL_SLOTS[0]; // grade_sheet / transcript as default
+          setMessages((m) => {
+            const anyActiveInvite = m.some(
+              (x) => x.role === "upload_invite" && !x.dismissed && !x.uploaded,
+            );
+            if (anyActiveInvite) return m;
+            slotBFired = true;
+            return [...m, {
+              role: "upload_invite" as const,
+              slotId: proactiveSlot.id,
+              slotLabel: proactiveSlot.label,
+              accept: proactiveSlot.accept,
+              sampleSlug: proactiveSlot.sampleSlug,
+              whyOneLiner: "Uploading documents lets me tailor every answer to your real situation.",
+            }];
+          });
+          slotBFired = true;
+        }
+      }
+
+      // Generic upload modal — only fires alone (no Slot B this turn, score ≥3).
+      if (!docPanelOpen && !slotBFired && !enoughTurns) {
+        if (answerWantsUpload(res)) {
+          setUploadPrompt({ label: inferUploadLabel(res) });
+        }
+      } else if (!docPanelOpen && !slotBFired) {
+        if (!inferUploadSlot(res) && answerWantsUpload(res)) {
           setUploadPrompt({ label: inferUploadLabel(res) });
         }
       }
-      // Counsellor offer: backend signal first (offer_counselor from PR #55),
-      // with a frontend safety-net so the card never gets stuck behind a
-      // backend that hasn't flipped the flag yet. Safety net fires after the
-      // student has had 5+ substantive turns (≥3 words OR a "?") — explicit
-      // turn count, never random. Either path shows the card once per
-      // session and only when not already consented.
-      const userTurnCount = chatHistory.filter((t) => {
-        if (t.role !== "user") return false;
-        const c = (t.content || "").trim();
-        return c.split(/\s+/).length >= 3 || /\?/.test(c);
-      }).length;
-      const backendSays = Boolean(res.offer_counselor);
-      const safetyNet = !backendSays && userTurnCount >= 5;
-      if (!counselorOffered.current && !callConsented && (backendSays || safetyNet)) {
+
+      // Slot A — counselor card.
+      // Requires: backend says offer_counselor, ≥2 session turns, not already shown, not consented.
+      // SOP/financial bypass: show regardless of score if hasPriorityDoc.
+      const backendOffersCard = Boolean(res.offer_counselor) && enoughTurns;
+      const bypassCard = hasPriorityDoc.current && enoughTurns && !callConsented;
+
+      if (!counselorOffered.current && !callConsented && (backendOffersCard || bypassCard)) {
         counselorOffered.current = true;
-        const cardReason: CounselorCardMessage["reason"] =
-          res.offer_reason === "question" ? "question"
+        const tier: CounselorCardMessage["tier"] = bypassCard
+          ? "bypass"
+          : (res.offer_counselor_tier as CounselorCardMessage["tier"]) ?? null;
+        const cardReason: CounselorCardMessage["reason"] = bypassCard
+          ? "bypass"
+          : res.offer_reason === "question" ? "question"
           : res.offer_reason === "qualified" ? "qualified"
           : "sequence";
         setMessages((m) =>
           m.length && m[m.length - 1].role === "counselor_card"
             ? m
-            : [...m, { role: "counselor_card", reason: cardReason, handoff_target: res.handoff_target }]
+            : [...m, { role: "counselor_card", reason: cardReason, tier, handoff_target: res.handoff_target }]
         );
       }
     } catch (err: unknown) {
@@ -1672,6 +1743,14 @@ export default function ChatPage() {
     } else if (studentId) {
       refreshDocuments(studentId).catch(() => {});
     }
+    // Award lead points for the upload via the signal endpoint.
+    if (studentId) {
+      signalStudent(studentId, { event_type: "doc_upload", doc_type: docType.id }).catch(() => {});
+    }
+    // Mark priority doc so SOP/financial bypass can fire on next turn.
+    if (docType.id === "sop" || docType.id === "financial") {
+      hasPriorityDoc.current = true;
+    }
     setMessages((m) => [...m, { role: "upload", status: "done" as const, filename, text: `Uploaded ${docType.label}: ${filename}`, docType: docType.id }]);
   }, [refreshDocuments, studentId]);
 
@@ -1691,6 +1770,8 @@ export default function ChatPage() {
       } else {
         refreshDocuments(studentId).catch(() => {});
       }
+      signalStudent(studentId, { event_type: "doc_upload", doc_type: slotId }).catch(() => {});
+      if (slotId === "sop" || slotId === "financial") hasPriorityDoc.current = true;
       setMessages((m) => m.map((msg, i) => (i === m.length - 1 && msg.role === "upload" ? { ...msg, status: "done" as const, text: `Uploaded ${slotLabel}: ${file.name}` } : msg)));
     } catch (err: unknown) {
       const errMsg = err instanceof Error ? err.message : "Upload failed.";
@@ -1715,6 +1796,8 @@ export default function ChatPage() {
       } else {
         refreshDocuments(studentId).catch(() => {});
       }
+      signalStudent(studentId, { event_type: "doc_upload", doc_type: invite.slotId }).catch(() => {});
+      if (invite.slotId === "sop" || invite.slotId === "financial") hasPriorityDoc.current = true;
       setMessages((m) => m.map((msg) =>
         msg.role === "upload_invite" && msg.slotId === invite.slotId && !msg.uploaded
           ? { ...msg, uploaded: true }
@@ -1875,8 +1958,10 @@ export default function ChatPage() {
                   <button
                     type="button"
                     onClick={() => {
-                      if (todo.query) sendMessage(todo.query);
-                      else if (todo.href) router.push(todo.href);
+                      if (todo.query) {
+                        signalStudent(studentId, { event_type: "todo_click" }).catch(() => {});
+                        sendMessage(todo.query, "todo");
+                      } else if (todo.href) router.push(todo.href);
                     }}
                     className="ab-focus group flex w-full items-start gap-2 rounded-md px-1 py-1 text-left transition hover:bg-white"
                   >
@@ -1995,7 +2080,7 @@ export default function ChatPage() {
 
                 <div className="chat-launcher">
                   {categories.map((c) => (
-                    <button key={c.label} type="button" onClick={() => sendMessage(c.question)} className="ab-focus chat-launcher-card group">
+                    <button key={c.label} type="button" onClick={() => sendMessage(c.question, "category")} className="ab-focus chat-launcher-card group">
                       <span className="chat-launcher-icon">{c.icon}</span>
                       <span className="min-w-0">
                         <span className="block text-[13.5px] font-bold text-[var(--ab-ink)]">{c.label}</span>
@@ -2048,7 +2133,7 @@ export default function ChatPage() {
                   return (
                     <div key={i} className="chat-row chat-row-ai" style={{ animationDelay: "0.04s" }}>
                       <AiAvatar />
-                      <CounselorCard consented={callConsented} onGrant={grantCounselorCall} reason={msg.reason ?? (msg.auto ? "sequence" : undefined)} handoff_target={msg.handoff_target} />
+                      <CounselorCard consented={callConsented} onGrant={grantCounselorCall} reason={msg.reason ?? (msg.auto ? "sequence" : undefined)} tier={msg.tier} handoff_target={msg.handoff_target} />
                     </div>
                   );
                 }
@@ -2103,7 +2188,7 @@ export default function ChatPage() {
             {!thinking && railSuggestions.length > 0 && (
               <div className="chat-suggestion-rail">
                 {railSuggestions.map((s, i) => (
-                  <button key={i} type="button" onClick={() => sendMessage(s)} className="ab-focus chat-suggestion-chip">
+                  <button key={i} type="button" onClick={() => sendMessage(s, "suggestion")} className="ab-focus chat-suggestion-chip">
                     {hasMessages ? <ArrowUpIcon /> : <span className="text-[#E11D2A]">✦</span>}
                     <span className="truncate">{s}</span>
                   </button>

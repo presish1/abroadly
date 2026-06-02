@@ -12,6 +12,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.db import get_session
 from app.core.email import send_welcome_email
 from app.models.student import StudentCreate, StudentModel, StudentOut, StudentUpdate
+from app.qeval.lead import accumulate_lead_points, signal_points_for_doc
 
 router = APIRouter()
 
@@ -151,3 +152,62 @@ async def update_student(
     await db.commit()
     await db.refresh(student)
     return _to_out(student)
+
+
+# ---------------------------------------------------------------------------
+# Lead signal endpoint — lightweight, non-chat scoring events
+# ---------------------------------------------------------------------------
+
+_NON_CHAT_EVENT_POINTS: dict[str, int] = {
+    "universities_visit": 2,
+    "profile_update": 2,
+    "return_visit": 2,
+    "doc_panel_open": 1,
+    "university_card_click": 1,
+}
+
+
+class SignalRequest(BaseModel):
+    event_type: str  # see _NON_CHAT_EVENT_POINTS + "doc_upload"
+    doc_type: str | None = None  # required when event_type="doc_upload"
+
+
+class SignalResponse(BaseModel):
+    lead_score: int
+    lead_status: str
+    points_awarded: int
+
+
+@router.post("/{student_id}/signal", response_model=SignalResponse)
+async def student_signal(
+    student_id: str,
+    body: SignalRequest,
+    db: AsyncSession = Depends(get_session),
+) -> SignalResponse:
+    """Record a non-chat lead signal (page visit, doc upload, profile update, etc.)
+    and award the appropriate score points.
+    """
+    try:
+        sid = uuid.UUID(student_id)
+    except ValueError:
+        raise HTTPException(status_code=422, detail="invalid_student_id")
+
+    result = await db.execute(select(StudentModel).where(StudentModel.id == sid))
+    student = result.scalar_one_or_none()
+    if not student:
+        raise HTTPException(status_code=404, detail="student_not_found")
+
+    if body.event_type == "doc_upload":
+        pts = signal_points_for_doc(body.doc_type or "other")
+    else:
+        pts = _NON_CHAT_EVENT_POINTS.get(body.event_type, 0)
+
+    awarded = accumulate_lead_points(student, pts)
+    student.updated_at = datetime.utcnow()
+    await db.commit()
+
+    return SignalResponse(
+        lead_score=student.lead_score or 0,
+        lead_status=student.lead_status or "new",
+        points_awarded=awarded,
+    )

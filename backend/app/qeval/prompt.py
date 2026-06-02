@@ -46,4 +46,7 @@ Q: "yes"
 
 Q: "What is the minimum GPA needed for Australian universities?"
 → {"action":"answer","length":"short","is_spam":false,"quality":"good","lead_signal":"standard","reason":"single factual eligibility question"}
+
+Q: "How do I speak to a counselor?"
+→ {"action":"answer","length":"short","is_spam":false,"quality":"strong","lead_signal":"strong","reason":"explicit request for human counselor handoff"}
 """
