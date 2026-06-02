@@ -88,7 +88,9 @@ export interface ChatResponse {
   answer_length?: "short" | "medium" | "long" | null;
   offer_counselor?: boolean;
   offer_reason?: "qualified" | "question" | null;
+  offer_counselor_tier?: "soft" | "medium" | "strong" | null;
   lead_status?: string | null;
+  lead_score?: number | null;
   handoff_target?: string | null;
 }
 
@@ -207,13 +209,39 @@ export async function logoutStudent(): Promise<void> {
 export async function chat(
   student_id: string,
   message: string,
-  trace_id?: string
+  trace_id?: string,
+  source?: string,
+  session_typed_count?: number,
 ): Promise<ChatResponse> {
   return handle<ChatResponse>(
     await fetch(`${BASE}/chat`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ student_id, message, trace_id }),
+      body: JSON.stringify({ student_id, message, trace_id, source, session_typed_count }),
+    })
+  );
+}
+
+export interface SignalEvent {
+  event_type: string;
+  doc_type?: string;
+}
+
+export interface SignalResponse {
+  lead_score: number;
+  lead_status: string;
+  points_awarded: number;
+}
+
+export async function signalStudent(
+  student_id: string,
+  event: SignalEvent,
+): Promise<SignalResponse> {
+  return handle<SignalResponse>(
+    await fetch(`${BASE}/students/${student_id}/signal`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(event),
     })
   );
 }
@@ -285,6 +313,6 @@ export async function exchangeGoogleCode(
 }
 
 // Keep old names for backward compat with existing stubs
-export const sendChat = (payload: { student_id: string; message: string }) =>
-  chat(payload.student_id, payload.message);
+export const sendChat = (payload: { student_id: string; message: string; source?: string }) =>
+  chat(payload.student_id, payload.message, undefined, payload.source);
 export const uploadDoc = uploadFile;

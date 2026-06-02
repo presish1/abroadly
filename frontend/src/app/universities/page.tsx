@@ -26,6 +26,7 @@ import {
   getCurrentStudent,
   getStudent,
   getStudentDocuments,
+  signalStudent,
   type StudentDocument,
   type StudentOut,
 } from "@/lib/api";
@@ -389,6 +390,8 @@ export default function UniversitiesPage() {
         setStudent(current);
         setDocuments(docs);
         setActiveCountry(loadPreferredCountry(supported));
+        // Fire universities_visit signal once per session load (best-effort).
+        signalStudent(current.id, { event_type: "universities_visit" }).catch(() => {});
       } catch (e) {
         if (mounted) setError(e instanceof Error ? e.message : "Could not load universities.");
       } finally {
@@ -404,7 +407,7 @@ export default function UniversitiesPage() {
 
   const onAsk = useCallback(
     (query: string) => {
-      router.push(`/chat?send=${encodeURIComponent(query)}`);
+      router.push(`/chat?send=${encodeURIComponent(query)}&source=universities`);
     },
     [router],
   );

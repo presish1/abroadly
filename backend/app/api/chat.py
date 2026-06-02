@@ -35,7 +35,7 @@ from app.models.student import ChatTurnModel, ChatTurnOut, StudentModel
 from app.normalizer import default_normalizer
 from app.qeval import default_question_evaluator
 from app.qeval import rules as qeval_rules
-from app.qeval.lead import accumulate_lead
+from app.qeval.lead import accumulate_lead, counselor_tier
 from app.rag.generator import generate_answer, _clean_title
 from app.rag.reranker import rerank
 from app.rag.retriever import retrieve
@@ -59,6 +59,12 @@ class ChatRequest(BaseModel):
     student_id: str = Field(..., description="Existing student profile id")
     message: str = Field(..., min_length=1, max_length=4000)
     trace_id: str | None = Field(None, description="Caller-supplied trace id; generated if omitted")
+    # Source tag — "typed" (default) | "suggestion" | "todo" | "universities" | "category"
+    # Non-typed sources skip Groq classification; scoring uses SOURCE_WEIGHTS instead.
+    source: str | None = Field(None, description="Message origin tag")
+    # How many typed (user-typed, not click) messages sent in this browser session.
+    # Used to compute the depth bonus (+1 for turns 5–9).
+    session_typed_count: int | None = Field(None, ge=0, le=200)
 
 
 class Source(BaseModel):
@@ -82,8 +88,10 @@ class ChatResponse(BaseModel):
     # New optional fields (all have safe defaults so old clients are unaffected — C9)
     answer_length: str | None = None          # "short" | "medium" | "long"
     offer_counselor: bool = False             # server-authoritative handoff signal
-    offer_reason: str | None = None           # "qualified" | "question" | None
+    offer_reason: str | None = None           # "qualified" | "question" | None (legacy compat)
+    offer_counselor_tier: str | None = None   # "soft" | "medium" | "strong" — drives card copy
     lead_status: str | None = None            # "new" | "engaged" | "qualified"
+    lead_score: int | None = None             # raw score (0-100), for frontend tier logic
     handoff_target: str | None = None         # "prisma" | "partner"
 
 
@@ -284,6 +292,7 @@ async def chat_endpoint(
         original=original_message,
         normalized=query,
         history=history,
+        source=req.source,
     )
     _stage_ms["qeval"] = _ms(_ts)
     if verdict.source == "llm":
@@ -357,20 +366,35 @@ async def chat_endpoint(
             and resp.decision not in (Decision.OUT_OF_SCOPE, Decision.ESCALATE)
         )
         if answering:
-            accumulate_lead(student_model, verdict.lead_signal.value)
+            # Depth bonus: +1 for typed turns 5-9 in the same browser session.
+            depth_bonus = 0
+            if req.source in (None, "typed") and req.session_typed_count is not None:
+                n = req.session_typed_count
+                if 5 <= n <= 9:
+                    depth_bonus = 1
+
+            accumulate_lead(
+                student_model,
+                verdict.lead_signal.value,
+                source=req.source,
+                extra_points=depth_bonus,
+            )
             metric_inc("gemini_calls" if _provider == "gemini" else "groq_fallback_hits")
 
-        # Server-authoritative counselor offer (replaces frontend regex heuristic).
-        # Checked AFTER accumulation so this-turn qualification is captured.
+        # Server-authoritative counselor offer — score-based tier (replaces old
+        # single-strong-signal trigger). Checked AFTER accumulation so this-turn
+        # points are captured. Frontend still applies the 2-session-turn gate and
+        # the once-per-session counselorOffered guard before showing the card.
         offer_counselor = False
         offer_reason: str | None = None
+        offer_counselor_tier: str | None = None
         if not student_model.call_consent:
-            if student_model.lead_status == "qualified":
+            tier = counselor_tier(student_model.lead_score or 0)
+            if tier:
                 offer_counselor = True
-                offer_reason = "qualified"
-            elif verdict.lead_signal.value == "strong":
-                offer_counselor = True
-                offer_reason = "question"
+                offer_counselor_tier = tier
+                # Keep offer_reason populated for legacy frontend consumers.
+                offer_reason = "qualified" if tier == "strong" else "question"
 
         total_ms = _ms(_t0)
         # Update audit row's latency_ms — we know it now.
@@ -389,14 +413,17 @@ async def chat_endpoint(
         log.info(
             '{"event":"chat","request_id":"%s","trace_id":"%s",'
             '"qeval_source":"%s","length":"%s","lead_signal":"%s","lead_status":"%s",'
-            '"decision":"%s","provider":"%s","offer_counselor":%s,'
-            '"prefilter_reject":false,'
+            '"lead_score":%d,"msg_source":"%s","decision":"%s","provider":"%s",'
+            '"offer_counselor":%s,"offer_tier":"%s","prefilter_reject":false,'
             '"normalize_ms":%d,"qeval_ms":%d,"retrieve_ms":%d,"total_ms":%d}',
             request_id, trace_id,
             verdict.source, verdict.length.value, verdict.lead_signal.value,
             student_model.lead_status or "new",
+            student_model.lead_score or 0,
+            req.source or "typed",
             str(resp.decision), _provider,
             "true" if offer_counselor else "false",
+            offer_counselor_tier or "",
             _stage_ms.get("normalize", 0), _stage_ms.get("qeval", 0),
             _stage_ms.get("retrieve", 0), total_ms,
         )
@@ -405,7 +432,9 @@ async def chat_endpoint(
             "answer_length": verdict.length.value if resp.answer else None,
             "offer_counselor": offer_counselor,
             "offer_reason": offer_reason,
+            "offer_counselor_tier": offer_counselor_tier,
             "lead_status": student_model.lead_status,
+            "lead_score": student_model.lead_score,
             "handoff_target": settings.handoff_target,
         })
 

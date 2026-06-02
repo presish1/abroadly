@@ -52,6 +52,10 @@ class Settings(BaseSettings):
     throttle_cooldown_s: int = 900          # Tier 2 cooldown duration (15 min)
     throttle_flag_threshold: int = 5        # over-limit bursts before Tier 3 admin flag
 
+    # Lead qualification — internal notification address for new qualified leads.
+    # Leave empty to disable notifications (default — safe for dev).
+    lead_notification_email: str = ""
+
     # Counselor handoff — "prisma" (default) or "partner" (changes frontend label/CTA only).
     # Future seam: make this a persisted runtime setting (like ai_globally_paused)
     # so an admin can toggle it without a redeploy.
