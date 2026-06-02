@@ -1959,7 +1959,6 @@ export default function ChatPage() {
                     type="button"
                     onClick={() => {
                       if (todo.query) {
-                        signalStudent(studentId, { event_type: "todo_click" }).catch(() => {});
                         sendMessage(todo.query, "todo");
                       } else if (todo.href) router.push(todo.href);
                     }}
