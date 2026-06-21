@@ -31,6 +31,7 @@ import {
 import { ESSENTIAL_SLOTS, computeDocReadiness } from "@/lib/document-catalog";
 import { StudentQuickTabs } from "@/components/student-quick-tabs";
 import { ServiceRequestModal } from "@/components/service-request-modal";
+import { ModalShell } from "@/components/modal-shell";
 
 /* Abroadly's own human counsellor (placeholder identity — operator can edit). */
 const COUNSELOR = {
@@ -859,15 +860,18 @@ function DocumentPanel({
     [handleFile]
   );
 
-  if (!open) return null;
-
   return (
-    <>
-      <div className="doc-panel-overlay" onClick={onClose} />
-      <div className="doc-panel">
+    <ModalShell
+      open={open}
+      onClose={onClose}
+      titleId="document-panel-title"
+      panelClassName="doc-panel"
+      layerClassName="doc-panel-layer"
+      showClose={false}
+    >
         <div className="doc-panel-header">
           <div>
-            <h2 className="text-[16px] font-bold text-[var(--ab-ink)]">Upload Documents</h2>
+            <h2 id="document-panel-title" className="text-[16px] font-bold text-[var(--ab-ink)]">Upload Documents</h2>
             <p className="text-[12px] text-[#8A847B] mt-0.5">
               Add your documents and I&apos;ll tailor answers to your real situation.
             </p>
@@ -957,8 +961,7 @@ function DocumentPanel({
           </div>
           <button type="button" onClick={onClose} className="ab-focus rounded-lg bg-[#E11D2A] px-5 py-2.5 text-[12px] font-bold text-white hover:bg-[#C0121F] transition-colors">Done</button>
         </div>
-      </div>
-    </>
+    </ModalShell>
   );
 }
 
@@ -974,18 +977,13 @@ function UploadPromptModal({
   onClose: () => void;
 }) {
   return (
-    <>
-      <div className="upload-modal-overlay" onClick={onClose} />
-      <div className="upload-modal" role="dialog" aria-modal="true">
-        <button type="button" onClick={onClose} aria-label="Close" className="ab-focus absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-lg text-[#8A847B] hover:bg-[#F0EDE4] transition-colors">
-          <CloseIcon />
-        </button>
+    <ModalShell open onClose={onClose} titleId="upload-prompt-title" panelClassName="upload-modal" closeLabel="Close upload prompt">
         <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#FDECEE] text-[#E11D2A]">
           <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none">
             <path d="M12 16V8m0 0-3.5 3.5M12 8l3.5 3.5M5 19h14" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </div>
-        <h3 className="mt-4 text-[17px] font-extrabold tracking-[-0.01em] text-[var(--ab-ink)]">
+        <h3 id="upload-prompt-title" className="mt-4 text-[17px] font-extrabold tracking-[-0.01em] text-[var(--ab-ink)]">
           Share your {label} for a sharper answer
         </h3>
         <p className="mt-2 text-[13.5px] leading-6 text-[#6B655C]">
@@ -999,8 +997,7 @@ function UploadPromptModal({
             Maybe later
           </button>
         </div>
-      </div>
-    </>
+    </ModalShell>
   );
 }
 
@@ -1022,12 +1019,7 @@ function ClassBookingPromptModal({
   const ready = uploadedCount >= requiredCount;
   const remaining = Math.max(0, requiredCount - uploadedCount);
   return (
-    <>
-      <div className="upload-modal-overlay" onClick={onClose} />
-      <div className="upload-modal" role="dialog" aria-modal="true">
-        <button type="button" onClick={onClose} aria-label="Close" className="ab-focus absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-lg text-[#8A847B] hover:bg-[#F0EDE4] transition-colors">
-          <CloseIcon />
-        </button>
+    <ModalShell open onClose={onClose} titleId="class-booking-title" panelClassName="upload-modal" closeLabel="Close class booking">
         <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#EBF5FF] text-[#1E70EB]">
           <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none">
             <rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
@@ -1035,7 +1027,7 @@ function ClassBookingPromptModal({
             <path d="M12 14h.01M16 14h.01M8 14h.01M12 17h.01M8 17h.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </div>
-        <h3 className="mt-4 text-[17px] font-extrabold tracking-[-0.01em] text-[var(--ab-ink)]">
+        <h3 id="class-booking-title" className="mt-4 text-[17px] font-extrabold tracking-[-0.01em] text-[var(--ab-ink)]">
           {ready ? `Book your free ${test} trial class` : `Finish your class profile first`}
         </h3>
         <p className="mt-2 text-[13.5px] leading-6 text-[#6B655C]">
@@ -1060,8 +1052,7 @@ function ClassBookingPromptModal({
             Maybe later
           </button>
         </div>
-      </div>
-    </>
+    </ModalShell>
   );
 }
 
@@ -1183,22 +1174,17 @@ function ProfilePopup({
   }
 
   return (
-    <>
-      <div
-        className="profile-panel-overlay"
-        onClick={requirePhone ? undefined : onClose}
-      />
-      <div
-        className="profile-panel"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="profile-modal-title"
-      >
-        {!requirePhone && (
-          <button type="button" onClick={onClose} aria-label="Close" className="ab-focus absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-md text-[#8A847B] transition-colors hover:bg-[#F0EDE4]">
-            <CloseIcon />
-          </button>
-        )}
+    <ModalShell
+      open
+      onClose={onClose}
+      titleId="profile-modal-title"
+      panelClassName="profile-panel"
+      layerClassName="profile-panel-layer"
+      closeLabel="Close profile"
+      showClose={!requirePhone}
+      closeOnBackdrop={!requirePhone}
+      closeOnEscape={!requirePhone}
+    >
         <div className="flex items-center gap-3">
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#12244a] text-[16px] font-bold text-white">{initial}</div>
           <div className="min-w-0">
@@ -1360,8 +1346,7 @@ function ProfilePopup({
             </div>
           </form>
         )}
-      </div>
-    </>
+    </ModalShell>
   );
 }
 
@@ -1463,12 +1448,13 @@ function UploadInviteCard({
       />
 
       {uploadWindowOpen && (
-        <>
-          <div className="upload-modal-overlay" onClick={() => setUploadWindowOpen(false)} />
-          <div className="upload-modal upload-specific-modal" role="dialog" aria-modal="true" aria-labelledby={`upload-${msg.slotId}-title`}>
-            <button type="button" onClick={() => setUploadWindowOpen(false)} aria-label="Close" className="ab-focus absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-lg text-[#8A847B] transition hover:bg-[#F0EDE4]">
-              <CloseIcon />
-            </button>
+        <ModalShell
+          open
+          onClose={() => setUploadWindowOpen(false)}
+          titleId={`upload-${msg.slotId}-title`}
+          panelClassName="upload-modal upload-specific-modal"
+          closeLabel="Close document upload"
+        >
             <p className="chat-upload-invite-eyebrow">Document upload</p>
             <h3 id={`upload-${msg.slotId}-title`} className="mt-3 pr-8 text-[18px] font-extrabold tracking-[-0.02em] text-[var(--ab-ink)]">
               Add your {msg.slotLabel.toLowerCase()}
@@ -1504,8 +1490,7 @@ function UploadInviteCard({
               <p className="text-[10.5px] leading-4 text-[#8A847B]">Private to your account. One file for this document type.</p>
               <button type="button" onClick={() => setUploadWindowOpen(false)} className="ab-focus shrink-0 rounded-lg px-3 py-2 text-[12px] font-bold text-[#6B655C] hover:bg-[#F4F2EC]">Cancel</button>
             </div>
-          </div>
-        </>
+        </ModalShell>
       )}
     </div>
   );

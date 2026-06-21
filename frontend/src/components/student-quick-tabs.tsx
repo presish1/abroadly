@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { BrandWordmark } from "@/components/brand-wordmark";
 
 export type StudentQuickTab = "profile" | "chat" | "dashboard" | "documents" | "universities";
 
@@ -115,8 +116,7 @@ export function StudentQuickTabs({
   return (
     <aside className="chat-right-rail" aria-label="Student quick tabs">
       <Link href="/" className="ab-focus chat-left-brand">
-        <img src="/images/abroadly-logo.png" alt="Abroadly" className="h-9 w-9 rounded-[10px] bg-white object-contain p-0.5" />
-        <span>Abroadly</span>
+        <BrandWordmark />
       </Link>
 
       <p className="chat-right-rail-kicker">Quick tabs</p>

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Popup UI Evaluator"
+  short_description: "Evaluate and refine production popup interactions"
+  default_prompt: "Use $popup-ui-evaluator to audit and improve this popup flow with layered UI checks."

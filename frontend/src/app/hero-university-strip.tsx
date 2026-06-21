@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 
-/* Quiet trust strip for the dark hero — real universities our guidance covers.
- * Each logo sits in a small white chip so the favicon reads on the navy. */
+/* Quiet trust strip — real universities our guidance covers. */
 
 const UNIS: { name: string; domain: string }[] = [
   { name: "Oxford", domain: "ox.ac.uk" },
@@ -19,9 +18,9 @@ function UniItem({ name, domain }: { name: string; domain: string }) {
   const [failed, setFailed] = useState(false);
   return (
     <span className="group inline-flex items-center gap-2 transition">
-      <span className="flex h-[26px] w-[26px] items-center justify-center rounded-md bg-white shadow-[0_1px_3px_rgba(0,0,0,0.18)]">
+      <span className="flex h-[26px] w-[26px] items-center justify-center rounded-md bg-white/10 border border-white/10 shadow-[0_1px_3px_rgba(0,0,0,0.4)]">
         {failed ? (
-          <span className="text-[11px] font-extrabold text-[#12244a]">{name[0]}</span>
+          <span className="text-[11px] font-extrabold text-purple-300">{name[0]}</span>
         ) : (
           <img
             src={`https://icons.duckduckgo.com/ip3/${domain}.ico`}
@@ -34,7 +33,7 @@ function UniItem({ name, domain }: { name: string; domain: string }) {
           />
         )}
       </span>
-      <span className="text-[13px] font-semibold tracking-[-0.01em] text-white/55 transition group-hover:text-white/85">
+      <span className="text-[13px] font-semibold tracking-[-0.01em] text-slate-400 transition group-hover:text-white">
         {name}
       </span>
     </span>

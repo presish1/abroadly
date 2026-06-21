@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import {
   requestService,
   type ServiceRequestType,
   type StudentOut,
 } from "@/lib/api";
+import { ModalShell } from "@/components/modal-shell";
 
 const TESTS = ["IELTS", "PTE", "TOEFL"];
 const TIMES = ["Morning", "Afternoon", "Evening"];
@@ -48,19 +49,6 @@ export function ServiceRequestModal({
   const [error, setError] = useState<string | null>(null);
   const isClass = requestType === "class_booking";
 
-  useEffect(() => {
-    const previousOverflow = document.body.style.overflow;
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onClose();
-    };
-    document.body.style.overflow = "hidden";
-    window.addEventListener("keydown", onKeyDown);
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener("keydown", onKeyDown);
-    };
-  }, [onClose]);
-
   async function confirm() {
     setSubmitting(true);
     setError(null);
@@ -81,15 +69,7 @@ export function ServiceRequestModal({
   }
 
   return (
-    <>
-      <button type="button" aria-label="Close booking" onClick={onClose} className="service-modal-overlay" />
-      <section className="service-modal" role="dialog" aria-modal="true" aria-labelledby="service-modal-title">
-        <button type="button" onClick={onClose} aria-label="Close" className="ab-focus service-modal-close">
-          <svg viewBox="0 0 16 16" aria-hidden className="h-4 w-4" fill="none">
-            <path d="m4 4 8 8m0-8-8 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-          </svg>
-        </button>
-
+    <ModalShell open onClose={onClose} titleId="service-modal-title" panelClassName="service-modal" closeLabel="Close booking">
         {confirmed ? (
           <div className="py-2 text-center">
             <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#ECF5EF] text-[#0A6E45]">
@@ -155,7 +135,6 @@ export function ServiceRequestModal({
             </button>
           </>
         )}
-      </section>
-    </>
+    </ModalShell>
   );
 }

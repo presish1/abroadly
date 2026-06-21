@@ -4,8 +4,7 @@ import { useState } from "react";
 import { GoogleSignInModal } from "@/components/google-sign-in-modal";
 
 /* Hero call-to-action: pick a degree + country, then sign in with Google.
- * The choice is stashed in localStorage so onboarding can pre-fill it.
- * Dark-hero styling — sits on the navy hero band. */
+ * The choice is stashed in localStorage so onboarding can pre-fill it. */
 
 const DEGREES = ["Bachelor's", "Master's", "PhD", "MBA", "Diploma"];
 
@@ -21,7 +20,7 @@ function Chevron() {
     <svg
       viewBox="0 0 12 12"
       aria-hidden="true"
-      className="pointer-events-none absolute right-4 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#15294C]/55"
+      className="pointer-events-none absolute right-4 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400"
       fill="none"
     >
       <path d="M2.5 4.5L6 8l3.5-3.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
@@ -41,9 +40,9 @@ function GoogleMark() {
 }
 
 const selectClass =
-  "ab-focus cursor-pointer appearance-none rounded-[14px] border border-white/70 bg-white py-3 pl-4 pr-11 text-[15px] font-extrabold text-[#15294C] shadow-[0_8px_24px_-16px_rgba(0,0,0,0.75)] transition hover:-translate-y-0.5 hover:border-[#FFB37A] focus:border-[#F2682C] focus:ring-4 focus:ring-[#F2682C]/15 sm:text-[16px]";
+  "ab-focus min-h-12 cursor-pointer appearance-none rounded-[14px] border border-white/10 bg-slate-950/80 py-3 pl-4 pr-11 text-[15px] font-extrabold text-white shadow-inner transition hover:border-purple-500/50 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/15 sm:text-[16px]";
 
-const OPTION_CLASS = "bg-white text-[#15294C]";
+const OPTION_CLASS = "bg-slate-950 text-white";
 
 export function HeroIntentForm() {
   const [degree, setDegree] = useState("");
@@ -64,7 +63,7 @@ export function HeroIntentForm() {
   return (
     <div className="flex w-full flex-col items-center gap-6">
       {/* selector sentence */}
-      <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-3 rounded-[22px] border border-white/10 bg-white/[0.055] px-4 py-4 text-[17px] font-semibold text-white/90 shadow-[0_20px_55px_-38px_rgba(0,0,0,0.9)] backdrop-blur-sm sm:px-5 sm:text-[18px]">
+      <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-3 rounded-[22px] border border-white/10 bg-slate-900/60 px-4 py-4 text-[17px] font-semibold text-white shadow-2xl backdrop-blur-md sm:px-5 sm:text-[18px]">
         <span className="font-bold">I want to study</span>
 
         <div className="relative">
@@ -84,7 +83,7 @@ export function HeroIntentForm() {
           <Chevron />
         </div>
 
-        <span className="text-white/55">in</span>
+        <span className="text-slate-400">in</span>
 
         <div className="relative">
           <label className="sr-only" htmlFor="hero-country">Country</label>
@@ -108,13 +107,13 @@ export function HeroIntentForm() {
       <button
         type="button"
         onClick={start}
-        className="ab-focus group inline-flex items-center gap-2.5 rounded-[15px] bg-[#F2682C] py-3 pl-3 pr-3 text-[15px] font-extrabold text-white shadow-[0_16px_36px_-11px_rgba(242,104,44,0.72)] transition hover:-translate-y-0.5 hover:bg-[#E95D22] active:translate-y-0"
+        className="ab-focus group inline-flex min-h-12 items-center gap-2.5 rounded-[15px] bg-purple-600 py-3 pl-3 pr-3 text-[15px] font-extrabold text-white shadow-[0_16px_34px_-12px_rgba(139,92,246,0.5)] transition hover:-translate-y-0.5 hover:bg-purple-500 active:translate-y-0 duration-300"
       >
         <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-white">
           <GoogleMark />
         </span>
         Find my fit
-        <span className="ml-0.5 rounded-[9px] border border-white/70 bg-[#FFF4D8] px-2.5 py-1 text-[11px] font-black uppercase tracking-[0.08em] text-[#8B451F] shadow-sm transition group-hover:bg-white">
+        <span className="ml-0.5 rounded-[9px] border border-purple-300 bg-purple-100 px-2.5 py-1 text-[11px] font-black uppercase tracking-[0.08em] text-purple-950 shadow-sm transition group-hover:bg-white duration-300">
           Free
         </span>
       </button>

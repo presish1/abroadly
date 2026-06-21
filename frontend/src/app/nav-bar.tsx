@@ -31,8 +31,8 @@ export function NavBar({
 
   return (
     <>
-      <header className="sticky top-0 z-50 border-b border-[var(--ab-line)]/70 bg-[var(--ab-paper)]/80 backdrop-blur-xl">
-        <nav className="mx-auto flex max-w-6xl items-center justify-between px-5 py-2 sm:px-8">
+      <header className="public-nav-shell sticky top-0 z-50 bg-transparent backdrop-blur-xl">
+        <nav className="public-nav mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6">
           <Link href="/" className="ab-focus rounded-lg">
             <BrandWordmark />
           </Link>
@@ -43,7 +43,7 @@ export function NavBar({
               <a
                 key={href}
                 href={href}
-                className="ab-focus rounded-lg px-3 py-2 text-[14px] font-semibold text-[var(--ab-ink-soft)] transition hover:bg-[#F0EDE4] hover:text-[var(--ab-ink)]"
+                className="ab-focus rounded-lg px-3 py-2 text-[14px] font-semibold text-[var(--ab-ink-soft)] transition hover:bg-white/10 hover:text-[var(--ab-ink)]"
               >
                 {label}
               </a>
@@ -56,7 +56,7 @@ export function NavBar({
             <button
               type="button"
               onClick={() => setSignInOpen(true)}
-              className="ab-focus hidden rounded-lg px-3 py-2 text-[14px] font-semibold text-[var(--ab-ink-soft)] transition hover:bg-[#F0EDE4] hover:text-[var(--ab-ink)] sm:inline-flex"
+              className="ab-focus hidden rounded-lg px-3 py-2 text-[14px] font-semibold text-[var(--ab-ink-soft)] transition hover:bg-white/10 hover:text-[var(--ab-ink)] sm:inline-flex"
             >
               Sign in
             </button>
