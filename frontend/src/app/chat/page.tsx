@@ -30,6 +30,7 @@ import {
 } from "@/lib/country-data";
 import { ESSENTIAL_SLOTS, computeDocReadiness } from "@/lib/document-catalog";
 import { StudentQuickTabs } from "@/components/student-quick-tabs";
+import { ServiceRequestModal } from "@/components/service-request-modal";
 
 /* Abroadly's own human counsellor (placeholder identity — operator can edit). */
 const COUNSELOR = {
@@ -949,48 +950,6 @@ function UploadPromptModal({
   );
 }
 
-function ClassBookingPromptModal({
-  test,
-  onConfirm,
-  onClose,
-}: {
-  test: string;
-  onConfirm: () => void;
-  onClose: () => void;
-}) {
-  return (
-    <>
-      <div className="upload-modal-overlay" onClick={onClose} />
-      <div className="upload-modal" role="dialog" aria-modal="true">
-        <button type="button" onClick={onClose} aria-label="Close" className="ab-focus absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-lg text-[#8A847B] hover:bg-[#F0EDE4] transition-colors">
-          <CloseIcon />
-        </button>
-        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#EBF5FF] text-[#1E70EB]">
-          <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none">
-            <rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M12 14h.01M16 14h.01M8 14h.01M12 17h.01M8 17h.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </div>
-        <h3 className="mt-4 text-[17px] font-extrabold tracking-[-0.01em] text-[var(--ab-ink)]">
-          Book your free {test} trial class
-        </h3>
-        <p className="mt-2 text-[13.5px] leading-6 text-[#6B655C]">
-          Study with verified tutors from Abroadly. Our classes start every Sunday and feature daily mock tests and official prep materials.
-        </p>
-        <div className="mt-5 flex gap-2.5">
-          <button type="button" onClick={onConfirm} className="ab-focus flex-1 rounded-xl bg-[#1E70EB] px-4 py-3 text-[13px] font-bold text-white shadow-[var(--shadow-sm)] transition hover:bg-[#1559C2]">
-            Book Free Slot
-          </button>
-          <button type="button" onClick={onClose} className="ab-focus rounded-xl border border-[#E8E5DD] bg-white px-4 py-3 text-[13px] font-semibold text-[#6B655C] transition hover:bg-[#F4F2EC]">
-            Maybe later
-          </button>
-        </div>
-      </div>
-    </>
-  );
-}
-
 /* ── Profile popup ────────────────────────────────────────────────── */
 
 function ProfilePopup({
@@ -1494,6 +1453,7 @@ export default function ChatPage() {
   // URL deep links
   //   ?docs=open    → opens the document upload panel (existing behaviour)
   //   ?profile=open → opens the profile editor (used by shared Quick Tabs)
+  //   ?class=claim  → opens the free IELTS/PTE class confirmation
   //   ?send=<query> → auto-sends a question on landing (used by /dashboard's
   //                   "Ask Abroadly" buttons to deep-link a specific prompt into chat)
   useEffect(() => {
@@ -1501,6 +1461,7 @@ export default function ChatPage() {
     const params = new URLSearchParams(window.location.search);
     if (params.get("docs") === "open") setDocPanelOpen(true);
     if (params.get("profile") === "open") setProfileOpen(true);
+    if (params.get("class") === "claim") setClassBookingPrompt({ test: "IELTS" });
     const pendingSend = params.get("send");
     const pendingSource = params.get("source") || undefined;
     if (pendingSend) {
@@ -1508,10 +1469,11 @@ export default function ChatPage() {
       const src = pendingSource;
       setTimeout(() => sendMessageRef.current?.(q, src), 300);
     }
-    if (params.get("docs") || params.get("profile") || params.get("send") || params.get("panel") || params.get("source")) {
+    if (params.get("docs") || params.get("profile") || params.get("class") || params.get("send") || params.get("panel") || params.get("source")) {
       const next = new URL(window.location.href);
       next.searchParams.delete("docs");
       next.searchParams.delete("profile");
+      next.searchParams.delete("class");
       next.searchParams.delete("send");
       next.searchParams.delete("panel");
       next.searchParams.delete("source");
@@ -2005,6 +1967,11 @@ export default function ChatPage() {
             <FolderIcon />
             Open document manager
           </Link>
+          <button type="button" onClick={() => setClassBookingPrompt({ test: student?.planned_english_test || student?.english_test_type || "IELTS" })} className="ab-focus class-claim-inline">
+            <span className="class-claim-inline-spark" aria-hidden>✦</span>
+            <span><strong>Free IELTS / PTE class</strong><small>Confirm your preferred time</small></span>
+            <span aria-hidden>→</span>
+          </button>
         </section>
 
         {/* To-do (top 3 pending) */}
@@ -2153,7 +2120,7 @@ export default function ChatPage() {
                   ))}
                 </div>
 
-                <Link href="/chat/documents" className="ab-focus chat-upload-nudge">
+                <Link href="/chat/documents" className="ab-focus chat-upload-nudge is-highlighted">
                   <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#E8F2EC] text-[#0A6E45]"><FolderIcon /></span>
                   <span className="text-left">
                     <span className="block text-[13px] font-semibold text-[var(--ab-ink)]">Upload your documents</span>
@@ -2325,13 +2292,12 @@ export default function ChatPage() {
         />
       )}
 
-      {classBookingPrompt && (
-        <ClassBookingPromptModal
-          test={classBookingPrompt.test}
-          onConfirm={() => {
-            setClassBookingPrompt(null);
-            grantCounselorCall();
-          }}
+      {classBookingPrompt && student && (
+        <ServiceRequestModal
+          student={student}
+          requestType="class_booking"
+          preferredTest={classBookingPrompt.test}
+          onConfirmed={setStudent}
           onClose={() => setClassBookingPrompt(null)}
         />
       )}

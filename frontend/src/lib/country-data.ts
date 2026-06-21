@@ -25,6 +25,8 @@ export interface TimelineEvent {
   monthIdx: number;
   /** Year offset from "next sensible intake year". 0 = same year, -1 = year before. */
   yearOffset: number;
+  /** Optional intake-relative offset. Preferred for countries with multiple intakes. */
+  monthsBefore?: number;
   /** Kind of event — drives the marker colour */
   kind: "intake" | "deadline" | "visa" | "test" | "prep";
   /** Short headline shown in the row */
@@ -236,7 +238,7 @@ export const COUNTRY_PROFILES: Record<CountryCode, CountryProfile> = {
     name: "Australia",
     flag: "\u{1F1E6}\u{1F1FA}",
     pitch:
-      "Two intakes per year (Feb + Jul), generous post-study work (2-4 years), strong demand for nursing, IT, engineering.",
+      "February and July are common intakes, but exact dates and course availability depend on the provider and campus.",
     primaryIntake: { month: 6, label: "July 2026" }, // Jul = idx 6
     secondaryIntake: { month: 1, label: "February 2027" },
     factStrip: [
@@ -247,95 +249,97 @@ export const COUNTRY_PROFILES: Record<CountryCode, CountryProfile> = {
       },
       {
         label: "Visa fee",
-        value: "A$1,600",
-        detail: "Increased July 2024. Add OSHC ~A$609/yr.",
+        value: "Check current fee",
+        detail: "Fees can change. Confirm in the Home Affairs pricing estimator before lodging.",
       },
       {
         label: "Apply visa from",
         value: "After CoE",
-        detail: "Apply once you have Confirmation of Enrolment. Allow 4-12 weeks.",
+        detail: "Lodge with a valid Confirmation of Enrolment. Processing time varies.",
       },
       {
         label: "Maintenance proof",
-        value: "A$29,710",
-        detail: "12-month financial capacity (Genuine Student requirement).",
+        value: "Check current rules",
+        detail: "Use the current Home Affairs financial-capacity requirements for your family setup.",
       },
       {
         label: "Post-study work",
-        value: "2–4 years",
-        detail: "Subclass 485. Length depends on degree level + city.",
+        value: "Subclass 485",
+        detail: "Eligibility and stay period depend on the current stream and qualification rules.",
       },
     ],
     timeline: [
       {
         monthIdx: 6,
         yearOffset: -1,
+        monthsBefore: 12,
         kind: "prep",
-        title: "Research + shortlist providers",
-        detail: "~12 months out. Pick CRICOS-registered courses that fit your goals — start with the universities section below.",
+        title: "Choose a CRICOS course and intake",
+        detail: "Shortlist registered providers, then verify the exact course, campus, intake and entry requirements on each official provider page.",
       },
       {
         monthIdx: 8,
         yearOffset: -1,
+        monthsBefore: 9,
         kind: "test",
-        title: "Sit IELTS / PTE",
-        detail: "Most providers accept IELTS 6.0–6.5 or PTE 50–58; nursing, teaching and social work often need ~7.0.",
+        title: "Prepare English and core documents",
+        detail: "Book the accepted English test if needed. Gather passport, academic records, grading evidence, CV or gap evidence, and course-specific documents.",
       },
       {
         monthIdx: 9,
         yearOffset: -1,
+        monthsBefore: 7,
         kind: "deadline",
-        title: "Apply to providers",
-        detail: "Applications are rolling — apply 6–9 months ahead so the visa has safe processing time.",
+        title: "Submit provider applications",
+        detail: "Apply early enough to answer document requests. Offer timing varies by provider, course, intake and whether the application is complete.",
       },
       {
         monthIdx: 11,
         yearOffset: -1,
+        monthsBefore: 5,
         kind: "prep",
-        title: "Offer → prepare NOC",
-        detail: "Accept your offer letter, then prepare the NOC before paying tuition through a Nepali bank.",
+        title: "Check the offer and prepare finances",
+        detail: "Read every condition and the refund policy. Prepare genuine financial evidence and your Genuine Student responses while meeting offer conditions.",
       },
       {
         monthIdx: 0,
         yearOffset: 0,
+        monthsBefore: 4,
         kind: "prep",
-        title: "Pay tuition + OSHC → CoE",
-        detail: "Pay your deposit and buy OSHC — that releases your Confirmation of Enrolment (CoE), which the visa needs.",
+        title: "Arrange Nepal NOC and official payment",
+        detail: "Complete the current Nepal NOC process before remitting tuition. Pay only through verified provider instructions and keep the bank/SWIFT evidence.",
       },
       {
         monthIdx: 1,
         yearOffset: 0,
-        kind: "visa",
-        title: "Lodge Subclass 500 + Genuine Student",
-        detail: "Apply in ImmiAccount with your Genuine Student answers (150 words each). Processing is ~4–12 weeks.",
+        monthsBefore: 3,
+        kind: "prep",
+        title: "Accept the offer, OSHC and CoE",
+        detail: "Meet the provider's conditions, accept the offer, arrange required OSHC and make the requested deposit. The provider then issues the CoE.",
       },
       {
         monthIdx: 2,
         yearOffset: 0,
-        kind: "prep",
-        title: "Medical + biometrics",
-        detail: "Complete the health examination and biometrics when Home Affairs requests them.",
+        monthsBefore: 2,
+        kind: "visa",
+        title: "Lodge Subclass 500 in ImmiAccount",
+        detail: "Use your CoE and current evidence checklist. Include Genuine Student answers, financial evidence, English evidence and other documents that apply to your case.",
       },
       {
         monthIdx: 4,
         yearOffset: 0,
-        kind: "visa",
-        title: "Visa decision",
-        detail: "Most subclass 500 decisions arrive 4–12 weeks after a complete application.",
-      },
-      {
-        monthIdx: 5,
-        yearOffset: 0,
+        monthsBefore: 1,
         kind: "prep",
-        title: "Pre-departure + flights",
-        detail: "Book flights only once OSHC and welfare dates are valid. Sort arrival and accommodation.",
+        title: "Complete requested checks and monitor the case",
+        detail: "Use ImmiAccount for health, biometrics or further-information requests. Home Affairs timing varies; do not rely on a promised decision date.",
       },
       {
         monthIdx: 6,
         yearOffset: 0,
+        monthsBefore: 0,
         kind: "intake",
-        title: "July intake — orientation",
-        detail: "Semesters start mid–late July. Aiming for February? Shift every step about five months earlier.",
+        title: "Travel after grant and attend orientation",
+        detail: "Book travel only after the visa is granted. Check CoE, OSHC and provider arrival dates, then complete enrolment and orientation.",
       },
     ],
     scholarships: [
@@ -375,10 +379,10 @@ export const COUNTRY_PROFILES: Record<CountryCode, CountryProfile> = {
     cost: {
       tuitionLabel: "Tuition / year",
       tuitionValue: "A$25k–A$55k",
-      livingLabel: "Living (12 mo)",
-      livingValue: "A$29,710 (visa requirement)",
+      livingLabel: "Living evidence",
+      livingValue: "Check current requirement",
       visaLabel: "Visa + OSHC",
-      visaValue: "A$1,600 + ~A$609/yr",
+      visaValue: "Check current fee + quote",
       flightValue: "NPR 100k–160k one-way",
     },
     links: [

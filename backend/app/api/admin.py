@@ -1,10 +1,10 @@
 """Admin API — student management, chat monitoring, manual replies, documents."""
 from __future__ import annotations
 
-import os
 import uuid
 from datetime import datetime, timedelta
 from pathlib import Path
+from typing import Literal
 
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import FileResponse
@@ -20,7 +20,7 @@ from app.core.auth import (
 )
 from app.core.config import settings
 from app.core.db import get_chroma, get_session
-from app.models.student import ChatTurnModel, StudentModel
+from app.models.student import ChatTurnModel, ServiceRequestModel, StudentModel
 
 router = APIRouter()
 
@@ -127,8 +127,26 @@ class StatsResponse(BaseModel):
     chats_today: int
     ai_paused_count: int
     total_documents: int
+    pending_requests: int
     top_countries: list[dict]
     recent_students: list[dict]
+
+
+class ServiceRequestItem(BaseModel):
+    id: str
+    student_id: str
+    full_name: str
+    email: str
+    phone: str | None
+    request_type: str
+    test_type: str | None
+    preferred_time: str | None
+    status: str
+    created_at: datetime
+
+
+class ServiceRequestStatusUpdate(BaseModel):
+    status: Literal["pending", "contacted", "completed", "cancelled"]
 
 
 # ── Helpers ───────────────────────────────────────────────────────────
@@ -258,6 +276,9 @@ async def admin_stats(
     paused = (await db.execute(
         select(func.count(StudentModel.id)).where(StudentModel.ai_paused == True)  # noqa: E712
     )).scalar() or 0
+    pending_requests = (await db.execute(
+        select(func.count(ServiceRequestModel.id)).where(ServiceRequestModel.status == "pending")
+    )).scalar() or 0
 
     total_docs = 0
     upload_dir = Path(settings.upload_dir)
@@ -295,8 +316,76 @@ async def admin_stats(
         chats_today=chats_today,
         ai_paused_count=paused,
         total_documents=total_docs,
+        pending_requests=pending_requests,
         top_countries=top_countries,
         recent_students=recent_students,
+    )
+
+
+# ── Service request inbox ──────────────────────────────────────────────
+
+@router.get("/requests", response_model=list[ServiceRequestItem])
+async def admin_list_requests(
+    status: Literal["all", "pending", "contacted", "completed", "cancelled"] = "all",
+    _admin: str = Depends(get_current_admin),
+    db: AsyncSession = Depends(get_session),
+) -> list[ServiceRequestItem]:
+    stmt = (
+        select(ServiceRequestModel, StudentModel)
+        .join(StudentModel, StudentModel.id == ServiceRequestModel.student_id)
+        .order_by(ServiceRequestModel.created_at.desc())
+        .limit(200)
+    )
+    if status != "all":
+        stmt = stmt.where(ServiceRequestModel.status == status)
+    rows = (await db.execute(stmt)).all()
+    return [
+        ServiceRequestItem(
+            id=str(request.id),
+            student_id=str(student.id),
+            full_name=student.full_name,
+            email=student.email,
+            phone=request.phone or student.phone,
+            request_type=request.request_type,
+            test_type=request.test_type,
+            preferred_time=request.preferred_time,
+            status=request.status,
+            created_at=request.created_at,
+        )
+        for request, student in rows
+    ]
+
+
+@router.put("/requests/{request_id}", response_model=ServiceRequestItem)
+async def admin_update_request(
+    request_id: str,
+    req: ServiceRequestStatusUpdate,
+    _admin: str = Depends(get_current_admin),
+    db: AsyncSession = Depends(get_session),
+) -> ServiceRequestItem:
+    rid = _parse_uuid(request_id)
+    row = (await db.execute(
+        select(ServiceRequestModel, StudentModel)
+        .join(StudentModel, StudentModel.id == ServiceRequestModel.student_id)
+        .where(ServiceRequestModel.id == rid)
+    )).one_or_none()
+    if not row:
+        raise HTTPException(status_code=404, detail="Request not found")
+    request, student = row
+    request.status = req.status
+    request.resolved_at = datetime.utcnow() if req.status in {"completed", "cancelled"} else None
+    await db.commit()
+    return ServiceRequestItem(
+        id=str(request.id),
+        student_id=str(student.id),
+        full_name=student.full_name,
+        email=student.email,
+        phone=request.phone or student.phone,
+        request_type=request.request_type,
+        test_type=request.test_type,
+        preferred_time=request.preferred_time,
+        status=request.status,
+        created_at=request.created_at,
     )
 
 

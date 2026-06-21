@@ -16,6 +16,7 @@ import {
 } from "antd";
 import { abroadlyAntdTheme } from "@/lib/antd-theme";
 import { StudentQuickTabs } from "@/components/student-quick-tabs";
+import { BrandWordmark } from "@/components/brand-wordmark";
 import { ESSENTIAL_SLOTS } from "@/lib/document-catalog";
 import {
   classifyFit,
@@ -30,6 +31,7 @@ import type { StudentOut, StudentDocument, ChatTurn } from "@/lib/api";
 
 const DOC_SLOTS = [
   { id: "grade_sheet", label: "Transcript", hint: "+2 / bachelor's marksheet" },
+  { id: "citizenship", label: "Citizenship", hint: "Front + back of Nepali citizenship" },
   { id: "passport", label: "Passport", hint: "Valid course + 6 months" },
   { id: "ielts", label: "English test", hint: "IELTS / PTE / TOEFL" },
   { id: "sop", label: "Statement of purpose", hint: "500–1,000 words" },
@@ -109,7 +111,7 @@ function heroFocus(student: StudentOut, docTypes: Set<string>, country: CountryP
   if (!student.profile_completed)
     return { tag: "Profile", title: "Finish your study profile.", context: "Two minutes of detail (GPA, intake, field) sharpens every recommendation here.", label: "Edit profile", query: "Help me complete my study profile." };
   if (!docTypes.has("ielts"))
-    return { tag: "Test", title: "Book your IELTS test this week.", context: `Slots in Kathmandu fill 4–6 weeks ahead, and you have ~${intake.monthsOut} months to ${intake.label}.`, label: "How do I book IELTS?", query: `Walk me through booking IELTS in Kathmandu for ${country.name}.` };
+    return { tag: "Test", title: "Confirm your English test plan.", context: `Use the test and preferred time from your profile, or adjust them before you confirm. Abroadly will follow up with the available options.`, label: "Book a test", query: `Walk me through choosing an English test for ${country.name}.` };
   if (!docTypes.has("grade_sheet"))
     return { tag: "Documents", title: "Get your transcript attested.", context: "NEB + MoEST + MoFA attestation takes ~2 weeks — start now.", label: "Walk me through attestation", query: `How do I get my NEB transcript attested for ${country.name}?` };
   if (!docTypes.has("sop"))
@@ -127,9 +129,10 @@ export interface AntdDashboardProps {
   countries: CountryCode[];
   onSelectCountry: (c: CountryCode) => void;
   onSendQuery: (q: string) => void;
+  onBookTest: () => void;
 }
 
-export function AntdDashboard({ student, documents, activeCountry, countries, onSelectCountry, onSendQuery }: AntdDashboardProps) {
+export function AntdDashboard({ student, documents, activeCountry, countries, onSelectCountry, onSendQuery, onBookTest }: AntdDashboardProps) {
   const screens = Grid.useBreakpoint();
   const country = COUNTRY_PROFILES[activeCountry];
   const intake = nextIntakeFor(country.code);
@@ -188,7 +191,12 @@ export function AntdDashboard({ student, documents, activeCountry, countries, on
         }]
       : []),
     ...country.timeline
-      .map((e) => ({ e, abs: (tlYear + e.yearOffset) * 12 + e.monthIdx }))
+      .map((e) => ({
+        e,
+        abs: typeof e.monthsBefore === "number"
+          ? timelineIntake.date.getFullYear() * 12 + timelineIntake.date.getMonth() - e.monthsBefore
+          : (tlYear + e.yearOffset) * 12 + e.monthIdx,
+      }))
       .filter((x) => x.abs >= tlNowAbs)
       .sort((a, b) => a.abs - b.abs)
       .map(({ e, abs }) => ({
@@ -221,8 +229,7 @@ export function AntdDashboard({ student, documents, activeCountry, countries, on
         <header className="sticky top-0 z-20 border-b border-[#E8E5DD] bg-[#FAF9F6]/90 backdrop-blur">
           <div className="mx-auto flex max-w-[1280px] items-center justify-between gap-4 px-5 py-3 lg:px-8">
             <Link href="/" className="flex items-center gap-2.5">
-              <img src="/images/abroadly-logo.png" alt="Abroadly" className="h-8 w-8 rounded-lg" />
-              <span className="text-[16px] font-extrabold tracking-[-0.02em]">Abroadly</span>
+              <BrandWordmark />
             </Link>
             <div className="flex items-center gap-3">
               {countries.length > 1 && (
@@ -234,9 +241,9 @@ export function AntdDashboard({ student, documents, activeCountry, countries, on
         </header>
 
         <div className="mx-auto max-w-[1280px] px-5 py-6 lg:px-8">
-          <div className="grid gap-5 lg:grid-cols-[300px_minmax(0,1fr)]">
+          <div className="grid gap-5 xl:grid-cols-[300px_minmax(0,1fr)]">
             {/* ── Left rail ───────────────────────────────────────── */}
-            <aside className="flex flex-col gap-5 lg:sticky lg:top-[84px] lg:self-start">
+            <aside className="grid gap-5 md:grid-cols-3 xl:sticky xl:top-[84px] xl:flex xl:flex-col xl:self-start">
               {/* profile */}
               <Panel bodyPad={18}>
                 <div className="flex items-center gap-3">
@@ -305,7 +312,7 @@ export function AntdDashboard({ student, documents, activeCountry, countries, on
                 <h2 className="mt-3.5 max-w-2xl text-[22px] font-extrabold leading-[1.15] tracking-[-0.02em] sm:text-[26px]">{focus.title}</h2>
                 <p className="mt-2.5 max-w-2xl text-[13.5px] leading-[1.6] text-white/75">{focus.context}</p>
                 <div className="mt-5 flex flex-wrap gap-2.5">
-                  <Button type="primary" onClick={() => onSendQuery(focus.query)}>{focus.label} →</Button>
+                  <Button type="primary" onClick={focus.tag === "Test" ? onBookTest : () => onSendQuery(focus.query)}>{focus.label} →</Button>
                   <Link href="/chat?docs=open"><Button ghost style={{ color: "#fff", borderColor: "rgba(255,255,255,0.28)" }}>Manage documents</Button></Link>
                 </div>
               </div>
@@ -353,6 +360,13 @@ export function AntdDashboard({ student, documents, activeCountry, countries, on
               {/* documents — profile-style cards with a sample preview + clear upload */}
               <Panel eyebrow="Documents" title="Your application file" bodyPad={18}
                 extra={<span className="text-[12px] font-semibold text-[#6B655C]">{docCount}/{DOC_SLOTS.length} ready</span>}>
+                {docCount === 0 && (
+                  <Link href="/chat/documents" className="document-start-callout">
+                    <span className="document-start-icon" aria-hidden>↑</span>
+                    <span><strong>Start with your transcript</strong><small>Upload one document to personalize your plan.</small></span>
+                    <span aria-hidden>→</span>
+                  </Link>
+                )}
                 <div className="mb-4">
                   <Progress percent={Math.round((docCount / DOC_SLOTS.length) * 100)} strokeColor="#0A6E45" trailColor="#EFECE4" showInfo={false} />
                 </div>
@@ -361,6 +375,7 @@ export function AntdDashboard({ student, documents, activeCountry, countries, on
                     const up = docTypes.has(slot.id);
                     const META: Record<string, { emoji: string; tint: string; bar: string }> = {
                       grade_sheet: { emoji: "\u{1F4CA}", tint: "linear-gradient(135deg,#E8F0FB,#D6E6F7)", bar: "#3B6FB0" },
+                      citizenship: { emoji: "\u{1F4C7}", tint: "linear-gradient(135deg,#F1EFEA,#E6E2D9)", bar: "#6B655C" },
                       passport: { emoji: "\u{1F6C2}", tint: "linear-gradient(135deg,#E1E7F4,#D0DAEF)", bar: "#1F3D78" },
                       ielts: { emoji: "\u{1F5E3}\u{FE0F}", tint: "linear-gradient(135deg,#FBF1DF,#F6E6C8)", bar: "#B8860B" },
                       sop: { emoji: "\u{270D}\u{FE0F}", tint: "linear-gradient(135deg,#E3F5EC,#CFEEDD)", bar: "#0A6E45" },
@@ -370,7 +385,7 @@ export function AntdDashboard({ student, documents, activeCountry, countries, on
                     };
                     const m = META[slot.id] ?? META.other;
                     return (
-                      <div key={slot.id} className="group flex flex-col overflow-hidden rounded-2xl border border-[#E8E5DD] bg-white transition hover:-translate-y-0.5 hover:border-[#0A6E45]/40 hover:shadow-[0_12px_26px_-14px_rgba(27,25,22,0.25)]">
+                      <div key={slot.id} className={`group flex flex-col overflow-hidden rounded-2xl border border-[#E8E5DD] bg-white transition hover:-translate-y-0.5 hover:border-[#0A6E45]/40 hover:shadow-[0_12px_26px_-14px_rgba(27,25,22,0.25)] ${docCount === 0 && slot.id === "grade_sheet" ? "document-card-next" : ""}`}>
                         <div className="relative flex h-[104px] items-center justify-center" style={{ background: m.tint }}>
                           <div className="flex h-[62px] w-[48px] flex-col items-center justify-center gap-[5px] rounded-md bg-white/95 shadow-[0_4px_12px_rgba(0,0,0,0.14)]">
                             <span className="text-[20px] leading-none">{m.emoji}</span>

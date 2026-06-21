@@ -50,8 +50,38 @@ export interface Stats {
   chats_today: number;
   ai_paused_count: number;
   total_documents: number;
+  pending_requests: number;
   top_countries: { country: string; count: number }[];
   recent_students: { id: string; name: string; email: string; created_at: string }[];
+}
+
+export type ServiceRequestStatus = "pending" | "contacted" | "completed" | "cancelled";
+
+export interface ServiceRequestItem {
+  id: string;
+  student_id: string;
+  full_name: string;
+  email: string;
+  phone: string | null;
+  request_type: "counselor_call" | "test_booking" | "class_booking";
+  test_type: string | null;
+  preferred_time: string | null;
+  status: ServiceRequestStatus;
+  created_at: string;
+}
+
+export async function getServiceRequests(status = "all"): Promise<ServiceRequestItem[]> {
+  return adminFetch(`/requests?status=${encodeURIComponent(status)}`);
+}
+
+export async function updateServiceRequest(
+  id: string,
+  status: ServiceRequestStatus,
+): Promise<ServiceRequestItem> {
+  return adminFetch(`/requests/${id}`, {
+    method: "PUT",
+    body: JSON.stringify({ status }),
+  });
 }
 
 export async function getStats(): Promise<Stats> {

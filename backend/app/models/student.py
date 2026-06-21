@@ -79,6 +79,25 @@ class ChatTurnModel(Base):
     )
 
 
+class ServiceRequestModel(Base):
+    __tablename__ = "service_requests"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    student_id = Column(UUID(as_uuid=True), ForeignKey("students.id", ondelete="CASCADE"), nullable=False)
+    request_type = Column(String(32), nullable=False)
+    test_type = Column(String(40), nullable=True)
+    preferred_time = Column(String(80), nullable=True)
+    phone = Column(String(40), nullable=True)
+    status = Column(String(16), nullable=False, default="pending", server_default="pending")
+    created_at = Column(TIMESTAMP(timezone=True), default=datetime.utcnow)
+    resolved_at = Column(TIMESTAMP(timezone=True), nullable=True)
+
+    __table_args__ = (
+        Index("ix_service_requests_status_created", "status", "created_at"),
+        Index("ix_service_requests_student_created", "student_id", "created_at"),
+    )
+
+
 # ---------------------------------------------------------------------------
 # Pydantic schemas
 # ---------------------------------------------------------------------------

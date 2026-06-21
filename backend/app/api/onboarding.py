@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import uuid
 from datetime import datetime
+from typing import Literal
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 from pydantic import BaseModel
@@ -10,8 +11,8 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.db import get_session
-from app.core.email import send_welcome_email
-from app.models.student import StudentCreate, StudentModel, StudentOut, StudentUpdate
+from app.core.email import send_service_request_notification, send_welcome_email
+from app.models.student import ServiceRequestModel, StudentCreate, StudentModel, StudentOut, StudentUpdate
 from app.qeval.lead import accumulate_lead_points, signal_points_for_doc
 
 router = APIRouter()
@@ -19,6 +20,9 @@ router = APIRouter()
 
 class CallRequest(BaseModel):
     phone: str | None = None
+    request_type: Literal["counselor_call", "test_booking", "class_booking"] = "counselor_call"
+    test_type: str | None = None
+    preferred_time: str | None = None
 
 
 def _to_out(model: StudentModel) -> StudentOut:
@@ -82,6 +86,7 @@ async def create_student(
 async def request_call(
     student_id: str,
     payload: CallRequest,
+    background_tasks: BackgroundTasks,
     db: AsyncSession = Depends(get_session),
 ) -> StudentOut:
     """Student grants consent for an Abroadly counselor to call them.
@@ -96,12 +101,34 @@ async def request_call(
     if not student:
         raise HTTPException(status_code=404, detail="student_not_found")
 
-    student.call_consent = True
+    if payload.request_type == "counselor_call":
+        student.call_consent = True
     if payload.phone and not student.phone:
-        student.phone = payload.phone
+        student.phone = payload.phone.strip()
+    phone = (student.phone or payload.phone or "").strip()
+    request = ServiceRequestModel(
+        id=uuid.uuid4(),
+        student_id=student.id,
+        request_type=payload.request_type,
+        test_type=(payload.test_type or "").strip() or None,
+        preferred_time=(payload.preferred_time or "").strip() or None,
+        phone=phone or None,
+        status="pending",
+        created_at=datetime.utcnow(),
+    )
+    db.add(request)
     student.updated_at = datetime.utcnow()
     await db.commit()
     await db.refresh(student)
+    background_tasks.add_task(
+        send_service_request_notification,
+        full_name=student.full_name,
+        email=student.email,
+        phone=phone or "Not provided",
+        request_type=payload.request_type,
+        test_type=request.test_type,
+        preferred_time=request.preferred_time,
+    )
     return _to_out(student)
 
 

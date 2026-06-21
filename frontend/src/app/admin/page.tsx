@@ -60,6 +60,19 @@ export default function AdminDashboard() {
         </button>
       </div>
 
+      <Link
+        href="/admin/requests"
+        className="mt-4 flex items-center justify-between rounded-xl border border-[#E8E5DD] bg-white px-4 py-3 transition hover:border-[#0A6E45]"
+      >
+        <div>
+          <p className="text-[12px] font-bold text-[#1B1916]">Call and booking requests</p>
+          <p className="mt-0.5 text-[11px] text-[#8A847B]">Open the team inbox and update follow-up status.</p>
+        </div>
+        <span className="flex h-8 min-w-8 items-center justify-center rounded-full bg-[#ECF5EF] px-2 text-[13px] font-extrabold text-[#0A6E45]">
+          {stats.pending_requests}
+        </span>
+      </Link>
+
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mt-6">
         {cards.map((c) => (
           <div key={c.label} className="rounded-2xl bg-white p-4 border border-gray-100">

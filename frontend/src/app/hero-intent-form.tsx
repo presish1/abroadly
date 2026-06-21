@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { googleLoginUrl } from "@/lib/api";
+import { GoogleSignInModal } from "@/components/google-sign-in-modal";
 
 /* Hero call-to-action: pick a degree + country, then sign in with Google.
  * The choice is stashed in localStorage so onboarding can pre-fill it.
@@ -48,6 +48,7 @@ const OPTION_CLASS = "bg-[#15294C] text-white";
 export function HeroIntentForm() {
   const [degree, setDegree] = useState("");
   const [country, setCountry] = useState("");
+  const [signInOpen, setSignInOpen] = useState(false);
 
   const start = () => {
     try {
@@ -57,7 +58,7 @@ export function HeroIntentForm() {
     } catch {
       /* storage blocked — sign-in still proceeds */
     }
-    window.location.href = googleLoginUrl();
+    setSignInOpen(true);
   };
 
   return (
@@ -103,6 +104,7 @@ export function HeroIntentForm() {
         Find my fit
         <span className="font-semibold text-white/75">· free</span>
       </button>
+      <GoogleSignInModal open={signInOpen} onClose={() => setSignInOpen(false)} />
     </div>
   );
 }

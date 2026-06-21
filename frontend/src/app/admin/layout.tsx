@@ -7,6 +7,7 @@ import { isAdminLoggedIn, adminLogout } from "@/lib/admin-api";
 
 const navItems = [
   { href: "/admin", label: "Dashboard", icon: "\u{1F4CA}" },
+  { href: "/admin/requests", label: "Requests", icon: "\u{1F514}" },
   { href: "/admin/students", label: "Students", icon: "\u{1F393}" },
 ];
 

@@ -204,6 +204,7 @@ function DocumentCard({
   studentId,
   onUploadComplete,
   onShowSample,
+  highlight = false,
 }: {
   slot: Slot;
   uploaded?: StudentDocument;
@@ -211,6 +212,7 @@ function DocumentCard({
   studentId: string;
   onUploadComplete: () => void;
   onShowSample: () => void;
+  highlight?: boolean;
 }) {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [dragOver, setDragOver] = useState(false);
@@ -243,7 +245,7 @@ function DocumentCard({
 
   return (
     <div
-      className={`docs-card ${uploaded ? "is-done" : ""} ${dragOver ? "is-drag" : ""} ${isBusy ? "is-busy" : ""}`}
+      className={`docs-card ${uploaded ? "is-done" : ""} ${dragOver ? "is-drag" : ""} ${isBusy ? "is-busy" : ""} ${highlight ? "is-next" : ""}`}
       onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
       onDragLeave={() => setDragOver(false)}
       onDrop={(e) => { e.preventDefault(); setDragOver(false); const f = e.dataTransfer.files[0]; if (f) onFile(f); }}
@@ -416,7 +418,10 @@ export default function DocumentsPage() {
               <div className="h-full rounded-full bg-[#0A6E45] transition-all duration-700" style={{ width: `${pct}%` }} />
             </div>
             {nextSlot && (
-              <p className="mt-1.5 text-[11px] text-[#6B655C]">Next: <span className="font-semibold text-[#1B1916]">{nextSlot.label}</span></p>
+              <div className="docs-next-prompt">
+                <span><strong>Start with {nextSlot.label}</strong><small>One upload makes every answer more specific to you.</small></span>
+                <button type="button" onClick={() => document.querySelector<HTMLInputElement>(`input[data-slot-id="${nextSlot.id}"]`)?.click()} className="ab-focus">Upload now <span aria-hidden>→</span></button>
+              </div>
             )}
           </div>
 
@@ -440,6 +445,7 @@ export default function DocumentsPage() {
                   studentId={studentId}
                   onUploadComplete={refresh}
                   onShowSample={() => setSampleSlot(s)}
+                  highlight={nextSlot?.id === s.id}
                 />
               ))}
             </div>
@@ -451,7 +457,7 @@ export default function DocumentsPage() {
           <div className="docs-accordion">
             {Object.entries(optionalByGroup).map(([group, slots]) => {
               const doneInGroup = slots.filter((s) => uploadedByType.has(s.id)).length;
-              const isOpen = true;
+              const isOpen = openGroup === group;
               return (
                 <div key={group} className={`docs-accordion-item ${isOpen ? "is-open" : ""}`}>
                   <button

@@ -308,17 +308,36 @@ export async function getChatHistory(
   );
 }
 
-export async function requestCounselorCall(
+export type ServiceRequestType = "counselor_call" | "test_booking" | "class_booking";
+
+export interface ServiceRequestPayload {
+  request_type: ServiceRequestType;
+  phone?: string;
+  test_type?: string;
+  preferred_time?: string;
+}
+
+export async function requestService(
   student_id: string,
-  phone?: string
+  payload: ServiceRequestPayload,
 ): Promise<StudentOut> {
   return handle<StudentOut>(
     await fetch(`${BASE}/students/${student_id}/request-call`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ phone: phone ?? null }),
+      body: JSON.stringify(payload),
     })
   );
+}
+
+export async function requestCounselorCall(
+  student_id: string,
+  phone?: string
+): Promise<StudentOut> {
+  return requestService(student_id, {
+    request_type: "counselor_call",
+    phone,
+  });
 }
 
 export function googleLoginUrl(): string {
