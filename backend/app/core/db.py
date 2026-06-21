@@ -127,21 +127,21 @@ _ADD_CALL_CONSENT = """
 ALTER TABLE students ADD COLUMN IF NOT EXISTS call_consent BOOLEAN DEFAULT FALSE;
 """
 
-_ADD_ONBOARDING_DETAILS = """
-ALTER TABLE students ADD COLUMN IF NOT EXISTS qualification_year INT;
-ALTER TABLE students ADD COLUMN IF NOT EXISTS score_type TEXT;
-ALTER TABLE students ADD COLUMN IF NOT EXISTS academic_score TEXT;
-ALTER TABLE students ADD COLUMN IF NOT EXISTS english_test_taken BOOLEAN;
-ALTER TABLE students ADD COLUMN IF NOT EXISTS english_test_type TEXT;
-ALTER TABLE students ADD COLUMN IF NOT EXISTS english_overall_score TEXT;
-ALTER TABLE students ADD COLUMN IF NOT EXISTS english_lowest_score TEXT;
-ALTER TABLE students ADD COLUMN IF NOT EXISTS english_goal TEXT;
-ALTER TABLE students ADD COLUMN IF NOT EXISTS english_class_timing TEXT;
-ALTER TABLE students ADD COLUMN IF NOT EXISTS planned_english_test TEXT;
-ALTER TABLE students ADD COLUMN IF NOT EXISTS intended_study_level TEXT;
-ALTER TABLE students ADD COLUMN IF NOT EXISTS preferred_intake TEXT;
-ALTER TABLE students ADD COLUMN IF NOT EXISTS budget_range TEXT;
-"""
+_ADD_ONBOARDING_DETAILS = (
+    "ALTER TABLE students ADD COLUMN IF NOT EXISTS qualification_year INT;",
+    "ALTER TABLE students ADD COLUMN IF NOT EXISTS score_type TEXT;",
+    "ALTER TABLE students ADD COLUMN IF NOT EXISTS academic_score TEXT;",
+    "ALTER TABLE students ADD COLUMN IF NOT EXISTS english_test_taken BOOLEAN;",
+    "ALTER TABLE students ADD COLUMN IF NOT EXISTS english_test_type TEXT;",
+    "ALTER TABLE students ADD COLUMN IF NOT EXISTS english_overall_score TEXT;",
+    "ALTER TABLE students ADD COLUMN IF NOT EXISTS english_lowest_score TEXT;",
+    "ALTER TABLE students ADD COLUMN IF NOT EXISTS english_goal TEXT;",
+    "ALTER TABLE students ADD COLUMN IF NOT EXISTS english_class_timing TEXT;",
+    "ALTER TABLE students ADD COLUMN IF NOT EXISTS planned_english_test TEXT;",
+    "ALTER TABLE students ADD COLUMN IF NOT EXISTS intended_study_level TEXT;",
+    "ALTER TABLE students ADD COLUMN IF NOT EXISTS preferred_intake TEXT;",
+    "ALTER TABLE students ADD COLUMN IF NOT EXISTS budget_range TEXT;",
+)
 
 _BACKFILL_PROFILE_COMPLETED = """
 UPDATE students
@@ -202,7 +202,8 @@ async def create_tables() -> None:
         await conn.execute(text(_ADD_EXPECTED_GPA))
         await conn.execute(text(_ADD_PROFILE_COMPLETED))
         await conn.execute(text(_ADD_CALL_CONSENT))
-        await conn.execute(text(_ADD_ONBOARDING_DETAILS))
+        for statement in _ADD_ONBOARDING_DETAILS:
+            await conn.execute(text(statement))
         await conn.execute(text(_BACKFILL_PROFILE_COMPLETED))
         await conn.execute(text(_SET_PROFILE_COMPLETED_DEFAULT))
         await conn.execute(text(_FIX_ROLE_CONSTRAINT))
