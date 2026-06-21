@@ -47,7 +47,6 @@ const OPTION_CLASS = "bg-white text-slate-900";
 export function HeroIntentForm() {
   const [degree, setDegree] = useState("");
   const [country, setCountry] = useState("");
-  const [signInOpen, setSignInOpen] = useState(false);
 
   const start = () => {
     try {
@@ -57,7 +56,8 @@ export function HeroIntentForm() {
     } catch {
       /* storage blocked — sign-in still proceeds */
     }
-    setSignInOpen(true);
+    // Direct redirect to Google Auth
+    window.location.href = "/api/auth/google/login";
   };
 
   return (
@@ -112,8 +112,6 @@ export function HeroIntentForm() {
         </span>
         Start learning
       </button>
-
-      <GoogleSignInModal open={signInOpen} onClose={() => setSignInOpen(false)} />
     </div>
   );
 }

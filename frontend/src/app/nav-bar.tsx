@@ -1,9 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
 import { BrandWordmark } from "@/components/brand-wordmark";
-import { GoogleSignInModal } from "@/components/google-sign-in-modal";
+import { googleLoginUrl } from "@/lib/api";
 
 /**
  * Shared public NavBar — used by /, /onboarding, /privacy, /terms.
@@ -26,16 +25,12 @@ export function NavBar({
   showSignIn = true,
   primary = { href: "/onboarding", label: "Get started free" },
 }: NavBarProps) {
-  const [signInOpen, setSignInOpen] = useState(false);
-  const primaryStartsGoogle = primary.href === "/onboarding";
-
   return (
-    <>
-      <header className="sticky top-6 z-50 px-4 sm:px-6 w-full max-w-7xl mx-auto">
-        <nav className="mx-auto flex h-16 items-center justify-between px-6 bg-white/90 backdrop-blur-md rounded-full border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
-          <Link href="/" className="ab-focus rounded-lg">
-            <BrandWordmark />
-          </Link>
+    <header className="sticky top-6 z-50 px-4 sm:px-6 w-full max-w-7xl mx-auto">
+      <nav className="mx-auto flex h-16 items-center justify-between px-6 bg-white/90 backdrop-blur-md rounded-full border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+        <Link href="/" className="ab-focus rounded-lg">
+          <BrandWordmark />
+        </Link>
 
         {sectionLinks && sectionLinks.length > 0 && (
           <div className="hidden items-center gap-6 md:flex">
@@ -53,27 +48,21 @@ export function NavBar({
 
         <div className="flex items-center gap-3">
           {showSignIn && (
-            <button
-              type="button"
-              onClick={() => setSignInOpen(true)}
-              className="ab-focus hidden rounded-full px-5 py-2.5 text-[15px] font-medium text-slate-700 transition hover:bg-slate-100 sm:inline-flex border border-slate-300"
+            <a
+              href={googleLoginUrl()}
+              className="ab-focus rounded-full px-4 py-2.5 text-[15px] font-bold text-slate-700 transition hover:bg-slate-100 hover:text-slate-900 hidden sm:block"
             >
-              Login
-            </button>
+              Sign in
+            </a>
           )}
-          {primaryStartsGoogle ? (
-            <button type="button" onClick={() => setSignInOpen(true)} className="ab-focus rounded-full bg-[#0044FF] px-5 py-2.5 text-[15px] font-semibold text-white shadow-md transition hover:bg-blue-600">
-              Start for Free
-            </button>
-          ) : (
-            <Link href={primary.href} className="ab-focus rounded-full bg-[#0044FF] px-5 py-2.5 text-[15px] font-semibold text-white shadow-md transition hover:bg-blue-600">
-              Start for Free
-            </Link>
-          )}
+          <Link
+            href={primary.href}
+            className="ab-focus inline-flex h-10 items-center justify-center rounded-full bg-[#0044FF] px-6 text-[14px] font-bold text-white shadow-sm transition hover:bg-blue-600"
+          >
+            {primary.label}
+          </Link>
         </div>
-        </nav>
-      </header>
-      <GoogleSignInModal open={signInOpen} onClose={() => setSignInOpen(false)} />
-    </>
+      </nav>
+    </header>
   );
 }

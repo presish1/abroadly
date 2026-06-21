@@ -5,6 +5,7 @@ import { NavBar } from "./nav-bar";
 import { SiteFooter } from "./site-footer";
 import { HeroVideoSection } from "@/components/hero-video-section";
 import { EnglishClassPopup } from "@/components/english-class-popup";
+import { GoogleOneTap } from "@/components/google-one-tap";
 
 const steps = [
   {
@@ -96,6 +97,7 @@ export default function Home() {
           ["Topics", "#topics"],
         ]}
       />
+      <GoogleOneTap />
 
       {/* ── Hero — StudyFetch Inspired Light Theme ───────── */}
       <section className="relative overflow-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-50 via-[#fafafa] to-[#fafafa] min-h-[85vh] flex flex-col items-center justify-center pt-24 pb-16">
@@ -111,14 +113,14 @@ export default function Home() {
              </div>
           </div>
 
-          {/* Top right: USA Flag */}
+          {/* Top right: USA (Plane window) */}
           <div className="absolute top-12 right-[2%] xl:right-[8%] w-56 rounded-[24px] overflow-hidden shadow-2xl animate-[abFadeUp_1.1s_ease-out]">
-             <img src="https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=400&h=350&fit=crop" alt="USA Flag" className="w-full h-auto object-cover" />
+             <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=400&h=350&fit=crop" alt="Airplane Wing" className="w-full h-auto object-cover" />
           </div>
 
-          {/* Bottom right: Australia Flag */}
+          {/* Bottom right: Australia (Opera House) */}
           <div className="absolute top-64 right-[0%] xl:right-[5%] w-44 rounded-[24px] overflow-hidden shadow-2xl animate-[abFadeUp_1.3s_ease-out]">
-             <img src="https://images.unsplash.com/photo-1518349605335-512c1e84df92?w=400&h=500&fit=crop" alt="Australia Flag" className="w-full h-auto object-cover" />
+             <img src="https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?w=400&h=500&fit=crop" alt="Australia Opera House" className="w-full h-auto object-cover" />
              {/* Pink Soundwave Badge */}
              <div className="absolute -left-5 top-12 w-16 h-16 bg-gradient-to-br from-pink-300 to-pink-500 rounded-full flex items-center justify-center shadow-lg border-2 border-white">
                 <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg>

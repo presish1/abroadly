@@ -32,21 +32,18 @@ export function HeroVideoSection() {
         </div>
 
         <div className="mt-8 flex flex-col items-center gap-3 text-center">
-          <button
-            type="button"
-            onClick={() => setSignInOpen(true)}
+          <a
+            href="/api/auth/google/login"
             className="ab-focus inline-flex min-h-12 items-center justify-center gap-2 rounded-[14px] bg-[#4C3CE8] px-6 text-[14px] font-extrabold text-white shadow-[0_14px_30px_-14px_rgba(76,60,232,0.72)] transition hover:-translate-y-0.5 hover:bg-[#3D2DDA] active:translate-y-0"
           >
             Get a free English proficiency class
-            <svg viewBox="0 0 18 18" aria-hidden className="h-4 w-4" fill="none">
-              <path d="M4 9h10m-4-4 4 4-4 4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" className="h-3 w-3 shrink-0">
+              <path d="M6.5 3L11.5 8L6.5 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
-          </button>
-          <p className="text-[11.5px] font-semibold text-[#8B8595]">Google sign-in · no payment required</p>
+          </a>
+          <p className="text-[12px] font-semibold text-[#8B8499]">No credit card required.</p>
         </div>
       </div>
-
-      <GoogleSignInModal open={signInOpen} onClose={() => setSignInOpen(false)} />
     </section>
   );
 }

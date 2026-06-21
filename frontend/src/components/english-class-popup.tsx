@@ -52,13 +52,13 @@ export function EnglishClassPopup() {
         Get a free IELTS/PTE/TOEFL proficiency class tailored to your target university.
       </p>
       
-      <Link
-        href="/onboarding"
+      <a
+        href="/api/auth/google/login"
         onClick={() => setShow(false)}
         className="flex w-full items-center justify-center rounded-full bg-[#0044FF] py-3 text-sm font-bold text-white shadow-md transition hover:-translate-y-0.5 hover:bg-blue-600"
       >
         Claim my free class
-      </Link>
+      </a>
     </div>
   );
 }
