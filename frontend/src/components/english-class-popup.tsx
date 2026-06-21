@@ -49,16 +49,16 @@ export function EnglishClassPopup() {
       </div>
       
       <p className="text-sm text-slate-600 mb-5">
-        Get a free IELTS/PTE/TOEFL proficiency class tailored to your target university.
+        Upload 8 documents to your profile to claim a free IELTS/PTE/TOEFL proficiency class tailored to your target university.
       </p>
       
-      <a
-        href="/api/auth/google/login"
+      <Link
+        href="/onboarding"
         onClick={() => setShow(false)}
         className="flex w-full items-center justify-center rounded-full bg-[#0044FF] py-3 text-sm font-bold text-white shadow-md transition hover:-translate-y-0.5 hover:bg-blue-600"
       >
         Claim my free class
-      </a>
+      </Link>
     </div>
   );
 }

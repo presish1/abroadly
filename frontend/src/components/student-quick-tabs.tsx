@@ -137,7 +137,7 @@ export function StudentQuickTabs({
           </button>
         ) : (
           <Link
-            href="/chat?profile=open"
+            href="/onboarding/details"
             title="Open profile"
             aria-current={active === "profile" ? "page" : undefined}
             className={tabClass(active === "profile")}

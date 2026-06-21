@@ -1716,6 +1716,7 @@ export default function ChatPage() {
     }
     if (!latestAnswer) return starterSuggestions;
 
+    const allUserQuestions = new Set(messages.filter(m => m.role === "user").map(m => m.text.toLowerCase()));
     const topic = `${latestQuestion} ${latestAnswer}`.toLowerCase();
     const country = student?.target_countries?.[0] || (topic.includes("australia") ? "Australia" : topic.includes("canada") ? "Canada" : "the UK");
     const field = student?.preferred_field || "my field";
@@ -1730,7 +1731,13 @@ export default function ChatPage() {
             : /document|passport|transcript|sop|recommendation/.test(topic)
               ? ["Which of my eight essential documents are still missing?", "What should I check before submitting these documents?", "Use my uploaded documents to flag the next risk"]
               : [`What should I do next for ${country}?`, `Which universities fit ${field} and my profile?`, "What is the biggest gap in my current plan?"];
-    return contextual.filter((item) => item.toLowerCase() !== latestQuestion.toLowerCase()).slice(0, 4);
+
+    let filtered = contextual.filter((item) => !allUserQuestions.has(item.toLowerCase()));
+    if (filtered.length < 4) {
+      const unusedStarters = starterSuggestions.filter(item => !allUserQuestions.has(item.toLowerCase()));
+      filtered = [...filtered, ...unusedStarters];
+    }
+    return Array.from(new Set(filtered)).slice(0, 4);
   }, [messages, student]);
 
   return (
@@ -2150,7 +2157,6 @@ export default function ChatPage() {
         documentTotal={docReadiness.essentialsTotal}
         phoneRequired={phoneRequired}
         callConsented={callConsented}
-        onProfileClick={() => setProfileOpen(true)}
         onCounselorCall={grantCounselorCall}
       />
 

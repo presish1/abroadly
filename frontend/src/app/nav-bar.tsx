@@ -26,8 +26,8 @@ export function NavBar({
   primary = { href: "/onboarding", label: "Get started free" },
 }: NavBarProps) {
   return (
-    <header className="sticky top-6 z-50 px-4 sm:px-6 w-full max-w-7xl mx-auto">
-      <nav className="mx-auto flex h-16 items-center justify-between px-6 bg-white/90 backdrop-blur-md rounded-full border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+    <header className="sticky top-4 sm:top-6 z-50 px-3 sm:px-6 w-full max-w-7xl mx-auto">
+      <nav className="mx-auto flex h-14 sm:h-16 items-center justify-between px-4 sm:px-6 bg-white/90 backdrop-blur-md rounded-full border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
         <Link href="/" className="ab-focus rounded-lg">
           <BrandWordmark />
         </Link>
@@ -46,18 +46,18 @@ export function NavBar({
           </div>
         )}
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           {showSignIn && (
             <a
               href={googleLoginUrl()}
-              className="ab-focus rounded-full px-4 py-2.5 text-[15px] font-bold text-slate-700 transition hover:bg-slate-100 hover:text-slate-900 hidden sm:block"
+              className="ab-focus rounded-full px-3 sm:px-4 py-2 text-[14px] sm:text-[15px] font-bold text-slate-700 transition hover:bg-slate-100 hover:text-slate-900 hidden sm:block"
             >
               Sign in
             </a>
           )}
           <Link
             href={primary.href}
-            className="ab-focus inline-flex h-10 items-center justify-center rounded-full bg-[#0044FF] px-6 text-[14px] font-bold text-white shadow-sm transition hover:bg-blue-600"
+            className="ab-focus inline-flex h-9 sm:h-10 items-center justify-center rounded-full bg-[#0044FF] px-4 sm:px-6 text-[13px] sm:text-[14px] font-bold text-white shadow-sm transition hover:bg-blue-600"
           >
             {primary.label}
           </Link>
