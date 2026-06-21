@@ -9,12 +9,12 @@ from typing import Protocol
 
 from app.core.config import settings
 
-# Per-bucket token caps — the primary cost/latency lever.
-# short: 1-2 sentences; medium: 80-160 words; long: 200-320 words.
-LENGTH_MAX_TOKENS: dict[str, int] = {"short": 220, "medium": 600, "long": 1000}
+# Per-bucket token caps — deliberately tight because this is a chat surface,
+# not a report generator. A deterministic word cap runs after generation too.
+LENGTH_MAX_TOKENS: dict[str, int] = {"short": 90, "medium": 180, "long": 300}
 
 # Fallback when length bucket is unknown.
-MAX_TOKENS = 1000
+MAX_TOKENS = 220
 TEMPERATURE = 0.4
 
 # Generation models, tried in order. gemini-2.5-flash is ~2s/reply; the
@@ -57,19 +57,18 @@ NORMALIZER_MODEL = "gemini-2.0-flash"  # Flash variant — fast, cheap, multilin
 _LENGTH_DIRECTIVES: dict[str, str] = {
     "short": (
         "## Mode: LENGTH=short\n"
-        "Reply in 1–2 sentences only. No bullets, no headers, no lists. "
+        "Reply in 1–2 sentences and no more than 35 words. No bullets, no headers, no lists. "
         "Lead with the direct answer. If a fact needs a caveat, fold it into the sentence."
     ),
     "medium": (
         "## Mode: LENGTH=medium\n"
-        "Reply in 80–160 words. Up to 4 bullet points if listing items; "
-        "otherwise flowing prose. Lead with the answer, end with one clear next step."
+        "Reply in 40–70 words. Use at most 3 short bullets when a list is essential; "
+        "otherwise use a compact paragraph. Lead with the answer and give one next step."
     ),
     "long": (
         "## Mode: LENGTH=long\n"
-        "Reply in 200–320 words. Bullets and sub-headings are fine. "
-        "Cover all parts of the question thoroughly. Lead with a one-sentence summary, "
-        "then elaborate. End with one concrete next step."
+        "Reply in 80–120 words. Use this space only for an explicitly multi-part request. "
+        "Use at most 5 concise bullets. Lead with the answer and end with one next step."
     ),
 }
 

@@ -32,6 +32,14 @@ import { ESSENTIAL_SLOTS, computeDocReadiness } from "@/lib/document-catalog";
 import { StudentQuickTabs } from "@/components/student-quick-tabs";
 import { ServiceRequestModal } from "@/components/service-request-modal";
 import { ModalShell } from "@/components/modal-shell";
+import {
+  decideChatEngagement,
+  emptyChatEngagementMemory,
+  readChatEngagementMemory,
+  recordChatEngagement,
+  recordClassBooked,
+  writeChatEngagementMemory,
+} from "@/lib/chat-engagement";
 
 /* Abroadly's own human counsellor (placeholder identity — operator can edit). */
 const COUNSELOR = {
@@ -80,21 +88,7 @@ interface CounselorCardMessage {
   handoff_target?: string | null;
 }
 
-/* Inline "you should upload X" prompt that lives in the chat thread.
- * Carries a concrete catalog slot (label, accept, sample) so the card can
- * show a real preview and route the upload to the right doc_type. */
-interface UploadInviteMessage {
-  role: "upload_invite";
-  slotId: string;
-  slotLabel: string;
-  accept: string;
-  sampleSlug?: string;
-  whyOneLiner: string;
-  dismissed?: boolean;
-  uploaded?: boolean;
-}
-
-type Message = UserMessage | AiMessage | WelcomeVideoMessage | CounselorMessage | UploadMessage | CounselorCardMessage | UploadInviteMessage;
+type Message = UserMessage | AiMessage | WelcomeVideoMessage | CounselorMessage | UploadMessage | CounselorCardMessage;
 
 /* ── Question launcher (empty state) + suggestion starters ─────────── */
 
@@ -611,12 +605,31 @@ function FormattedBody({ text }: { text: string }) {
 /* Follow-up suggestions are surfaced in the rail above the composer, and
  * upload prompts via a popup — so the bubble itself stays clean. */
 
+const CHAT_COLLAPSE_AFTER_WORDS = 90;
+const CHAT_PREVIEW_WORDS = 58;
+
+function compactAnswerPreview(text: string): string {
+  const words = text.trim().split(/\s+/);
+  if (words.length <= CHAT_PREVIEW_WORDS) return text;
+  let preview = words.slice(0, CHAT_PREVIEW_WORDS).join(" ").replace(/[,:;\-–—]+$/, "");
+  if ((preview.match(/\*\*/g) || []).length % 2 !== 0) preview += "**";
+  return `${preview}…`;
+}
+
 function AiResponseBubble({ response }: { response: ChatResponse }) {
   const answer = response.answer ?? response.clarifying_question ?? "I need a little more context.";
   const { body } = parseAnswer(answer);
+  const [expanded, setExpanded] = useState(false);
+  const shouldCollapse = body.trim().split(/\s+/).length > CHAT_COLLAPSE_AFTER_WORDS;
+  const visibleBody = shouldCollapse && !expanded ? compactAnswerPreview(body) : body;
   return (
     <div className="chat-bubble-ai">
-      <FormattedBody text={body} />
+      <FormattedBody text={visibleBody} />
+      {shouldCollapse && (
+        <button type="button" onClick={() => setExpanded((value) => !value)} className="ab-focus chat-answer-toggle">
+          {expanded ? "Show less" : "Show full answer"}
+        </button>
+      )}
     </div>
   );
 }
@@ -668,81 +681,6 @@ function WelcomeVideoCard({ text }: { text: string }) {
       <p className="chat-welcome-video-note">Muted by default · turn sound on when you are ready.</p>
     </article>
   );
-}
-
-/* True when an AI answer is nudging the student to upload a document. */
-function answerWantsUpload(response: ChatResponse): boolean {
-  const answer = response.answer ?? response.clarifying_question ?? "";
-  return parseAnswer(answer).actions.some((a) => a.isUpload);
-}
-
-function inferUploadLabel(response: ChatResponse): string {
-  const answer = (response.answer ?? response.clarifying_question ?? "").toLowerCase();
-  if (/transcript|marksheet|grade/.test(answer)) return "transcript / marksheet";
-  if (/ielts|pte|toefl|english/.test(answer)) return "English test score";
-  if (/passport/.test(answer)) return "passport";
-  if (/bank|financ|sponsor|fund/.test(answer)) return "financial documents";
-  if (/sop|statement of purpose/.test(answer)) return "SOP draft";
-  return "documents";
-}
-
-/* True when an AI answer is advising/nudging the student to join a prep class. */
-function answerWantsClassBooking(response: ChatResponse): boolean {
-  const answer = (response.answer ?? response.clarifying_question ?? "").toLowerCase();
-  const classKeywords = /\b(ielts class|pte class|toefl class|preparation class|prep class|trial class|free class|ielts course|pte course|join (?:a |the )?class|book (?:a |the )?class|class registration|register for (?:a |the )?class|mock test|test preparation)\b/i;
-  return classKeywords.test(answer);
-}
-
-function inferEnglishTest(response: ChatResponse): string {
-  const answer = (response.answer ?? response.clarifying_question ?? "").toLowerCase();
-  if (answer.includes("pte")) return "PTE";
-  if (answer.includes("toefl")) return "TOEFL";
-  return "IELTS";
-}
-
-/* Pick the catalog slot that best fits the AI's upload nudge so the inline
- * card can show a real sample preview + route the upload to the right
- * doc_type. Returns null when the AI didn't actually nudge an upload — to
- * trigger, the prose has to mention BOTH an upload-intent verb (upload /
- * share / send / provide / attach / submit) AND a recognisable doc type.
- * This keeps the card on-point: it never fires on a passing mention. */
-function inferUploadSlot(response: ChatResponse): UploadInviteMessage | null {
-  const answer = (response.answer ?? response.clarifying_question ?? "").toLowerCase();
-  // Cheap gate first — no upload verb anywhere, no card. Generous list so
-  // the AI's natural wording usually trips it.
-  const UPLOAD_VERB = /\b(upload|share|send|provide|attach|submit|drop|give us|let me see|i can see|i'?ll need|i would need|need to see|need a copy|copy of (?:your |the )?[a-z])\b/;
-  if (!UPLOAD_VERB.test(answer)) return null;
-
-  const patterns: Array<{ re: RegExp; id: string; why: string }> = [
-    { re: /\b(transcript|marksheet|mark.?sheet|grade.?sheet|academic record|\+2 (?:mark|result|grade))\b/, id: "grade_sheet",
-      why: "I'll check your GPA against the courses you're considering." },
-    { re: /\b(ielts|pte|toefl|english test|english (?:proficiency|score))\b/, id: "ielts",
-      why: "I'll confirm your scores meet each university's minimums." },
-    { re: /\b(sop|statement of purpose|personal statement)\b/, id: "sop",
-      why: "I'll review structure and tone, not rewrite it." },
-    { re: /\b(recommendation letter|recommendation|reference letter|\blor\b)/, id: "recommendation",
-      why: "I'll check it covers the right specifics." },
-    { re: /\b(bank balance|bank statement|financial (?:doc|statement|proof)|sponsor (?:doc|letter)|proof of fund|funding (?:doc|letter|proof))\b/, id: "financial",
-      why: "I'll check your numbers cover the first year." },
-    { re: /\b(passport|bio.?data page)\b/, id: "passport",
-      why: "I'll confirm the expiry date is far enough out." },
-    { re: /\b(citizenship card|nepali citizenship|citizenship certificate)\b/, id: "citizenship",
-      why: "I'll match it against your other ID documents." },
-  ];
-  for (const { re, id, why } of patterns) {
-    if (!re.test(answer)) continue;
-    const slot = ESSENTIAL_SLOTS.find((s) => s.id === id);
-    if (!slot) continue;
-    return {
-      role: "upload_invite",
-      slotId: slot.id,
-      slotLabel: slot.label,
-      accept: slot.accept,
-      sampleSlug: slot.sampleSlug,
-      whyOneLiner: why,
-    };
-  }
-  return null;
 }
 
 /* ── Image compression ────────────────────────────────────────────── */
@@ -969,13 +907,18 @@ function DocumentPanel({
 
 function UploadPromptModal({
   label,
-  onUpload,
+  accept,
+  onFile,
+  onBrowse,
   onClose,
 }: {
   label: string;
-  onUpload: () => void;
+  accept: string;
+  onFile: (file: File) => void;
+  onBrowse: () => void;
   onClose: () => void;
 }) {
+  const inputRef = useRef<HTMLInputElement | null>(null);
   return (
     <ModalShell open onClose={onClose} titleId="upload-prompt-title" panelClassName="upload-modal" closeLabel="Close upload prompt">
         <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#FDECEE] text-[#E11D2A]">
@@ -984,74 +927,33 @@ function UploadPromptModal({
           </svg>
         </div>
         <h3 id="upload-prompt-title" className="mt-4 text-[17px] font-extrabold tracking-[-0.01em] text-[var(--ab-ink)]">
-          Share your {label} for a sharper answer
+          Upload your {label}
         </h3>
-        <p className="mt-2 text-[13.5px] leading-6 text-[#6B655C]">
-          Upload it and I&apos;ll tailor my guidance to your real situation. It stays private to your account.
+        <p className="mt-2 text-[13px] leading-5 text-[#6B655C]">
+          I can check your real details instead of giving another generic answer. Your file stays private to your account.
         </p>
         <div className="mt-5 flex gap-2.5">
-          <button type="button" onClick={onUpload} className="ab-focus flex-1 rounded-xl bg-[#E11D2A] px-4 py-3 text-[13px] font-bold text-white shadow-[var(--shadow-sm)] transition hover:bg-[#C0121F]">
-            Upload now
+          <button type="button" onClick={() => inputRef.current?.click()} className="ab-focus flex-1 rounded-lg bg-[#E11D2A] px-4 py-3 text-[13px] font-bold text-white shadow-[var(--shadow-sm)] transition hover:bg-[#C0121F]">
+            Choose file
           </button>
-          <button type="button" onClick={onClose} className="ab-focus rounded-xl border border-[#E8E5DD] bg-white px-4 py-3 text-[13px] font-semibold text-[#6B655C] transition hover:bg-[#F4F2EC]">
-            Maybe later
-          </button>
-        </div>
-    </ModalShell>
-  );
-}
-
-function ClassBookingPromptModal({
-  test,
-  uploadedCount,
-  requiredCount,
-  onConfirm,
-  onUploadDocuments,
-  onClose,
-}: {
-  test: string;
-  uploadedCount: number;
-  requiredCount: number;
-  onConfirm: () => void;
-  onUploadDocuments: () => void;
-  onClose: () => void;
-}) {
-  const ready = uploadedCount >= requiredCount;
-  const remaining = Math.max(0, requiredCount - uploadedCount);
-  return (
-    <ModalShell open onClose={onClose} titleId="class-booking-title" panelClassName="upload-modal" closeLabel="Close class booking">
-        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#EBF5FF] text-[#1E70EB]">
-          <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none">
-            <rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M12 14h.01M16 14h.01M8 14h.01M12 17h.01M8 17h.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </div>
-        <h3 id="class-booking-title" className="mt-4 text-[17px] font-extrabold tracking-[-0.01em] text-[var(--ab-ink)]">
-          {ready ? `Book your free ${test} trial class` : `Finish your class profile first`}
-        </h3>
-        <p className="mt-2 text-[13.5px] leading-6 text-[#6B655C]">
-          {ready
-            ? "Your eight essential documents are on file. Confirm now and we’ll use your profile to arrange the right class timing."
-            : `Upload the ${requiredCount} essential study documents before confirming a free class. You have ${uploadedCount}; ${remaining} ${remaining === 1 ? "is" : "are"} still needed.`}
-        </p>
-        <div className="mt-4 rounded-xl border border-[#DDE8E2] bg-[#F4FAF6] p-3">
-          <div className="flex items-center justify-between text-[11px] font-bold text-[#3F3A33]">
-            <span>Essential documents</span>
-            <span>{uploadedCount} / {requiredCount}</span>
-          </div>
-          <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-[#DDE8E2]">
-            <div className="h-full rounded-full bg-[#0A6E45] transition-all" style={{ width: `${Math.min(100, (uploadedCount / requiredCount) * 100)}%` }} />
-          </div>
-        </div>
-        <div className="mt-5 flex gap-2.5">
-          <button type="button" onClick={ready ? onConfirm : onUploadDocuments} className="ab-focus class-booking-primary flex-1 rounded-xl px-4 py-3 text-[13px] font-bold text-white">
-            {ready ? "Book Free Slot" : `Upload ${remaining} remaining`}
-          </button>
-          <button type="button" onClick={onClose} className="ab-focus rounded-xl border border-[#E8E5DD] bg-white px-4 py-3 text-[13px] font-semibold text-[#6B655C] transition hover:bg-[#F4F2EC]">
-            Maybe later
+          <button type="button" onClick={onBrowse} className="ab-focus rounded-lg border border-[#E8E5DD] bg-white px-4 py-3 text-[13px] font-semibold text-[#6B655C] transition hover:bg-[#F4F2EC]">
+            All documents
           </button>
         </div>
+        <button type="button" onClick={onClose} className="ab-focus mt-3 w-full text-center text-[11px] font-semibold text-[#8A847B] hover:text-[#1B1916]">
+          Not now
+        </button>
+        <input
+          ref={inputRef}
+          type="file"
+          accept={accept}
+          className="hidden"
+          onChange={(event) => {
+            const file = event.target.files?.[0];
+            if (file) onFile(file);
+            event.target.value = "";
+          }}
+        />
     </ModalShell>
   );
 }
@@ -1352,150 +1254,6 @@ function ProfilePopup({
 
 /* ── Human counselor card (rendered inside chat) ──────────────────── */
 
-/* Inline "share your X" invite that lives in the chat thread. Renders a
- * small sample thumbnail (when the catalog has one) + a one-line "why",
- * and a single primary action that opens a focused upload window. The picked file
- * is routed to the matching catalog doc_type via the parent.
- *
- * Three states: invite (default) → done (uploaded) → dismissed (hidden). */
-function UploadInviteCard({
-  msg,
-  studentId,
-  onPick,
-  onDismiss,
-}: {
-  msg: UploadInviteMessage;
-  studentId: string;
-  onPick: (msg: UploadInviteMessage, file: File) => void;
-  onDismiss: (msg: UploadInviteMessage) => void;
-}) {
-  const inputRef = useRef<HTMLInputElement | null>(null);
-  const [uploadWindowOpen, setUploadWindowOpen] = useState(false);
-  if (msg.dismissed) return null;
-  const sampleSrc = msg.sampleSlug ? `/samples/${msg.sampleSlug}/page-01.webp` : null;
-
-  if (msg.uploaded) {
-    return (
-      <div className="chat-upload-invite is-done">
-        <span className="chat-upload-invite-tick"><CheckCircleIcon /></span>
-        <span className="chat-upload-invite-done-text">
-          {msg.slotLabel} on file — I&apos;ll reference it in the next answer.
-        </span>
-      </div>
-    );
-  }
-
-  return (
-    <div className="chat-upload-invite">
-      <div className="chat-upload-invite-head">
-        <span className="chat-upload-invite-eyebrow">Suggested next step</span>
-        <button
-          type="button"
-          onClick={() => onDismiss(msg)}
-          aria-label="Dismiss"
-          className="chat-upload-invite-close"
-        >
-          <CloseIcon />
-        </button>
-      </div>
-
-      <div className="chat-upload-invite-body">
-        {sampleSrc && (
-          <div className="chat-upload-invite-sample">
-            <img src={sampleSrc} alt="" aria-hidden loading="lazy" />
-          </div>
-        )}
-        <div className="chat-upload-invite-copy">
-          <p className="chat-upload-invite-title">
-            Upload your {msg.slotLabel.toLowerCase()}
-          </p>
-          <p className="chat-upload-invite-why">{msg.whyOneLiner}</p>
-        </div>
-      </div>
-
-      <div className="chat-upload-invite-actions">
-        <button
-          type="button"
-          onClick={() => setUploadWindowOpen(true)}
-          disabled={!studentId}
-          className="chat-upload-invite-primary"
-        >
-          <svg viewBox="0 0 16 16" className="h-3.5 w-3.5 shrink-0" fill="none">
-            <path d="M8 11V3m0 0L5 6m3-3 3 3M3 13h10" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          Upload {msg.slotLabel.toLowerCase()}
-        </button>
-        {sampleSrc && (
-          <Link href={`/chat/documents#${msg.slotId}`} className="chat-upload-invite-link">
-            View full sample
-          </Link>
-        )}
-      </div>
-
-      <input
-        ref={inputRef}
-        type="file"
-        accept={msg.accept}
-        className="hidden"
-        onChange={(e) => {
-          const file = e.target.files?.[0];
-          if (file) {
-            setUploadWindowOpen(false);
-            onPick(msg, file);
-          }
-          e.target.value = "";
-        }}
-      />
-
-      {uploadWindowOpen && (
-        <ModalShell
-          open
-          onClose={() => setUploadWindowOpen(false)}
-          titleId={`upload-${msg.slotId}-title`}
-          panelClassName="upload-modal upload-specific-modal"
-          closeLabel="Close document upload"
-        >
-            <p className="chat-upload-invite-eyebrow">Document upload</p>
-            <h3 id={`upload-${msg.slotId}-title`} className="mt-3 pr-8 text-[18px] font-extrabold tracking-[-0.02em] text-[var(--ab-ink)]">
-              Add your {msg.slotLabel.toLowerCase()}
-            </h3>
-            <p className="mt-2 text-[13px] leading-5 text-[#6B655C]">{msg.whyOneLiner}</p>
-
-            <button
-              type="button"
-              onClick={() => inputRef.current?.click()}
-              onDragOver={(e) => e.preventDefault()}
-              onDrop={(e) => {
-                e.preventDefault();
-                const file = e.dataTransfer.files?.[0];
-                if (file) {
-                  setUploadWindowOpen(false);
-                  onPick(msg, file);
-                }
-              }}
-              className="upload-specific-dropzone"
-            >
-              {sampleSrc ? (
-                <img src={sampleSrc} alt="Example document" className="upload-specific-preview" />
-              ) : (
-                <span className="upload-specific-icon"><UploadCloudIcon /></span>
-              )}
-              <span className="min-w-0 text-left">
-                <span className="block text-[13px] font-extrabold text-[#1B1916]">Choose {msg.slotLabel.toLowerCase()}</span>
-                <span className="mt-1 block text-[11px] leading-4 text-[#8A847B]">Drag it here or tap to browse · {msg.accept.replaceAll(",", ", ").toUpperCase()}</span>
-              </span>
-            </button>
-
-            <div className="mt-4 flex items-center justify-between gap-3">
-              <p className="text-[10.5px] leading-4 text-[#8A847B]">Private to your account. One file for this document type.</p>
-              <button type="button" onClick={() => setUploadWindowOpen(false)} className="ab-focus shrink-0 rounded-lg px-3 py-2 text-[12px] font-bold text-[#6B655C] hover:bg-[#F4F2EC]">Cancel</button>
-            </div>
-        </ModalShell>
-      )}
-    </div>
-  );
-}
-
 function CounselorCard({
   consented,
   onGrant,
@@ -1583,7 +1341,7 @@ export default function ChatPage() {
   const [attachmentMenuOpen, setAttachmentMenuOpen] = useState(false);
   const [docPanelOpen, setDocPanelOpen] = useState(false);
   const [documents, setDocuments] = useState<StudentDocument[]>([]);
-  const [uploadPrompt, setUploadPrompt] = useState<{ label: string } | null>(null);
+  const [uploadPrompt, setUploadPrompt] = useState<{ slotId: string; label: string } | null>(null);
   const [classBookingPrompt, setClassBookingPrompt] = useState<{ test: string } | null>(null);
   const [profileOpen, setProfileOpen] = useState(false);
   const [callConsented, setCallConsented] = useState(false);
@@ -1593,8 +1351,10 @@ export default function ChatPage() {
   // Count of user-typed (not click-sourced) messages sent this session.
   // Used for the depth-bonus calculation and the 2-session-turn gate.
   const sessionTypedCount = useRef(0);
-  // True once a proactive upload invite has been shown this session.
-  const proactiveInviteShown = useRef(false);
+  // Lifetime question count and prompt memory include restored history, so
+  // engagement prompts still work after a refresh or a later visit.
+  const lifetimeUserTurns = useRef(0);
+  const engagementMemory = useRef(emptyChatEngagementMemory());
   // True once the student uploads an SOP or financial document this session.
   const hasPriorityDoc = useRef(false);
   // Per-slot hidden inputs for the sidebar quick-upload checkboxes.
@@ -1646,6 +1406,10 @@ export default function ChatPage() {
   const uploadedCount = docReadiness.essentialsDone;
   const optionalUploadedCount = docReadiness.optionalDone;
   const phoneRequired = Boolean(student && !student.phone?.trim());
+  const uploadPromptSlot = useMemo(
+    () => uploadPrompt ? ESSENTIAL_SLOTS.find((slot) => slot.id === uploadPrompt.slotId) || null : null,
+    [uploadPrompt],
+  );
 
   const refreshDocuments = useCallback(async (sid: string) => {
     if (!sid) return;
@@ -1682,11 +1446,13 @@ export default function ChatPage() {
       }
       if (cancelled) return;
       setStudentId(sid);
+      engagementMemory.current = readChatEngagementMemory(sid);
       refreshDocuments(sid).catch(() => {});
       try {
         const turns = await getChatHistory(sid);
         if (cancelled) return;
         setChatHistory(turns);
+        lifetimeUserTurns.current = turns.filter((turn) => turn.role === "user").length;
         const restored: Message[] = turns.map((t): Message => {
           if (t.role === "user") return { role: "user", text: t.content };
           if (t.role === "counselor") return { role: "counselor", text: t.content };
@@ -1755,6 +1521,8 @@ export default function ChatPage() {
     // Track session turns — only typed messages count for depth bonus + 2-turn gate.
     const isTyped = !messageSource || messageSource === "typed";
     if (isTyped) sessionTypedCount.current += 1;
+    lifetimeUserTurns.current += 1;
+    const totalUserTurns = lifetimeUserTurns.current;
 
     setThinking(true);
     try {
@@ -1771,80 +1539,37 @@ export default function ChatPage() {
         { id: res.request_id || `local-ai-${Date.now()}`, role: "assistant", content: res.answer || "", eval_decision: res.decision, created_at: new Date().toISOString() },
       ]);
 
-      const wantsClassBooking = answerWantsClassBooking(res);
-      if (!docPanelOpen && wantsClassBooking) {
-        setClassBookingPrompt({ test: inferEnglishTest(res) });
-      }
-
-      // ── 2-slot priority system ──────────────────────────────────────────
-      // Slot B: text-match upload invite (beats proactive)
-      // Slot A: counselor card
-      // Generic modal fires ALONE (only when no Slot B or A fires this turn).
-      // Render order: AI answer → Slot B → Slot A
-      //
-      // Session-turn gate: both slots require ≥2 session turns.
-      const turnCount = sessionTypedCount.current; // typed turns only
-      const enoughTurns = turnCount >= 2;
-
-      let slotBFired = false;
-
-      // Slot B — text-match upload invite (AI answer mentions a specific doc).
-      if (!docPanelOpen && enoughTurns && !wantsClassBooking) {
-        const invite = inferUploadSlot(res);
-        if (invite) {
-          setMessages((m) => {
-            const recent = m.slice(-6);
-            const sameSlotRecent = recent.some(
-              (x) => x.role === "upload_invite" && x.slotId === invite.slotId,
-            );
-            const anyActiveInvite = m.some(
-              (x) => x.role === "upload_invite" && !x.dismissed && !x.uploaded,
-            );
-            if (sameSlotRecent || anyActiveInvite) return m;
-            slotBFired = true;
-            return [...m, invite];
-          });
-          // Mark slotBFired synchronously for the proactive check below.
-          slotBFired = true;
+      // Deterministic engagement engine. It uses the student's question,
+      // profile, document state and total history instead of hoping the LLM
+      // writes an exact trigger phrase. Only one modal can be selected here.
+      if (
+        !docPanelOpen
+        && !uploadPrompt
+        && !classBookingPrompt
+        && res.decision !== "out_of_scope"
+      ) {
+        const decision = decideChatEngagement({
+          userMessage: text,
+          totalUserTurns,
+          uploadedDocTypes: new Set(documents.map((document) => document.doc_type)),
+          student,
+          memory: engagementMemory.current,
+        });
+        if (decision) {
+          const nextMemory = recordChatEngagement(engagementMemory.current, decision, totalUserTurns);
+          engagementMemory.current = nextMemory;
+          writeChatEngagementMemory(studentId, nextMemory);
+          if (decision.kind === "document") {
+            setClassBookingPrompt(null);
+            setUploadPrompt({ slotId: decision.slotId, label: decision.label });
+          } else {
+            setUploadPrompt(null);
+            setClassBookingPrompt({ test: decision.test });
+          }
         }
       }
 
-      // Slot B — proactive upload invite (score ≥15, 0 docs, ≥2 session turns).
-      if (!docPanelOpen && !slotBFired && !proactiveInviteShown.current && enoughTurns && !wantsClassBooking) {
-        const score = res.lead_score ?? 0;
-        const noDocs = documents.length === 0;
-        if (score >= 15 && noDocs) {
-          proactiveInviteShown.current = true;
-          const proactiveSlot = ESSENTIAL_SLOTS[0]; // grade_sheet / transcript as default
-          setMessages((m) => {
-            const anyActiveInvite = m.some(
-              (x) => x.role === "upload_invite" && !x.dismissed && !x.uploaded,
-            );
-            if (anyActiveInvite) return m;
-            slotBFired = true;
-            return [...m, {
-              role: "upload_invite" as const,
-              slotId: proactiveSlot.id,
-              slotLabel: proactiveSlot.label,
-              accept: proactiveSlot.accept,
-              sampleSlug: proactiveSlot.sampleSlug,
-              whyOneLiner: "Uploading documents lets me tailor every answer to your real situation.",
-            }];
-          });
-          slotBFired = true;
-        }
-      }
-
-      // Generic upload modal or class booking modal — only fires alone (no Slot B this turn, score ≥3).
-      if (!docPanelOpen && !slotBFired && !enoughTurns && !wantsClassBooking) {
-        if (answerWantsUpload(res)) {
-          setUploadPrompt({ label: inferUploadLabel(res) });
-        }
-      } else if (!docPanelOpen && !slotBFired && !wantsClassBooking) {
-        if (!inferUploadSlot(res) && answerWantsUpload(res)) {
-          setUploadPrompt({ label: inferUploadLabel(res) });
-        }
-      }
+      const enoughTurns = sessionTypedCount.current >= 2;
 
       // Slot A — counselor card.
       // Requires: backend says offer_counselor, ≥2 session turns, not already shown, not consented.
@@ -1940,42 +1665,6 @@ export default function ChatPage() {
       setUploadingSlot(null);
     }
   }, [studentId, refreshDocuments]);
-
-  /* Inline UploadInviteCard pick: reuses the same sidebar upload path so the
-   * file gets tagged with the right doc_type, then flips the invite to its
-   * "done" state in place (no extra pill — the invite IS the affordance). */
-  const handleInvitePick = useCallback(async (invite: UploadInviteMessage, file: File) => {
-    if (!studentId) return;
-    let fileToUpload = file;
-    try {
-      if (isImageFile(file)) fileToUpload = await compressImage(file);
-      const res = await uploadFile(studentId, fileToUpload, invite.slotId, file.name);
-      const document = res.document;
-      if (document) {
-        setDocuments((docs) => [document, ...docs.filter((d) => d.doc_id !== document.doc_id)]);
-      } else {
-        refreshDocuments(studentId).catch(() => {});
-      }
-      signalStudent(studentId, { event_type: "doc_upload", doc_type: invite.slotId }).catch(() => {});
-      if (invite.slotId === "sop" || invite.slotId === "financial") hasPriorityDoc.current = true;
-      setMessages((m) => m.map((msg) =>
-        msg.role === "upload_invite" && msg.slotId === invite.slotId && !msg.uploaded
-          ? { ...msg, uploaded: true }
-          : msg,
-      ));
-    } catch (err: unknown) {
-      const errMsg = err instanceof Error ? err.message : "Upload failed.";
-      setMessages((m) => [...m, { role: "upload", status: "error" as const, filename: file.name, text: `Upload failed: ${errMsg}`, docType: invite.slotId }]);
-    }
-  }, [studentId, refreshDocuments]);
-
-  const handleInviteDismiss = useCallback((invite: UploadInviteMessage) => {
-    setMessages((m) => m.map((msg) =>
-      msg.role === "upload_invite" && msg.slotId === invite.slotId && !msg.dismissed
-        ? { ...msg, dismissed: true }
-        : msg,
-    ));
-  }, []);
 
   async function grantCounselorCall() {
     if (phoneRequired) {
@@ -2329,15 +2018,6 @@ export default function ChatPage() {
                     </div>
                   );
                 }
-                if (msg.role === "upload_invite") {
-                  if (msg.dismissed) return null;
-                  return (
-                    <div key={i} className="chat-row chat-row-ai" style={{ animationDelay: "0.04s" }}>
-                      <AiAvatar />
-                      <UploadInviteCard msg={msg} studentId={studentId} onPick={handleInvitePick} onDismiss={handleInviteDismiss} />
-                    </div>
-                  );
-                }
                 if (msg.role === "upload") {
                   const colorClass = msg.status === "done" ? "chat-upload-done" : msg.status === "error" ? "chat-upload-error" : "chat-upload-pending";
                   return (
@@ -2486,34 +2166,30 @@ export default function ChatPage() {
         }}
       />
 
-      {uploadPrompt && (
+      {uploadPrompt && uploadPromptSlot && (
         <UploadPromptModal
           label={uploadPrompt.label}
-          onUpload={() => { setUploadPrompt(null); setDocPanelOpen(true); }}
+          accept={uploadPromptSlot.accept}
+          onFile={(file) => {
+            setUploadPrompt(null);
+            uploadSidebarDoc(uploadPromptSlot.id, uploadPromptSlot.label, file);
+          }}
+          onBrowse={() => { setUploadPrompt(null); setDocPanelOpen(true); }}
           onClose={() => setUploadPrompt(null)}
         />
       )}
 
-      {classBookingPrompt && uploadedCount < docReadiness.essentialsTotal && (
-        <ClassBookingPromptModal
-          test={classBookingPrompt.test}
-          uploadedCount={uploadedCount}
-          requiredCount={docReadiness.essentialsTotal}
-          onConfirm={() => setClassBookingPrompt(null)}
-          onUploadDocuments={() => {
-            setClassBookingPrompt(null);
-            router.push("/chat/documents");
-          }}
-          onClose={() => setClassBookingPrompt(null)}
-        />
-      )}
-
-      {classBookingPrompt && student && uploadedCount >= docReadiness.essentialsTotal && (
+      {classBookingPrompt && student && (
         <ServiceRequestModal
           student={student}
           requestType="class_booking"
           preferredTest={classBookingPrompt.test}
-          onConfirmed={setStudent}
+          onConfirmed={(updated) => {
+            setStudent(updated);
+            const nextMemory = recordClassBooked(engagementMemory.current);
+            engagementMemory.current = nextMemory;
+            writeChatEngagementMemory(studentId, nextMemory);
+          }}
           onClose={() => setClassBookingPrompt(null)}
         />
       )}
