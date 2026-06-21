@@ -55,6 +55,30 @@ For bachelor to master:
 - Do you have final transcripts or only provisional results?
 - Is there a study gap, backlog, marriage, spouse, or dependent child?
 
+## Provider-Specific Checklists from Training Data
+
+Specific checklists for admissions in the training sheets include:
+
+- **La Trobe University (under Navitas)**:
+  - Agent certified copy of Passport (front and back).
+  - Agent certified copies of all Academic Documents.
+  - Certified English Proficiency report (IELTS/PTE/TOEFL/CAE).
+  - Work experience letter or supporting docs if there is a gap (compulsory CV).
+  - Marriage Certificate (if married) plus spouse's Passport and academic documents.
+  - Online application (forms are not needed).
+  - Note: All documents must be certified by the authorized recruitment agent.
+
+- **Excelsia College Sydney**:
+  - Passport front and back (all pages recommended).
+  - All Academic Documents and English Proficiency (IELTS/PTE/TOEFL/CAE).
+  - Work experience or supporting documents if there is a study gap (compulsory CV).
+  - Letters of Recommendation (LOR) for master's programs.
+  - Statement of Purpose (SOP) is compulsory.
+  - Marriage Certificate (if married) and spouse's Passport/academics.
+  - Completed Application Form and GS (Genuine Student) Questionnaire.
+
+These provider-specific document checklists are accurate as of June 2026. Students should consult their counselor for potential updates before submission.
+
 ## Source Basis
 
 This checklist is based on the local Australia document checklist PDF, the admission-process workbook, and current Home Affairs/Study Australia process guidance.
@@ -63,3 +87,5 @@ This checklist is based on the local Australia document checklist PDF, the admis
 
 - Study Australia, how to apply to study: https://www.studyaustralia.gov.au/en/plan-your-studies/how-to-apply-to-study.html
 - Home Affairs, Student visa subclass 500: https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/student-500
+- La Trobe University admissions: https://www.latrobe.edu.au/international/apply
+- Excelsia College admissions: https://excelsia.edu.au/admissions/international-students/

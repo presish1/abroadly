@@ -512,7 +512,9 @@ function parseAnswer(raw: string): ParsedAnswer {
         .replace(/\*(.+?)\*/g, "$1")            // *italic* → italic
         .trim();
       if (cleaned.length > 5) {
-        const isUpload = /upload|marksheet|transcript|document|ielts|passport/i.test(cleaned);
+        const hasVerb = /\b(upload|share|send|provide|attach|submit|drop|give|show|need|require)\b/i.test(cleaned);
+        const hasDoc = /\b(marksheet|transcript|document|ielts|pte|toefl|passport|sop|lor|cv|citizenship|financial|statement|proof)\b/i.test(cleaned);
+        const isUpload = hasVerb && hasDoc;
         actions.push({ text: cleaned, isUpload });
       }
     }

@@ -54,6 +54,21 @@ From the local training checklist, Nepali students commonly prepare:
 
 Strong sponsors are usually close family: parents, spouse, grandparents, siblings, and sometimes uncles/aunts/in-laws if relationship and genuine access are well documented. The farther the relationship, the more evidence is needed. Sudden unexplained deposits are weak. Home Affairs can ask how funds were accumulated.
 
+## Nepal-Specific Sponsor Tiers & Financial Ratios
+
+When sponsoring a student from Nepal, the training cycle specifies a structured logic for sponsor classification and financial matching ratios:
+
+- **Sponsor Classifications**:
+  - **First Root (Primary Sponsors)**: Father, Mother, Grandfather, Grandmother, Brother, Sister.
+  - **Secondary Root (Secondary Sponsors)**: Uncle, Aunt, Maternal Uncle, Maternal Aunt, In-laws (Parents-in-law).
+
+- **Financial Ratios & Rulings**:
+  - **Annual Income Ratio**: The total annual income of the sponsors must be at least **35% of the total funds (A)** shown for the visa application (e.g., if total funds needed is AUD 50,000, sponsors must demonstrate at least AUD 17,500 equivalent in annual income).
+  - **Property Valuation Ratio**: The total property valuation of the sponsors must be at least **double (2x) the total funds (A)** shown (e.g., if total funds is AUD 50,000, sponsors must show property assets valued at least AUD 100,000 equivalent).
+  - **Core Funding Types**: Typically sourced via an Education Loan from an approved Nepalese bank or a verified Bank Balance (A) with transaction history.
+
+These specific Nepal-to-Australia financial guidelines and ratios are accurate as of June 2026.
+
 ## Warning Signs
 
 - One-day bank balance certificate with no transaction history.

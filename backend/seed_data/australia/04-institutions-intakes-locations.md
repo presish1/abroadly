@@ -33,18 +33,19 @@ The spreadsheets show these common patterns:
 
 When a student asks "Can I apply for July intake?", ask the exact course and provider. A provider may offer July for business but not for nursing, social work, education, or research.
 
-## Names Seen in the Training Data
+## Names and SSVF Details Seen in the Training Data
 
-Examples across the sheets included public universities and private/pathway providers such as Charles Darwin University, Edith Cowan University, Central Queensland University, James Cook University, Griffith University, Queensland University of Technology, Western Sydney University, University of Newcastle, University of Wollongong, University of Tasmania, Federation University, La Trobe pathways, Melbourne Polytechnic, Holmesglen, SAE, Kent Institute, King's Own Institute, NAPS, VIT, Southern Cross Education Institute, Stanley College, Stotts College, and others.
+Examples across the sheets included public universities and private/pathway providers such as Charles Darwin University (Darwin), Edith Cowan University (Perth/Sydney/Melbourne), Central Queensland University (multiple campuses including Melbourne/Sydney/Brisbane/Cairns/Rockhampton), James Cook University (Townsville/Cairns/Brisbane), Griffith University (Gold Coast/Brisbane), Western Sydney University (Parramatta/Sydney/Melbourne), University of Newcastle (Sydney/Newcastle), University of Wollongong, University of Tasmania, Federation University (Ballarat/Brisbane/Sydney/Adelaide/Melbourne pathways via ATMC/IIBIT), La Trobe University (Melbourne/Sydney via Navitas), Southern Cross University (Gold Coast/Lismore/Coffs Harbour/Sydney/Melbourne/Perth), Excelsia College (Sydney), Stanley College (Perth), Ozford College, Stanley College, IHM, ICHM College, Southern Cross Education Institute, Australian Institute of Higher Education, Australian Institute of Business, Crown Institute of Higher Education, SAE Qantm, Holmesglen TAFE, Canterbury Institute of Management, Australian College of Applied Psychology, Chisholm TAFE, Victoria Institute of Technology, Stotts College, Wentworth Institute Higher Education, Adelaide Institute of Higher Education, AApoly Higher Education, KOI, Kaplan, Kent, and Melbourne Polytechnic.
 
-Use this list only to help retrieval answer broad questions like "what types of providers are in Australia?" For admissions, fees, intakes, CRICOS status, and scholarships, the answer must tell the student to verify the specific current course page or Study Australia/CRICOS search.
+Under the Simplified Student Visa Framework (SSVF) status referenced in the training sheets, providers are categorized by risk level. Students should be aware of their provider's current SSVF risk rating, as it affects the documentation requirements (financial capacity and English proficiency evidence) for the visa application.
 
-## City Choice Advice
+Use these lists to help answer broad questions like "what types of providers are in Australia?" and "what are their intakes?" Semester intakes are typically February and July, while trimester models (common in pathway and private colleges like Excelsia, Torrens, KOI) run March/July/November or January/April/July/September/October. For specific course offerings, fees, current SSVF status, and intakes, verify the provider's current CRICOS listing.
 
-- Sydney and Melbourne: largest job markets, high rent, more competition for work and housing.
-- Brisbane, Perth, Adelaide, Canberra: strong study cities, often lower pressure than Sydney/Melbourne depending on suburb and lifestyle.
-- Regional centres: may reduce living costs and can matter for some post-study settings, but students must check course quality, job options, transport, and placement availability.
-- Darwin, Tasmania, regional Queensland, and regional South Australia: can be good fits for students who understand climate, distance, and employment realities.
+## City Choice and Campus Locations
+
+- Sydney and Melbourne: Largest job markets, but have high rent and living costs. Campuses like Western Sydney University (Parramatta/Sydney City) and La Trobe Sydney offer city lifestyles.
+- Brisbane, Perth, Adelaide, Canberra: Strong study cities with lower living costs. Examples include UWA (Perth), Curtin (Perth), Flinders and Adelaide University (Adelaide), University of Canberra (Canberra).
+- Regional Centres (Gold Coast, Sunshine Coast, Newcastle, Wollongong, Darwin, Hobart, Townsville): Offers regional incentives such as additional post-study work rights and regional living conditions. Examples: JCU (Townsville/Cairns), University of Tasmania (Hobart/Launceston), Southern Cross University (Lismore/Gold Coast), Charles Darwin University (Darwin). Check local transport and internship/placement availability first.
 
 ## Official Sources Cited
 

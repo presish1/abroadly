@@ -34,6 +34,19 @@ Prepare clean scans of:
 
 Many Australian providers accept clear English-issued documents directly, but some may ask for certified copies. If a document is in Nepali, translate it into English through a recognized translator/notary path. Keep originals available because providers, banks, NOC office, or visa processing may request verification.
 
+## NOC / NOL Requirements and Fees in Nepal
+
+For obtaining the No Objection Letter (NOL) from the Ministry of Education, Science and Technology (MoEST) in Nepal, the training cycle specifies the following strict requirements:
+
+- **Mandatory Documents**:
+  - **Original Citizenship Certificate** of the student (+ 1 Copy).
+  - **Citizenship Note**: A **Passport is NOT acceptable** as a substitute for the Citizenship Certificate for NOL verification.
+  - **Original Transcript** of the highest qualification (+ 1 Copy).
+  - **Letter of Offer** from the Australian institution (all offers if multiple).
+- **Service Fees**: MoEST charges a service fee of **NPR 2,000 per NOL**.
+
+These details are accurate as of June 2026.
+
 ## Bank Payment Flow
 
 Common payment sequence from the local training material:

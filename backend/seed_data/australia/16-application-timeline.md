@@ -2,24 +2,25 @@
 
 Australia has two main university intakes, February and July, with many providers also offering trimester or rolling intakes. Start 9-12 months before the intended intake when possible. The process below is adapted from the local Australia processing-cycle PDF, with old consultancy-specific references removed and current GS terminology used.
 
-## End-to-End Cycle
+## 15-Step End-to-End Counseling and Processing Cycle
 
-1. Self-assessment: academic profile, English, funds, career goal, and course direction.
-2. Shortlist courses and providers using Study Australia, CRICOS, TEQSA, and official provider pages.
-3. Prepare admission documents: passport, academics, English, CV, SOP/GS questionnaire, gap/work evidence, LOR, portfolio or research proposal if required.
-4. Submit provider application.
-5. Provider assessment and offer process. Offers can take about 1-4 weeks for many coursework applications; research or high-demand courses can take longer.
-6. Financial documentation and sponsor preparation: relationship, income, bank, business, property/rent/loan evidence.
-7. Provider GS/financial assessment or interview if the provider requires it. Some providers issue CoE only after internal checks.
-8. Payment approval by family/sponsor and bank.
-9. NOC/NOL through MoEST Nepal if paying from Nepal.
-10. Pay tuition/deposit only through official provider payment instructions.
-11. Send payment proof, OSHC proof, and signed acceptance to provider.
-12. Receive CoE or multiple CoEs.
-13. Lodge Student visa in ImmiAccount.
-14. Complete biometrics and medicals if requested.
-15. Wait for decision; respond quickly to requests for further information.
-16. If granted, prepare travel, accommodation, orientation, enrolment, banking, TFN, SIM, and arrival documents.
+As of June 2026, the complete cycle for Nepalese students planning their studies in Australia follows these 15 steps:
+
+1. **Career Counseling**: Assess student profile (academic grades, English test scores, budget) to select the right course/provider.
+2. **Offer Process**: Prepare all academic documents, English proficiency report, passport, and work experience proof. Submit the application. Offers take 1-4 weeks.
+3. **Financial Documentation**: Prepare property valuation, sponsor income proof, and bank balance or education loan statement.
+4. **GTE/GS Approval**: Send documents to the institution for GTE (Genuine Student) checks and interview preparation (takes 5-15 days).
+5. **Payment Approval**: Receive GTE/GS approval letter from the institution.
+6. **No Objection Letter (NOL)**: Visit the bank/ministry with the offer letter, academic transcripts, and student citizenship (Passport not accepted) to pay the NPR 2000 service fee.
+7. **Payment to Institutions**: Pay the tuition fee/deposit through the bank using the NOL, bringing back the SWIFT confirmation.
+8. **COE Request/Received**: Submit payment receipt, OSHC (Overseas Student Health Cover) proof, and signed acceptance agreement to receive the Confirmation of Enrolment (CoE).
+9. **Visa Application Lodged**: Pay the visa fee, book medical appointments at approved hospitals, submit final SOP, and complete biometrics.
+10. **Visa Decision Waiting**: DIBP (Department of Home Affairs) performs GTE checks and document verification. Phone interviews may be conducted.
+11. **Visa Granted**: Receive visa grant notice and attend a pre-departure briefing at the agency.
+12. **Visa Refused/Refund Process**: If rejected, submit the refund form and rejection letter immediately. Refund processing takes 4 to 8 weeks.
+13. **On-arrival Support**: Arrange airport pickup, local accommodation, and SIM card activation with local networks.
+14. **Attend Orientation**: Travel to Australia, attend campus orientation, enroll in classes, and finalize elective selections.
+15. **Ongoing Support**: Stay connected with student support groups and counselors in Australia.
 
 ## February Intake Planning
 
