@@ -16,7 +16,8 @@ import {
   inferField,
   pickCourses,
   pickUniversities,
-  universityThumbnailUrl,
+  universityCampusImageUrl,
+  universityLogoUrl,
   type AdmissionFit,
   type Course,
   type University,
@@ -136,13 +137,39 @@ function OfficialThumb({ university, size = "large" }: { university: University;
 
   return (
     <img
-      src={universityThumbnailUrl(university)}
-      alt={`${university.name} official site thumbnail`}
+      src={universityLogoUrl(university)}
+      alt={`${university.name} logo`}
       loading="lazy"
       onError={() => setFailed(true)}
       className={`shrink-0 border border-[#E8E5DD] bg-white object-contain ${classes}`}
       title={`Thumbnail from ${new URL(profile.international_url).hostname.replace(/^www\./, "")}`}
     />
+  );
+}
+
+function UniversityVisual({ university }: { university: University }) {
+  return (
+    <div className="relative overflow-hidden rounded-[18px] border border-[#E8E5DD] bg-[#F4F2EC]">
+      <img
+        src={universityCampusImageUrl(university)}
+        alt={`${university.name} campus view`}
+        loading="lazy"
+        className="h-28 w-full object-cover sm:h-32"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-black/5 to-transparent" />
+      <div className="absolute left-3 top-3 flex items-center gap-2 rounded-full bg-white/90 px-2.5 py-1.5 shadow-[0_6px_20px_rgba(15,15,15,0.18)] backdrop-blur">
+        <OfficialThumb university={university} size="small" />
+        <span className="text-[10.5px] font-black uppercase tracking-[0.08em] text-[#1B1916]">Campus</span>
+      </div>
+      <div className="absolute bottom-0 left-0 right-0 p-3">
+        <div className="flex items-end justify-between gap-2">
+          <p className="text-[11px] font-semibold text-white/90 drop-shadow">{university.city}</p>
+          <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-white/85 drop-shadow">
+            {university.country}
+          </p>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -209,17 +236,15 @@ function UniversityCard({
 
   return (
     <article className="group rounded-[18px] border border-[#E4E2DD] bg-white p-4 shadow-[0_1px_2px_rgba(15,15,15,0.04)] transition hover:-translate-y-0.5 hover:border-[#CFCBC3] hover:shadow-[0_14px_34px_-22px_rgba(15,15,15,0.35)]">
+      <UniversityVisual university={university} />
       <div className="flex items-start justify-between gap-4">
-        <div className="flex min-w-0 items-start gap-3">
-          <OfficialThumb university={university} />
-          <div className="min-w-0">
-            <div className="flex flex-wrap items-center gap-2">
-              <p className="text-[10.5px] font-black uppercase tracking-[0.08em] text-[#6E6A62]">{tierLabel(university.tier)}</p>
-              <span className="h-1 w-1 rounded-full bg-[#D9D7D1]" />
-              <p className="text-[11px] font-semibold text-[#6B655C]">{university.city}</p>
-            </div>
-            <h2 className="mt-1 text-[17px] font-black leading-[1.18] tracking-[-0.02em] text-[#171612]">{university.name}</h2>
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2">
+            <p className="text-[10.5px] font-black uppercase tracking-[0.08em] text-[#6E6A62]">{tierLabel(university.tier)}</p>
+            <span className="h-1 w-1 rounded-full bg-[#D9D7D1]" />
+            <p className="text-[11px] font-semibold text-[#6B655C]">{university.city}</p>
           </div>
+          <h2 className="mt-1 text-[17px] font-black leading-[1.18] tracking-[-0.02em] text-[#171612]">{university.name}</h2>
         </div>
         <FitBadge fit={fit} />
       </div>

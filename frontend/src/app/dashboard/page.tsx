@@ -38,6 +38,8 @@ import {
   gpaToPercentage,
   inferField,
   pickUniversities,
+  universityCampusImageUrl,
+  universityLogoUrl,
   type AdmissionFit,
   type University,
 } from "@/lib/university-data";
@@ -562,13 +564,7 @@ function uniInitials(name: string): string {
 
 function UniLogo({ name, url }: { name: string; url: string }) {
   const [failed, setFailed] = useState(false);
-  let host = "";
-  try {
-    host = new URL(url).hostname.replace(/^www\./, "");
-  } catch {
-    host = "";
-  }
-  if (failed || !host) {
+  if (failed) {
     return (
       <span
         aria-hidden
@@ -580,7 +576,7 @@ function UniLogo({ name, url }: { name: string; url: string }) {
   }
   return (
     <img
-      src={`https://icons.duckduckgo.com/ip3/${host}.ico`}
+      src={universityLogoUrl({ official_url: url } as University)}
       alt=""
       width={36}
       height={36}
@@ -633,15 +629,24 @@ function UniversitiesModule({
               key={u.id}
               className="rounded-xl border border-[#E8E5DD] bg-white p-4 transition hover:border-[#A8A29A] hover:shadow-[var(--shadow-sm)]"
             >
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex min-w-0 items-start gap-2.5">
+              <div className="relative mb-3 overflow-hidden rounded-[14px] border border-[#EFECE4] bg-[#F4F2EC]">
+                <img
+                  src={universityCampusImageUrl(u)}
+                  alt={`${u.name} campus view`}
+                  loading="lazy"
+                  className="h-24 w-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-black/5 to-transparent" />
+                <div className="absolute left-2.5 top-2.5 rounded-full bg-white/90 p-1.5 shadow-[0_8px_18px_rgba(15,15,15,0.15)] backdrop-blur">
                   <UniLogo name={u.name} url={u.official_url} />
-                  <div className="min-w-0">
-                    <h3 className="text-[14px] font-bold leading-snug tracking-[-0.01em] text-[#1B1916]">
-                      {u.name}
-                    </h3>
-                    <p className="mt-0.5 text-[11.5px] text-[#6B655C]">{u.city}</p>
-                  </div>
+                </div>
+              </div>
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <h3 className="text-[14px] font-bold leading-snug tracking-[-0.01em] text-[#1B1916]">
+                    {u.name}
+                  </h3>
+                  <p className="mt-0.5 text-[11.5px] text-[#6B655C]">{u.city}</p>
                 </div>
                 <FitBadge fit={fit} />
               </div>

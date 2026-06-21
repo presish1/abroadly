@@ -23,6 +23,8 @@ import {
   gpaToPercentage,
   inferField,
   pickUniversities,
+  universityCampusImageUrl,
+  universityLogoUrl,
   type AdmissionFit,
   type University,
 } from "@/lib/university-data";
@@ -84,18 +86,12 @@ function Panel({
 
 function UniLogo({ name, url }: { name: string; url: string }) {
   const [failed, setFailed] = useState(false);
-  let host = "";
-  try {
-    host = new URL(url).hostname.replace(/^www\./, "");
-  } catch {
-    host = "";
-  }
   const initial = name.replace(/\(.*?\)/g, "").trim()[0]?.toUpperCase() ?? "U";
-  if (failed || !host)
+  if (failed)
     return <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#F4F2EC] text-[12px] font-extrabold text-[#6B655C]">{initial}</span>;
   return (
     <img
-      src={`https://icons.duckduckgo.com/ip3/${host}.ico`}
+      src={universityLogoUrl({ official_url: url } as University)}
       alt=""
       width={32}
       height={32}
@@ -340,11 +336,25 @@ export function AntdDashboard({ student, documents, activeCountry, countries, on
                       {unis.slice(0, 3).map((u) => {
                         const fit = classifyFit(studentPct, u.entry_pct_min);
                         return (
-                          <div key={u.id} className="flex items-center gap-2 rounded-xl border border-[#EFECE4] bg-[#FAF9F6] px-3 py-2">
-                            <UniLogo name={u.name} url={u.official_url} />
-                            <div className="min-w-0">
+                          <div key={u.id} className="overflow-hidden rounded-xl border border-[#EFECE4] bg-[#FAF9F6]">
+                            <div className="relative h-24">
+                              <img
+                                src={universityCampusImageUrl(u)}
+                                alt={`${u.name} campus view`}
+                                className="h-full w-full object-cover"
+                                loading="lazy"
+                              />
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-black/5 to-transparent" />
+                              <div className="absolute left-2.5 top-2.5 rounded-full bg-white/90 p-1.5 shadow-[0_8px_18px_rgba(15,15,15,0.15)] backdrop-blur">
+                                <UniLogo name={u.name} url={u.official_url} />
+                              </div>
+                            </div>
+                            <div className="px-3 py-2">
                               <p className="max-w-[180px] truncate text-[12px] font-bold text-[#1B1916]">{u.name}</p>
-                              <Tag color={FIT_TAG[fit].color} style={{ marginInlineEnd: 0, fontSize: 10, fontWeight: 700 }}>{FIT_TAG[fit].label}</Tag>
+                              <div className="mt-1 flex items-center justify-between gap-2">
+                                <p className="text-[10.5px] text-[#6B655C]">{u.city}</p>
+                                <Tag color={FIT_TAG[fit].color} style={{ marginInlineEnd: 0, fontSize: 10, fontWeight: 700 }}>{FIT_TAG[fit].label}</Tag>
+                              </div>
                             </div>
                           </div>
                         );

@@ -235,6 +235,7 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://www.sydney.edu.au/courses/search.html",
     scholarships_url: "https://www.sydney.edu.au/scholarships/",
     admissions_url: "https://www.sydney.edu.au/study/how-to-apply/international-students.html",
+    thumbnail_url: "https://www.sydney.edu.au/content/dam/0q5a0458_homepage_shoes_-grey.jpg",
   },
   anu: {
     summary: "A compact, academic Canberra choice for students interested in public policy, data, research, science, and quieter student life.",
@@ -413,6 +414,31 @@ export function universityThumbnailUrl(university: University): string {
   } catch {
     return university.official_url;
   }
+}
+
+/** Primary logo/mark used in university cards and strips. */
+export function universityLogoUrl(university: University): string {
+  try {
+    const host = new URL(university.official_url).hostname.replace(/^www\./, "");
+    return `https://logo.clearbit.com/${host}?size=160`;
+  } catch {
+    return universityThumbnailUrl(university);
+  }
+}
+
+const COUNTRY_CAMPUS_FALLBACKS: Record<University["country"], string> = {
+  UK: "https://images.unsplash.com/photo-1523160111778-8f5d2e1c5c3c?auto=format&fit=crop&w=1200&q=80",
+  Australia: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=1200&q=80",
+  Canada: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1200&q=80",
+  USA: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=1200&q=80",
+  Germany: "https://images.unsplash.com/photo-1509228627152-72ae9ae6848d?auto=format&fit=crop&w=1200&q=80",
+};
+
+/** A campus image or campus-like scene for university cards. */
+export function universityCampusImageUrl(university: University): string {
+  const profile = UNIVERSITY_PROFILES[university.id];
+  if (profile?.thumbnail_url) return profile.thumbnail_url;
+  return COUNTRY_CAMPUS_FALLBACKS[university.country];
 }
 
 export function fieldLabel(field: Course["field"]): string {

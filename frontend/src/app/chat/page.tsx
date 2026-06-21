@@ -1931,14 +1931,6 @@ export default function ChatPage() {
               <span className="hidden sm:inline">Docs</span>
               {uploadedCount > 0 && <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-[#E8F2EC] px-1 text-[9px] font-bold text-[#0A6E45]">{uploadedCount}</span>}
             </Link>
-            <button
-              type="button"
-              onClick={() => { logoutStudent().finally(() => { localStorage.removeItem("abroadly_student_id"); router.push("/onboarding"); }); }}
-              className="ab-focus chat-header-btn flex items-center gap-1.5"
-            >
-              <svg viewBox="0 0 20 20" className="h-3.5 w-3.5" fill="none"><path d="M8 17H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3M13 14l4-4-4-4M17 10H8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>
-              <span className="hidden sm:inline">Logout</span>
-            </button>
           </div>
         </header>
 
