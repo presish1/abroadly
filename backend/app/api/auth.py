@@ -20,7 +20,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
 from app.core.db import get_session
-from app.models.student import EducationLevel, StudentModel, StudentOut
+from app.models.student import (
+    ChatTurnModel,
+    EducationLevel,
+    StudentModel,
+    StudentOut,
+    WELCOME_VIDEO_DECISION,
+)
 
 try:
     import jwt
@@ -234,6 +240,40 @@ async def _upsert_google_student(db: AsyncSession, profile: dict) -> tuple[Stude
     return student, True
 
 
+async def _ensure_welcome_video_turn(db: AsyncSession, student: StudentModel) -> None:
+    """Create the durable first assistant message exactly once per student.
+
+    The video is a shared static asset in the frontend image, so the database
+    stores only the small message marker and copy — never a copy of the media.
+    """
+    existing = await db.execute(
+        select(ChatTurnModel.id).where(
+            ChatTurnModel.student_id == student.id,
+            ChatTurnModel.eval_decision == WELCOME_VIDEO_DECISION,
+        )
+    )
+    if existing.scalar_one_or_none() is not None:
+        return
+
+    name_parts = (student.full_name or "").strip().split()
+    first_name = name_parts[0] if name_parts else "there"
+    db.add(
+        ChatTurnModel(
+            id=uuid.uuid4(),
+            student_id=student.id,
+            role="assistant",
+            content=(
+                f"Namaste, {first_name}! I’m your Abroadly guide. This one-minute tour shows "
+                "how to ask questions, reference your documents, and turn your study plan into "
+                "clear next steps. Start anywhere — I’ll keep the guidance tied to your profile "
+                "and official sources."
+            ),
+            eval_decision=WELCOME_VIDEO_DECISION,
+            created_at=datetime.utcnow(),
+        )
+    )
+
+
 async def get_current_student(
     student_session: str | None = Cookie(None, alias=_SESSION_COOKIE),
     db: AsyncSession = Depends(get_session),
@@ -354,6 +394,7 @@ async def complete_profile(
     student.updated_at = datetime.utcnow()
 
     db.add(student)
+    await _ensure_welcome_video_turn(db, student)
     await db.commit()
     await db.refresh(student)
     return _student_to_out(student)

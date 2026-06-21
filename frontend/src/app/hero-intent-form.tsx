@@ -21,7 +21,7 @@ function Chevron() {
     <svg
       viewBox="0 0 12 12"
       aria-hidden="true"
-      className="pointer-events-none absolute right-3 top-1/2 h-3 w-3 -translate-y-1/2 text-white/55"
+      className="pointer-events-none absolute right-4 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#15294C]/55"
       fill="none"
     >
       <path d="M2.5 4.5L6 8l3.5-3.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
@@ -41,9 +41,9 @@ function GoogleMark() {
 }
 
 const selectClass =
-  "ab-focus cursor-pointer appearance-none [-webkit-appearance:none] [-moz-appearance:none] rounded-xl border border-white/15 bg-white/[0.07] py-2.5 pl-4 pr-10 text-[16px] font-bold text-white transition hover:border-white/35 focus:border-[#F2682C] sm:text-[17px]";
+  "ab-focus cursor-pointer appearance-none rounded-[14px] border border-white/70 bg-white py-3 pl-4 pr-11 text-[15px] font-extrabold text-[#15294C] shadow-[0_8px_24px_-16px_rgba(0,0,0,0.75)] transition hover:-translate-y-0.5 hover:border-[#FFB37A] focus:border-[#F2682C] focus:ring-4 focus:ring-[#F2682C]/15 sm:text-[16px]";
 
-const OPTION_CLASS = "bg-[#15294C] text-white";
+const OPTION_CLASS = "bg-white text-[#15294C]";
 
 export function HeroIntentForm() {
   const [degree, setDegree] = useState("");
@@ -62,14 +62,20 @@ export function HeroIntentForm() {
   };
 
   return (
-    <div className="flex w-full flex-col items-center gap-7">
+    <div className="flex w-full flex-col items-center gap-6">
       {/* selector sentence */}
-      <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-3 text-[17px] font-semibold text-white/90 sm:text-[19px]">
-        <span>I want to study</span>
+      <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-3 rounded-[22px] border border-white/10 bg-white/[0.055] px-4 py-4 text-[17px] font-semibold text-white/90 shadow-[0_20px_55px_-38px_rgba(0,0,0,0.9)] backdrop-blur-sm sm:px-5 sm:text-[18px]">
+        <span className="font-bold">I want to study</span>
 
         <div className="relative">
           <label className="sr-only" htmlFor="hero-degree">Degree</label>
-          <select id="hero-degree" value={degree} onChange={(e) => setDegree(e.target.value)} className={selectClass}>
+          <select
+            id="hero-degree"
+            value={degree}
+            onChange={(e) => setDegree(e.target.value)}
+            className={selectClass}
+            style={{ appearance: "none", WebkitAppearance: "none", backgroundImage: "none" }}
+          >
             <option value="" disabled className={OPTION_CLASS}>Select degree</option>
             {DEGREES.map((d) => (
               <option key={d} value={d} className={OPTION_CLASS}>{d}</option>
@@ -82,7 +88,13 @@ export function HeroIntentForm() {
 
         <div className="relative">
           <label className="sr-only" htmlFor="hero-country">Country</label>
-          <select id="hero-country" value={country} onChange={(e) => setCountry(e.target.value)} className={selectClass}>
+          <select
+            id="hero-country"
+            value={country}
+            onChange={(e) => setCountry(e.target.value)}
+            className={selectClass}
+            style={{ appearance: "none", WebkitAppearance: "none", backgroundImage: "none" }}
+          >
             <option value="" disabled className={OPTION_CLASS}>Select country</option>
             {COUNTRIES.map((c) => (
               <option key={c.value} value={c.value} className={OPTION_CLASS}>{c.label}</option>
@@ -96,13 +108,15 @@ export function HeroIntentForm() {
       <button
         type="button"
         onClick={start}
-        className="ab-focus inline-flex items-center gap-2.5 rounded-xl bg-[#F2682C] py-3.5 pl-3 pr-6 text-[15px] font-extrabold text-white shadow-[0_14px_34px_-10px_rgba(242,104,44,0.65)] transition hover:-translate-y-0.5 hover:bg-[#E55A1F] active:translate-y-0"
+        className="ab-focus group inline-flex items-center gap-2.5 rounded-[15px] bg-[#F2682C] py-3 pl-3 pr-3 text-[15px] font-extrabold text-white shadow-[0_16px_36px_-11px_rgba(242,104,44,0.72)] transition hover:-translate-y-0.5 hover:bg-[#E95D22] active:translate-y-0"
       >
         <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-white">
           <GoogleMark />
         </span>
         Find my fit
-        <span className="font-semibold text-white/75">· free</span>
+        <span className="ml-0.5 rounded-[9px] border border-white/70 bg-[#FFF4D8] px-2.5 py-1 text-[11px] font-black uppercase tracking-[0.08em] text-[#8B451F] shadow-sm transition group-hover:bg-white">
+          Free
+        </span>
       </button>
       <GoogleSignInModal open={signInOpen} onClose={() => setSignInOpen(false)} />
     </div>

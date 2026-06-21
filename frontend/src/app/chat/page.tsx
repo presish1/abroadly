@@ -52,6 +52,11 @@ interface AiMessage {
   response: ChatResponse;
 }
 
+interface WelcomeVideoMessage {
+  role: "welcome_video";
+  text: string;
+}
+
 interface CounselorMessage {
   role: "counselor";
   text: string;
@@ -88,7 +93,7 @@ interface UploadInviteMessage {
   uploaded?: boolean;
 }
 
-type Message = UserMessage | AiMessage | CounselorMessage | UploadMessage | CounselorCardMessage | UploadInviteMessage;
+type Message = UserMessage | AiMessage | WelcomeVideoMessage | CounselorMessage | UploadMessage | CounselorCardMessage | UploadInviteMessage;
 
 /* ── Question launcher (empty state) + suggestion starters ─────────── */
 
@@ -455,7 +460,7 @@ function TypingDots() {
 function AiAvatar() {
   return (
     <div className="h-8 w-8 shrink-0 rounded-[10px] overflow-hidden ring-1 ring-black/5">
-      <img src="/images/abroadly-logo.png" alt="Abroadly" className="h-full w-full object-cover" />
+      <img src="/images/abroadly-logo.png" alt="Abroadly" className="h-full w-full bg-white object-contain p-0.5" />
     </div>
   );
 }
@@ -615,6 +620,55 @@ function AiResponseBubble({ response }: { response: ChatResponse }) {
   );
 }
 
+function WelcomeVideoCard({ text }: { text: string }) {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [muted, setMuted] = useState(true);
+  const [playing, setPlaying] = useState(false);
+
+  function togglePlayback() {
+    const video = videoRef.current;
+    if (!video) return;
+    if (video.paused) video.play().catch(() => {});
+    else video.pause();
+  }
+
+  function toggleMute() {
+    const video = videoRef.current;
+    if (!video) return;
+    video.muted = !video.muted;
+    setMuted(video.muted);
+  }
+
+  return (
+    <article className="chat-welcome-video">
+      <p className="chat-welcome-video-kicker">Your 1-minute Abroadly tour</p>
+      <p className="chat-welcome-video-copy">{text}</p>
+      <div className="chat-welcome-video-frame">
+        <video
+          ref={videoRef}
+          src="/media/abroadly-welcome-tour.mp4"
+          poster="/media/abroadly-welcome-tour-poster.jpg"
+          preload="metadata"
+          playsInline
+          muted
+          onPlay={() => setPlaying(true)}
+          onPause={() => setPlaying(false)}
+          onEnded={() => setPlaying(false)}
+          onClick={togglePlayback}
+        />
+        <button type="button" className="chat-video-play" onClick={togglePlayback} aria-label={playing ? "Pause welcome video" : "Play welcome video"}>
+          {playing ? "Pause" : "Play tour"}
+        </button>
+        <button type="button" className="chat-video-mute" onClick={toggleMute} aria-label={muted ? "Unmute welcome video" : "Mute welcome video"}>
+          <span aria-hidden>{muted ? "🔇" : "🔊"}</span>
+          {muted ? "Muted" : "Sound on"}
+        </button>
+      </div>
+      <p className="chat-welcome-video-note">Muted by default · turn sound on when you are ready.</p>
+    </article>
+  );
+}
+
 /* True when an AI answer is nudging the student to upload a document. */
 function answerWantsUpload(response: ChatResponse): boolean {
   const answer = response.answer ?? response.clarifying_question ?? "";
@@ -634,7 +688,7 @@ function inferUploadLabel(response: ChatResponse): string {
 /* True when an AI answer is advising/nudging the student to join a prep class. */
 function answerWantsClassBooking(response: ChatResponse): boolean {
   const answer = (response.answer ?? response.clarifying_question ?? "").toLowerCase();
-  const classKeywords = /\b(ielts class|pte class|toefl class|preparation class|ielts course|pte course|join class|book class|class registration|register for class|mock test)\b/i;
+  const classKeywords = /\b(ielts class|pte class|toefl class|preparation class|prep class|trial class|free class|ielts course|pte course|join (?:a |the )?class|book (?:a |the )?class|class registration|register for (?:a |the )?class|mock test|test preparation)\b/i;
   return classKeywords.test(answer);
 }
 
@@ -950,6 +1004,67 @@ function UploadPromptModal({
   );
 }
 
+function ClassBookingPromptModal({
+  test,
+  uploadedCount,
+  requiredCount,
+  onConfirm,
+  onUploadDocuments,
+  onClose,
+}: {
+  test: string;
+  uploadedCount: number;
+  requiredCount: number;
+  onConfirm: () => void;
+  onUploadDocuments: () => void;
+  onClose: () => void;
+}) {
+  const ready = uploadedCount >= requiredCount;
+  const remaining = Math.max(0, requiredCount - uploadedCount);
+  return (
+    <>
+      <div className="upload-modal-overlay" onClick={onClose} />
+      <div className="upload-modal" role="dialog" aria-modal="true">
+        <button type="button" onClick={onClose} aria-label="Close" className="ab-focus absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-lg text-[#8A847B] hover:bg-[#F0EDE4] transition-colors">
+          <CloseIcon />
+        </button>
+        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#EBF5FF] text-[#1E70EB]">
+          <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none">
+            <rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M12 14h.01M16 14h.01M8 14h.01M12 17h.01M8 17h.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </div>
+        <h3 className="mt-4 text-[17px] font-extrabold tracking-[-0.01em] text-[var(--ab-ink)]">
+          {ready ? `Book your free ${test} trial class` : `Finish your class profile first`}
+        </h3>
+        <p className="mt-2 text-[13.5px] leading-6 text-[#6B655C]">
+          {ready
+            ? "Your eight essential documents are on file. Confirm now and we’ll use your profile to arrange the right class timing."
+            : `Upload the ${requiredCount} essential study documents before confirming a free class. You have ${uploadedCount}; ${remaining} ${remaining === 1 ? "is" : "are"} still needed.`}
+        </p>
+        <div className="mt-4 rounded-xl border border-[#DDE8E2] bg-[#F4FAF6] p-3">
+          <div className="flex items-center justify-between text-[11px] font-bold text-[#3F3A33]">
+            <span>Essential documents</span>
+            <span>{uploadedCount} / {requiredCount}</span>
+          </div>
+          <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-[#DDE8E2]">
+            <div className="h-full rounded-full bg-[#0A6E45] transition-all" style={{ width: `${Math.min(100, (uploadedCount / requiredCount) * 100)}%` }} />
+          </div>
+        </div>
+        <div className="mt-5 flex gap-2.5">
+          <button type="button" onClick={ready ? onConfirm : onUploadDocuments} className="ab-focus class-booking-primary flex-1 rounded-xl px-4 py-3 text-[13px] font-bold text-white">
+            {ready ? "Book Free Slot" : `Upload ${remaining} remaining`}
+          </button>
+          <button type="button" onClick={onClose} className="ab-focus rounded-xl border border-[#E8E5DD] bg-white px-4 py-3 text-[13px] font-semibold text-[#6B655C] transition hover:bg-[#F4F2EC]">
+            Maybe later
+          </button>
+        </div>
+      </div>
+    </>
+  );
+}
+
 /* ── Profile popup ────────────────────────────────────────────────── */
 
 function ProfilePopup({
@@ -1070,11 +1185,11 @@ function ProfilePopup({
   return (
     <>
       <div
-        className="fixed inset-0 z-[60] bg-[rgba(27,25,22,0.32)] backdrop-blur-[4px]"
+        className="profile-panel-overlay"
         onClick={requirePhone ? undefined : onClose}
       />
       <div
-        className="fixed left-1/2 top-1/2 z-[61] max-h-[calc(100dvh-32px)] w-[calc(100%-32px)] max-w-[520px] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-2xl border border-[#EFECE4] bg-white p-[22px] shadow-[var(--shadow-lg)] max-[480px]:w-[calc(100%-20px)] max-[480px]:rounded-xl max-[480px]:p-[18px]"
+        className="profile-panel"
         role="dialog"
         aria-modal="true"
         aria-labelledby="profile-modal-title"
@@ -1091,6 +1206,13 @@ function ProfilePopup({
             <p className="truncate text-[12px] text-[#8A847B]">{student.email}</p>
           </div>
         </div>
+
+        <nav className="profile-panel-tabs" aria-label="Student workspace">
+          <span className="is-active"><ProfileTabIcon /> Profile</span>
+          <Link href="/dashboard"><DashboardTabIcon /> Dashboard</Link>
+          <Link href="/chat/documents"><FolderIcon /> Documents</Link>
+          <Link href="/universities"><UniversitiesTabIcon /> Universities</Link>
+        </nav>
 
         {phoneMissing && (
           <div className="mt-4 rounded-md border border-[#F5C2BC] bg-[#FFF4F2] px-3 py-2 text-[12px] font-semibold leading-5 text-[#B42318]">
@@ -1247,7 +1369,7 @@ function ProfilePopup({
 
 /* Inline "share your X" invite that lives in the chat thread. Renders a
  * small sample thumbnail (when the catalog has one) + a one-line "why",
- * and a single primary action that opens the file picker. The picked file
+ * and a single primary action that opens a focused upload window. The picked file
  * is routed to the matching catalog doc_type via the parent.
  *
  * Three states: invite (default) → done (uploaded) → dismissed (hidden). */
@@ -1263,6 +1385,7 @@ function UploadInviteCard({
   onDismiss: (msg: UploadInviteMessage) => void;
 }) {
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const [uploadWindowOpen, setUploadWindowOpen] = useState(false);
   if (msg.dismissed) return null;
   const sampleSrc = msg.sampleSlug ? `/samples/${msg.sampleSlug}/page-01.webp` : null;
 
@@ -1308,7 +1431,7 @@ function UploadInviteCard({
       <div className="chat-upload-invite-actions">
         <button
           type="button"
-          onClick={() => inputRef.current?.click()}
+          onClick={() => setUploadWindowOpen(true)}
           disabled={!studentId}
           className="chat-upload-invite-primary"
         >
@@ -1331,10 +1454,59 @@ function UploadInviteCard({
         className="hidden"
         onChange={(e) => {
           const file = e.target.files?.[0];
-          if (file) onPick(msg, file);
+          if (file) {
+            setUploadWindowOpen(false);
+            onPick(msg, file);
+          }
           e.target.value = "";
         }}
       />
+
+      {uploadWindowOpen && (
+        <>
+          <div className="upload-modal-overlay" onClick={() => setUploadWindowOpen(false)} />
+          <div className="upload-modal upload-specific-modal" role="dialog" aria-modal="true" aria-labelledby={`upload-${msg.slotId}-title`}>
+            <button type="button" onClick={() => setUploadWindowOpen(false)} aria-label="Close" className="ab-focus absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-lg text-[#8A847B] transition hover:bg-[#F0EDE4]">
+              <CloseIcon />
+            </button>
+            <p className="chat-upload-invite-eyebrow">Document upload</p>
+            <h3 id={`upload-${msg.slotId}-title`} className="mt-3 pr-8 text-[18px] font-extrabold tracking-[-0.02em] text-[var(--ab-ink)]">
+              Add your {msg.slotLabel.toLowerCase()}
+            </h3>
+            <p className="mt-2 text-[13px] leading-5 text-[#6B655C]">{msg.whyOneLiner}</p>
+
+            <button
+              type="button"
+              onClick={() => inputRef.current?.click()}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => {
+                e.preventDefault();
+                const file = e.dataTransfer.files?.[0];
+                if (file) {
+                  setUploadWindowOpen(false);
+                  onPick(msg, file);
+                }
+              }}
+              className="upload-specific-dropzone"
+            >
+              {sampleSrc ? (
+                <img src={sampleSrc} alt="Example document" className="upload-specific-preview" />
+              ) : (
+                <span className="upload-specific-icon"><UploadCloudIcon /></span>
+              )}
+              <span className="min-w-0 text-left">
+                <span className="block text-[13px] font-extrabold text-[#1B1916]">Choose {msg.slotLabel.toLowerCase()}</span>
+                <span className="mt-1 block text-[11px] leading-4 text-[#8A847B]">Drag it here or tap to browse · {msg.accept.replaceAll(",", ", ").toUpperCase()}</span>
+              </span>
+            </button>
+
+            <div className="mt-4 flex items-center justify-between gap-3">
+              <p className="text-[10.5px] leading-4 text-[#8A847B]">Private to your account. One file for this document type.</p>
+              <button type="button" onClick={() => setUploadWindowOpen(false)} className="ab-focus shrink-0 rounded-lg px-3 py-2 text-[12px] font-bold text-[#6B655C] hover:bg-[#F4F2EC]">Cancel</button>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
@@ -1423,7 +1595,7 @@ export default function ChatPage() {
   const [chatHistory, setChatHistory] = useState<ChatTurn[]>([]);
   const [input, setInput] = useState("");
   const [thinking, setThinking] = useState(false);
-  const [uploading, setUploading] = useState(false);
+  const [attachmentMenuOpen, setAttachmentMenuOpen] = useState(false);
   const [docPanelOpen, setDocPanelOpen] = useState(false);
   const [documents, setDocuments] = useState<StudentDocument[]>([]);
   const [uploadPrompt, setUploadPrompt] = useState<{ label: string } | null>(null);
@@ -1431,7 +1603,6 @@ export default function ChatPage() {
   const [profileOpen, setProfileOpen] = useState(false);
   const [callConsented, setCallConsented] = useState(false);
   const [uploadingSlot, setUploadingSlot] = useState<string | null>(null);
-  const fileRef = useRef<HTMLInputElement>(null);
   // Counsellor offer: driven by backend offer_counselor signal; shown once per session.
   const counselorOffered = useRef(false);
   // Count of user-typed (not click-sourced) messages sent this session.
@@ -1534,6 +1705,7 @@ export default function ChatPage() {
         const restored: Message[] = turns.map((t): Message => {
           if (t.role === "user") return { role: "user", text: t.content };
           if (t.role === "counselor") return { role: "counselor", text: t.content };
+          if (t.eval_decision === "welcome_video_v1") return { role: "welcome_video", text: t.content };
           return {
             role: "ai",
             response: {
@@ -1614,6 +1786,11 @@ export default function ChatPage() {
         { id: res.request_id || `local-ai-${Date.now()}`, role: "assistant", content: res.answer || "", eval_decision: res.decision, created_at: new Date().toISOString() },
       ]);
 
+      const wantsClassBooking = answerWantsClassBooking(res);
+      if (!docPanelOpen && wantsClassBooking) {
+        setClassBookingPrompt({ test: inferEnglishTest(res) });
+      }
+
       // ── 2-slot priority system ──────────────────────────────────────────
       // Slot B: text-match upload invite (beats proactive)
       // Slot A: counselor card
@@ -1627,7 +1804,7 @@ export default function ChatPage() {
       let slotBFired = false;
 
       // Slot B — text-match upload invite (AI answer mentions a specific doc).
-      if (!docPanelOpen && enoughTurns) {
+      if (!docPanelOpen && enoughTurns && !wantsClassBooking) {
         const invite = inferUploadSlot(res);
         if (invite) {
           setMessages((m) => {
@@ -1648,7 +1825,7 @@ export default function ChatPage() {
       }
 
       // Slot B — proactive upload invite (score ≥15, 0 docs, ≥2 session turns).
-      if (!docPanelOpen && !slotBFired && !proactiveInviteShown.current && enoughTurns) {
+      if (!docPanelOpen && !slotBFired && !proactiveInviteShown.current && enoughTurns && !wantsClassBooking) {
         const score = res.lead_score ?? 0;
         const noDocs = documents.length === 0;
         if (score >= 15 && noDocs) {
@@ -1674,17 +1851,13 @@ export default function ChatPage() {
       }
 
       // Generic upload modal or class booking modal — only fires alone (no Slot B this turn, score ≥3).
-      if (!docPanelOpen && !slotBFired && !enoughTurns) {
+      if (!docPanelOpen && !slotBFired && !enoughTurns && !wantsClassBooking) {
         if (answerWantsUpload(res)) {
           setUploadPrompt({ label: inferUploadLabel(res) });
-        } else if (answerWantsClassBooking(res)) {
-          setClassBookingPrompt({ test: inferEnglishTest(res) });
         }
-      } else if (!docPanelOpen && !slotBFired) {
+      } else if (!docPanelOpen && !slotBFired && !wantsClassBooking) {
         if (!inferUploadSlot(res) && answerWantsUpload(res)) {
           setUploadPrompt({ label: inferUploadLabel(res) });
-        } else if (answerWantsClassBooking(res)) {
-          setClassBookingPrompt({ test: inferEnglishTest(res) });
         }
       }
 
@@ -1736,29 +1909,6 @@ export default function ChatPage() {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       sendMessage();
-    }
-  }
-
-  async function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file || !studentId) return;
-    e.target.value = "";
-    setMessages((m) => [...m, { role: "upload", status: "uploading", filename: file.name, text: `Uploading ${file.name}` }]);
-    setUploading(true);
-    try {
-      const res = await uploadFile(studentId, file);
-      const document = res.document;
-      if (document) {
-        setDocuments((docs) => [document, ...docs.filter((doc) => doc.doc_id !== document.doc_id)]);
-      } else {
-        refreshDocuments(studentId).catch(() => {});
-      }
-      setMessages((m) => m.map((msg, i) => (i === m.length - 1 && msg.role === "upload" ? { ...msg, status: "done" as const, text: `Uploaded ${file.name}. I can now reference this document.` } : msg)));
-    } catch (err: unknown) {
-      const errMsg = err instanceof Error ? err.message : "Upload failed.";
-      setMessages((m) => m.map((msg, i) => (i === m.length - 1 && msg.role === "upload" ? { ...msg, status: "error" as const, text: `Upload failed: ${errMsg}` } : msg)));
-    } finally {
-      setUploading(false);
     }
   }
 
@@ -1873,21 +2023,41 @@ export default function ChatPage() {
     );
   }, [student, documents]);
 
-  // Suggestion rail: contextual follow-ups from the last AI reply, else curated starters.
+  // Suggestion rail: use generated actions when present, then evolve around
+  // the current topic and profile instead of falling back to the same six chips.
   const railSuggestions = useMemo(() => {
+    let latestAnswer = "";
+    let latestQuestion = "";
     for (let i = messages.length - 1; i >= 0; i--) {
       const m = messages[i];
       if (m.role === "ai") {
+        latestAnswer = m.response.answer ?? m.response.clarifying_question ?? "";
         const acts = parseAnswer(m.response.answer ?? m.response.clarifying_question ?? "")
           .actions.filter((a) => !a.isUpload)
           .map((a) => a.text);
-        if (acts.length) return acts.slice(0, 5);
-        break;
+        if (acts.length) return Array.from(new Set(acts)).slice(0, 4);
       }
-      if (m.role === "user") break;
+      if (m.role === "user" && !latestQuestion) latestQuestion = m.text;
+      if (latestAnswer && latestQuestion) break;
     }
-    return starterSuggestions;
-  }, [messages]);
+    if (!latestAnswer) return starterSuggestions;
+
+    const topic = `${latestQuestion} ${latestAnswer}`.toLowerCase();
+    const country = student?.target_countries?.[0] || (topic.includes("australia") ? "Australia" : topic.includes("canada") ? "Canada" : "the UK");
+    const field = student?.preferred_field || "my field";
+    const contextual = /university|universities|college|course/.test(topic)
+      ? [`Which 3 ${country} universities best fit my grades?`, "Compare their fees, scholarships and entry requirements", `Which ${field} course gives me the strongest career path?`]
+      : /cost|budget|tuition|fund|scholarship|bank/.test(topic)
+        ? [`Build a realistic first-year budget for ${country}`, "Which scholarships can I verify and apply for?", "What financial documents should my sponsor prepare?"]
+        : /ielts|pte|toefl|english/.test(topic)
+          ? [`What score do I need for ${field} in ${country}?`, "Make me a four-week test preparation plan", "Which universities accept my current English score?"]
+          : /visa|coe|cas|permit|genuine student/.test(topic)
+            ? [`Give me the visa steps for ${country} in order`, "What could delay or weaken my application?", "Which visa documents should I prepare first?"]
+            : /document|passport|transcript|sop|recommendation/.test(topic)
+              ? ["Which of my eight essential documents are still missing?", "What should I check before submitting these documents?", "Use my uploaded documents to flag the next risk"]
+              : [`What should I do next for ${country}?`, `Which universities fit ${field} and my profile?`, "What is the biggest gap in my current plan?"];
+    return contextual.filter((item) => item.toLowerCase() !== latestQuestion.toLowerCase()).slice(0, 4);
+  }, [messages, student]);
 
   return (
     <main className="chat-layout">
@@ -2039,7 +2209,7 @@ export default function ChatPage() {
         <header className="chat-header">
           <div className="flex items-center gap-3">
             <div className="h-8 w-8 shrink-0 rounded-[10px] overflow-hidden lg:hidden">
-              <img src="/images/abroadly-logo.png" alt="Ab" className="h-full w-full object-cover" />
+              <img src="/images/abroadly-logo.png" alt="Ab" className="h-full w-full bg-white object-contain p-0.5" />
             </div>
             <div>
               <h1 className="text-[15px] font-bold text-[var(--ab-ink)]">Study Abroad Chat</h1>
@@ -2098,7 +2268,7 @@ export default function ChatPage() {
             {!hasMessages && (
               <div className="chat-welcome">
                 <div className="h-16 w-16 overflow-hidden rounded-2xl ring-1 ring-black/5 shadow-[var(--shadow-md)]">
-                  <img src="/images/abroadly-logo.png" alt="Abroadly" className="h-full w-full object-cover" />
+                  <img src="/images/abroadly-logo.png" alt="Abroadly" className="h-full w-full bg-white object-contain p-1" />
                 </div>
                 <h2 className="mt-5 text-[26px] font-extrabold tracking-[-0.02em] text-[var(--ab-ink)]">
                   {firstName ? `Namaste, ${firstName} ` : "Namaste "}<span className="align-middle">👋</span>
@@ -2133,6 +2303,14 @@ export default function ChatPage() {
             {/* Conversation */}
             <div className="space-y-1">
               {messages.map((msg, i) => {
+                if (msg.role === "welcome_video") {
+                  return (
+                    <div key={i} className="chat-row chat-row-ai" style={{ animationDelay: "0.04s" }}>
+                      <AiAvatar />
+                      <WelcomeVideoCard text={msg.text} />
+                    </div>
+                  );
+                }
                 if (msg.role === "user") {
                   return (
                     <div key={i} className="chat-row chat-row-user" style={{ animationDelay: "0.04s" }}>
@@ -2237,19 +2415,58 @@ export default function ChatPage() {
                 rows={1}
               />
               <div className="flex items-center gap-1.5 px-2 pb-2">
-                <button type="button" onClick={() => fileRef.current?.click()} disabled={uploading} title="Quick upload" aria-label="Quick upload" className="ab-focus chat-action-btn">
+                <button type="button" onClick={() => setAttachmentMenuOpen((open) => !open)} title="Reference an uploaded document" aria-label="Reference an uploaded document" aria-expanded={attachmentMenuOpen} className={`ab-focus chat-action-btn ${attachmentMenuOpen ? "is-active" : ""}`}>
                   <PaperclipIcon />
                 </button>
-                <Link href="/chat/documents" title="Upload documents" aria-label="Upload documents" className="ab-focus chat-action-btn">
-                  <FolderIcon />
-                </Link>
                 <div className="flex-1" />
                 <span className="text-[10px] text-[#B5B0A6] font-medium hidden sm:block">Enter to send</span>
                 <button type="button" onClick={() => sendMessage()} disabled={thinking || !input.trim()} title="Send message" aria-label="Send message" className="ab-focus chat-send-btn">
                   <SendIcon />
                 </button>
               </div>
-              <input ref={fileRef} type="file" accept=".pdf,.txt,.jpg,.jpeg,.png" className="hidden" onChange={onFileChange} />
+              {attachmentMenuOpen && (
+                <div className="chat-attachment-menu" role="menu" aria-label="Uploaded documents">
+                  <div className="chat-attachment-menu-head">
+                    <span>Reference a document</span>
+                    <button type="button" onClick={() => setAttachmentMenuOpen(false)} aria-label="Close document list"><CloseIcon /></button>
+                  </div>
+                  {documents.length ? (
+                    <div className="chat-attachment-list">
+                      {documents.map((doc) => {
+                        const meta = docTypes.find((item) => item.id === doc.doc_type);
+                        const label = meta?.label || "Document";
+                        return (
+                          <button
+                            key={doc.doc_id}
+                            type="button"
+                            role="menuitem"
+                            onClick={() => {
+                              setInput((current) => current.trim()
+                                ? `Using my uploaded ${label.toLowerCase()} (${doc.filename}), ${current}`
+                                : `Please review my uploaded ${label.toLowerCase()} (${doc.filename}) and tell me what to improve or double-check.`);
+                              setAttachmentMenuOpen(false);
+                              requestAnimationFrame(() => taRef.current?.focus());
+                            }}
+                            className="chat-attachment-item"
+                          >
+                            <span className="chat-attachment-item-icon">{meta?.icon || "📄"}</span>
+                            <span className="min-w-0 flex-1 text-left">
+                              <span className="block truncate text-[12px] font-bold text-[#1B1916]">{label}</span>
+                              <span className="mt-0.5 block truncate text-[10.5px] text-[#8A847B]">{doc.filename}</span>
+                            </span>
+                            <ArrowRightSm />
+                          </button>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="chat-attachment-empty">
+                      <p>No documents uploaded yet.</p>
+                      <Link href="/chat/documents" className="ab-focus">Upload a document</Link>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
             <p className="mt-2 text-center text-[10px] text-[#B5B0A6]">Abroadly can make mistakes. Verify important details with official sources.</p>
           </div>
@@ -2292,7 +2509,21 @@ export default function ChatPage() {
         />
       )}
 
-      {classBookingPrompt && student && (
+      {classBookingPrompt && uploadedCount < docReadiness.essentialsTotal && (
+        <ClassBookingPromptModal
+          test={classBookingPrompt.test}
+          uploadedCount={uploadedCount}
+          requiredCount={docReadiness.essentialsTotal}
+          onConfirm={() => setClassBookingPrompt(null)}
+          onUploadDocuments={() => {
+            setClassBookingPrompt(null);
+            router.push("/chat/documents");
+          }}
+          onClose={() => setClassBookingPrompt(null)}
+        />
+      )}
+
+      {classBookingPrompt && student && uploadedCount >= docReadiness.essentialsTotal && (
         <ServiceRequestModal
           student={student}
           requestType="class_booking"

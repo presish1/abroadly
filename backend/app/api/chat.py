@@ -18,8 +18,7 @@ from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
-from slowapi.errors import RateLimitExceeded
-from sqlalchemy import bindparam, select, text
+from sqlalchemy import bindparam, or_, select, text
 from sqlalchemy.dialects.postgresql import JSONB as SAJsonb
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -27,11 +26,16 @@ from app.core.config import settings
 from app.core.db import get_session
 from app.core.limiter import limiter, _get_ip_and_student
 from app.core.metrics import increment as metric_inc
-from app.core.throttle import is_cooling_down, record_over_limit, should_flag_for_admin
+from app.core.throttle import is_cooling_down
 from app.eval import policies
 from app.eval.evaluator import default_evaluator
 from app.eval.types import Decision, EvalDecision
-from app.models.student import ChatTurnModel, ChatTurnOut, StudentModel
+from app.models.student import (
+    ChatTurnModel,
+    ChatTurnOut,
+    StudentModel,
+    WELCOME_VIDEO_DECISION,
+)
 from app.normalizer import default_normalizer
 from app.qeval import default_question_evaluator
 from app.qeval import rules as qeval_rules
@@ -166,7 +170,13 @@ async def _load_history(db: AsyncSession, student_id: uuid.UUID, limit: int) -> 
     """Most recent N turns for this student, ordered oldest→newest for LLM context."""
     stmt = (
         select(ChatTurnModel)
-        .where(ChatTurnModel.student_id == student_id)
+        .where(
+            ChatTurnModel.student_id == student_id,
+            or_(
+                ChatTurnModel.eval_decision.is_(None),
+                ChatTurnModel.eval_decision != WELCOME_VIDEO_DECISION,
+            ),
+        )
         .order_by(ChatTurnModel.created_at.desc())
         .limit(limit)
     )

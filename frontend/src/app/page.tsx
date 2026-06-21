@@ -94,7 +94,7 @@ function ChatPreview({ className = "" }: { className?: string }) {
           </div>
 
           <div className="flex items-start gap-2.5">
-            <img src="/images/abroadly-logo.png" alt="" className="mt-0.5 h-7 w-7 shrink-0 rounded-lg" />
+            <img src="/images/abroadly-logo.png" alt="" className="mt-0.5 h-7 w-7 shrink-0 rounded-lg bg-white object-contain p-0.5" />
             <div className="max-w-[88%] rounded-2xl rounded-tl-md border border-[var(--ab-line-soft)] bg-[var(--ab-paper)] px-4 py-3 text-[14px] leading-relaxed text-[var(--ab-ink)]">
               Yes — a <strong className="font-semibold">3.2 GPA after +2</strong> puts most UK undergraduate
               CS courses in reach, often via direct entry or a foundation year. You will typically need{" "}

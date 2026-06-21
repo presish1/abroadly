@@ -115,7 +115,7 @@ export function StudentQuickTabs({
   return (
     <aside className="chat-right-rail" aria-label="Student quick tabs">
       <Link href="/" className="ab-focus chat-left-brand">
-        <img src="/images/abroadly-logo.png" alt="Abroadly" className="h-9 w-9 rounded-[10px]" />
+        <img src="/images/abroadly-logo.png" alt="Abroadly" className="h-9 w-9 rounded-[10px] bg-white object-contain p-0.5" />
         <span>Abroadly</span>
       </Link>
 
