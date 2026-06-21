@@ -83,9 +83,9 @@ export default function Home() {
       <section className="relative overflow-hidden bg-[#fafafa] min-h-[85vh] flex flex-col items-center justify-center pt-24 pb-16">
         
         {/* Floating Background Images with badges */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden max-w-[1400px] mx-auto z-0">
-          {/* Top left girl tablet */}
-          <div className="absolute top-10 left-[15%] w-48 rounded-[24px] overflow-hidden shadow-2xl animate-[abFadeUp_1s_ease-out]">
+        <div className="absolute inset-0 pointer-events-none overflow-hidden max-w-[1400px] mx-auto z-0 hidden lg:block">
+          {/* Top left */}
+          <div className="absolute top-10 left-[2%] xl:left-[8%] w-48 rounded-[24px] overflow-hidden shadow-2xl animate-[abFadeUp_1s_ease-out]">
              <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&h=450&fit=crop" alt="" className="w-full h-auto object-cover" />
              {/* Yellow Edit Badge */}
              <div className="absolute -left-3 top-8 w-14 h-14 bg-gradient-to-br from-yellow-300 to-amber-400 rounded-full flex items-center justify-center shadow-lg border-2 border-white">
@@ -93,18 +93,13 @@ export default function Home() {
              </div>
           </div>
 
-          {/* Center left guy leaning on wall */}
-          <div className="absolute top-48 left-[40%] w-32 rounded-[20px] overflow-hidden shadow-xl animate-[abFadeUp_1.2s_ease-out]">
-             <img src="https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?w=300&h=300&fit=crop" alt="" className="w-full h-auto object-cover" />
-          </div>
-
-          {/* Top right girls on grass */}
-          <div className="absolute top-12 right-[20%] w-56 rounded-[24px] overflow-hidden shadow-2xl animate-[abFadeUp_1.1s_ease-out]">
+          {/* Top right */}
+          <div className="absolute top-12 right-[2%] xl:right-[8%] w-56 rounded-[24px] overflow-hidden shadow-2xl animate-[abFadeUp_1.1s_ease-out]">
              <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=350&fit=crop" alt="" className="w-full h-auto object-cover" />
           </div>
 
-          {/* Bottom far right guy listening to music */}
-          <div className="absolute top-64 right-[5%] w-44 rounded-[24px] overflow-hidden shadow-2xl animate-[abFadeUp_1.3s_ease-out]">
+          {/* Bottom right */}
+          <div className="absolute top-64 right-[0%] xl:right-[5%] w-44 rounded-[24px] overflow-hidden shadow-2xl animate-[abFadeUp_1.3s_ease-out]">
              <img src="https://images.unsplash.com/photo-1515041219749-89347f83291a?w=400&h=500&fit=crop" alt="" className="w-full h-auto object-cover" />
              {/* Pink Soundwave Badge */}
              <div className="absolute -left-5 top-12 w-16 h-16 bg-gradient-to-br from-pink-300 to-pink-500 rounded-full flex items-center justify-center shadow-lg border-2 border-white">
@@ -112,8 +107,8 @@ export default function Home() {
              </div>
           </div>
           
-          {/* Bottom far left guy typing */}
-          <div className="absolute top-[22rem] left-[0%] w-48 rounded-[24px] overflow-hidden shadow-2xl animate-[abFadeUp_1.4s_ease-out]">
+          {/* Bottom left */}
+          <div className="absolute top-[22rem] left-[5%] xl:left-[10%] w-48 rounded-[24px] overflow-hidden shadow-2xl animate-[abFadeUp_1.4s_ease-out]">
              <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?w=400&h=500&fit=crop" alt="" className="w-full h-auto object-cover" />
              {/* Teal List Badge */}
              <div className="absolute -right-4 top-16 w-16 h-16 bg-gradient-to-br from-teal-300 to-cyan-500 rounded-full flex items-center justify-center shadow-lg border-2 border-white">
@@ -122,8 +117,8 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="relative z-10 mx-auto flex flex-col items-center text-center px-5 max-w-4xl mt-12 sm:mt-24">
-          <h1 className="text-[3.5rem] leading-[1.1] font-semibold text-slate-900 tracking-tight sm:text-[4.5rem] mb-10 animate-[abFadeUp_0.8s_ease-out]">
+        <div className="relative z-10 mx-auto flex flex-col items-center text-center px-4 max-w-4xl mt-12 sm:mt-24">
+          <h1 className="text-[2.5rem] leading-[1.1] font-semibold text-slate-900 tracking-tight sm:text-[3.5rem] md:text-[4.5rem] mb-10 animate-[abFadeUp_0.8s_ease-out]">
             Study abroad, figured out.
           </h1>
 

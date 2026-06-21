@@ -1252,7 +1252,7 @@ body {
 
 .brand-wordmark {
   display: inline-flex;
-  height: 42px;
+  height: 48px;
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
@@ -1262,7 +1262,7 @@ body {
 
 .brand-wordmark img {
   position: static;
-  height: 38px;
+  height: 44px;
   width: auto;
   max-width: 100%;
   object-fit: contain;
@@ -2230,8 +2230,8 @@ body {
 @media (max-width: 640px) {
   .public-nav-shell { padding: 7px 8px 6px; }
   .public-nav { min-height: 58px; border-radius: 14px; }
-  .brand-wordmark { height: 34px; background: transparent; }
-  .brand-wordmark img { height: 30px; width: auto; }
+  .brand-wordmark { height: 42px; background: transparent; }
+  .brand-wordmark img { height: 38px; width: auto; }
   .ab-light-hero { min-height: auto; }
   .ab-light-hero .ab-display-1 { font-size: 2.72rem; line-height: 1.04; }
   .ab-video-stage { border-radius: 18px; padding: 6px; }
