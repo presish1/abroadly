@@ -965,11 +965,17 @@ function ProfilePopup({
   onClose,
   onSaved,
   requirePhone = false,
+  uploadedCount,
+  documentTotal,
+  optionalUploadedCount,
 }: {
   student: StudentOut;
   onClose: () => void;
   onSaved: (student: StudentOut) => void;
   requirePhone?: boolean;
+  uploadedCount: number;
+  documentTotal: number;
+  optionalUploadedCount: number;
 }) {
   const [editing, setEditing] = useState(requirePhone);
   const [expanded, setExpanded] = useState(false);
@@ -977,13 +983,25 @@ function ProfilePopup({
   const [errors, setErrors] = useState<Partial<Record<keyof ProfileFormState, string>>>({});
   const [apiError, setApiError] = useState("");
   const [saving, setSaving] = useState(false);
+  const targetCountries = student.target_countries || [];
   const initial = (student.full_name || "Y").charAt(0).toUpperCase();
   const phoneMissing = !student.phone?.trim();
+  const profilePct = Math.round(((student.profile_completed ? 6 : [student.full_name, student.phone, student.education_level, targetCountries.length, student.preferred_field, student.gpa ?? student.expected_gpa].filter(Boolean).length) / 6) * 100);
+  const nextStepLabel =
+    phoneMissing
+      ? "Add phone"
+      : !student.profile_completed
+        ? "Finish profile"
+        : uploadedCount < documentTotal
+          ? "Upload docs"
+          : targetCountries.length === 0
+            ? "Pick countries"
+            : "Shortlist universities";
   const visibleFields: [string, string | number | null | undefined][] = [
     ["Email", student.email],
     ["Phone", student.phone],
     ["Education", student.education_level?.replace(/_/g, " ")],
-    ["Target countries", (student.target_countries || []).join(", ")],
+    ["Target countries", targetCountries.join(", ")],
   ];
   const expandedFields: [string, string | number | null | undefined][] = [
     ["City / district", student.location],
@@ -1087,167 +1105,251 @@ function ProfilePopup({
       closeOnBackdrop={!requirePhone}
       closeOnEscape={!requirePhone}
     >
-        <div className="flex items-center gap-3">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#12244a] text-[16px] font-bold text-white">{initial}</div>
-          <div className="min-w-0">
-            <h3 id="profile-modal-title" className="truncate text-[16px] font-extrabold tracking-[-0.01em] text-[var(--ab-ink)]">{student.full_name || "Your profile"}</h3>
-            <p className="truncate text-[12px] text-[#8A847B]">{student.email}</p>
-          </div>
-        </div>
-
-        <nav className="profile-panel-tabs" aria-label="Student workspace">
-          <span className="is-active"><ProfileTabIcon /> Profile</span>
-          <Link href="/dashboard"><DashboardTabIcon /> Dashboard</Link>
-          <Link href="/chat/documents"><FolderIcon /> Documents</Link>
-          <Link href="/universities"><UniversitiesTabIcon /> Universities</Link>
-        </nav>
-
-        {phoneMissing && (
-          <div className="mt-4 rounded-md border border-[#F5C2BC] bg-[#FFF4F2] px-3 py-2 text-[12px] font-semibold leading-5 text-[#B42318]">
-            Add your phone number to keep using your signed-in profile.
-          </div>
-        )}
-
-        {!editing ? (
-          <>
-            <div className="mt-4 rounded-md border border-[#E8E5DD] bg-[#FAF9F6] px-3 py-3">
-              <div className="flex items-center justify-between text-[11px] font-bold text-[#6B655C]">
-                <span>Profile strength</span>
-                <span>{completionPct}%</span>
-              </div>
-              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-[#EFECE4]">
-                <div className="h-full rounded-full bg-[#0A6E45]" style={{ width: `${completionPct}%` }} />
-              </div>
-            </div>
-
-            <div className="mt-4 space-y-2.5">
-              {visibleFields.map(([label, value]) =>
-                value ? (
-                  <div key={label} className="flex items-baseline justify-between gap-3">
-                    <span className="shrink-0 text-[11px] font-semibold uppercase tracking-wide text-[#A8A296]">{label}</span>
-                    <span className="text-right text-[13px] font-medium capitalize text-[var(--ab-ink)]">{String(value)}</span>
+        <div className="flex flex-col gap-4">
+          <section className="rounded-[28px] border border-[#E8E5DD] bg-[linear-gradient(135deg,#0B1631_0%,#12244a_55%,#0A6E45_100%)] p-5 text-white shadow-[0_18px_44px_-26px_rgba(10,110,69,0.45)]">
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex min-w-0 items-center gap-3">
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-[18px] bg-white text-[18px] font-black text-[#12244a] shadow-[0_10px_24px_-12px_rgba(255,255,255,0.25)]">
+                  {initial}
+                </div>
+                <div className="min-w-0">
+                  <h3 id="profile-modal-title" className="truncate text-[18px] font-extrabold tracking-[-0.02em]">
+                    {student.full_name || "Your profile"}
+                  </h3>
+                  <p className="truncate text-[12px] text-white/78">{student.email}</p>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    <span className="inline-flex items-center rounded-full bg-white/12 px-2.5 py-1 text-[10.5px] font-bold uppercase tracking-[0.08em] text-white/90">
+                      {student.profile_completed ? "Onboarded" : "Needs details"}
+                    </span>
+                    <span className="inline-flex items-center rounded-full bg-[#7DDBB1]/14 px-2.5 py-1 text-[10.5px] font-bold uppercase tracking-[0.08em] text-[#D8FFF0]">
+                      {nextStepLabel}
+                    </span>
                   </div>
-                ) : null
-              )}
-            </div>
-
-            <button
-              type="button"
-              onClick={() => setExpanded((open) => !open)}
-              className="ab-focus mt-4 flex min-h-11 w-full items-center justify-between rounded-md border border-[#E8E5DD] bg-white px-3 text-[12px] font-bold text-[#3F3A33] transition hover:bg-[#F4F2EC]"
-              aria-expanded={expanded}
-            >
-              <span>{expanded ? "Hide full profile" : "Show full profile"}</span>
-              <span className={`transition-transform ${expanded ? "rotate-90" : ""}`}><ArrowRightSm /></span>
-            </button>
-
-            {expanded && (
-              <div className="mt-3 space-y-2.5 rounded-md border border-[#EFECE4] bg-[#FAF9F6] px-3 py-3">
-                {expandedFields.map(([label, value]) =>
-                  value ? (
-                    <div key={label} className="flex items-start justify-between gap-3">
-                      <span className="shrink-0 text-[11px] font-semibold uppercase tracking-wide text-[#A8A296]">{label}</span>
-                      <span className="text-right text-[13px] font-medium text-[var(--ab-ink)]">{String(value)}</span>
-                    </div>
-                  ) : null
-                )}
+                </div>
               </div>
-            )}
-
-            <button
-              type="button"
-              onClick={() => setEditing(true)}
-              className="ab-focus mt-5 flex min-h-11 w-full items-center justify-center rounded-md bg-[#12244a] px-4 text-[13px] font-bold text-white shadow-[var(--shadow-sm)] transition hover:bg-[#1F3D78]"
-            >
-              Edit my details
-            </button>
-          </>
-        ) : (
-          <form onSubmit={saveProfile} className="mt-4 max-h-[68dvh] space-y-4 overflow-y-auto pr-1">
-            <div>
-              <label className={labelClass} htmlFor="profile-full-name">Full name</label>
-              <input id="profile-full-name" className={inputClass} value={form.full_name} onChange={(e) => setField("full_name", e.target.value)} autoComplete="name" />
-              {errors.full_name && <p className={errorClass}>{errors.full_name}</p>}
-            </div>
-
-            <div>
-              <label className={labelClass} htmlFor="profile-phone">Phone <span className="text-[#b42318]">*</span></label>
-              <input id="profile-phone" type="tel" required className={inputClass} value={form.phone} onChange={(e) => setField("phone", e.target.value)} placeholder="+977 98XXXXXXXX" autoComplete="tel" />
-              {errors.phone && <p className={errorClass}>{errors.phone}</p>}
-            </div>
-
-            <div className="grid gap-3 sm:grid-cols-2">
-              <div>
-                <label className={labelClass} htmlFor="profile-location">City / district</label>
-                <input id="profile-location" className={inputClass} value={form.location} onChange={(e) => setField("location", e.target.value)} placeholder="Kathmandu" autoComplete="address-level2" />
-              </div>
-              <div>
-                <label className={labelClass} htmlFor="profile-education">Education</label>
-                <select id="profile-education" className={inputClass} value={form.education_level} onChange={(e) => setField("education_level", e.target.value as EducationLevel)}>
-                  {EDUCATION_OPTIONS.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}
-                </select>
-              </div>
-            </div>
-
-            <div>
-              <label className={labelClass} htmlFor="profile-field">Preferred field</label>
-              <input id="profile-field" className={inputClass} value={form.preferred_field} onChange={(e) => setField("preferred_field", e.target.value)} placeholder="Computer Science, Nursing, Business" />
-            </div>
-
-            <div className="grid gap-3 sm:grid-cols-2">
-              <div>
-                <label className={labelClass} htmlFor="profile-gpa">Current GPA</label>
-                <input id="profile-gpa" type="number" step="0.01" min="0" max="4.5" className={inputClass} value={form.gpa} onChange={(e) => setField("gpa", e.target.value)} placeholder="3.25" />
-                {errors.gpa && <p className={errorClass}>{errors.gpa}</p>}
-              </div>
-              <div>
-                <label className={labelClass} htmlFor="profile-expected-gpa">Expected GPA</label>
-                <input id="profile-expected-gpa" type="number" step="0.01" min="0" max="4.5" className={inputClass} value={form.expected_gpa} onChange={(e) => setField("expected_gpa", e.target.value)} placeholder="3.60" />
-                {errors.expected_gpa && <p className={errorClass}>{errors.expected_gpa}</p>}
-              </div>
-            </div>
-
-            <div>
-              <div className="mb-2 flex items-center justify-between gap-3">
-                <label className={labelClass}>Target countries</label>
-                <span className="text-[11px] font-bold text-[#8A847B]">{form.target_countries.length} selected</span>
-              </div>
-              <div className="grid gap-2 sm:grid-cols-2">
-                {PROFILE_COUNTRY_OPTIONS.map((country) => {
-                  const checked = form.target_countries.includes(country);
-                  return (
-                    <label key={country} className={`flex min-h-11 cursor-pointer items-center gap-2 rounded-md border px-3 text-[12px] font-bold transition ${checked ? "border-[#0A6E45] bg-[#E8F2EC] text-[#1B1916]" : "border-[#E8E5DD] bg-white text-[#6B655C] hover:border-[#B8D8C8]"}`}>
-                      <input type="checkbox" checked={checked} onChange={() => toggleCountry(country)} className="h-4 w-4 rounded border-[#D1CABD] text-[#0A6E45] focus:ring-[#0A6E45]" />
-                      <span>{country}</span>
-                    </label>
-                  );
-                })}
-              </div>
-              {errors.target_countries && <p className={errorClass}>{errors.target_countries}</p>}
-            </div>
-
-            <div>
-              <label className={labelClass} htmlFor="profile-goals">Goals</label>
-              <textarea id="profile-goals" rows={4} maxLength={1200} className={inputClass} value={form.goals} onChange={(e) => setField("goals", e.target.value)} placeholder="What do you want Abroadly to help you plan?" />
-              <p className="mt-1.5 text-right text-[11px] font-bold text-[#8A847B]">{form.goals.length}/1200</p>
-            </div>
-
-            {apiError && (
-              <div className="rounded-md border border-[#F5C2BC] bg-[#FFF4F2] px-3 py-2 text-[12px] font-bold text-[#B42318]">{apiError}</div>
-            )}
-
-            <div className="sticky bottom-0 -mx-1 flex gap-2 border-t border-[#EFECE4] bg-white px-1 pt-3">
-              {!requirePhone && (
-                <button type="button" onClick={() => { setEditing(false); setForm(profileFormFromStudent(student)); setErrors({}); setApiError(""); }} className="ab-focus min-h-11 rounded-md border border-[#E8E5DD] bg-white px-4 text-[13px] font-bold text-[#6B655C] transition hover:bg-[#F4F2EC]">
-                  Cancel
-                </button>
-              )}
-              <button type="submit" disabled={saving} className="ab-focus min-h-11 flex-1 rounded-md bg-[#0A6E45] px-4 text-[13px] font-bold text-white shadow-[var(--shadow-sm)] transition hover:bg-[#075b39] disabled:cursor-not-allowed disabled:bg-[#A8A29A]">
-                {saving ? "Saving..." : requirePhone ? "Save phone and profile" : "Save changes"}
+              <button
+                type="button"
+                onClick={() => setExpanded((open) => !open)}
+                className="ab-focus inline-flex h-10 items-center gap-2 rounded-full bg-white/10 px-3.5 text-[11px] font-bold text-white transition hover:bg-white/18"
+                aria-expanded={expanded}
+              >
+                <span>{expanded ? "Collapse" : "Inspect"}</span>
+                <span className={`transition-transform ${expanded ? "rotate-90" : ""}`}><ArrowRightSm /></span>
               </button>
             </div>
-          </form>
-        )}
+
+            <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+              <div className="rounded-[18px] border border-white/12 bg-white/10 p-3 backdrop-blur">
+                <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-white/65">Profile</p>
+                <div className="mt-2 flex items-end justify-between gap-2">
+                  <div>
+                    <p className="text-[22px] font-black leading-none">{profilePct}%</p>
+                    <p className="mt-1 text-[11px] text-white/72">Completion score</p>
+                  </div>
+                  <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white/12 text-[10px] font-black text-white">
+                    {profilePct}%
+                  </div>
+                </div>
+              </div>
+              <div className="rounded-[18px] border border-white/12 bg-white/10 p-3 backdrop-blur">
+                <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-white/65">Documents</p>
+                <p className="mt-2 text-[22px] font-black leading-none">{uploadedCount}<span className="text-white/55">/{documentTotal}</span></p>
+                <p className="mt-1 text-[11px] text-white/72">+{optionalUploadedCount} optional</p>
+              </div>
+              <div className="rounded-[18px] border border-white/12 bg-white/10 p-3 backdrop-blur">
+                <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-white/65">Countries</p>
+                <p className="mt-2 text-[22px] font-black leading-none">{targetCountries.length || "0"}</p>
+                <p className="mt-1 truncate text-[11px] text-white/72">{targetCountries.length ? targetCountries.join(" · ") : "Add target markets"}</p>
+              </div>
+              <div className="rounded-[18px] border border-white/12 bg-white/10 p-3 backdrop-blur">
+                <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-white/65">Next action</p>
+                <p className="mt-2 text-[15px] font-black leading-[1.2]">{nextStepLabel}</p>
+                <p className="mt-1 text-[11px] text-white/72">Then we sharpen universities and visas.</p>
+              </div>
+            </div>
+          </section>
+
+          <nav className="profile-panel-tabs" aria-label="Student workspace">
+            <span className="is-active"><ProfileTabIcon /> Profile</span>
+            <Link href="/dashboard"><DashboardTabIcon /> Dashboard</Link>
+            <Link href="/chat/documents"><FolderIcon /> Documents</Link>
+            <Link href="/universities"><UniversitiesTabIcon /> Universities</Link>
+          </nav>
+
+          {phoneMissing && (
+            <div className="rounded-2xl border border-[#F5C2BC] bg-[#FFF4F2] px-4 py-3 text-[12px] font-semibold leading-5 text-[#B42318]">
+              Add your phone number to keep using your signed-in profile.
+            </div>
+          )}
+
+          <div className="grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
+            <section className="rounded-[24px] border border-[#E8E5DD] bg-white p-4 shadow-[0_1px_2px_rgba(15,15,15,0.04)]">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#0A6E45]">Workspace snapshot</p>
+                  <h4 className="mt-1 text-[16px] font-extrabold tracking-[-0.02em] text-[var(--ab-ink)]">Already onboarded, now refine it.</h4>
+                </div>
+                <div className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-full" style={{ background: `conic-gradient(#0A6E45 ${profilePct}%, #EFECE4 0)` }}>
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-[11px] font-black text-[#12244a]">{profilePct}%</div>
+                </div>
+              </div>
+              <div className="mt-4 grid gap-2.5">
+                {visibleFields.map(([label, value]) => (
+                  <div key={label} className="rounded-2xl border border-[#EFECE4] bg-[#FAF9F6] px-3 py-2.5">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#8A847B]">{label}</p>
+                    <p className="mt-1 text-[13px] font-semibold text-[var(--ab-ink)]">{value ? String(value) : "Not set"}</p>
+                  </div>
+                ))}
+              </div>
+              <button
+                type="button"
+                onClick={() => setExpanded((open) => !open)}
+                className="ab-focus mt-4 flex min-h-11 w-full items-center justify-between rounded-full border border-[#E8E5DD] bg-white px-4 text-[12px] font-bold text-[#3F3A33] transition hover:border-[#0A6E45] hover:text-[#0A6E45]"
+                aria-expanded={expanded}
+              >
+                <span>{expanded ? "Hide extra details" : "Show extra details"}</span>
+                <span className={`transition-transform ${expanded ? "rotate-90" : ""}`}><ArrowRightSm /></span>
+              </button>
+              {expanded && (
+                <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                  {expandedFields.map(([label, value]) => (
+                    <div key={label} className="rounded-2xl border border-[#EFECE4] bg-white px-3 py-3 shadow-[0_1px_2px_rgba(15,15,15,0.03)]">
+                      <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#8A847B]">{label}</p>
+                      <p className="mt-1 text-[13px] font-medium text-[var(--ab-ink)]">{value ? String(value) : "Not set"}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </section>
+
+            <section className="rounded-[24px] border border-[#E8E5DD] bg-white p-4 shadow-[0_1px_2px_rgba(15,15,15,0.04)]">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#0A6E45]">Profile editor</p>
+                  <h4 className="mt-1 text-[16px] font-extrabold tracking-[-0.02em] text-[var(--ab-ink)]">
+                    {editing ? "Adjust your details" : "Keep it concise and current"}
+                  </h4>
+                </div>
+                {!editing && (
+                  <button
+                    type="button"
+                    onClick={() => setEditing(true)}
+                    className="ab-focus rounded-full border border-[#E8E5DD] bg-[#FAF9F6] px-3 py-2 text-[11px] font-bold text-[#12244a] transition hover:border-[#12244a] hover:bg-white"
+                  >
+                    Edit details
+                  </button>
+                )}
+              </div>
+
+              {!editing ? (
+                <div className="mt-4 space-y-3">
+                  <div className="rounded-2xl border border-[#E8E5DD] bg-[linear-gradient(135deg,#F8FAFF,#F2FBF6)] p-4">
+                    <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#0A6E45]">Why this matters</p>
+                    <p className="mt-2 text-[13px] leading-6 text-[#3F3A33]">
+                      You’re already signed in. This tab is for tightening the plan: better countries, better docs, and less generic advice.
+                    </p>
+                  </div>
+                  <div className="grid gap-2">
+                    <Link href="/dashboard" className="ab-focus inline-flex items-center justify-between rounded-2xl border border-[#E8E5DD] bg-white px-4 py-3 text-[13px] font-bold text-[#1B1916] transition hover:border-[#0A6E45]">
+                      Open dashboard <ArrowRightSm />
+                    </Link>
+                    <Link href="/universities" className="ab-focus inline-flex items-center justify-between rounded-2xl border border-[#E8E5DD] bg-white px-4 py-3 text-[13px] font-bold text-[#1B1916] transition hover:border-[#0A6E45]">
+                      Browse universities <ArrowRightSm />
+                    </Link>
+                    <Link href="/chat/documents" className="ab-focus inline-flex items-center justify-between rounded-2xl border border-[#E8E5DD] bg-white px-4 py-3 text-[13px] font-bold text-[#1B1916] transition hover:border-[#0A6E45]">
+                      Review documents <ArrowRightSm />
+                    </Link>
+                  </div>
+                </div>
+              ) : (
+                <form onSubmit={saveProfile} className="mt-4 space-y-4">
+                  <div>
+                    <label className={labelClass} htmlFor="profile-full-name">Full name</label>
+                    <input id="profile-full-name" className={inputClass} value={form.full_name} onChange={(e) => setField("full_name", e.target.value)} autoComplete="name" />
+                    {errors.full_name && <p className={errorClass}>{errors.full_name}</p>}
+                  </div>
+
+                  <div>
+                    <label className={labelClass} htmlFor="profile-phone">Phone <span className="text-[#b42318]">*</span></label>
+                    <input id="profile-phone" type="tel" required className={inputClass} value={form.phone} onChange={(e) => setField("phone", e.target.value)} placeholder="+977 98XXXXXXXX" autoComplete="tel" />
+                    {errors.phone && <p className={errorClass}>{errors.phone}</p>}
+                  </div>
+
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <div>
+                      <label className={labelClass} htmlFor="profile-location">City / district</label>
+                      <input id="profile-location" className={inputClass} value={form.location} onChange={(e) => setField("location", e.target.value)} placeholder="Kathmandu" autoComplete="address-level2" />
+                    </div>
+                    <div>
+                      <label className={labelClass} htmlFor="profile-education">Education</label>
+                      <select id="profile-education" className={inputClass} value={form.education_level} onChange={(e) => setField("education_level", e.target.value as EducationLevel)}>
+                        {EDUCATION_OPTIONS.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className={labelClass} htmlFor="profile-field">Preferred field</label>
+                    <input id="profile-field" className={inputClass} value={form.preferred_field} onChange={(e) => setField("preferred_field", e.target.value)} placeholder="Computer Science, Nursing, Business" />
+                  </div>
+
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <div>
+                      <label className={labelClass} htmlFor="profile-gpa">Current GPA</label>
+                      <input id="profile-gpa" type="number" step="0.01" min="0" max="4.5" className={inputClass} value={form.gpa} onChange={(e) => setField("gpa", e.target.value)} placeholder="3.25" />
+                      {errors.gpa && <p className={errorClass}>{errors.gpa}</p>}
+                    </div>
+                    <div>
+                      <label className={labelClass} htmlFor="profile-expected-gpa">Expected GPA</label>
+                      <input id="profile-expected-gpa" type="number" step="0.01" min="0" max="4.5" className={inputClass} value={form.expected_gpa} onChange={(e) => setField("expected_gpa", e.target.value)} placeholder="3.60" />
+                      {errors.expected_gpa && <p className={errorClass}>{errors.expected_gpa}</p>}
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="mb-2 flex items-center justify-between gap-3">
+                      <label className={labelClass}>Target countries</label>
+                      <span className="text-[11px] font-bold text-[#8A847B]">{form.target_countries.length} selected</span>
+                    </div>
+                    <div className="grid gap-2 sm:grid-cols-2">
+                      {PROFILE_COUNTRY_OPTIONS.map((country) => {
+                        const checked = form.target_countries.includes(country);
+                        return (
+                          <label key={country} className={`flex min-h-11 cursor-pointer items-center gap-2 rounded-2xl border px-3 text-[12px] font-bold transition ${checked ? "border-[#0A6E45] bg-[#E8F2EC] text-[#1B1916]" : "border-[#E8E5DD] bg-white text-[#6B655C] hover:border-[#B8D8C8]"}`}>
+                            <input type="checkbox" checked={checked} onChange={() => toggleCountry(country)} className="h-4 w-4 rounded border-[#D1CABD] text-[#0A6E45] focus:ring-[#0A6E45]" />
+                            <span>{country}</span>
+                          </label>
+                        );
+                      })}
+                    </div>
+                    {errors.target_countries && <p className={errorClass}>{errors.target_countries}</p>}
+                  </div>
+
+                  <div>
+                    <label className={labelClass} htmlFor="profile-goals">Goals</label>
+                    <textarea id="profile-goals" rows={4} maxLength={1200} className={inputClass} value={form.goals} onChange={(e) => setField("goals", e.target.value)} placeholder="What do you want Abroadly to help you plan?" />
+                    <p className="mt-1.5 text-right text-[11px] font-bold text-[#8A847B]">{form.goals.length}/1200</p>
+                  </div>
+
+                  {apiError && (
+                    <div className="rounded-2xl border border-[#F5C2BC] bg-[#FFF4F2] px-3 py-2 text-[12px] font-bold text-[#B42318]">{apiError}</div>
+                  )}
+
+                  <div className="flex gap-2 pt-1">
+                    {!requirePhone && (
+                      <button type="button" onClick={() => { setEditing(false); setForm(profileFormFromStudent(student)); setErrors({}); setApiError(""); }} className="ab-focus min-h-11 rounded-full border border-[#E8E5DD] bg-white px-4 text-[13px] font-bold text-[#6B655C] transition hover:bg-[#F4F2EC]">
+                        Cancel
+                      </button>
+                    )}
+                    <button type="submit" disabled={saving} className="ab-focus min-h-11 flex-1 rounded-full bg-[#0A6E45] px-4 text-[13px] font-bold text-white shadow-[var(--shadow-sm)] transition hover:bg-[#075b39] disabled:cursor-not-allowed disabled:bg-[#A8A29A]">
+                      {saving ? "Saving..." : requirePhone ? "Save phone and profile" : "Save changes"}
+                    </button>
+                  </div>
+                </form>
+              )}
+            </section>
+          </div>
+        </div>
     </ModalShell>
   );
 }
@@ -1570,20 +1672,29 @@ export default function ChatPage() {
       }
 
       const enoughTurns = sessionTypedCount.current >= 2;
+      const fallbackAnswer = `${res.answer ?? ""} ${res.clarifying_question ?? ""}`.toLowerCase();
+      const fallbackHandoff =
+        fallbackAnswer.includes("i'm not sure i can help with that one")
+        || fallbackAnswer.includes("im not sure i can help with that one");
 
       // Slot A — counselor card.
       // Requires: backend says offer_counselor, ≥2 session turns, not already shown, not consented.
       // SOP/financial bypass: show regardless of score if hasPriorityDoc.
       const backendOffersCard = Boolean(res.offer_counselor) && enoughTurns;
       const bypassCard = hasPriorityDoc.current && enoughTurns && !callConsented;
+      const fallbackCounselorCard = enoughTurns && res.decision === "out_of_scope" && fallbackHandoff;
 
-      if (!counselorOffered.current && !callConsented && (backendOffersCard || bypassCard)) {
+      if (!counselorOffered.current && !callConsented && (backendOffersCard || bypassCard || fallbackCounselorCard)) {
         counselorOffered.current = true;
         const tier: CounselorCardMessage["tier"] = bypassCard
           ? "bypass"
-          : (res.offer_counselor_tier as CounselorCardMessage["tier"]) ?? null;
+          : fallbackCounselorCard
+            ? "strong"
+            : (res.offer_counselor_tier as CounselorCardMessage["tier"]) ?? null;
         const cardReason: CounselorCardMessage["reason"] = bypassCard
           ? "bypass"
+          : fallbackCounselorCard
+            ? "qualified"
           : res.offer_reason === "question" ? "question"
           : res.offer_reason === "qualified" ? "qualified"
           : "sequence";
@@ -2196,6 +2307,9 @@ export default function ChatPage() {
         <ProfilePopup
           student={student}
           requirePhone={phoneRequired}
+          uploadedCount={uploadedCount}
+          documentTotal={docReadiness.essentialsTotal}
+          optionalUploadedCount={optionalUploadedCount}
           onClose={() => setProfileOpen(false)}
           onSaved={(updated) => {
             setStudent(updated);
