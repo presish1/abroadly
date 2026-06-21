@@ -2,8 +2,6 @@
 
 import { useState } from "react";
 
-/* Quiet trust strip — real universities our guidance covers. */
-
 const UNIS: { name: string; domain: string }[] = [
   { name: "Oxford", domain: "ox.ac.uk" },
   { name: "Cambridge", domain: "cam.ac.uk" },
@@ -12,40 +10,42 @@ const UNIS: { name: string; domain: string }[] = [
   { name: "Melbourne", domain: "unimelb.edu.au" },
   { name: "Toronto", domain: "utoronto.ca" },
   { name: "UBC", domain: "ubc.ca" },
+  { name: "Stanford", domain: "stanford.edu" },
+  { name: "MIT", domain: "mit.edu" },
+  { name: "Harvard", domain: "harvard.edu" },
+  { name: "Sydney", domain: "sydney.edu.au" },
+  { name: "UNSW", domain: "unsw.edu.au" },
 ];
 
-function UniItem({ name, domain }: { name: string; domain: string }) {
+function UniItem({ domain }: { domain: string }) {
   const [failed, setFailed] = useState(false);
+  if (failed) return null;
   return (
-    <span className="group inline-flex items-center gap-2 transition cursor-pointer">
-      <span className="flex h-[26px] w-[26px] items-center justify-center rounded-md bg-white border border-slate-200 shadow-sm transition group-hover:border-blue-300">
-        {failed ? (
-          <span className="text-[11px] font-extrabold text-blue-600">{name[0]}</span>
-        ) : (
-          <img
-            src={`https://icons.duckduckgo.com/ip3/${domain}.ico`}
-            alt=""
-            width={16}
-            height={16}
-            loading="lazy"
-            onError={() => setFailed(true)}
-            className="h-4 w-4 object-contain"
-          />
-        )}
-      </span>
-      <span className="text-[13px] font-semibold tracking-[-0.01em] text-slate-500 transition group-hover:text-slate-900">
-        {name}
-      </span>
-    </span>
+    <div className="flex h-16 w-16 items-center justify-center rounded-[18px] bg-white border border-slate-200 shadow-sm transition hover:shadow-md hover:scale-110 flex-shrink-0 grayscale opacity-60 hover:grayscale-0 hover:opacity-100 mx-4">
+      <img
+        src={`https://icons.duckduckgo.com/ip3/${domain}.ico`}
+        alt=""
+        width={32}
+        height={32}
+        loading="lazy"
+        onError={() => setFailed(true)}
+        className="h-8 w-8 object-contain"
+      />
+    </div>
   );
 }
 
 export function HeroUniversityStrip() {
+  // We use 4 copies to make the -25% to 0% infinite loop seamless
+  const extendedUnis = [...UNIS, ...UNIS, ...UNIS, ...UNIS];
+
   return (
-    <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-3">
-      {UNIS.map((u) => (
-        <UniItem key={u.domain} {...u} />
-      ))}
+    <div className="w-full max-w-[1200px] overflow-hidden marquee-mask py-4">
+      <div className="flex w-max animate-marquee-right">
+        {extendedUnis.map((u, i) => (
+          <UniItem key={`${u.domain}-${i}`} domain={u.domain} />
+        ))}
+      </div>
     </div>
   );
 }

@@ -84,32 +84,32 @@ export default function Home() {
         
         {/* Floating Background Images with badges */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden max-w-[1400px] mx-auto z-0 hidden lg:block">
-          {/* Top left */}
+          {/* Top left: UK Big Ben */}
           <div className="absolute top-10 left-[2%] xl:left-[8%] w-48 rounded-[24px] overflow-hidden shadow-2xl animate-[abFadeUp_1s_ease-out]">
-             <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&h=450&fit=crop" alt="" className="w-full h-auto object-cover" />
+             <img src="https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=400&h=450&fit=crop" alt="UK" className="w-full h-auto object-cover" />
              {/* Yellow Edit Badge */}
              <div className="absolute -left-3 top-8 w-14 h-14 bg-gradient-to-br from-yellow-300 to-amber-400 rounded-full flex items-center justify-center shadow-lg border-2 border-white">
                 <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
              </div>
           </div>
 
-          {/* Top right */}
+          {/* Top right: USA New York */}
           <div className="absolute top-12 right-[2%] xl:right-[8%] w-56 rounded-[24px] overflow-hidden shadow-2xl animate-[abFadeUp_1.1s_ease-out]">
-             <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=350&fit=crop" alt="" className="w-full h-auto object-cover" />
+             <img src="https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=400&h=350&fit=crop" alt="USA" className="w-full h-auto object-cover" />
           </div>
 
-          {/* Bottom right */}
+          {/* Bottom right: Australia Sydney */}
           <div className="absolute top-64 right-[0%] xl:right-[5%] w-44 rounded-[24px] overflow-hidden shadow-2xl animate-[abFadeUp_1.3s_ease-out]">
-             <img src="https://images.unsplash.com/photo-1515041219749-89347f83291a?w=400&h=500&fit=crop" alt="" className="w-full h-auto object-cover" />
+             <img src="https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?w=400&h=500&fit=crop" alt="Australia" className="w-full h-auto object-cover" />
              {/* Pink Soundwave Badge */}
              <div className="absolute -left-5 top-12 w-16 h-16 bg-gradient-to-br from-pink-300 to-pink-500 rounded-full flex items-center justify-center shadow-lg border-2 border-white">
                 <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg>
              </div>
           </div>
           
-          {/* Bottom left */}
+          {/* Bottom left: Rocket Launch */}
           <div className="absolute top-[22rem] left-[5%] xl:left-[10%] w-48 rounded-[24px] overflow-hidden shadow-2xl animate-[abFadeUp_1.4s_ease-out]">
-             <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?w=400&h=500&fit=crop" alt="" className="w-full h-auto object-cover" />
+             <img src="https://images.unsplash.com/photo-1517976487492-5750f3195933?w=400&h=500&fit=crop" alt="Rocket" className="w-full h-auto object-cover" />
              {/* Teal List Badge */}
              <div className="absolute -right-4 top-16 w-16 h-16 bg-gradient-to-br from-teal-300 to-cyan-500 rounded-full flex items-center justify-center shadow-lg border-2 border-white">
                 <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>

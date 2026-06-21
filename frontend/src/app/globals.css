@@ -2596,3 +2596,15 @@ body {
   object-fit: contain;
   background: #fff;
 }
+
+@keyframes marqueeRight {
+  0% { transform: translateX(-25%); }
+  100% { transform: translateX(0%); }
+}
+.animate-marquee-right {
+  animation: marqueeRight 30s linear infinite;
+}
+.marquee-mask {
+  mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}

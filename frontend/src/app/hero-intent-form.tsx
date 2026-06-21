@@ -40,7 +40,7 @@ function GoogleMark() {
 }
 
 const selectClass =
-  "ab-focus min-h-12 cursor-pointer appearance-none rounded-full border border-slate-200 bg-white py-3 pl-5 pr-11 text-[16px] font-bold text-slate-800 shadow-sm transition hover:border-[#0044FF]/50 focus:border-[#0044FF] focus:ring-4 focus:ring-[#0044FF]/15 sm:text-[17px]";
+  "ab-focus min-h-12 cursor-pointer appearance-none rounded-full border border-slate-300 bg-white py-3 pl-5 pr-11 text-[16px] font-bold text-slate-800 shadow-sm transition hover:border-[#0044FF]/50 focus:border-[#0044FF] focus:ring-4 focus:ring-[#0044FF]/15 sm:text-[17px]";
 
 const OPTION_CLASS = "bg-white text-slate-900";
 
@@ -63,7 +63,7 @@ export function HeroIntentForm() {
   return (
     <div className="flex w-full flex-col items-center gap-6">
       {/* selector sentence */}
-      <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-x-3 gap-y-3 rounded-[24px] sm:rounded-full border border-slate-200 bg-white px-6 py-4 text-[18px] font-medium text-slate-700 shadow-xl sm:px-8 sm:text-[20px]">
+      <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-x-3 gap-y-3 rounded-[24px] sm:rounded-full border border-slate-300 bg-white px-6 py-4 text-[18px] font-medium text-slate-700 shadow-xl sm:px-8 sm:text-[20px]">
         <span>I want to study</span>
 
         <div className="relative">
