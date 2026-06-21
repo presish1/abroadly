@@ -1,4 +1,5 @@
 """Google OAuth student sign-in helpers."""
+import uuid
 from urllib.parse import parse_qs, urlparse
 
 import pytest
@@ -6,6 +7,7 @@ from fastapi import HTTPException
 
 from app.api import auth
 from app.core.config import settings
+from app.models.student import StudentModel, WELCOME_VIDEO_DECISION
 
 
 def test_google_authorize_url_uses_configured_redirect(monkeypatch):
@@ -96,3 +98,43 @@ def test_complete_profile_requires_class_timing_when_requested():
         auth.CompleteProfileRequest(
             **_profile_payload(english_goal="join_class", english_class_timing="")
         )
+
+
+@pytest.mark.asyncio
+async def test_welcome_video_turn_is_seeded_once():
+    class Result:
+        def __init__(self, value):
+            self.value = value
+
+        def scalar_one_or_none(self):
+            return self.value
+
+    class FakeDb:
+        def __init__(self):
+            self.existing = None
+            self.added = []
+
+        async def execute(self, _statement):
+            return Result(self.existing)
+
+        def add(self, value):
+            self.added.append(value)
+
+    student = StudentModel(
+        id=uuid.uuid4(),
+        full_name="Sita Sharma",
+        email="sita@example.com",
+        education_level="plus_two",
+        target_countries=["Australia"],
+    )
+    db = FakeDb()
+
+    await auth._ensure_welcome_video_turn(db, student)
+
+    assert len(db.added) == 1
+    assert db.added[0].eval_decision == WELCOME_VIDEO_DECISION
+    assert db.added[0].content.startswith("Namaste, Sita!")
+
+    db.existing = uuid.uuid4()
+    await auth._ensure_welcome_video_turn(db, student)
+    assert len(db.added) == 1

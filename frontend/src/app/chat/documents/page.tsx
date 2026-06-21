@@ -52,7 +52,7 @@ function DocsSidebar({ active }: { active: "chat" | "documents" | "dashboard" })
       <div className="border-b border-[#E8E5DD] bg-[#FAF9F6] px-5 py-4">
         <Link href="/" className="ab-focus flex items-center gap-2.5 rounded-md">
           <div className="h-7 w-7 shrink-0 overflow-hidden rounded-[8px]">
-            <img src="/images/abroadly-logo.png" alt="Ab" className="h-full w-full object-cover" />
+            <img src="/images/abroadly-logo.png" alt="Ab" className="h-full w-full bg-white object-contain p-0.5" />
           </div>
           <span className="text-[13px] font-bold tracking-[-0.005em] text-[#1B1916]">Abroadly</span>
         </Link>

@@ -12,6 +12,7 @@ from sqlalchemy.orm import DeclarativeBase
 
 EducationLevel = Literal["plus_two", "a_levels", "bba", "bachelors", "other"]
 ChatRole = Literal["user", "assistant", "counselor"]
+WELCOME_VIDEO_DECISION = "welcome_video_v1"
 
 
 # ---------------------------------------------------------------------------
