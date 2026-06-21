@@ -159,9 +159,14 @@ export default function StudentDetailPage() {
     { label: "Phone", value: student.phone, icon: "\u{1F4F1}" },
     { label: "Location", value: student.location, icon: "\u{1F4CD}" },
     { label: "Education", value: student.education_level?.replace("_", " "), icon: "\u{1F393}" },
-    { label: "GPA", value: student.gpa, icon: "\u{1F4CA}" },
+    { label: "Academic result", value: student.academic_score ? `${student.academic_score} (${student.score_type?.replace("_", " ") || "result"})` : student.gpa, icon: "\u{1F4CA}" },
+    { label: "Completion year", value: student.qualification_year, icon: "\u{1F4C5}" },
+    { label: "English test", value: student.english_test_taken === true ? `${student.english_test_type || "Taken"}${student.english_overall_score ? ` · ${student.english_overall_score}` : ""}` : student.english_test_taken === false ? student.english_goal?.replace("_", " ") || "Not taken" : null, icon: "\u{1F5E3}\u{FE0F}" },
     { label: "Target Countries", value: student.target_countries?.join(", "), icon: "\u{1F30D}" },
     { label: "Field", value: student.preferred_field, icon: "\u{1F4D6}" },
+    { label: "Study level", value: student.intended_study_level, icon: "\u{1F393}" },
+    { label: "Preferred intake", value: student.preferred_intake, icon: "\u{1F4C6}" },
+    { label: "Budget", value: student.budget_range, icon: "\u{1F4B0}" },
     { label: "Goals", value: student.goals, icon: "\u{1F3AF}" },
   ];
 

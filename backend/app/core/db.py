@@ -49,8 +49,21 @@ CREATE TABLE IF NOT EXISTS students (
     education_level TEXT NOT NULL,
     gpa FLOAT,
     expected_gpa FLOAT,
+    qualification_year INT,
+    score_type TEXT,
+    academic_score TEXT,
+    english_test_taken BOOLEAN,
+    english_test_type TEXT,
+    english_overall_score TEXT,
+    english_lowest_score TEXT,
+    english_goal TEXT,
+    english_class_timing TEXT,
+    planned_english_test TEXT,
     target_countries JSONB DEFAULT '[]',
     preferred_field TEXT,
+    intended_study_level TEXT,
+    preferred_intake TEXT,
+    budget_range TEXT,
     goals TEXT,
     profile_completed BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMPTZ DEFAULT NOW(),
@@ -114,6 +127,22 @@ _ADD_CALL_CONSENT = """
 ALTER TABLE students ADD COLUMN IF NOT EXISTS call_consent BOOLEAN DEFAULT FALSE;
 """
 
+_ADD_ONBOARDING_DETAILS = """
+ALTER TABLE students ADD COLUMN IF NOT EXISTS qualification_year INT;
+ALTER TABLE students ADD COLUMN IF NOT EXISTS score_type TEXT;
+ALTER TABLE students ADD COLUMN IF NOT EXISTS academic_score TEXT;
+ALTER TABLE students ADD COLUMN IF NOT EXISTS english_test_taken BOOLEAN;
+ALTER TABLE students ADD COLUMN IF NOT EXISTS english_test_type TEXT;
+ALTER TABLE students ADD COLUMN IF NOT EXISTS english_overall_score TEXT;
+ALTER TABLE students ADD COLUMN IF NOT EXISTS english_lowest_score TEXT;
+ALTER TABLE students ADD COLUMN IF NOT EXISTS english_goal TEXT;
+ALTER TABLE students ADD COLUMN IF NOT EXISTS english_class_timing TEXT;
+ALTER TABLE students ADD COLUMN IF NOT EXISTS planned_english_test TEXT;
+ALTER TABLE students ADD COLUMN IF NOT EXISTS intended_study_level TEXT;
+ALTER TABLE students ADD COLUMN IF NOT EXISTS preferred_intake TEXT;
+ALTER TABLE students ADD COLUMN IF NOT EXISTS budget_range TEXT;
+"""
+
 _BACKFILL_PROFILE_COMPLETED = """
 UPDATE students
 SET profile_completed = TRUE
@@ -173,6 +202,7 @@ async def create_tables() -> None:
         await conn.execute(text(_ADD_EXPECTED_GPA))
         await conn.execute(text(_ADD_PROFILE_COMPLETED))
         await conn.execute(text(_ADD_CALL_CONSENT))
+        await conn.execute(text(_ADD_ONBOARDING_DETAILS))
         await conn.execute(text(_BACKFILL_PROFILE_COMPLETED))
         await conn.execute(text(_SET_PROFILE_COMPLETED_DEFAULT))
         await conn.execute(text(_FIX_ROLE_CONSTRAINT))

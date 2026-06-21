@@ -50,3 +50,49 @@ def test_complete_profile_requires_non_blank_phone():
 
     assert exc.value.status_code == 422
     assert exc.value.detail == "phone_required"
+
+
+def _profile_payload(**overrides):
+    payload = {
+        "full_name": "Sita Sharma",
+        "phone": "+977 9812345678",
+        "location": "Kathmandu",
+        "education_level": "plus_two",
+        "qualification_year": 2026,
+        "score_type": "gpa",
+        "academic_score": "3.4",
+        "english_test_taken": False,
+        "english_goal": "not_looking",
+        "target_countries": ["Australia"],
+        "preferred_field": "Computer Science",
+        "intended_study_level": "Bachelor's",
+        "preferred_intake": "February 2027",
+        "call_consent": False,
+    }
+    payload.update(overrides)
+    return payload
+
+
+def test_complete_profile_accepts_no_test_path():
+    req = auth.CompleteProfileRequest(**_profile_payload())
+    assert req.english_test_taken is False
+    assert req.english_goal == "not_looking"
+
+
+def test_complete_profile_requires_scores_for_completed_test():
+    with pytest.raises(ValueError, match="english_overall_score_required"):
+        auth.CompleteProfileRequest(
+            **_profile_payload(
+                english_test_taken=True,
+                english_goal=None,
+                english_test_type="IELTS",
+                english_overall_score="",
+            )
+        )
+
+
+def test_complete_profile_requires_class_timing_when_requested():
+    with pytest.raises(ValueError, match="english_class_timing_required"):
+        auth.CompleteProfileRequest(
+            **_profile_payload(english_goal="join_class", english_class_timing="")
+        )

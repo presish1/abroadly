@@ -70,8 +70,21 @@ class StudentDetail(BaseModel):
     location: str | None
     education_level: str
     gpa: float | None
+    qualification_year: int | None
+    score_type: str | None
+    academic_score: str | None
+    english_test_taken: bool | None
+    english_test_type: str | None
+    english_overall_score: str | None
+    english_lowest_score: str | None
+    english_goal: str | None
+    english_class_timing: str | None
+    planned_english_test: str | None
     target_countries: list[str]
     preferred_field: str | None
+    intended_study_level: str | None
+    preferred_intake: str | None
+    budget_range: str | None
     goals: str | None
     ai_paused: bool
     call_consent: bool = False
@@ -367,7 +380,16 @@ async def admin_get_student(
     return StudentDetail(
         id=str(s.id), full_name=s.full_name, email=s.email, phone=s.phone,
         location=s.location, education_level=s.education_level, gpa=s.gpa,
+        qualification_year=s.qualification_year, score_type=s.score_type,
+        academic_score=s.academic_score, english_test_taken=s.english_test_taken,
+        english_test_type=s.english_test_type,
+        english_overall_score=s.english_overall_score,
+        english_lowest_score=s.english_lowest_score,
+        english_goal=s.english_goal, english_class_timing=s.english_class_timing,
+        planned_english_test=s.planned_english_test,
         target_countries=s.target_countries or [], preferred_field=s.preferred_field,
+        intended_study_level=s.intended_study_level,
+        preferred_intake=s.preferred_intake, budget_range=s.budget_range,
         goals=s.goals, ai_paused=s.ai_paused or False,
         call_consent=s.call_consent or False,
         created_at=s.created_at, updated_at=s.updated_at,

@@ -32,8 +32,21 @@ class StudentModel(Base):
     education_level = Column(String, nullable=False)
     gpa = Column(Float, nullable=True)
     expected_gpa = Column(Float, nullable=True)
+    qualification_year = Column(Integer, nullable=True)
+    score_type = Column(String(32), nullable=True)
+    academic_score = Column(String(32), nullable=True)
+    english_test_taken = Column(Boolean, nullable=True)
+    english_test_type = Column(String(40), nullable=True)
+    english_overall_score = Column(String(24), nullable=True)
+    english_lowest_score = Column(String(24), nullable=True)
+    english_goal = Column(String(32), nullable=True)
+    english_class_timing = Column(String(32), nullable=True)
+    planned_english_test = Column(String(40), nullable=True)
     target_countries = Column(JSONB, nullable=False, default=list)
     preferred_field = Column(String, nullable=True)
+    intended_study_level = Column(String(32), nullable=True)
+    preferred_intake = Column(String(80), nullable=True)
+    budget_range = Column(String(80), nullable=True)
     goals = Column(Text, nullable=True)
     ai_paused = Column(Boolean, default=False, server_default="false")
     profile_completed = Column(Boolean, default=True, server_default="true")
@@ -77,9 +90,22 @@ class StudentBase(BaseModel):
     education_level: EducationLevel
     gpa: float | None = Field(None, ge=0, le=4.5)
     expected_gpa: float | None = Field(None, ge=0, le=4.5)
+    qualification_year: int | None = Field(None, ge=1950, le=2035)
+    score_type: str | None = Field(None, max_length=32)
+    academic_score: str | None = Field(None, max_length=32)
+    english_test_taken: bool | None = None
+    english_test_type: str | None = Field(None, max_length=40)
+    english_overall_score: str | None = Field(None, max_length=24)
+    english_lowest_score: str | None = Field(None, max_length=24)
+    english_goal: str | None = Field(None, max_length=32)
+    english_class_timing: str | None = Field(None, max_length=32)
+    planned_english_test: str | None = Field(None, max_length=40)
     target_countries: list[str] = Field(default_factory=list)
     goals: str | None = Field(None, max_length=2000)
     preferred_field: str | None = None
+    intended_study_level: str | None = Field(None, max_length=32)
+    preferred_intake: str | None = Field(None, max_length=80)
+    budget_range: str | None = Field(None, max_length=80)
 
 
 class StudentCreate(StudentBase):
@@ -93,9 +119,22 @@ class StudentUpdate(BaseModel):
     education_level: EducationLevel | None = None
     gpa: float | None = Field(None, ge=0, le=4.5)
     expected_gpa: float | None = Field(None, ge=0, le=4.5)
+    qualification_year: int | None = Field(None, ge=1950, le=2035)
+    score_type: str | None = None
+    academic_score: str | None = None
+    english_test_taken: bool | None = None
+    english_test_type: str | None = None
+    english_overall_score: str | None = None
+    english_lowest_score: str | None = None
+    english_goal: str | None = None
+    english_class_timing: str | None = None
+    planned_english_test: str | None = None
     target_countries: list[str] | None = None
     goals: str | None = None
     preferred_field: str | None = None
+    intended_study_level: str | None = None
+    preferred_intake: str | None = None
+    budget_range: str | None = None
 
 
 class StudentOut(StudentBase):
