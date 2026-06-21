@@ -77,6 +77,24 @@ const topics = [
   "Nepali student doubts",
 ];
 
+const testimonials = [
+  {
+    quote: "It felt like the app understood the difference between guessing and being actually ready to apply.",
+    name: "Sanjana",
+    meta: "Kathmandu · MSc applicant",
+  },
+  {
+    quote: "The document prompts were sharper than the random checklists I was using before. Much less noise.",
+    name: "Aarav",
+    meta: "Lalitpur · Computer Science",
+  },
+  {
+    quote: "I could compare countries and universities without opening twenty tabs. That alone saved me hours.",
+    name: "Nisha",
+    meta: "Pokhara · Business studies",
+  },
+];
+
 /* ── Inline building blocks ───────────────────────────────────────────
  * Small, self-contained helpers so /onboarding can reuse the same shapes
  * (when we lift them out next PR). No new files in this PR.
@@ -229,6 +247,43 @@ export default function Home() {
               >
                 {topic}
               </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Testimonials ───────────────────────────────────────────── */}
+      <section className="ab-section bg-[#F7F9FF] border-t border-slate-200">
+        <div className="mx-auto max-w-6xl px-5 sm:px-8">
+          <div className="max-w-2xl">
+            <Eyebrow className="!text-violet-700 !bg-violet-50">Student stories</Eyebrow>
+            <h2 className="ab-display-2 mt-3 text-slate-900">
+              Clearer than a group chat, calmer than a consultancy.
+            </h2>
+          </div>
+
+          <div className="mt-10 grid gap-4 md:grid-cols-3">
+            {testimonials.map((item) => (
+              <article
+                key={item.name}
+                className="rounded-[28px] border border-white/70 bg-white p-6 shadow-[0_16px_35px_-24px_rgba(15,23,42,0.28)]"
+              >
+                <div className="flex items-center gap-2 text-amber-500">
+                  <span>★★★★★</span>
+                </div>
+                <p className="mt-4 text-[15px] leading-7 text-slate-700">
+                  “{item.quote}”
+                </p>
+                <div className="mt-5 flex items-center gap-3 border-t border-slate-100 pt-4">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-[13px] font-bold text-white">
+                    {item.name[0]}
+                  </div>
+                  <div>
+                    <p className="text-[14px] font-bold text-slate-900">{item.name}</p>
+                    <p className="text-[12px] text-slate-500">{item.meta}</p>
+                  </div>
+                </div>
+              </article>
             ))}
           </div>
         </div>

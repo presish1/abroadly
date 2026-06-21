@@ -23,7 +23,7 @@ function UniItem({ domain }: { domain: string }) {
   return (
     <div className="flex h-16 w-16 items-center justify-center rounded-[18px] bg-white border border-slate-200 shadow-sm transition hover:shadow-md hover:scale-110 flex-shrink-0 grayscale opacity-60 hover:grayscale-0 hover:opacity-100 mx-4">
       <img
-        src={`https://icons.duckduckgo.com/ip3/${domain}.ico`}
+        src={`https://logo.clearbit.com/${domain}?size=128`}
         alt=""
         width={32}
         height={32}
