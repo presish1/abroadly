@@ -11,16 +11,25 @@ const steps = [
     no: "01",
     title: "Tell it your situation",
     body: "Your education level, GPA, expected GPA, field, budget worries, and the countries you are weighing.",
+    color: "text-blue-600",
+    bg: "bg-blue-50",
+    border: "border-blue-100",
   },
   {
     no: "02",
     title: "Ask the messy questions",
     body: "Eligibility, documents, visa steps, scholarships, SOPs, costs, timelines — or simply what to do first.",
+    color: "text-emerald-600",
+    bg: "bg-emerald-50",
+    border: "border-emerald-100",
   },
   {
     no: "03",
     title: "Leave with a next step",
     body: "A clear answer, the gaps you still need to check, and the official link or document prompt that matters.",
+    color: "text-purple-600",
+    bg: "bg-purple-50",
+    border: "border-purple-100",
   },
 ];
 
@@ -29,21 +38,29 @@ const studentProblems = [
     icon: "\u{1F3AF}",
     title: "Am I eligible?",
     body: "See whether your grades, level, and goals look realistic before you spend money applying.",
+    span: "col-span-1 sm:col-span-2 xl:col-span-2 row-span-2",
+    theme: "bg-gradient-to-br from-[#E3F2FD] to-[#BBDEFB] border-blue-200",
   },
   {
     icon: "\u{1F4CB}",
     title: "Which documents?",
     body: "A checklist for transcripts, passport, SOP, recommendation letters, finances, and English tests.",
+    span: "col-span-1 sm:col-span-1 xl:col-span-1",
+    theme: "bg-gradient-to-br from-[#FFF3E0] to-[#FFE0B2] border-orange-200",
   },
   {
     icon: "\u{1F4B0}",
     title: "How much will it cost?",
     body: "Tuition, living costs, deposits, proof of funds, scholarships, and safer budget planning.",
+    span: "col-span-1 sm:col-span-1 xl:col-span-1",
+    theme: "bg-gradient-to-br from-[#E8F5E9] to-[#C8E6C9] border-green-200",
   },
   {
     icon: "\u{1F9ED}",
     title: "What do I do next?",
     body: "Turn confusion into a short action plan you can talk through with family or universities.",
+    span: "col-span-1 sm:col-span-2 xl:col-span-2",
+    theme: "bg-gradient-to-br from-[#F3E5F5] to-[#E1BEE7] border-purple-200",
   },
 ];
 
@@ -153,13 +170,14 @@ export default function Home() {
             {steps.map((step) => (
               <article
                 key={step.no}
-                className="rounded-2xl border border-slate-200 bg-white p-7 transition hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-xl hover:shadow-blue-500/5 duration-300"
+                className="group relative rounded-[28px] border border-slate-200 bg-white p-8 transition hover:-translate-y-1 hover:border-blue-300 hover:shadow-[0_20px_40px_-15px_rgba(0,68,255,0.15)] duration-300 overflow-hidden"
               >
-                <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-[15px] font-extrabold tracking-[-0.01em] text-blue-600 border border-blue-100">
+                <div className={`absolute top-0 right-0 w-32 h-32 ${step.bg} rounded-bl-full -z-10 transition-transform duration-500 group-hover:scale-150 opacity-50`}></div>
+                <span className={`inline-flex h-12 w-12 items-center justify-center rounded-[14px] ${step.bg} ${step.color} text-[16px] font-extrabold tracking-[-0.01em] border ${step.border}`}>
                   {step.no}
                 </span>
-                <h3 className="ab-h3 mt-5 text-slate-900">{step.title}</h3>
-                <p className="ab-body mt-2.5 text-[14px] leading-7 text-slate-600">{step.body}</p>
+                <h3 className="ab-h3 mt-6 text-[19px] text-slate-900 leading-tight">{step.title}</h3>
+                <p className="ab-body mt-3 text-[15px] leading-relaxed text-slate-600">{step.body}</p>
               </article>
             ))}
           </div>
@@ -167,28 +185,32 @@ export default function Home() {
       </section>
 
       {/* ── What it helps with ───────────────────────────────────────── */}
-      <section id="student-problems" className="ab-section bg-slate-50 border-t border-slate-200">
+      <section id="student-problems" className="ab-section bg-[#fafafa] border-t border-slate-200">
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
-          <div className="max-w-2xl">
+          <div className="max-w-2xl text-center mx-auto mb-16">
             <Eyebrow className="!text-blue-600 !bg-blue-50">What it helps with</Eyebrow>
             <h2 className="ab-display-2 mt-3 text-slate-900">
               The questions students actually ask.
             </h2>
-            <p className="ab-subhead mt-4 max-w-xl text-slate-600">
+            <p className="ab-subhead mt-4 max-w-xl mx-auto text-slate-600">
               Use it before you pay an application fee, choose a country, write an SOP, or tell your
               family a plan you are not sure about yet.
             </p>
           </div>
 
-          <div className="mt-12 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4 auto-rows-min">
             {studentProblems.map((item) => (
               <article
                 key={item.title}
-                className="group rounded-2xl border border-slate-200 bg-white p-6 transition hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-xl hover:shadow-blue-500/5 duration-300"
+                className={`group rounded-[32px] border transition hover:-translate-y-1 hover:shadow-xl duration-300 overflow-hidden ${item.span} ${item.theme}`}
               >
-                <span className="text-2xl">{item.icon}</span>
-                <h3 className="ab-h3 mt-4 text-[16px] text-slate-900">{item.title}</h3>
-                <p className="ab-body mt-2 text-[14px] leading-7 text-slate-600">{item.body}</p>
+                <div className="p-8 h-full flex flex-col justify-between">
+                  <div>
+                    <span className="text-4xl drop-shadow-sm">{item.icon}</span>
+                    <h3 className="ab-h3 mt-6 text-[22px] text-slate-900 font-bold leading-tight">{item.title}</h3>
+                  </div>
+                  <p className="ab-body mt-4 text-[15px] leading-relaxed text-slate-800/80 font-medium">{item.body}</p>
+                </div>
               </article>
             ))}
           </div>
