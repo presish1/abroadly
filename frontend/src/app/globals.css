@@ -244,14 +244,15 @@ body {
 }
 
 .chat-left-brand {
-  display: flex;
+  display: inline-flex;
   height: 48px;
+  width: fit-content;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   border: 1px solid #E8E5EF;
   border-radius: 12px;
   background: #FFFFFF;
-  padding: 0 14px;
+  padding: 0 16px;
   box-shadow: 0 4px 18px rgba(34, 27, 75, 0.05);
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }

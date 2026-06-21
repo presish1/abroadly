@@ -2157,6 +2157,7 @@ export default function ChatPage() {
         documentTotal={docReadiness.essentialsTotal}
         phoneRequired={phoneRequired}
         callConsented={callConsented}
+        onProfileClick={() => setProfileOpen(true)}
         onCounselorCall={grantCounselorCall}
       />
 
