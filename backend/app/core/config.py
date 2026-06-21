@@ -24,7 +24,7 @@ class Settings(BaseSettings):
     # Eval thresholds
     eval_min_retrieval_score: float = 0.35
     eval_min_grounding_score: float = 0.30
-    eval_scope_strict: bool = False
+    eval_scope_strict: bool = True
 
     # Admin
     admin_username: str = "username"
