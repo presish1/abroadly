@@ -221,6 +221,20 @@ export function StudentQuickTabs({
         </Link>
       </nav>
 
+      {active === "documents" && (
+        <Link href="/chat?class=claim" className="ab-focus class-claim-card">
+          <span className="class-claim-confetti" aria-hidden>
+            <i />
+            <i />
+            <i />
+            <i />
+          </span>
+          <span className="class-claim-kicker">Included with Abroadly</span>
+          <strong>Claim your free IELTS / PTE class</strong>
+          <span className="class-claim-action">Confirm a time <span aria-hidden>→</span></span>
+        </Link>
+      )}
+
       <div className="chat-left-counselor">
         <p className="chat-left-counselor-kicker">Counsellor</p>
         <h2>Need human help?</h2>

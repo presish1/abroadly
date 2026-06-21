@@ -7,6 +7,7 @@ mis-configured. Don't let mail problems become user-facing errors.
 from __future__ import annotations
 
 import logging
+from html import escape
 from email.message import EmailMessage
 from pathlib import Path
 
@@ -94,3 +95,49 @@ async def send_welcome_email(*, to: str, full_name: str) -> bool:
     text = _render(_read_template("welcome.txt"), **values)
     subject = f"Welcome to Abroadly, {first}"
     return await send_email(to=to, subject=subject, html=html, text=text)
+
+
+async def send_service_request_notification(
+    *,
+    full_name: str,
+    email: str,
+    phone: str,
+    request_type: str,
+    test_type: str | None = None,
+    preferred_time: str | None = None,
+) -> bool:
+    """Notify the internal team about every student service request."""
+    recipient = settings.lead_notification_email.strip()
+    if not recipient:
+        log.info("service_request_email_skipped: LEAD_NOTIFICATION_EMAIL not configured")
+        return False
+
+    request_label = request_type.replace("_", " ").title()
+    details = [
+        ("Student", full_name),
+        ("Email", email),
+        ("Phone", phone),
+        ("Request", request_label),
+        ("Test", test_type or "Not specified"),
+        ("Preferred time", preferred_time or "Not specified"),
+    ]
+    html_rows = "".join(
+        f"<tr><td style='padding:6px 12px 6px 0;color:#6b655c'>{escape(label)}</td>"
+        f"<td style='padding:6px 0;font-weight:600'>{escape(value)}</td></tr>"
+        for label, value in details
+    )
+    html = (
+        "<div style='font-family:Arial,sans-serif;color:#1b1916'>"
+        f"<h2>New {escape(request_label)}</h2><table>{html_rows}</table>"
+        f"<p><a href='{escape(settings.public_site_url)}/admin/requests'>Open request inbox</a></p>"
+        "</div>"
+    )
+    text = "New Abroadly service request\n\n" + "\n".join(
+        f"{label}: {value}" for label, value in details
+    )
+    return await send_email(
+        to=recipient,
+        subject=f"Abroadly: {request_label} from {full_name}",
+        html=html,
+        text=text,
+    )

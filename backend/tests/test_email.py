@@ -9,10 +9,14 @@ from __future__ import annotations
 import asyncio
 from unittest.mock import AsyncMock, patch
 
-import pytest
-
 from app.core import email as email_module
-from app.core.email import _first_name, _render, send_email, send_welcome_email
+from app.core.email import (
+    _first_name,
+    _render,
+    send_email,
+    send_service_request_notification,
+    send_welcome_email,
+)
 
 
 def _run(coro):
@@ -155,3 +159,28 @@ def test_send_welcome_email_empty_name_uses_fallback():
 
     assert result is True
     assert captured["msg"]["Subject"] == "Welcome to Abroadly, there"
+
+
+def test_service_request_notification_targets_internal_inbox():
+    captured: dict = {}
+
+    async def fake_send(*args, **kwargs):
+        captured["msg"] = args[0]
+
+    with patch.object(email_module.settings, "smtp_password", "secret"), \
+         patch.object(email_module.settings, "lead_notification_email", "team@abroadly.online"), \
+         patch("app.core.email.aiosmtplib.send", new=fake_send):
+        result = _run(send_service_request_notification(
+            full_name="Asha Sharma",
+            email="asha@example.com",
+            phone="+9779800000000",
+            request_type="class_booking",
+            test_type="PTE",
+            preferred_time="Sunday morning",
+        ))
+
+    assert result is True
+    msg = captured["msg"]
+    assert msg["To"] == "team@abroadly.online"
+    assert "Class Booking" in msg["Subject"]
+    assert "Sunday morning" in msg.get_body(preferencelist=("plain",)).get_content()

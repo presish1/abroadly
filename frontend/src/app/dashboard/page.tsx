@@ -23,6 +23,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AntdDashboard } from "./antd-dashboard";
+import { ServiceRequestModal } from "@/components/service-request-modal";
 import {
   getStudent,
   getStudentDocuments,
@@ -996,6 +997,7 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeCountry, setActiveCountry] = useState<CountryCode>("UK");
+  const [testBookingOpen, setTestBookingOpen] = useState(false);
 
   useEffect(() => {
     const sid = typeof window !== "undefined" ? window.localStorage.getItem("abroadly_student_id") : null;
@@ -1066,14 +1068,25 @@ export default function DashboardPage() {
   }
 
   return (
-    <AntdDashboard
-      student={student}
-      documents={documents}
-      history={history}
-      activeCountry={activeCountry}
-      countries={supportedCountries}
-      onSelectCountry={setActiveCountry}
-      onSendQuery={onSendQuery}
-    />
+    <>
+      <AntdDashboard
+        student={student}
+        documents={documents}
+        history={history}
+        activeCountry={activeCountry}
+        countries={supportedCountries}
+        onSelectCountry={setActiveCountry}
+        onSendQuery={onSendQuery}
+        onBookTest={() => setTestBookingOpen(true)}
+      />
+      {testBookingOpen && (
+        <ServiceRequestModal
+          student={student}
+          requestType="test_booking"
+          onConfirmed={setStudent}
+          onClose={() => setTestBookingOpen(false)}
+        />
+      )}
+    </>
   );
 }

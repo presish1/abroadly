@@ -1,63 +1,71 @@
-# Australia Application Timeline and Processing Cycle
+# Australia Application Timeline for Students Applying from Nepal
 
-Australia has two main university intakes, February and July, with many providers also offering trimester or rolling intakes. Start 9-12 months before the intended intake when possible. The process below is adapted from the local Australia processing-cycle PDF, with old consultancy-specific references removed and current GS terminology used.
+Australia commonly has February and July intakes, while some providers use trimester, semester or course-specific dates. Build the plan from the exact course start date shown by the CRICOS-registered provider. Start 9-12 months early when possible, but never promise a provider or visa processing time.
 
-## 15-Step End-to-End Counseling and Processing Cycle
+## Intake-Relative Process
 
-As of June 2026, the complete cycle for Nepalese students planning their studies in Australia follows these 15 steps:
+### 9-12 Months Before Intake: Course and Eligibility
 
-1. **Career Counseling**: Assess student profile (academic grades, English test scores, budget) to select the right course/provider.
-2. **Offer Process**: Prepare all academic documents, English proficiency report, passport, and work experience proof. Submit the application. Offers take 1-4 weeks.
-3. **Financial Documentation**: Prepare property valuation, sponsor income proof, and bank balance or education loan statement.
-4. **GTE/GS Approval**: Send documents to the institution for GTE (Genuine Student) checks and interview preparation (takes 5-15 days).
-5. **Payment Approval**: Receive GTE/GS approval letter from the institution.
-6. **No Objection Letter (NOL)**: Visit the bank/ministry with the offer letter, academic transcripts, and student citizenship (Passport not accepted) to pay the NPR 2000 service fee.
-7. **Payment to Institutions**: Pay the tuition fee/deposit through the bank using the NOL, bringing back the SWIFT confirmation.
-8. **COE Request/Received**: Submit payment receipt, OSHC (Overseas Student Health Cover) proof, and signed acceptance agreement to receive the Confirmation of Enrolment (CoE).
-9. **Visa Application Lodged**: Pay the visa fee, book medical appointments at approved hospitals, submit final SOP, and complete biometrics.
-10. **Visa Decision Waiting**: DIBP (Department of Home Affairs) performs GTE checks and document verification. Phone interviews may be conducted.
-11. **Visa Granted**: Receive visa grant notice and attend a pre-departure briefing at the agency.
-12. **Visa Refused/Refund Process**: If rejected, submit the refund form and rejection letter immediately. Refund processing takes 4 to 8 weeks.
-13. **On-arrival Support**: Arrange airport pickup, local accommodation, and SIM card activation with local networks.
-14. **Attend Orientation**: Travel to Australia, attend campus orientation, enroll in classes, and finalize elective selections.
-15. **Ongoing Support**: Stay connected with student support groups and counselors in Australia.
+1. Compare CRICOS-registered courses, campuses, fees, entry requirements and exact intake availability on official provider pages.
+2. Check whether the course accepts the student's qualification and English test. Regulated fields can have higher or separate professional requirements.
+3. Book IELTS, PTE, TOEFL or another provider-accepted test if required.
+4. Gather passport, academic records, grading evidence, CV, gap or employment evidence, and any portfolio or course-specific documents.
 
-## February Intake Planning
+### 6-9 Months Before Intake: Provider Application
 
-- March-June previous year: choose country/course, start English prep.
-- July-August: take English test, prepare documents.
-- August-October: apply for admission and scholarships.
-- October-November: receive offer, prepare funds and GS documents.
-- November-December: NOC/payment/CoE.
-- December-January: visa lodgement, medical/biometrics, accommodation.
-- January-February: travel after visa grant.
+1. Submit complete applications to the chosen providers.
+2. Answer provider requests for missing or clearer documents promptly.
+3. Read all offer conditions, tuition schedules and refund terms. An offer is not a visa decision.
+4. Prepare genuine financial evidence and draft Genuine Student answers in parallel.
 
-## July Intake Planning
+Provider assessment time varies by institution, course, intake and application completeness. Do not present a fixed offer turnaround as guaranteed.
 
-- August-December previous year: course research and English preparation.
-- January-February: apply for admission and scholarships.
-- March-April: offer, finance, GS/provider checks.
-- April-May: NOC/payment/CoE.
-- May-June: visa lodgement and health/biometrics.
-- June-July: decision, travel, orientation.
+### 3-6 Months Before Intake: Offer, Nepal NOC, Payment and CoE
 
-## Common Timeline Mistakes
+1. Meet academic, English and other conditions in the written offer.
+2. Complete the current Nepal Ministry of Education NOC process before remitting tuition through a Nepali bank.
+3. Verify payment instructions directly with the provider. Keep the bank receipt and SWIFT evidence.
+4. Accept the offer, make only the required deposit, and arrange Overseas Student Health Cover for the required period.
+5. Receive and check the Confirmation of Enrolment. The CoE is required for the Student visa application.
 
-- Waiting for final transcript before starting course research.
-- Booking English too late.
-- Applying for a high-English field with low English score.
-- Preparing bank documents after CoE instead of during offer stage.
-- Paying before checking provider refund policy and official payment details.
+The old terms GTE and DIBP should not be used as current process labels. Home Affairs now assesses the Genuine Student requirement.
+
+### Around 2-3 Months Before Intake: Student Visa
+
+1. Lodge the Subclass 500 application through ImmiAccount with the valid CoE.
+2. Use the current Home Affairs document checklist and fee information on the day of application.
+3. Include Genuine Student answers, financial-capacity evidence, English evidence, identity and relationship documents, and other evidence that applies to the case.
+4. Complete health examinations, biometrics or further-information requests when instructed.
+5. Monitor ImmiAccount and respond by the stated deadline.
+
+Visa timing varies. Use the official Home Affairs processing-time guide and student-visa priority guidance; do not promise a 4-12 week result or any other fixed decision window.
+
+### After Visa Grant
+
+1. Read the grant notice and visa conditions.
+2. Confirm the provider's arrival, enrolment and orientation dates.
+3. Check that travel dates align with the CoE, OSHC and accommodation arrangements.
+4. Book non-refundable travel only after grant.
+5. Carry essential identity, enrolment, accommodation and medication documents when travelling.
+
+## Common Mistakes
+
+- Choosing a university before checking the exact course, campus and intake.
+- Treating common English scores as universal entry requirements.
+- Paying through unverified instructions or before reading refund terms.
+- Preparing financial and Genuine Student evidence only after the CoE arrives.
+- Reusing generic statements that do not explain the student's own course choice and circumstances.
+- Assuming medical or biometric steps happen in the same order for every applicant.
 - Booking non-refundable flights before visa grant.
-- Ignoring accommodation until the last week.
 
 ## Refusal and Refund
 
-If the visa is refused, read the provider's written refund policy and submit the required refund request documents. Refund timelines vary. Some providers keep administrative fees or non-refundable amounts. A refusal can be reapplied after fixing the refusal reason, but the student should not repeat the same weak documents.
+Read the written visa decision and the provider's refund policy. Refund eligibility, evidence, deductions and processing time vary by provider. A new application should address the actual refusal reasons rather than repeat the same evidence.
 
-## Official Sources Cited
+## Official Sources
 
-- Study Australia, how to apply to study: https://www.studyaustralia.gov.au/en/plan-your-studies/how-to-apply-to-study.html
-- Study Australia, visa process: https://www.studyaustralia.gov.au/en/plan-your-move/visa-application-process
-- Home Affairs, Student visa subclass 500: https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/student-500
-- MoEST Nepal NOC portal: https://noc.moest.gov.np/
+- Study Australia, how to apply: https://www.studyaustralia.gov.au/en/plan-your-studies/how-to-apply-to-study.html
+- Study Australia, visa application process: https://www.studyaustralia.gov.au/en/plan-your-move/visa-application-process
+- Home Affairs, Student visa Subclass 500: https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/student-500
+- Home Affairs, student visa processing priorities: https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-processing-times/visa-processing-priorities/student-visa
+- Nepal Ministry of Education NOC portal: https://noc.moest.gov.np/

@@ -110,6 +110,25 @@ CREATE INDEX IF NOT EXISTS ix_chat_turns_student_created
     ON chat_turns (student_id, created_at);
 """
 
+_CREATE_SERVICE_REQUESTS = """
+CREATE TABLE IF NOT EXISTS service_requests (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    student_id UUID NOT NULL REFERENCES students(id) ON DELETE CASCADE,
+    request_type TEXT NOT NULL,
+    test_type TEXT,
+    preferred_time TEXT,
+    phone TEXT,
+    status TEXT NOT NULL DEFAULT 'pending',
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    resolved_at TIMESTAMPTZ
+);
+"""
+
+_CREATE_SERVICE_REQUEST_INDEXES = (
+    "CREATE INDEX IF NOT EXISTS ix_service_requests_status_created ON service_requests (status, created_at);",
+    "CREATE INDEX IF NOT EXISTS ix_service_requests_student_created ON service_requests (student_id, created_at);",
+)
+
 
 _ADD_AI_PAUSED = """
 ALTER TABLE students ADD COLUMN IF NOT EXISTS ai_paused BOOLEAN DEFAULT FALSE;
@@ -198,6 +217,9 @@ async def create_tables() -> None:
         await conn.execute(text(_ADD_NORMALIZED_QUERY))
         await conn.execute(text(_CREATE_CHAT_TURNS))
         await conn.execute(text(_CREATE_CHAT_TURNS_INDEX))
+        await conn.execute(text(_CREATE_SERVICE_REQUESTS))
+        for statement in _CREATE_SERVICE_REQUEST_INDEXES:
+            await conn.execute(text(statement))
         await conn.execute(text(_ADD_AI_PAUSED))
         await conn.execute(text(_ADD_EXPECTED_GPA))
         await conn.execute(text(_ADD_PROFILE_COMPLETED))
