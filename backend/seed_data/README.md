@@ -27,19 +27,25 @@ The script chunks markdown at heading boundaries, embeds with Gemini, and upsert
 
 ## Current files
 
-- `australia/` — Australia admissions, documents, finances, Student visa subclass 500, GS, 485, work rights, scholarships, timeline, and FAQ for Nepali students
-- `uk/` — structured UK corpus for Nepali students
+- `australia/` — 20 files detailing Australia admissions, documents, finances, Student visa subclass 500, GS, 485, work rights, scholarships, timeline, and FAQ for Nepali students
+- `uk/` — 13 files detailing a structured UK corpus for Nepali students
 - `uk-study-after-12.txt` — undergrad pathways, UCAS process, costs, Graduate Route visa for Nepali Class 12 graduates
+- `canada/` — 12 files detailing Canada overview, entry requirements, DLIs, SDS, GIC finances, visa process, and Nepal preparation
+- `usa/` — 12 files detailing US university options, OPT/STEM OPT, visa process, F-1 interview prep, I-20 financial proof, and timelines
+- `new-zealand/` — 12 files detailing New Zealand qualifications framework, Te Pūkenga, Green List pathways, and finances
+- `germany/` — 12 files detailing Germany Studienkolleg, tuition-free public universities, Blocked Account (Sperrkonto), and visa process
+- `finland/` — 12 files detailing Finland university applications via Studyinfo, residence permits, tuition waivers, and post-study opportunities
+- `japan/` — 12 files detailing Japanese language school pathways, MEXT, CoE, work rights (28 hours/week), and visa process
+- `south-korea/` — 12 files detailing South Korea D-2/D-4 visa options, Global Korea Scholarship (GKS), and post-graduation pathways
+- `ireland/` — 12 files detailing Ireland ILEP eligible programs, Stamp 2 visa, Stamp 1G graduate visa, and Critical Skills employment
 
 ## What to add next
 
 Knowledge-base expansions to consider next:
 
-1. Canada after Class 12
-2. United States after Class 12
-3. Germany after Class 12 (cheap option Nepali students often miss)
-4. IELTS/TOEFL/PTE comparison and prep strategy
-5. Scholarship database (Erasmus+, MEXT, Australia Awards, Chevening Master's, etc.)
-6. Document attestation flow at MoE Nepal
-7. Bank loan vs self-funding for study abroad (Nepalese banks: NIC Asia, Nabil, etc.)
-8. Common Statement of Purpose mistakes
+1. Detailed comparisons between specific countries (e.g. Canada vs USA, Germany vs Finland)
+2. Detailed IELTS/TOEFL/PTE comparisons and preparation tips
+3. Attestation and NOC flow at MoEST/MoFA in Nepal
+4. Education loan processing at Class A commercial banks in Nepal (Nabil, NIC Asia, etc.)
+5. Step-by-step Statement of Purpose (SOP) writing and editing guidelines
+
