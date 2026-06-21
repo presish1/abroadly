@@ -11,7 +11,6 @@ interface ProfileFormState {
   location: string;
   education_level: any;
   gpa: string;
-  expected_gpa: string;
   preferred_field: string;
   target_countries: string[];
   goals: string;
@@ -24,7 +23,6 @@ function profileFormFromStudent(student: StudentOut): ProfileFormState {
     location: student.location || "",
     education_level: student.education_level || "plus_two",
     gpa: student.gpa == null ? "" : String(student.gpa),
-    expected_gpa: student.expected_gpa == null ? "" : String(student.expected_gpa),
     preferred_field: student.preferred_field || "",
     target_countries: student.target_countries || [],
     goals: student.goals || "",
@@ -138,7 +136,6 @@ export default function ChatProfilePage() {
         student.location,
         student.education_level,
         student.qualification_year,
-        student.score_type,
         student.academic_score,
         student.english_test_taken === null ? "" : "x",
         student.english_test_taken ? student.english_test_type : student.english_goal,
@@ -148,7 +145,7 @@ export default function ChatProfilePage() {
         student.preferred_intake,
         student.budget_range,
         student.goals,
-      ].filter((item) => Boolean(item)).length / 15
+      ].filter((item) => Boolean(item)).length / 14
     ) * 100
   );
   const englishLine = student.english_test_taken
@@ -186,15 +183,11 @@ export default function ChatProfilePage() {
     if (!form) return false;
     const next: Partial<Record<keyof ProfileFormState, string>> = {};
     const gpa = optionalProfileNumber(form.gpa);
-    const expectedGpa = optionalProfileNumber(form.expected_gpa);
 
     if (!form.full_name.trim()) next.full_name = "Full name is required.";
     if (!form.phone.trim()) next.phone = "Phone number is required.";
     if (gpa === undefined || (gpa !== null && (gpa < 0 || gpa > 4.5))) {
       next.gpa = "Use a GPA between 0 and 4.5.";
-    }
-    if (expectedGpa === undefined || (expectedGpa !== null && (expectedGpa < 0 || expectedGpa > 4.5))) {
-      next.expected_gpa = "Use an expected GPA between 0 and 4.5.";
     }
     if (form.target_countries.length === 0) {
       next.target_countries = "Select at least one target country.";
@@ -209,7 +202,6 @@ export default function ChatProfilePage() {
     if (!validateProfileForm() || !form) return;
 
     const gpa = optionalProfileNumber(form.gpa);
-    const expectedGpa = optionalProfileNumber(form.expected_gpa);
     setSaving(true);
     setApiError("");
     setSaved(false);
@@ -220,7 +212,6 @@ export default function ChatProfilePage() {
         location: form.location.trim() || null,
         education_level: form.education_level,
         gpa: gpa === undefined ? null : gpa,
-        expected_gpa: expectedGpa === undefined ? null : expectedGpa,
         target_countries: form.target_countries,
         preferred_field: form.preferred_field.trim() || null,
         goals: form.goals.trim() || null,
@@ -246,32 +237,32 @@ export default function ChatProfilePage() {
 
       <section className="chat-main docs-main overflow-y-auto">
         <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-          <div className="overflow-hidden rounded-[30px] border border-[#E8E5DD] bg-[linear-gradient(135deg,#0B1631_0%,#12244a_58%,#0A6E45_100%)] text-white shadow-[0_24px_60px_-34px_rgba(10,110,69,0.45)]">
-            <div className="grid gap-6 p-6 sm:p-8 lg:grid-cols-[1.25fr_0.75fr] lg:items-end">
+          <div className="overflow-hidden rounded-[30px] border border-[#E8E5DD] bg-white shadow-[0_18px_42px_-28px_rgba(31,27,75,0.18)]">
+            <div className="grid gap-6 bg-[linear-gradient(180deg,#FBFAF7_0%,#FFFFFF_100%)] p-6 sm:p-8 lg:grid-cols-[1.25fr_0.75fr] lg:items-end">
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-white/70">Profile</p>
-                <h1 className="mt-2 text-[32px] font-black tracking-[-0.04em] sm:text-[38px]">
+                <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#0A6E45]">Profile</p>
+                <h1 className="mt-2 text-[30px] font-black tracking-[-0.04em] text-[#1B1916] sm:text-[36px]">
                   Your study record, not a blank form.
                 </h1>
-                <p className="mt-3 max-w-2xl text-[14px] leading-7 text-white/78">
+                <p className="mt-3 max-w-2xl text-[14px] leading-7 text-[#6B655C]">
                   This page now reflects the details you already gave us during onboarding: academic background, English-test status, destination plan, and budget intent — so nothing feels generic.
                 </p>
               </div>
               <div className="grid gap-3 sm:grid-cols-2">
-                <div className="rounded-[20px] border border-white/12 bg-white/10 p-4 backdrop-blur">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-white/65">Profile strength</p>
+                <div className="rounded-[20px] border border-[#E8E5DD] bg-[#FAF9F6] p-4">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#0A6E45]">Profile strength</p>
                   <div className="mt-3 flex items-end justify-between gap-3">
                     <div>
-                      <p className="text-[28px] font-black leading-none">{profilePct}%</p>
-                      <p className="mt-1 text-[12px] text-white/70">Based on 15 onboarding fields</p>
+                      <p className="text-[28px] font-black leading-none text-[#1B1916]">{profilePct}%</p>
+                      <p className="mt-1 text-[12px] text-[#6B655C]">Based on onboarding data</p>
                     </div>
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/12 text-[11px] font-black">{profilePct}%</div>
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#E8F2EC] text-[11px] font-black text-[#0A6E45]">{profilePct}%</div>
                   </div>
                 </div>
-                <div className="rounded-[20px] border border-white/12 bg-white/10 p-4 backdrop-blur">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-white/65">Documents</p>
-                  <p className="mt-3 text-[28px] font-black leading-none">{essentialsDone}<span className="text-white/50">/{essentialsTotal}</span></p>
-                  <p className="mt-1 text-[12px] text-white/70">{essentialsPct}% essentials uploaded</p>
+                <div className="rounded-[20px] border border-[#E8E5DD] bg-[#FAF9F6] p-4">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#0A6E45]">Documents</p>
+                  <p className="mt-3 text-[28px] font-black leading-none text-[#1B1916]">{essentialsDone}<span className="text-[#A8A29A]">/{essentialsTotal}</span></p>
+                  <p className="mt-1 text-[12px] text-[#6B655C]">{essentialsPct}% essentials uploaded</p>
                 </div>
               </div>
             </div>
@@ -290,7 +281,7 @@ export default function ChatProfilePage() {
                     ["Intake", intakeLabel],
                     ["Budget", budgetLabel],
                   ].map(([label, value]) => (
-                    <div key={label} className="rounded-[18px] border border-[#EFECE4] bg-[#FAF9F6] px-4 py-3">
+                    <div key={label} className="rounded-[18px] border border-[#EFECE4] bg-[#FBFBF9] px-4 py-3">
                       <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#8A847B]">{label}</p>
                       <p className="mt-1.5 text-[13px] font-semibold text-[#1B1916]">{value || "Not set"}</p>
                     </div>
@@ -304,11 +295,10 @@ export default function ChatProfilePage() {
                   {[
                     ["Qualification year", student.qualification_year ? String(student.qualification_year) : "Not set"],
                     ["Education level", educationLabel(student.education_level)],
-                    ["Score type", scoreTypeLabel(student.score_type)],
                     ["Academic score", student.academic_score || student.gpa?.toString() || "Not set"],
-                    ["Expected GPA", student.expected_gpa == null ? "Not set" : String(student.expected_gpa)],
+                    ["Score style", scoreTypeLabel(student.score_type)],
                   ].map(([label, value]) => (
-                    <div key={label} className="flex items-center justify-between gap-4 rounded-[16px] border border-[#EFECE4] px-4 py-3">
+                    <div key={label} className="flex items-center justify-between gap-4 rounded-[16px] border border-[#EFECE4] bg-[#FBFBF9] px-4 py-3">
                       <span className="text-[12px] font-semibold text-[#6B655C]">{label}</span>
                       <span className="text-[12.5px] font-bold text-[#1B1916]">{value}</span>
                     </div>
@@ -319,11 +309,11 @@ export default function ChatProfilePage() {
               <section className="rounded-[26px] border border-[#E8E5DD] bg-white p-5 shadow-[0_1px_2px_rgba(15,15,15,0.04)]">
                 <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#0A6E45]">English plan</p>
                 <div className="mt-4 space-y-3">
-                  <div className="rounded-[18px] border border-[#EFECE4] bg-[#FAF9F6] px-4 py-3">
+                  <div className="rounded-[18px] border border-[#EFECE4] bg-[#FBFBF9] px-4 py-3">
                     <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#8A847B]">Test taken</p>
                     <p className="mt-1.5 text-[13px] font-semibold text-[#1B1916]">{yesNoLabel(student.english_test_taken)}</p>
                   </div>
-                  <div className="rounded-[18px] border border-[#EFECE4] bg-[#FAF9F6] px-4 py-3">
+                  <div className="rounded-[18px] border border-[#EFECE4] bg-[#FBFBF9] px-4 py-3">
                     <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#8A847B]">
                       {student.english_test_taken ? "Test details" : "Class / test goal"}
                     </p>
@@ -345,11 +335,11 @@ export default function ChatProfilePage() {
                     <p className="text-[13px] text-[#6B655C]">No destination chosen yet.</p>
                   )}
                 </div>
-                <div className="mt-4 rounded-[18px] border border-[#EFECE4] bg-[#FAF9F6] px-4 py-3">
+                <div className="mt-4 rounded-[18px] border border-[#EFECE4] bg-[#FBFBF9] px-4 py-3">
                   <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#8A847B]">Preferred field</p>
                   <p className="mt-1.5 text-[13px] font-semibold text-[#1B1916]">{student.preferred_field || "Not set"}</p>
                 </div>
-                <div className="mt-3 rounded-[18px] border border-[#EFECE4] bg-[#FAF9F6] px-4 py-3">
+                <div className="mt-3 rounded-[18px] border border-[#EFECE4] bg-[#FBFBF9] px-4 py-3">
                   <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#8A847B]">Goals</p>
                   <p className="mt-1.5 line-clamp-4 text-[13px] leading-6 text-[#3F3A33]">{student.goals || "No goal added yet."}</p>
                 </div>
@@ -404,11 +394,6 @@ export default function ChatProfilePage() {
                     <label className={LABEL_CLS}>Current GPA</label>
                     <input className={INPUT_CLS} type="number" step="0.01" value={form.gpa} onChange={(e) => setField("gpa", e.target.value)} placeholder="e.g. 3.4" />
                     {errors.gpa && <p className={ERROR_CLS}>{errors.gpa}</p>}
-                  </div>
-                  <div>
-                    <label className={LABEL_CLS}>Expected GPA</label>
-                    <input className={INPUT_CLS} type="number" step="0.01" value={form.expected_gpa} onChange={(e) => setField("expected_gpa", e.target.value)} placeholder="Optional" />
-                    {errors.expected_gpa && <p className={ERROR_CLS}>{errors.expected_gpa}</p>}
                   </div>
                 </div>
 
