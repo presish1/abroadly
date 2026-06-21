@@ -123,13 +123,9 @@ export default function Home() {
         </div>
 
         <div className="relative z-10 mx-auto flex flex-col items-center text-center px-5 max-w-4xl mt-12 sm:mt-24">
-          <h1 className="text-[3rem] leading-[1.1] font-semibold text-slate-900 tracking-tight sm:text-[4.5rem] mb-4 animate-[abFadeUp_0.8s_ease-out]">
-            Guidance that adapts <br className="hidden sm:block" />
-            to <span className="italic font-medium">you</span>
+          <h1 className="text-[3.5rem] leading-[1.1] font-semibold text-slate-900 tracking-tight sm:text-[4.5rem] mb-10 animate-[abFadeUp_0.8s_ease-out]">
+            Study abroad, figured out.
           </h1>
-          <p className="ab-fade-up max-w-2xl text-[16px] text-slate-600 sm:text-[18px] mb-8">
-            Ask about eligibility, universities, costs, documents and visas. Get a clear next step grounded in official sources.
-          </p>
 
           <div className="ab-fade-up w-full">
             <HeroIntentForm />

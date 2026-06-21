@@ -52,7 +52,7 @@ export function HeroIntentForm() {
   return (
     <div className="flex w-full flex-col items-center gap-6">
       {/* selector sentence */}
-      <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-3 rounded-full border border-slate-200 bg-white/80 px-6 py-4 text-[18px] font-medium text-slate-700 shadow-xl backdrop-blur-md sm:px-8 sm:text-[20px]">
+      <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-3 rounded-full border border-slate-200 bg-white px-6 py-4 text-[18px] font-medium text-slate-700 shadow-xl sm:px-8 sm:text-[20px]">
         <span>I want to study</span>
 
         <div className="relative">
