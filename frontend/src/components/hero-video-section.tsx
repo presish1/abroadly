@@ -29,13 +29,6 @@ export function HeroVideoSection() {
               loading="lazy"
             />
           </div>
-          <span className="ab-video-muted-badge" aria-label="Video starts muted">
-            <svg viewBox="0 0 20 20" aria-hidden fill="none">
-              <path d="M4 8h3l4-3v10l-4-3H4V8Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
-              <path d="m14 8 3 4m0-4-3 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-            </svg>
-            Starts muted
-          </span>
         </div>
 
         <div className="mt-8 flex flex-col items-center gap-3 text-center">

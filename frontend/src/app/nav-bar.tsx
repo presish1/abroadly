@@ -32,7 +32,7 @@ export function NavBar({
   return (
     <>
       <header className="sticky top-6 z-50 px-4 sm:px-6 w-full max-w-7xl mx-auto">
-        <nav className="mx-auto flex h-16 items-center justify-between px-6 bg-white rounded-full border border-slate-200 shadow-sm">
+        <nav className="mx-auto flex h-16 items-center justify-between px-6 bg-white/90 backdrop-blur-md rounded-full border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
           <Link href="/" className="ab-focus rounded-lg">
             <BrandWordmark />
           </Link>
