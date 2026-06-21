@@ -31,9 +31,23 @@ export interface CompleteProfilePayload {
   education_level: EducationLevel;
   gpa?: number;
   expected_gpa?: number;
+  qualification_year: number;
+  score_type: "gpa" | "percentage" | "cgpa_10" | "grade" | "other";
+  academic_score: string;
+  english_test_taken: boolean;
+  english_test_type?: string;
+  english_overall_score?: string;
+  english_lowest_score?: string;
+  english_goal?: "join_class" | "not_looking" | "book_test";
+  english_class_timing?: string;
+  planned_english_test?: string;
   target_countries: string[];
   goals?: string;
-  preferred_field?: string;
+  preferred_field: string;
+  intended_study_level: string;
+  preferred_intake: string;
+  budget_range?: string;
+  call_consent: boolean;
 }
 
 export interface StudentUpdatePayload {
@@ -57,9 +71,22 @@ export interface StudentOut {
   education_level: EducationLevel;
   gpa: number | null;
   expected_gpa: number | null;
+  qualification_year: number | null;
+  score_type: string | null;
+  academic_score: string | null;
+  english_test_taken: boolean | null;
+  english_test_type: string | null;
+  english_overall_score: string | null;
+  english_lowest_score: string | null;
+  english_goal: string | null;
+  english_class_timing: string | null;
+  planned_english_test: string | null;
   target_countries: string[];
   goals: string | null;
   preferred_field: string | null;
+  intended_study_level: string | null;
+  preferred_intake: string | null;
+  budget_range: string | null;
   ai_paused: boolean;
   profile_completed: boolean;
   call_consent: boolean;

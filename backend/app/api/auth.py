@@ -8,12 +8,13 @@ from __future__ import annotations
 import secrets
 import uuid
 from datetime import datetime, timedelta, timezone
+from typing import Literal
 from urllib.parse import urlencode
 
 import httpx
 from fastapi import APIRouter, Cookie, Depends, HTTPException, status
 from fastapi.responses import JSONResponse, RedirectResponse
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -55,9 +56,39 @@ class CompleteProfileRequest(BaseModel):
     education_level: EducationLevel
     gpa: float | None = Field(None, ge=0, le=4.5)
     expected_gpa: float | None = Field(None, ge=0, le=4.5)
+    qualification_year: int = Field(..., ge=1950, le=2035)
+    score_type: Literal["gpa", "percentage", "cgpa_10", "grade", "other"]
+    academic_score: str = Field(..., min_length=1, max_length=32)
+    english_test_taken: bool
+    english_test_type: str | None = Field(None, max_length=40)
+    english_overall_score: str | None = Field(None, max_length=24)
+    english_lowest_score: str | None = Field(None, max_length=24)
+    english_goal: Literal["join_class", "not_looking", "book_test"] | None = None
+    english_class_timing: str | None = Field(None, max_length=32)
+    planned_english_test: str | None = Field(None, max_length=40)
     target_countries: list[str] = Field(..., min_length=1, max_length=12)
     goals: str | None = Field(None, max_length=2000)
-    preferred_field: str | None = Field(None, max_length=120)
+    preferred_field: str = Field(..., min_length=1, max_length=120)
+    intended_study_level: str = Field(..., min_length=1, max_length=32)
+    preferred_intake: str = Field(..., min_length=1, max_length=80)
+    budget_range: str | None = Field(None, max_length=80)
+    call_consent: bool = False
+
+    @model_validator(mode="after")
+    def validate_english_path(self):
+        if self.english_test_taken:
+            if not _clean_text(self.english_test_type):
+                raise ValueError("english_test_type_required")
+            if not _clean_text(self.english_overall_score):
+                raise ValueError("english_overall_score_required")
+        else:
+            if self.english_goal is None:
+                raise ValueError("english_goal_required")
+            if self.english_goal == "join_class" and not _clean_text(self.english_class_timing):
+                raise ValueError("english_class_timing_required")
+            if self.english_goal == "book_test" and not _clean_text(self.planned_english_test):
+                raise ValueError("planned_english_test_required")
+        return self
 
 
 def _google_configured() -> bool:
@@ -294,9 +325,31 @@ async def complete_profile(
     student.education_level = req.education_level
     student.gpa = req.gpa
     student.expected_gpa = req.expected_gpa
+    student.qualification_year = req.qualification_year
+    student.score_type = req.score_type
+    student.academic_score = _clean_required_text(req.academic_score, "academic_score_required")
+    student.english_test_taken = req.english_test_taken
+    student.english_test_type = _clean_text(req.english_test_type) if req.english_test_taken else None
+    student.english_overall_score = _clean_text(req.english_overall_score) if req.english_test_taken else None
+    student.english_lowest_score = _clean_text(req.english_lowest_score) if req.english_test_taken else None
+    student.english_goal = req.english_goal if not req.english_test_taken else None
+    student.english_class_timing = (
+        _clean_text(req.english_class_timing)
+        if not req.english_test_taken and req.english_goal == "join_class"
+        else None
+    )
+    student.planned_english_test = (
+        _clean_text(req.planned_english_test)
+        if not req.english_test_taken and req.english_goal == "book_test"
+        else None
+    )
     student.target_countries = _clean_countries(req.target_countries)
-    student.preferred_field = _clean_text(req.preferred_field)
+    student.preferred_field = _clean_required_text(req.preferred_field, "preferred_field_required")
+    student.intended_study_level = _clean_required_text(req.intended_study_level, "study_level_required")
+    student.preferred_intake = _clean_required_text(req.preferred_intake, "preferred_intake_required")
+    student.budget_range = _clean_text(req.budget_range)
     student.goals = _clean_text(req.goals)
+    student.call_consent = req.call_consent
     student.profile_completed = True
     student.updated_at = datetime.utcnow()
 
