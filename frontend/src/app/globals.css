@@ -1266,7 +1266,14 @@ body {
   width: auto;
   max-width: 100%;
   object-fit: contain;
-  filter: invert(1) brightness(1.2);
+}
+
+@media (max-width: 640px) {
+  /* .brand-wordmark removed to inherit natural height/auto-width from base style */
+  
+  .brand-wordmark-large {
+    height: 52px;
+  }
 }
 
 .brand-wordmark-large {
@@ -1276,7 +1283,6 @@ body {
 .brand-wordmark-large img {
   height: 58px;
   width: auto;
-  filter: invert(1) brightness(1.2);
 }
 
 .modal-shell-layer {

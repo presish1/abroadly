@@ -67,58 +67,10 @@ function Eyebrow({ children, className = "" }: { children: React.ReactNode; clas
   return <span className={`ab-eyebrow ${className}`}>{children}</span>;
 }
 
-function ChatPreview({ className = "" }: { className?: string }) {
-  return (
-    <div className={`relative ${className}`}>
-      <div className="ab-hero-glow pointer-events-none absolute -inset-x-10 -top-16 bottom-0 -z-10 bg-purple-900/10 blur-[120px]" />
-      <div className="overflow-hidden rounded-2xl border border-white/10 bg-slate-950/60 backdrop-blur-xl shadow-2xl">
-        {/* window chrome */}
-        <div className="flex items-center gap-2 border-b border-white/5 bg-slate-900/40 px-4 py-3">
-          <span className="h-3 w-3 rounded-full bg-white/10" />
-          <span className="h-3 w-3 rounded-full bg-white/10" />
-          <span className="h-3 w-3 rounded-full bg-white/10" />
-          <span className="ml-2 inline-flex items-center gap-1.5 text-[12px] font-semibold text-slate-400">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-purple-400 opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-purple-500" />
-            </span>
-            abroadly.online / chat
-          </span>
-        </div>
-
-        {/* conversation */}
-        <div className="space-y-4 px-5 py-6 sm:px-7">
-          <div className="flex justify-end">
-            <div className="max-w-[78%] rounded-2xl rounded-br-md bg-purple-600 px-4 py-2.5 text-[14px] font-medium leading-relaxed text-white shadow-lg shadow-purple-500/15">
-              I just finished +2 in Nepal with a 3.2 GPA. Can I study computer science in the UK?
-            </div>
-          </div>
-
-          <div className="flex items-start gap-2.5">
-            <img src="/images/abroadly-logo.png" alt="" className="mt-0.5 h-7 w-7 shrink-0 rounded-lg bg-slate-900 object-contain p-0.5 border border-white/10" />
-            <div className="max-w-[88%] rounded-2xl rounded-tl-md border border-white/5 bg-slate-900/60 px-4 py-3 text-[14px] leading-relaxed text-slate-200">
-              Yes — a <strong className="font-semibold text-white">3.2 GPA after +2</strong> puts most UK undergraduate
-              CS courses in reach, often via direct entry or a foundation year. You will typically need{" "}
-              <strong className="font-semibold text-white">IELTS 6.0–6.5</strong>.
-              <div className="mt-3 flex flex-wrap gap-1.5">
-                <span className="rounded-lg border border-white/5 bg-white/5 px-2.5 py-1 text-[12px] font-semibold text-slate-300">
-                  Upload your transcript &rarr; I&apos;ll check eligibility
-                </span>
-                <span className="rounded-lg border border-white/5 bg-white/5 px-2.5 py-1 text-[12px] font-semibold text-slate-300">
-                  Which universities fit my grades?
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 export default function Home() {
   return (
-    <main className="public-dark min-h-screen">
+    <main className="min-h-screen bg-[#fafafa]">
       <NavBar
         sectionLinks={[
           ["How it works", "#how-it-works"],
@@ -127,58 +79,65 @@ export default function Home() {
         ]}
       />
 
-      {/* ── Hero — dark, futuristic and single-purpose ───────── */}
-      <section className="ab-light-hero relative overflow-hidden bg-transparent">
-        <div aria-hidden className="ab-light-hero-grid pointer-events-none absolute inset-0" />
+      {/* ── Hero — StudyFetch Inspired Light Theme ───────── */}
+      <section className="relative overflow-hidden bg-[#fafafa] min-h-[85vh] flex flex-col items-center justify-center pt-24 pb-16">
+        
+        {/* Floating Background Images with badges */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden max-w-[1400px] mx-auto z-0">
+          {/* Top left girl tablet */}
+          <div className="absolute top-10 left-[15%] w-48 rounded-[24px] overflow-hidden shadow-2xl animate-[abFadeUp_1s_ease-out]">
+             <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&h=450&fit=crop" alt="" className="w-full h-auto object-cover" />
+             {/* Yellow Edit Badge */}
+             <div className="absolute -left-3 top-8 w-14 h-14 bg-gradient-to-br from-yellow-300 to-amber-400 rounded-full flex items-center justify-center shadow-lg border-2 border-white">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+             </div>
+          </div>
 
-        <div aria-hidden className="ab-hero-float ab-hero-float-a">
-          <span className="ab-hero-float-icon bg-orange-500/10 text-orange-400">
-            <svg viewBox="0 0 20 20" fill="none"><path d="M4 5.5h12M4 9.5h8M4 13.5h6" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round"/><path d="m13.5 13 1.7 1.7L18 11.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/></svg>
-          </span>
-          <span><strong>Document-ready</strong><small className="text-slate-400">Clear checks, one step at a time</small></span>
-        </div>
-        <div aria-hidden className="ab-hero-float ab-hero-float-b">
-          <span className="ab-hero-float-icon bg-emerald-500/10 text-emerald-400">
-            <svg viewBox="0 0 20 20" fill="none"><path d="M3.5 15.5h13M5 14V8.5M9 14V5.5M13 14v-3M17 14V7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/></svg>
-          </span>
-          <span><strong>Realistic fit</strong><small className="text-slate-400">Grades, budget and goals together</small></span>
-        </div>
-        <div aria-hidden className="ab-hero-float ab-hero-float-c">
-          <span className="ab-hero-float-icon bg-purple-500/10 text-purple-400">
-            <svg viewBox="0 0 20 20" fill="none"><path d="m3 8 7-4 7 4-7 4-7-4Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round"/><path d="M5.5 10v3.5c2.8 2 6.2 2 9 0V10" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/></svg>
-          </span>
-          <span><strong>University details</strong><small className="text-slate-400">Requirements without the sales pitch</small></span>
-        </div>
-        <div aria-hidden className="ab-hero-float ab-hero-float-d">
-          <span className="ab-hero-float-icon bg-amber-500/10 text-amber-400">
-            <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="6.5" stroke="currentColor" strokeWidth="1.6"/><path d="M10 6.5v4l2.8 1.6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/></svg>
-          </span>
-          <span><strong>Visa timeline</strong><small className="text-slate-400">Built around your intake</small></span>
+          {/* Center left guy leaning on wall */}
+          <div className="absolute top-48 left-[40%] w-32 rounded-[20px] overflow-hidden shadow-xl animate-[abFadeUp_1.2s_ease-out]">
+             <img src="https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?w=300&h=300&fit=crop" alt="" className="w-full h-auto object-cover" />
+          </div>
+
+          {/* Top right girls on grass */}
+          <div className="absolute top-12 right-[20%] w-56 rounded-[24px] overflow-hidden shadow-2xl animate-[abFadeUp_1.1s_ease-out]">
+             <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=350&fit=crop" alt="" className="w-full h-auto object-cover" />
+          </div>
+
+          {/* Bottom far right guy listening to music */}
+          <div className="absolute top-64 right-[5%] w-44 rounded-[24px] overflow-hidden shadow-2xl animate-[abFadeUp_1.3s_ease-out]">
+             <img src="https://images.unsplash.com/photo-1515041219749-89347f83291a?w=400&h=500&fit=crop" alt="" className="w-full h-auto object-cover" />
+             {/* Pink Soundwave Badge */}
+             <div className="absolute -left-5 top-12 w-16 h-16 bg-gradient-to-br from-pink-300 to-pink-500 rounded-full flex items-center justify-center shadow-lg border-2 border-white">
+                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg>
+             </div>
+          </div>
+          
+          {/* Bottom far left guy typing */}
+          <div className="absolute top-[22rem] left-[0%] w-48 rounded-[24px] overflow-hidden shadow-2xl animate-[abFadeUp_1.4s_ease-out]">
+             <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?w=400&h=500&fit=crop" alt="" className="w-full h-auto object-cover" />
+             {/* Teal List Badge */}
+             <div className="absolute -right-4 top-16 w-16 h-16 bg-gradient-to-br from-teal-300 to-cyan-500 rounded-full flex items-center justify-center shadow-lg border-2 border-white">
+                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+             </div>
+          </div>
         </div>
 
-        <div className="relative mx-auto flex max-w-4xl flex-col items-center px-5 pb-24 pt-16 text-center sm:pb-28 sm:pt-20">
-          <span className="ab-fade-up ab-d1 inline-flex items-center gap-1.5 rounded-full border border-purple-500/20 bg-purple-500/5 px-3.5 py-1.5 text-[12.5px] font-bold text-purple-300">
-            <svg viewBox="0 0 16 16" aria-hidden className="h-3.5 w-3.5 text-orange-400 animate-pulse" fill="currentColor">
-              <path d="M8 0l1.6 4.9L14.4 6 9.6 7.1 8 12 6.4 7.1 1.6 6l4.8-1.1L8 0z" />
-            </svg>
-            Built for students in Nepal
-          </span>
-
-          <h1 className="ab-fade-up ab-d2 ab-display-1 mt-7 max-w-3xl text-white">
-            Guidance that adapts<br className="hidden sm:block" /> to <span className="ab-hero-emphasis">your plan.</span>
+        <div className="relative z-10 mx-auto flex flex-col items-center text-center px-5 max-w-4xl mt-12 sm:mt-24">
+          <h1 className="text-[3rem] leading-[1.1] font-semibold text-slate-900 tracking-tight sm:text-[4.5rem] mb-4 animate-[abFadeUp_0.8s_ease-out]">
+            Guidance that adapts <br className="hidden sm:block" />
+            to <span className="italic font-medium">you</span>
           </h1>
-
-          <p className="ab-fade-up ab-d3 mt-5 max-w-xl text-[15px] leading-[1.7] text-slate-300 sm:text-[17px]">
-            Ask about eligibility, universities, costs, documents and visas. Get a clear next step grounded in official sources — free from agency pressure.
+          <p className="ab-fade-up max-w-2xl text-[16px] text-slate-600 sm:text-[18px] mb-8">
+            Ask about eligibility, universities, costs, documents and visas. Get a clear next step grounded in official sources.
           </p>
 
-          <div className="ab-fade-up ab-d4 mt-9 w-full">
+          <div className="ab-fade-up w-full">
             <HeroIntentForm />
           </div>
 
           {/* university trust strip */}
-          <div className="ab-fade-up ab-d5 mt-12 flex w-full flex-col items-center gap-4 border-t border-white/10 pt-7">
-            <p className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-slate-400">
+          <div className="ab-fade-up mt-12 flex w-full flex-col items-center gap-4 pt-7">
+            <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-400">
               Free, independent guidance for universities like
             </p>
             <HeroUniversityStrip />
@@ -188,19 +147,12 @@ export default function Home() {
 
       <HeroVideoSection />
 
-      {/* ── Product peek ─────────────────────────────────────────────── */}
-      <section className="border-t border-white/5 bg-slate-950/40">
-        <div className="mx-auto max-w-2xl px-5 pb-16 sm:px-8 sm:pb-20">
-          <ChatPreview className="ab-fade-up relative z-10 -mt-12 sm:-mt-16" />
-        </div>
-      </section>
-
       {/* ── How it works ─────────────────────────────────────────────── */}
-      <section id="how-it-works" className="ab-section border-t border-white/5 bg-transparent">
+      <section id="how-it-works" className="ab-section bg-white border-t border-slate-200">
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
           <div className="max-w-2xl">
-            <Eyebrow>How it works</Eyebrow>
-            <h2 className="ab-display-2 mt-3 text-white">
+            <Eyebrow className="!text-blue-600 !bg-blue-50">How it works</Eyebrow>
+            <h2 className="ab-display-2 mt-3 text-slate-900">
               From a confused question to a clear next step.
             </h2>
           </div>
@@ -209,13 +161,13 @@ export default function Home() {
             {steps.map((step) => (
               <article
                 key={step.no}
-                className="rounded-2xl border border-white/5 bg-white/[0.02] p-7 transition hover:-translate-y-0.5 hover:border-purple-500/30 hover:bg-white/[0.04] hover:shadow-xl hover:shadow-purple-500/5 duration-300"
+                className="rounded-2xl border border-slate-200 bg-white p-7 transition hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-xl hover:shadow-blue-500/5 duration-300"
               >
-                <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-purple-900/30 text-[15px] font-extrabold tracking-[-0.01em] text-purple-300 border border-purple-500/20">
+                <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-[15px] font-extrabold tracking-[-0.01em] text-blue-600 border border-blue-100">
                   {step.no}
                 </span>
-                <h3 className="ab-h3 mt-5 text-white">{step.title}</h3>
-                <p className="ab-body mt-2.5 text-[14px] leading-7 text-slate-300">{step.body}</p>
+                <h3 className="ab-h3 mt-5 text-slate-900">{step.title}</h3>
+                <p className="ab-body mt-2.5 text-[14px] leading-7 text-slate-600">{step.body}</p>
               </article>
             ))}
           </div>
@@ -223,14 +175,14 @@ export default function Home() {
       </section>
 
       {/* ── What it helps with ───────────────────────────────────────── */}
-      <section id="student-problems" className="ab-section border-t border-white/5 bg-slate-950/20">
+      <section id="student-problems" className="ab-section bg-slate-50 border-t border-slate-200">
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
           <div className="max-w-2xl">
-            <Eyebrow>What it helps with</Eyebrow>
-            <h2 className="ab-display-2 mt-3 text-white">
+            <Eyebrow className="!text-blue-600 !bg-blue-50">What it helps with</Eyebrow>
+            <h2 className="ab-display-2 mt-3 text-slate-900">
               The questions students actually ask.
             </h2>
-            <p className="ab-subhead mt-4 max-w-xl text-slate-300">
+            <p className="ab-subhead mt-4 max-w-xl text-slate-600">
               Use it before you pay an application fee, choose a country, write an SOP, or tell your
               family a plan you are not sure about yet.
             </p>
@@ -240,11 +192,11 @@ export default function Home() {
             {studentProblems.map((item) => (
               <article
                 key={item.title}
-                className="group rounded-2xl border border-white/5 bg-white/[0.02] p-6 transition hover:-translate-y-0.5 hover:border-purple-500/30 hover:bg-white/[0.04] hover:shadow-xl hover:shadow-purple-500/5 duration-300"
+                className="group rounded-2xl border border-slate-200 bg-white p-6 transition hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-xl hover:shadow-blue-500/5 duration-300"
               >
                 <span className="text-2xl">{item.icon}</span>
-                <h3 className="ab-h3 mt-4 text-[16px] text-white">{item.title}</h3>
-                <p className="ab-body mt-2 text-[14px] leading-7 text-slate-300">{item.body}</p>
+                <h3 className="ab-h3 mt-4 text-[16px] text-slate-900">{item.title}</h3>
+                <p className="ab-body mt-2 text-[14px] leading-7 text-slate-600">{item.body}</p>
               </article>
             ))}
           </div>
@@ -252,14 +204,14 @@ export default function Home() {
       </section>
 
       {/* ── Topics ───────────────────────────────────────────────────── */}
-      <section id="topics" className="ab-section border-t border-white/5 bg-transparent">
+      <section id="topics" className="ab-section bg-white border-t border-slate-200">
         <div className="mx-auto grid max-w-6xl gap-12 px-5 sm:px-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
           <div>
-            <Eyebrow>Ask in plain language</Eyebrow>
-            <h2 className="ab-display-2 mt-3 text-white">
+            <Eyebrow className="!text-blue-600 !bg-blue-50">Ask in plain language</Eyebrow>
+            <h2 className="ab-display-2 mt-3 text-slate-900">
               You can start with a half-formed plan.
             </h2>
-            <p className="ab-subhead mt-4 max-w-md text-slate-300">
+            <p className="ab-subhead mt-4 max-w-md text-slate-600">
               Abroadly is made for the first draft of your thinking — family pressure, country
               comparisons, and &ldquo;what does this requirement even mean?&rdquo;
             </p>
@@ -269,7 +221,7 @@ export default function Home() {
             {topics.map((topic) => (
               <span
                 key={topic}
-                className="rounded-full border border-white/5 bg-white/[0.02] px-4 py-2.5 text-[14px] font-semibold text-slate-300 transition hover:border-purple-500/50 hover:text-purple-300 hover:bg-white/[0.04] cursor-default"
+                className="rounded-full border border-slate-200 bg-slate-50 px-4 py-2.5 text-[14px] font-semibold text-slate-700 transition hover:border-blue-300 hover:text-blue-600 hover:bg-blue-50 cursor-default"
               >
                 {topic}
               </span>
@@ -279,21 +231,19 @@ export default function Home() {
       </section>
 
       {/* ── Final CTA ────────────────────────────────────────────────── */}
-      <section className="ab-section border-t border-white/10 bg-gradient-to-r from-purple-950/40 via-indigo-950/40 to-purple-950/40">
-        <div className="mx-auto flex max-w-6xl flex-col items-start gap-7 px-5 sm:px-8 lg:flex-row lg:items-center lg:justify-between">
-          <div className="max-w-2xl">
-            <h2 className="ab-display-2 text-white">
-              Build your study profile once, then ask better questions every time.
-            </h2>
-            <p className="ab-body mt-4 text-slate-300">
-              Free, honest, and ready whenever you are. No agency, no pressure.
-            </p>
-          </div>
+      <section className="ab-section bg-white border-t border-slate-200">
+        <div className="mx-auto flex max-w-4xl flex-col items-center gap-7 px-5 sm:px-8 text-center">
+          <h2 className="ab-display-2 text-slate-900">
+            Build your study profile once, then ask better questions every time.
+          </h2>
+          <p className="ab-body mt-4 text-slate-600 max-w-xl">
+            Free, honest, and ready whenever you are. No agency, no pressure.
+          </p>
           <Link
             href="/onboarding"
-            className="ab-focus inline-flex h-12 shrink-0 items-center justify-center rounded-[10px] bg-purple-600 px-7 text-[14px] font-bold text-white shadow-lg shadow-purple-600/25 transition hover:-translate-y-0.5 hover:bg-purple-500 duration-300"
+            className="mt-4 inline-flex h-14 items-center justify-center rounded-full bg-[#0044FF] px-10 text-[16px] font-bold text-white shadow-xl shadow-blue-500/30 transition hover:-translate-y-0.5 hover:bg-blue-600 duration-300"
           >
-            Get started free
+            Start learning
           </Link>
         </div>
       </section>

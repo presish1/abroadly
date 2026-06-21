@@ -17,10 +17,10 @@ const UNIS: { name: string; domain: string }[] = [
 function UniItem({ name, domain }: { name: string; domain: string }) {
   const [failed, setFailed] = useState(false);
   return (
-    <span className="group inline-flex items-center gap-2 transition">
-      <span className="flex h-[26px] w-[26px] items-center justify-center rounded-md bg-white/10 border border-white/10 shadow-[0_1px_3px_rgba(0,0,0,0.4)]">
+    <span className="group inline-flex items-center gap-2 transition cursor-pointer">
+      <span className="flex h-[26px] w-[26px] items-center justify-center rounded-md bg-white border border-slate-200 shadow-sm transition group-hover:border-blue-300">
         {failed ? (
-          <span className="text-[11px] font-extrabold text-purple-300">{name[0]}</span>
+          <span className="text-[11px] font-extrabold text-blue-600">{name[0]}</span>
         ) : (
           <img
             src={`https://icons.duckduckgo.com/ip3/${domain}.ico`}
@@ -33,7 +33,7 @@ function UniItem({ name, domain }: { name: string; domain: string }) {
           />
         )}
       </span>
-      <span className="text-[13px] font-semibold tracking-[-0.01em] text-slate-400 transition group-hover:text-white">
+      <span className="text-[13px] font-semibold tracking-[-0.01em] text-slate-500 transition group-hover:text-slate-900">
         {name}
       </span>
     </span>

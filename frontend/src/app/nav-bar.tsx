@@ -31,19 +31,19 @@ export function NavBar({
 
   return (
     <>
-      <header className="public-nav-shell sticky top-0 z-50 bg-transparent backdrop-blur-xl">
-        <nav className="public-nav mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6">
+      <header className="sticky top-6 z-50 px-4 sm:px-6 w-full max-w-7xl mx-auto">
+        <nav className="mx-auto flex h-16 items-center justify-between px-6 bg-white rounded-full border border-slate-200 shadow-sm">
           <Link href="/" className="ab-focus rounded-lg">
             <BrandWordmark />
           </Link>
 
         {sectionLinks && sectionLinks.length > 0 && (
-          <div className="hidden items-center gap-1 md:flex">
+          <div className="hidden items-center gap-6 md:flex">
             {sectionLinks.map(([label, href]) => (
               <a
                 key={href}
                 href={href}
-                className="ab-focus rounded-lg px-3 py-2 text-[14px] font-semibold text-[var(--ab-ink-soft)] transition hover:bg-white/10 hover:text-[var(--ab-ink)]"
+                className="ab-focus rounded-lg py-2 text-[15px] font-medium text-slate-600 transition hover:text-slate-900"
               >
                 {label}
               </a>
@@ -51,23 +51,23 @@ export function NavBar({
           </div>
         )}
 
-        <div className="flex items-center gap-2 sm:gap-2.5">
+        <div className="flex items-center gap-3">
           {showSignIn && (
             <button
               type="button"
               onClick={() => setSignInOpen(true)}
-              className="ab-focus hidden rounded-lg px-3 py-2 text-[14px] font-semibold text-[var(--ab-ink-soft)] transition hover:bg-white/10 hover:text-[var(--ab-ink)] sm:inline-flex"
+              className="ab-focus hidden rounded-full px-5 py-2.5 text-[15px] font-medium text-slate-700 transition hover:bg-slate-100 sm:inline-flex border border-slate-300"
             >
-              Sign in
+              Login
             </button>
           )}
           {primaryStartsGoogle ? (
-            <button type="button" onClick={() => setSignInOpen(true)} className="ab-focus ab-btn ab-btn-primary h-9 px-4 text-[13.5px]">
-              {primary.label}
+            <button type="button" onClick={() => setSignInOpen(true)} className="ab-focus rounded-full bg-[#0044FF] px-5 py-2.5 text-[15px] font-semibold text-white shadow-md transition hover:bg-blue-600">
+              Start for Free
             </button>
           ) : (
-            <Link href={primary.href} className="ab-focus ab-btn ab-btn-primary h-9 px-4 text-[13.5px]">
-              {primary.label}
+            <Link href={primary.href} className="ab-focus rounded-full bg-[#0044FF] px-5 py-2.5 text-[15px] font-semibold text-white shadow-md transition hover:bg-blue-600">
+              Start for Free
             </Link>
           )}
         </div>
