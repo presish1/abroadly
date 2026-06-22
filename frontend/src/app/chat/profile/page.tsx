@@ -277,7 +277,7 @@ export default function ChatProfilePage() {
 
             <div className="grid gap-0 xl:grid-cols-[320px_minmax(0,1fr)]">
               <aside className="border-b border-[#E8E5DD] bg-[#FCFBF8] p-5 xl:border-b-0 xl:border-r">
-                <div className="sticky top-5 space-y-4">
+                <div className="space-y-4">
                   <section className="rounded-[24px] border border-[#E8E5DD] bg-white p-4">
                     <div className="flex items-center justify-between gap-3">
                       <div>

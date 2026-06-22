@@ -479,6 +479,7 @@ body {
   flex-direction: column;
   flex: 1;
   min-width: 0;
+  min-height: 0;
 }
 
 /* ── Header ────────────────────────────────────────────────────────── */
@@ -2086,7 +2087,8 @@ body {
 
 .docs-main {
   background: #FAF9F6;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .docs-page-header {
