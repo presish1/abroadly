@@ -1,9 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { Check, LoaderCircle, Save } from "lucide-react";
-import { getStudentDocuments, type StudentDocument, getStudent, updateStudent, type StudentOut } from "@/lib/api";
+import { getStudentDocuments, type StudentDocument, getStudent, updateStudent, uploadProfilePhoto, type StudentOut } from "@/lib/api";
 import { ESSENTIAL_SLOTS, computeDocReadiness } from "@/lib/document-catalog";
 import { StudentQuickTabs } from "@/components/student-quick-tabs";
 interface ProfileFormState {
@@ -98,6 +98,8 @@ export default function ChatProfilePage() {
   const [student, setStudent] = useState<StudentOut | null>(null);
   const [loading, setLoading] = useState(true);
   const [documents, setDocuments] = useState<StudentDocument[]>([]);
+  const photoInputRef = useRef<HTMLInputElement>(null);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
   
   const [form, setForm] = useState<ProfileFormState | null>(null);
   const [errors, setErrors] = useState<Partial<Record<keyof ProfileFormState, string>>>({});
@@ -165,6 +167,11 @@ export default function ChatProfilePage() {
   const budgetLabel = student.budget_range || "Not set";
   const studyLevelLabel = student.intended_study_level || "Not set";
   const intakeLabel = student.preferred_intake || "Not set";
+  const initials = (student.full_name || "AB")
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((word) => word[0]?.toUpperCase())
+    .join("");
 
   function setField<K extends keyof ProfileFormState>(field: K, value: ProfileFormState[K]) {
     setForm((prev) => prev ? ({ ...prev, [field]: value }) : prev);
@@ -185,6 +192,22 @@ export default function ChatProfilePage() {
     });
     setErrors((prev) => ({ ...prev, target_countries: "" }));
     setSaved(false);
+  }
+
+  async function handlePhotoUpload(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file || !student) return;
+    setUploadingPhoto(true);
+    setApiError("");
+    try {
+      const res = await uploadProfilePhoto(student.id, file);
+      setStudent((prev) => (prev ? { ...prev, profile_photo_url: res.profile_photo_url } : prev));
+    } catch (err: unknown) {
+      setApiError(err instanceof Error ? err.message : "Photo upload failed.");
+    } finally {
+      setUploadingPhoto(false);
+    }
   }
 
   function validateProfileForm(): boolean {
@@ -257,6 +280,29 @@ export default function ChatProfilePage() {
                 </div>
 
                 <div className="grid gap-3 sm:grid-cols-3">
+                  <button
+                    type="button"
+                    onClick={() => photoInputRef.current?.click()}
+                    className="ab-focus group relative overflow-hidden rounded-[18px] border border-[#E8E5DD] bg-[#FAF9F6] p-3 text-left transition hover:border-[#0A6E45] hover:bg-white"
+                    aria-label="Upload profile photo"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-[16px] bg-white text-[16px] font-black text-[#12244a] ring-1 ring-[#E8E5DD]">
+                        {student.profile_photo_url ? (
+                          <img src={student.profile_photo_url} alt={student.full_name} className="h-full w-full object-cover" />
+                        ) : (
+                          initials
+                        )}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#0A6E45]">Profile photo</p>
+                        <p className="mt-1 text-[12px] font-semibold text-[#1B1916]">
+                          {student.profile_photo_url ? "Update your photo" : "Upload a photo"}
+                        </p>
+                        <p className="mt-0.5 text-[11px] text-[#6B655C]">Use a clear face shot</p>
+                      </div>
+                    </div>
+                  </button>
                   <div className="rounded-[18px] border border-[#E8E5DD] bg-white px-4 py-3">
                     <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#8A847B]">Progress</p>
                     <p className="mt-1 text-[24px] font-black leading-none text-[#1B1916]">{profilePct}%</p>
@@ -279,6 +325,88 @@ export default function ChatProfilePage() {
             <div className="grid gap-0 xl:grid-cols-[320px_minmax(0,1fr)]">
               <aside className="border-b border-[#E8E5DD] bg-[#FCFBF8] p-5 xl:border-b-0 xl:border-r">
                 <div className="space-y-4">
+                  <section className="rounded-[24px] border border-[#E8E5DD] bg-white p-4">
+                    <div className="flex items-center gap-4">
+                      <button
+                        type="button"
+                        onClick={() => photoInputRef.current?.click()}
+                        className="ab-focus group relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-[22px] border border-[#E8E5DD] bg-[#FAF9F6] text-[18px] font-black text-[#12244a] transition hover:shadow-[0_8px_24px_-14px_rgba(31,27,75,0.25)]"
+                        title="Upload profile photo"
+                        aria-label="Upload profile photo"
+                      >
+                        {uploadingPhoto ? (
+                          <span className="text-[10px] font-black text-[#0A6E45]">...</span>
+                        ) : student.profile_photo_url ? (
+                          <img src={student.profile_photo_url} alt={student.full_name} className="h-full w-full object-cover" />
+                        ) : (
+                          <span>{initials}</span>
+                        )}
+                        <span className="absolute inset-0 flex items-end justify-center bg-gradient-to-t from-black/50 via-black/10 to-transparent opacity-0 transition-opacity group-hover:opacity-100">
+                          <span className="mb-2 rounded-full bg-white/90 px-2 py-1 text-[10px] font-bold text-[#1B1916]">Change</span>
+                        </span>
+                      </button>
+                      <input ref={photoInputRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoUpload} />
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#0A6E45]">Profile photo</p>
+                        <h2 className="mt-1 truncate text-[17px] font-black tracking-[-0.02em] text-[#1B1916]">
+                          {student.profile_photo_url ? "Photo added" : "Add a clear face photo"}
+                        </h2>
+                        <p className="mt-1 text-[12.5px] leading-6 text-[#6B655C]">
+                          Helps the profile feel personal and makes counselor handoff easier.
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => photoInputRef.current?.click()}
+                          disabled={uploadingPhoto}
+                          className="ab-focus mt-3 inline-flex items-center justify-center rounded-full bg-[#0A6E45] px-4 py-2 text-[12px] font-bold text-white transition hover:bg-[#085A38] disabled:opacity-50"
+                        >
+                          {uploadingPhoto ? "Uploading..." : student.profile_photo_url ? "Change photo" : "Upload photo"}
+                        </button>
+                      </div>
+                    </div>
+                  </section>
+
+                  <section className="rounded-[24px] border border-[#E8E5DD] bg-white p-4">
+                    <div className="flex items-center gap-4">
+                      <button
+                        type="button"
+                        onClick={() => photoInputRef.current?.click()}
+                        className="ab-focus group relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-[22px] border border-[#E8E5DD] bg-[#FAF9F6] text-[18px] font-black text-[#12244a] transition hover:shadow-[0_8px_24px_-14px_rgba(31,27,75,0.25)]"
+                        title="Upload profile photo"
+                        aria-label="Upload profile photo"
+                      >
+                        {uploadingPhoto ? (
+                          <span className="text-[10px] font-black text-[#0A6E45]">...</span>
+                        ) : student.profile_photo_url ? (
+                          <img src={student.profile_photo_url} alt={student.full_name} className="h-full w-full object-cover" />
+                        ) : (
+                          <span>{initials}</span>
+                        )}
+                        <span className="absolute inset-0 flex items-end justify-center bg-gradient-to-t from-black/50 via-black/10 to-transparent opacity-0 transition-opacity group-hover:opacity-100">
+                          <span className="mb-2 rounded-full bg-white/90 px-2 py-1 text-[10px] font-bold text-[#1B1916]">Change</span>
+                        </span>
+                      </button>
+                      <input ref={photoInputRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoUpload} />
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#0A6E45]">Profile photo</p>
+                        <h2 className="mt-1 truncate text-[17px] font-black tracking-[-0.02em] text-[#1B1916]">
+                          {student.profile_photo_url ? "Photo added" : "Add a clear face photo"}
+                        </h2>
+                        <p className="mt-1 text-[12.5px] leading-6 text-[#6B655C]">
+                          Helps the profile feel personal and makes counselor handoff easier.
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => photoInputRef.current?.click()}
+                          disabled={uploadingPhoto}
+                          className="ab-focus mt-3 inline-flex items-center justify-center rounded-full bg-[#0A6E45] px-4 py-2 text-[12px] font-bold text-white transition hover:bg-[#085A38] disabled:opacity-50"
+                        >
+                          {uploadingPhoto ? "Uploading..." : student.profile_photo_url ? "Change photo" : "Upload photo"}
+                        </button>
+                      </div>
+                    </div>
+                  </section>
+
                   <section className="rounded-[24px] border border-[#E8E5DD] bg-white p-4">
                     <div className="flex items-center justify-between gap-3">
                       <div>
