@@ -42,6 +42,7 @@ import {
   recordClassBooked,
   writeChatEngagementMemory,
 } from "@/lib/chat-engagement";
+import { compressImageToTarget } from "@/lib/image-compress";
 
 /* Abroadly's own human counsellor (placeholder identity — operator can edit). */
 const COUNSELOR = {
@@ -993,7 +994,8 @@ function ProfilePopup({
     if (!file) return;
     setUploadingPhoto(true);
     try {
-      const res = await uploadProfilePhoto(student.id, file);
+      const fileToUpload = await compressImageToTarget(file, 250 * 1024);
+      const res = await uploadProfilePhoto(student.id, fileToUpload);
       onSaved({ ...student, profile_photo_url: res.profile_photo_url });
     } catch (err: any) {
       alert(err.message || "Failed to upload profile photo.");

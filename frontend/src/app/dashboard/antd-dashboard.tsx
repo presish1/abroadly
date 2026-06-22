@@ -16,6 +16,7 @@ import {
 } from "antd";
 import { abroadlyAntdTheme } from "@/lib/antd-theme";
 import { StudentQuickTabs } from "@/components/student-quick-tabs";
+import { compressImageToTarget } from "@/lib/image-compress";
 import { BrandWordmark } from "@/components/brand-wordmark";
 import { ESSENTIAL_SLOTS } from "@/lib/document-catalog";
 import {
@@ -142,7 +143,8 @@ export function AntdDashboard({ student, documents, activeCountry, countries, on
     if (!file) return;
     setUploadingPhoto(true);
     try {
-      const res = await uploadProfilePhoto(student.id, file);
+      const fileToUpload = await compressImageToTarget(file, 250 * 1024);
+      const res = await uploadProfilePhoto(student.id, fileToUpload);
       if (onUpdateStudent) {
         onUpdateStudent({ ...student, profile_photo_url: res.profile_photo_url });
       }

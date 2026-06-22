@@ -6,6 +6,7 @@ import { Check, LoaderCircle, Save } from "lucide-react";
 import { getStudentDocuments, type StudentDocument, getStudent, updateStudent, uploadProfilePhoto, type StudentOut } from "@/lib/api";
 import { ESSENTIAL_SLOTS, computeDocReadiness } from "@/lib/document-catalog";
 import { StudentQuickTabs } from "@/components/student-quick-tabs";
+import { compressImageToTarget } from "@/lib/image-compress";
 interface ProfileFormState {
   full_name: string;
   phone: string;
@@ -201,7 +202,8 @@ export default function ChatProfilePage() {
     setUploadingPhoto(true);
     setApiError("");
     try {
-      const res = await uploadProfilePhoto(student.id, file);
+      const fileToUpload = await compressImageToTarget(file, 250 * 1024);
+      const res = await uploadProfilePhoto(student.id, fileToUpload);
       setStudent((prev) => (prev ? { ...prev, profile_photo_url: res.profile_photo_url } : prev));
     } catch (err: unknown) {
       setApiError(err instanceof Error ? err.message : "Photo upload failed.");

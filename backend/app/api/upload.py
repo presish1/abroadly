@@ -183,7 +183,7 @@ def _list_student_documents(student_id: str) -> list[StudentDocument]:
     return [
         _document_item_from_file(path)
         for path in sorted(doc_dir.iterdir(), key=lambda p: p.stat().st_mtime, reverse=True)
-        if path.is_file()
+        if path.is_file() and path.stem != "pfp"
     ]
 
 
