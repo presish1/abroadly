@@ -8,7 +8,7 @@ export function HeroVideoSection() {
       <div className="mx-auto max-w-6xl px-5 py-12 sm:px-8 sm:py-24">
         <div className="mx-auto max-w-2xl text-center">
           <p className="ab-eyebrow justify-center">Learn before you commit</p>
-          <h2 id="english-class-title" className="ab-display-2 mt-3 text-[clamp(1.9rem,7.5vw,3rem)] text-[#17151D]">
+          <h2 id="english-class-title" className="ab-display-2 mt-3 text-[clamp(1.85rem,7vw,3rem)] text-[#17151D]">
             Start with a clearer English plan.
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-[14px] leading-7 text-[#706A7B] sm:text-[15px]">

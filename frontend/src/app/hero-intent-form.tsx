@@ -63,16 +63,16 @@ export function HeroIntentForm() {
   return (
     <div className="flex w-full flex-col items-center gap-6">
       {/* selector sentence */}
-      <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-x-3 gap-y-3 rounded-[24px] sm:rounded-full border border-slate-300 bg-white px-6 py-4 text-[18px] font-medium text-slate-700 shadow-xl sm:px-8 sm:text-[20px]">
-        <span>I want to study</span>
+      <div className="flex w-full max-w-[28rem] flex-col items-stretch justify-center gap-3 rounded-[24px] border border-slate-300 bg-white px-4 py-4 text-[16px] font-medium text-slate-700 shadow-xl sm:max-w-none sm:flex-row sm:flex-wrap sm:items-center sm:justify-center sm:gap-x-3 sm:gap-y-3 sm:rounded-full sm:px-6 sm:py-4 sm:text-[20px]">
+        <span className="text-center sm:text-left">I want to study</span>
 
-        <div className="relative">
+        <div className="relative w-full sm:w-auto">
           <label className="sr-only" htmlFor="hero-degree">Degree</label>
           <select
             id="hero-degree"
             value={degree}
             onChange={(e) => setDegree(e.target.value)}
-            className={selectClass}
+            className={`${selectClass} w-full sm:w-auto`}
             style={{ appearance: "none", WebkitAppearance: "none", backgroundImage: "none" }}
           >
             <option value="" disabled className={OPTION_CLASS}>Select degree</option>
@@ -83,15 +83,15 @@ export function HeroIntentForm() {
           <Chevron />
         </div>
 
-        <span className="text-slate-400">in</span>
+        <span className="text-center text-slate-400">in</span>
 
-        <div className="relative">
+        <div className="relative w-full sm:w-auto">
           <label className="sr-only" htmlFor="hero-country">Country</label>
           <select
             id="hero-country"
             value={country}
             onChange={(e) => setCountry(e.target.value)}
-            className={selectClass}
+            className={`${selectClass} w-full sm:w-auto`}
             style={{ appearance: "none", WebkitAppearance: "none", backgroundImage: "none" }}
           >
             <option value="" disabled className={OPTION_CLASS}>Select country</option>
@@ -105,7 +105,7 @@ export function HeroIntentForm() {
 
       <button
         onClick={start}
-        className="ab-focus inline-flex h-14 items-center gap-3 justify-center rounded-full bg-[#0044FF] px-8 text-[18px] font-bold text-white shadow-xl shadow-blue-500/30 transition hover:-translate-y-0.5 hover:bg-blue-600 duration-300"
+        className="ab-focus inline-flex h-14 w-full max-w-[28rem] items-center justify-center gap-3 rounded-full bg-[#0044FF] px-8 text-[16px] font-bold text-white shadow-xl shadow-blue-500/30 transition hover:-translate-y-0.5 hover:bg-blue-600 duration-300 sm:w-auto sm:max-w-none sm:text-[18px]"
       >
         <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-sm">
           <GoogleMark />
