@@ -13,14 +13,14 @@ export default function OnboardingPage() {
     <main 
       className="relative min-h-screen flex flex-col md:flex-row items-stretch text-[var(--ab-ink)] font-sans bg-cover bg-center overflow-x-hidden"
       style={{ 
-        backgroundImage: "linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.75)), url('https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1920&q=80')" 
+        backgroundImage: "linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.9)), url('https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1920&q=80')" 
       }}
     >
       {/* Left Side: Brand Text Overlay (Floating look, hidden on Mobile) */}
       <section className="hidden md:flex md:w-[50%] lg:w-[55%] xl:w-[60%] flex-col justify-between p-10 lg:p-16 text-white select-none z-10">
         {/* Top: Logo & Name */}
         <Link href="/" className="inline-flex items-center gap-2.5 text-white font-extrabold text-[22px] tracking-tight hover:opacity-90 transition">
-          <img src="/images/abroadly-logo.png" alt="Abroadly" className="h-8 w-8 object-contain bg-white rounded-lg p-1" />
+          <img src="/images/abroadly-logo.svg" alt="Abroadly" className="h-8 w-8 object-contain bg-white rounded-lg p-1" />
           <span>Abroadly</span>
         </Link>
 
@@ -56,7 +56,7 @@ export default function OnboardingPage() {
 
             {/* Mobile Logo Header */}
             <div className="flex items-center gap-2 md:hidden mb-6">
-              <img src="/images/abroadly-logo.png" alt="Abroadly" className="h-8 w-8 object-contain bg-slate-50 rounded-lg p-1" />
+              <img src="/images/abroadly-logo.svg" alt="Abroadly" className="h-8 w-8 object-contain bg-slate-50 rounded-lg p-1" />
               <span className="text-[18px] font-black tracking-tight text-[var(--ab-ink)]">Abroadly</span>
             </div>
 
