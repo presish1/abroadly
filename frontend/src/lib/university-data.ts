@@ -231,8 +231,8 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://study.unimelb.edu.au/find/",
     scholarships_url: "https://scholarships.unimelb.edu.au/",
     admissions_url: "https://study.unimelb.edu.au/how-to-apply",
-    campus_image_url: "https://images.unsplash.com/photo-1624396115160-2f3b9c978e8c?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/unimelb.edu.au?size=160"
+    campus_image_url: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/University_of_Melbourne_crest_logo.svg/256px-University_of_Melbourne_crest_logo.svg.png"
   },
   sydney: {
     summary: "A strong Sydney option for students who want a broad course catalogue, city internships, and a highly recognised university brand.",
@@ -243,8 +243,8 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     scholarships_url: "https://www.sydney.edu.au/scholarships/",
     admissions_url: "https://www.sydney.edu.au/study/how-to-apply/international-students.html",
     thumbnail_url: "https://www.sydney.edu.au/content/dam/0q5a0458_homepage_shoes_-grey.jpg",
-    campus_image_url: "https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/sydney.edu.au?size=160"
+    campus_image_url: "https://images.unsplash.com/photo-1595113311144-2425a927d74b?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/University_of_Sydney_logo.svg/256px-University_of_Sydney_logo.svg.png"
   },
   anu: {
     summary: "A compact, academic Canberra choice for students interested in public policy, data, research, science, and quieter student life.",
@@ -254,8 +254,8 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://programsandcourses.anu.edu.au/",
     scholarships_url: "https://www.anu.edu.au/study/scholarships",
     admissions_url: "https://www.anu.edu.au/study/apply",
-    campus_image_url: "https://images.unsplash.com/photo-1598977123418-45f04b615923?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/anu.edu.au?size=160"
+    campus_image_url: "https://images.unsplash.com/photo-1627556704353-016ad90c9b98?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Australian_National_University_logo.svg/256px-Australian_National_University_logo.svg.png"
   },
   unsw: {
     summary: "A practical Sydney shortlist choice for computing, engineering, commerce, and data-focused students who want strong industry links.",
@@ -265,8 +265,8 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://www.unsw.edu.au/study/search",
     scholarships_url: "https://www.unsw.edu.au/study/how-to-apply/scholarships",
     admissions_url: "https://www.unsw.edu.au/study/how-to-apply/international",
-    campus_image_url: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/unsw.edu.au?size=160"
+    campus_image_url: "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/UNSW_Sydney_coat_of_arms.svg/256px-UNSW_Sydney_coat_of_arms.svg.png"
   },
   monash: {
     summary: "Large, flexible, and well-known with strong options across IT, engineering, business, health, and pathway-style planning.",
@@ -276,8 +276,8 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://www.monash.edu/study/courses/find-a-course",
     scholarships_url: "https://www.monash.edu/study/fees-scholarships/scholarships",
     admissions_url: "https://www.monash.edu/study/how-to-apply/international-student-applications",
-    campus_image_url: "https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/monash.edu?size=160"
+    campus_image_url: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Monash_University_logo.svg/256px-Monash_University_logo.svg.png"
   },
   uq: {
     summary: "A strong Brisbane option for students who want a major research university with warmer weather and comparatively calmer city life.",
@@ -287,8 +287,8 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://study.uq.edu.au/study-options/programs",
     scholarships_url: "https://scholarships.uq.edu.au/",
     admissions_url: "https://study.uq.edu.au/admissions",
-    campus_image_url: "https://images.unsplash.com/photo-1527891751199-7225231a68dd?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/uq.edu.au?size=160"
+    campus_image_url: "https://images.unsplash.com/photo-1607237138185-3d7c54e15992?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/The_University_of_Queensland_logo.svg/256px-The_University_of_Queensland_logo.svg.png"
   },
   uwa: {
     summary: "A Perth-based option for students who want a quieter city, strong engineering/business pathways, and a campus-led experience.",
@@ -299,7 +299,7 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     scholarships_url: "https://www.uwa.edu.au/study/scholarships",
     admissions_url: "https://www.uwa.edu.au/study/how-to-apply/international",
     campus_image_url: "https://images.unsplash.com/photo-1592284619077-d779f0f90769?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/uwa.edu.au?size=160"
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/The_University_of_Western_Australia_crest.svg/256px-The_University_of_Western_Australia_crest.svg.png"
   },
   adelaide: {
     summary: "A Go8 option with a more manageable city feel, useful for students comparing prestige with cost and lifestyle.",
@@ -309,8 +309,8 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://www.adelaide.edu.au/degree-finder/",
     scholarships_url: "https://international.adelaide.edu.au/admissions/scholarships",
     admissions_url: "https://international.adelaide.edu.au/admissions/how-to-apply",
-    campus_image_url: "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/adelaide.edu.au?size=160"
+    campus_image_url: "https://images.unsplash.com/photo-1576085898323-218337e3e43c?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/University_of_Adelaide_logo.svg/256px-University_of_Adelaide_logo.svg.png"
   },
   deakin: {
     summary: "A practical Melbourne/Geelong choice for students who want applied courses, flexible campuses, and a slightly more accessible entry profile.",
@@ -320,8 +320,8 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://www.deakin.edu.au/courses",
     scholarships_url: "https://www.deakin.edu.au/study/fees-and-scholarships/scholarships",
     admissions_url: "https://www.deakin.edu.au/study/how-to-apply/international-students",
-    campus_image_url: "https://images.unsplash.com/photo-1541829019-21873760d09b?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/deakin.edu.au?size=160"
+    campus_image_url: "https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Deakin_University_logo.svg/256px-Deakin_University_logo.svg.png"
   },
   rmit: {
     summary: "A city-campus university with a strong practical feel for design, IT, engineering, media, and business.",
@@ -331,8 +331,8 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://www.rmit.edu.au/study-with-us/international-students/programs-for-international-students",
     scholarships_url: "https://www.rmit.edu.au/students/careers-opportunities/scholarships",
     admissions_url: "https://www.rmit.edu.au/study-with-us/international-students/apply-to-rmit-international-students",
-    campus_image_url: "https://images.unsplash.com/photo-1579389083395-4507e9f4a181?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/rmit.edu.au?size=160"
+    campus_image_url: "https://images.unsplash.com/photo-1498243691581-b148c5c44725?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/RMIT_University_logo.svg/256px-RMIT_University_logo.svg.png"
   },
   latrobe: {
     summary: "A friendly Melbourne option for students looking at nursing, business, IT, and broader pathway flexibility.",
@@ -343,7 +343,7 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     scholarships_url: "https://www.latrobe.edu.au/international/fees/scholarships",
     admissions_url: "https://www.latrobe.edu.au/international/apply",
     campus_image_url: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/latrobe.edu.au?size=160"
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/La_Trobe_University_logo.svg/256px-La_Trobe_University_logo.svg.png"
   },
   uts: {
     summary: "A highly urban Sydney choice for students who want technology, business, design, and practical industry-facing study.",
@@ -353,8 +353,8 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://www.uts.edu.au/study/find-a-course",
     scholarships_url: "https://www.uts.edu.au/study/international/essential-information/scholarships-international-students",
     admissions_url: "https://www.uts.edu.au/study/international/how-apply",
-    campus_image_url: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/uts.edu.au?size=160"
+    campus_image_url: "https://images.unsplash.com/photo-1507537297725-24a1c029d3ca?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/University_of_Technology_Sydney_logo.svg/256px-University_of_Technology_Sydney_logo.svg.png"
   },
   macquarie: {
     summary: "A Sydney option with a campus setting, strong business/IT pathways, and good fit for students comparing city access with space.",
@@ -364,8 +364,8 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://www.mq.edu.au/study/find-a-course",
     scholarships_url: "https://www.mq.edu.au/study/admissions-and-entry/scholarships",
     admissions_url: "https://www.mq.edu.au/study/admissions-and-entry/apply/international",
-    campus_image_url: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/mq.edu.au?size=160"
+    campus_image_url: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Macquarie_University_logo.svg/256px-Macquarie_University_logo.svg.png"
   },
   qut: {
     summary: "A Brisbane university with a practical, career-oriented style across IT, engineering, business, creative industries, and health.",
@@ -375,8 +375,8 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://www.qut.edu.au/study",
     scholarships_url: "https://www.qut.edu.au/study/fees-and-scholarships/scholarships",
     admissions_url: "https://www.qut.edu.au/study/applying/international-applying",
-    campus_image_url: "https://images.unsplash.com/photo-1507537297725-24a1c029d3ca?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/qut.edu.au?size=160"
+    campus_image_url: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Queensland_University_of_Technology_logo.svg/256px-Queensland_University_of_Technology_logo.svg.png"
   },
   griffith: {
     summary: "A Queensland choice for students interested in health, business, hospitality, aviation, social sciences, and Gold Coast/Brisbane life.",
@@ -386,8 +386,8 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://www.griffith.edu.au/study/degrees?studentType=international",
     scholarships_url: "https://www.griffith.edu.au/international/scholarships-finance",
     admissions_url: "https://www.griffith.edu.au/apply/international",
-    campus_image_url: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/griffith.edu.au?size=160"
+    campus_image_url: "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Griffith_University_logo.svg/256px-Griffith_University_logo.svg.png"
   },
   curtin: {
     summary: "A Perth university with practical strengths in engineering, IT, business, health, and applied sciences.",
@@ -397,8 +397,8 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://www.curtin.edu.au/study/search/",
     scholarships_url: "https://www.curtin.edu.au/study/scholarships/",
     admissions_url: "https://www.curtin.edu.au/study/international-students/apply/",
-    campus_image_url: "https://images.unsplash.com/photo-1498243691581-b148c5c44725?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/curtin.edu.au?size=160"
+    campus_image_url: "https://images.unsplash.com/photo-1564982722883-e07f9c24573c?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Curtin_University_logo.svg/256px-Curtin_University_logo.svg.png"
   },
   wollongong: {
     summary: "A coastal NSW option with strengths in computing, engineering, business, and a more contained student-city feel.",
@@ -408,8 +408,8 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://www.uow.edu.au/study/courses/",
     scholarships_url: "https://www.uow.edu.au/study/scholarships/",
     admissions_url: "https://www.uow.edu.au/study/international/apply/",
-    campus_image_url: "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/uow.edu.au?size=160"
+    campus_image_url: "https://images.unsplash.com/photo-1507608869274-d3177c8bb4c7?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/University_of_Wollongong_logo.svg/256px-University_of_Wollongong_logo.svg.png"
   },
   swinburne: {
     summary: "A Melbourne technology/design option for students who like applied learning, creative fields, and industry projects.",
@@ -420,7 +420,7 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     scholarships_url: "https://www.swinburne.edu.au/courses/fees/scholarships/",
     admissions_url: "https://www.swinburne.edu.au/courses/applying/international/",
     campus_image_url: "https://images.unsplash.com/photo-1581092921461-eab62e97a780?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/swinburne.edu.au?size=160"
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Swinburne_University_of_Technology_logo.svg/256px-Swinburne_University_of_Technology_logo.svg.png"
   },
   westernsydney: {
     summary: "A practical Sydney-region option for nursing, business, IT, and students who want wider campus choices across Western Sydney.",
@@ -430,8 +430,8 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://www.westernsydney.edu.au/future/study/courses",
     scholarships_url: "https://www.westernsydney.edu.au/international/home/apply/scholarships",
     admissions_url: "https://www.westernsydney.edu.au/international/home/apply/admissions",
-    campus_image_url: "https://images.unsplash.com/photo-1595113311144-2425a927d74b?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/westernsydney.edu.au?size=160"
+    campus_image_url: "https://images.unsplash.com/photo-1525920980995-f8a382bf42c5?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Western_Sydney_University_logo.svg/256px-Western_Sydney_University_logo.svg.png"
   },
 
   // --- United Kingdom (UK) ---
@@ -465,7 +465,7 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://www.imperial.ac.uk/study/courses/",
     scholarships_url: "https://www.imperial.ac.uk/study/fees-and-funding/",
     admissions_url: "https://www.imperial.ac.uk/study/apply/",
-    campus_image_url: "https://images.unsplash.com/photo-1532649538693-f3a2ec1bf8bd?auto=format&fit=crop&w=1200&q=80",
+    campus_image_url: "https://images.unsplash.com/photo-1564982722883-e07f9c24573c?auto=format&fit=crop&w=1200&q=80",
     logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Imperial_College_London_logo.svg/256px-Imperial_College_London_logo.svg.png"
   },
   ucl: {
@@ -477,7 +477,7 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     scholarships_url: "https://www.ucl.ac.uk/scholarships",
     admissions_url: "https://www.ucl.ac.uk/prospective-students/undergraduate/application-and-entry",
     campus_image_url: "https://images.unsplash.com/photo-1525920980995-f8a382bf42c5?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/ucl.ac.uk?size=160"
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/University_College_London_logo.svg/256px-University_College_London_logo.svg.png"
   },
   lse: {
     summary: "A world-renowned institution specializing exclusively in social sciences, economics, and business management in central London.",
@@ -488,7 +488,7 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     scholarships_url: "https://www.lse.ac.uk/study-at-lse/Undergraduate/fees-and-funding",
     admissions_url: "https://www.lse.ac.uk/study-at-lse/Undergraduate/How-to-apply",
     campus_image_url: "https://images.unsplash.com/photo-1526244437225-c63d0edd3a04?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/lse.ac.uk?size=160"
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/London_School_of_Economics_logo.svg/256px-London_School_of_Economics_logo.svg.png"
   },
   kcl: {
     summary: "A distinguished university with campuses throughout central London, heavily recognized for medicine, law, and business.",
@@ -499,7 +499,7 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     scholarships_url: "https://www.kcl.ac.uk/study/undergraduate/fees-and-funding",
     admissions_url: "https://www.kcl.ac.uk/study/undergraduate/apply",
     campus_image_url: "https://images.unsplash.com/photo-1513829096960-ef02213d2579?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/kcl.ac.uk?size=160"
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/King%27s_College_London_logo.svg/256px-King%27s_College_London_logo.svg.png"
   },
   manchester: {
     summary: "Largest single-site UK university with outstanding industrial history, particularly strong in engineering, computer science, and business.",
@@ -510,7 +510,7 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     scholarships_url: "https://www.manchester.ac.uk/study/undergraduate/fees-funding/scholarships-awards/",
     admissions_url: "https://www.manchester.ac.uk/study/undergraduate/applications/",
     campus_image_url: "https://images.unsplash.com/photo-1569974498991-d3c12a504f9f?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/manchester.ac.uk?size=160"
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/The_University_of_Manchester_logo.svg/256px-The_University_of_Manchester_logo.svg.png"
   },
   edinburgh: {
     summary: "One of Scotland's ancient universities, highly prestigious for computer science, artificial intelligence, and arts.",
@@ -521,7 +521,7 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     scholarships_url: "https://www.ed.ac.uk/student-funding/undergraduate",
     admissions_url: "https://www.ed.ac.uk/studying/undergraduate/applying",
     campus_image_url: "https://images.unsplash.com/photo-1606166325012-909ff726ada8?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/ed.ac.uk?size=160"
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/University_of_Edinburgh_logo.svg/256px-University_of_Edinburgh_logo.svg.png"
   },
   bristol: {
     summary: "A highly selective Russell Group university located in a creative, progressive city with top-tier engineering and tech outcomes.",
@@ -532,7 +532,7 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     scholarships_url: "https://www.bristol.ac.uk/fees-funding/awards/",
     admissions_url: "https://www.bristol.ac.uk/study/undergraduate/apply/",
     campus_image_url: "https://images.unsplash.com/photo-1569336415962-a4bd9f69cd83?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/bristol.ac.uk?size=160"
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/University_of_Bristol_logo.svg/256px-University_of_Bristol_logo.svg.png"
   },
   warwick: {
     summary: "A modern campus-based Russell Group university with top-tier business school (WBS) and highly rated math/CS research.",
@@ -543,7 +543,7 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     scholarships_url: "https://warwick.ac.uk/study/undergraduate/fees/scholarships/",
     admissions_url: "https://warwick.ac.uk/study/undergraduate/apply/",
     campus_image_url: "https://images.unsplash.com/photo-1559135197-8a45ea74d367?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/warwick.ac.uk?size=160"
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/University_of_Warwick_logo.svg/256px-University_of_Warwick_logo.svg.png"
   },
   glasgow: {
     summary: "Historic university with stunning gothic architecture, offering excellent engineering, nursing, and science programs in Scotland's biggest city.",
@@ -554,7 +554,7 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     scholarships_url: "https://www.gla.ac.uk/undergraduate/scholarships/",
     admissions_url: "https://www.gla.ac.uk/undergraduate/apply/",
     campus_image_url: "https://images.unsplash.com/photo-1592398579471-7b0f7e4b4737?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/gla.ac.uk?size=160"
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/University_of_Glasgow_logo.svg/256px-University_of_Glasgow_logo.svg.png"
   },
   durham: {
     summary: "A prestigious collegiate university located in a historic cathedral town, emphasizing tradition, small-group teaching, and sport.",
@@ -565,7 +565,7 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     scholarships_url: "https://www.durham.ac.uk/study/fees-and-funding/scholarships-and-bursaries/",
     admissions_url: "https://www.durham.ac.uk/study/undergraduate/how-to-apply/",
     campus_image_url: "https://images.unsplash.com/photo-1507608869274-d3177c8bb4c7?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/durham.ac.uk?size=160"
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Durham_University_logo.svg/256px-Durham_University_logo.svg.png"
   },
   leeds: {
     summary: "A highly popular single-site city campus university known for engineering, design, and top-tier student union experiences.",
@@ -576,7 +576,7 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     scholarships_url: "https://www.leeds.ac.uk/undergraduate-fees-funding/doc/scholarships",
     admissions_url: "https://www.leeds.ac.uk/undergraduate-applying",
     campus_image_url: "https://images.unsplash.com/photo-1576085898323-218337e3e43c?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/leeds.ac.uk?size=160"
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/University_of_Leeds_logo.svg/256px-University_of_Leeds_logo.svg.png"
   },
   sheffield: {
     summary: "Renowned for engineering and manufacturing partnerships, with a world-class student union in a green, friendly city.",
@@ -587,7 +587,7 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     scholarships_url: "https://www.sheffield.ac.uk/undergraduate/fees-funding",
     admissions_url: "https://www.sheffield.ac.uk/undergraduate/apply",
     campus_image_url: "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/sheffield.ac.uk?size=160"
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/University_of_Sheffield_logo.svg/256px-University_of_Sheffield_logo.svg.png"
   },
   newcastle: {
     summary: "A historic civic university located right in the center of Newcastle, popular for engineering and nursing.",
@@ -597,8 +597,8 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://www.ncl.ac.uk/undergraduate/degrees/",
     scholarships_url: "https://www.ncl.ac.uk/undergraduate/fees-funding/scholarships-bursaries/",
     admissions_url: "https://www.ncl.ac.uk/undergraduate/applications/",
-    campus_image_url: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/ncl.ac.uk?size=160"
+    campus_image_url: "https://images.unsplash.com/photo-1568790308560-fc429f17a9a2?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Newcastle_University_logo.svg/256px-Newcastle_University_logo.svg.png"
   },
   lancaster: {
     summary: "Collegiate campus with high student satisfaction and excellent business school rankings in the northwest of England.",
@@ -609,7 +609,7 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     scholarships_url: "https://www.lancaster.ac.uk/study/fees-and-funding/scholarships-and-bursaries/",
     admissions_url: "https://www.lancaster.ac.uk/study/undergraduate/how-to-apply/",
     campus_image_url: "https://images.unsplash.com/photo-1607237138185-3d7c54e15992?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/lancaster.ac.uk?size=160"
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Lancaster_University_logo.svg/256px-Lancaster_University_logo.svg.png"
   },
   loughborough: {
     summary: "Voted top in the UK for sport and campus community, offering strong engineering, business, and design degrees.",
@@ -620,7 +620,7 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     scholarships_url: "https://www.lboro.ac.uk/study/undergraduate/fees-funding/scholarships/",
     admissions_url: "https://www.lboro.ac.uk/study/undergraduate/apply/",
     campus_image_url: "https://images.unsplash.com/photo-1587280501635-68a0e82cd5ff?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/lboro.ac.uk?size=160"
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Loughborough_University_logo.svg/256px-Loughborough_University_logo.svg.png"
   },
   bath: {
     summary: "Highly ranked for placement opportunities, sports, and technical subjects in a beautiful historic Roman spa town.",
@@ -631,7 +631,7 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     scholarships_url: "https://www.bath.ac.uk/topics/undergraduate-scholarships-bursaries-and-other-funding/",
     admissions_url: "https://www.bath.ac.uk/guides/applying-for-undergraduate-courses/",
     campus_image_url: "https://images.unsplash.com/photo-1509228627152-72ae9ae6848d?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/bath.ac.uk?size=160"
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/University_of_Bath_logo.svg/256px-University_of_Bath_logo.svg.png"
   },
   surrey: {
     summary: "Outstanding professional placement statistics, strong business programs, and closeness to London with a green campus.",
@@ -642,7 +642,7 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     scholarships_url: "https://www.surrey.ac.uk/fees-and-funding/scholarships-and-bursaries",
     admissions_url: "https://www.surrey.ac.uk/apply",
     campus_image_url: "https://images.unsplash.com/photo-1627556704353-016ad90c9b98?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/surrey.ac.uk?size=160"
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/University_of_Surrey_logo.svg/256px-University_of_Surrey_logo.svg.png"
   },
   york: {
     summary: "Collegiate research-intensive university in a historic walled city, known for computer science, social policy, and creative arts.",
@@ -653,7 +653,7 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     scholarships_url: "https://www.york.ac.uk/study/undergraduate/fees-funding/scholarships/",
     admissions_url: "https://www.york.ac.uk/study/undergraduate/applying/",
     campus_image_url: "https://images.unsplash.com/photo-1492538368577-505f89740112?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/york.ac.uk?size=160"
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/University_of_York_logo.svg/256px-University_of_York_logo.svg.png"
   },
   coventry: {
     summary: "One of the UK's leading modern universities, focused on employability, modern labs, and an integrated city campus.",
@@ -663,8 +663,8 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://www.coventry.ac.uk/study-at-coventry/course-search/",
     scholarships_url: "https://www.coventry.ac.uk/international-students-hub/finance/scholarships-and-discounts/",
     admissions_url: "https://www.coventry.ac.uk/study-at-coventry/apply-now/",
-    campus_image_url: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/coventry.ac.uk?size=160"
+    campus_image_url: "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Coventry_University_logo.svg/256px-Coventry_University_logo.svg.png"
   },
   uwe: {
     summary: "A large modern university in Bristol, prioritizing partnerships, practice-led courses, and excellent graduate employment rates.",
@@ -675,7 +675,7 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     scholarships_url: "https://www.uwe.ac.uk/courses/funding/scholarships",
     admissions_url: "https://www.uwe.ac.uk/study/applying-to-uwe-bristol",
     campus_image_url: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/uwe.ac.uk?size=160"
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/UWE_Bristol_logo.svg/256px-UWE_Bristol_logo.svg.png"
   },
   hertfordshire: {
     summary: "A modern university located just outside London, offering practical business, IT, and health science courses at a budget price.",
@@ -685,8 +685,8 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://www.herts.ac.uk/courses",
     scholarships_url: "https://www.herts.ac.uk/international/fees,-funding-and-scholarships/scholarships",
     admissions_url: "https://www.herts.ac.uk/apply",
-    campus_image_url: "https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/herts.ac.uk?size=160"
+    campus_image_url: "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/University_of_Hertfordshire_logo.svg/256px-University_of_Hertfordshire_logo.svg.png"
   },
   northumbria: {
     summary: "A practice-heavy modern university in Newcastle, with strong industry ties in business, IT, nursing, and architecture.",
@@ -696,8 +696,8 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://www.northumbria.ac.uk/study-at-northumbria/courses/",
     scholarships_url: "https://www.northumbria.ac.uk/study-at-northumbria/fees-funding/international-scholarships/",
     admissions_url: "https://www.northumbria.ac.uk/study-at-northumbria/how-to-apply/",
-    campus_image_url: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/northumbria.ac.uk?size=160"
+    campus_image_url: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Northumbria_University_logo.svg/256px-Northumbria_University_logo.svg.png"
   },
   westminster: {
     summary: "Located in the heart of London, offering highly globalized classrooms in media, law, and design.",
@@ -707,8 +707,8 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://www.westminster.ac.uk/courses",
     scholarships_url: "https://www.westminster.ac.uk/study/fees-and-funding/scholarships",
     admissions_url: "https://www.westminster.ac.uk/study/how-to-apply",
-    campus_image_url: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/westminster.ac.uk?size=160"
+    campus_image_url: "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/University_of_Westminster_logo.svg/256px-University_of_Westminster_logo.svg.png"
   },
   greenwich: {
     summary: "Stunning historic campus location along the River Thames, offering popular business and computing degrees in London.",
@@ -718,8 +718,8 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://www.gre.ac.uk/study/courses",
     scholarships_url: "https://www.gre.ac.uk/finance/funding-your-studies/scholarships-and-bursaries",
     admissions_url: "https://www.gre.ac.uk/study/apply",
-    campus_image_url: "https://images.unsplash.com/photo-1524850301259-77298c48b499?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/gre.ac.uk?size=160"
+    campus_image_url: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/University_of_Greenwich_logo.svg/256px-University_of_Greenwich_logo.svg.png"
   },
   demontfort: {
     summary: "Known for design and creative industries in Leicester, with strong career coaching and accessible entry limits.",
@@ -730,7 +730,7 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     scholarships_url: "https://www.dmu.ac.uk/international/fees-and-scholarships/scholarships.aspx",
     admissions_url: "https://www.dmu.ac.uk/international/how-to-apply/how-to-apply.aspx",
     campus_image_url: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/dmu.ac.uk?size=160"
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/De_Montfort_University_logo.svg/256px-De_Montfort_University_logo.svg.png"
   },
   bcu: {
     summary: "A modern, industry-focused city university located in the heart of Birmingham, known for design and business.",
@@ -740,8 +740,8 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://www.bcu.ac.uk/courses",
     scholarships_url: "https://www.bcu.ac.uk/international/fees/scholarships",
     admissions_url: "https://www.bcu.ac.uk/about-us/maps-and-campuses/how-to-apply",
-    campus_image_url: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/bcu.ac.uk?size=160"
+    campus_image_url: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Birmingham_City_University_logo.svg/256px-Birmingham_City_University_logo.svg.png"
   },
   salford: {
     summary: "A practical university located near MediaCityUK in Manchester, ideal for media, engineering, and nursing.",
@@ -752,7 +752,7 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     scholarships_url: "https://www.salford.ac.uk/international/scholarships",
     admissions_url: "https://www.salford.ac.uk/international/apply",
     campus_image_url: "https://images.unsplash.com/photo-1590069261209-f8e9b8642343?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/salford.ac.uk?size=160"
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/University_of_Salford_logo.svg/256px-University_of_Salford_logo.svg.png"
   },
 
   // --- Canada (CAN) ---
@@ -765,7 +765,7 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     scholarships_url: "https://future.utoronto.ca/finances/scholarships/",
     admissions_url: "https://future.utoronto.ca/apply/",
     campus_image_url: "https://images.unsplash.com/photo-1568790308560-fc429f17a9a2?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/utoronto.ca?size=160"
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/University_of_Toronto_shield.svg/256px-University_of_Toronto_shield.svg.png"
   },
   ubc: {
     summary: "A spectacular coastal campus with a top global rank, strong in engineering, computer science, and business.",
@@ -776,7 +776,7 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     scholarships_url: "https://you.ubc.ca/financial-planning/scholarships-awards-international-students/",
     admissions_url: "https://you.ubc.ca/applying-ubc/",
     campus_image_url: "https://images.unsplash.com/photo-1627556704353-016ad90c9b98?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/ubc.ca?size=160"
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/University_of_British_Columbia_logo.svg/256px-University_of_British_Columbia_logo.svg.png"
   },
   mcgill: {
     summary: "Prestigious bilingual city setting with outstanding medical, engineering, and science credentials.",
@@ -787,7 +787,7 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     scholarships_url: "https://www.mcgill.ca/undergraduate-admissions/funding",
     admissions_url: "https://www.mcgill.ca/undergraduate-admissions/apply",
     campus_image_url: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/mcgill.ca?size=160"
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/McGill_University_CoA.svg/256px-McGill_University_CoA.svg.png"
   },
   waterloo: {
     summary: "Famous globally for its massive co-op program, yielding incredible employment outcomes in computer science and tech.",
@@ -798,7 +798,7 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     scholarships_url: "https://uwaterloo.ca/future-students/financing/scholarships",
     admissions_url: "https://uwaterloo.ca/future-students/admissions/how-apply",
     campus_image_url: "https://images.unsplash.com/photo-1507537297725-24a1c029d3ca?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/uwaterloo.ca?size=160"
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/University_of_Waterloo_logo.svg/256px-University_of_Waterloo_logo.svg.png"
   },
   mcmaster: {
     summary: "A top research university in Ontario, highly ranked for health sciences and engineering.",
@@ -809,7 +809,7 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     scholarships_url: "https://future.mcmaster.ca/financial-aid/",
     admissions_url: "https://future.mcmaster.ca/apply/",
     campus_image_url: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/mcmaster.ca?size=160"
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/McMaster_University_logo.svg/256px-McMaster_University_logo.svg.png"
   },
   alberta: {
     summary: "A major research university in Edmonton with vast resource networks and excellent engineering and IT pathways.",
@@ -820,7 +820,7 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     scholarships_url: "https://www.ualberta.ca/en/admissions-programs/tuition-and-scholarships/index.html",
     admissions_url: "https://www.ualberta.ca/en/admissions-programs/apply/index.html",
     campus_image_url: "https://images.unsplash.com/photo-1616512659455-111d3367649f?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/ualberta.ca?size=160"
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/University_of_Alberta_logo.svg/256px-University_of_Alberta_logo.svg.png"
   },
   calgary: {
     summary: "Located near the Rocky Mountains, offering strong corporate ties, engineering, and tech in Canada's energy hub.",
@@ -831,7 +831,7 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     scholarships_url: "https://www.ucalgary.ca/registrar/finances/awards",
     admissions_url: "https://www.ucalgary.ca/future-students/undergraduate/apply",
     campus_image_url: "https://images.unsplash.com/photo-1523580494863-6f30312245d5?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/ucalgary.ca?size=160"
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/University_of_Calgary_logo.svg/256px-University_of_Calgary_logo.svg.png"
   },
   manitoba: {
     summary: "Highly affordable tuition rates among the U15 research group, offering solid engineering and business pathways.",
@@ -842,7 +842,7 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     scholarships_url: "https://umanitoba.ca/financial-aid-and-awards",
     admissions_url: "https://umanitoba.ca/explore/admissions-requirements",
     campus_image_url: "https://images.unsplash.com/photo-1541829019-21873760d09b?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/umanitoba.ca?size=160"
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/University_of_Manitoba_logo.svg/256px-University_of_Manitoba_logo.svg.png"
   },
   concordia: {
     summary: "A progressive, downtown Montreal university, famous for practical business, software engineering, and design.",
@@ -853,7 +853,7 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     scholarships_url: "https://www.concordia.ca/offices/faao.html",
     admissions_url: "https://www.concordia.ca/admissions/undergraduate/apply.html",
     campus_image_url: "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/concordia.ca?size=160"
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Concordia_University_logo.svg/256px-Concordia_University_logo.svg.png"
   },
   windsor: {
     summary: "Located on the US-Canada border, offering strong automotive engineering, computing, and business degrees.",
@@ -864,7 +864,7 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     scholarships_url: "https://www.uwindsor.ca/studentawards/",
     admissions_url: "https://www.uwindsor.ca/registrar/540/how-to-apply",
     campus_image_url: "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/uwindsor.ca?size=160"
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/University_of_Windsor_logo.svg/256px-University_of_Windsor_logo.svg.png"
   },
 
   // --- United States of America (USA) ---
@@ -910,7 +910,7 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     scholarships_url: "https://www.cmu.edu/admission/financial-aid",
     admissions_url: "https://www.cmu.edu/admission/apply",
     campus_image_url: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/cmu.edu?size=160"
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Carnegie_Mellon_University_wordmark.svg/256px-Carnegie_Mellon_University_wordmark.svg.png"
   },
   ucla: {
     summary: "Top public research university in Los Angeles, combining academic rigor with iconic California culture.",
@@ -921,7 +921,7 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     scholarships_url: "https://www.financialaid.ucla.edu/",
     admissions_url: "https://admission.ucla.edu/apply",
     campus_image_url: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/ucla.edu?size=160"
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/UCLA_logo.svg/256px-UCLA_logo.svg.png"
   },
   purdue: {
     summary: "Known for aerospace, engineering, and tech, offering high-value outcomes in a supportive college town.",
@@ -932,7 +932,7 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     scholarships_url: "https://www.purdue.edu/sfa/",
     admissions_url: "https://www.purdue.edu/admissions/apply/",
     campus_image_url: "https://images.unsplash.com/photo-1584697964400-2af6a2f6204c?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/purdue.edu?size=160"
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Purdue_Boilermakers_logo.svg/256px-Purdue_Boilermakers_logo.svg.png"
   },
   asu: {
     summary: "Ranked #1 for innovation, offering a massive curriculum with advanced labs and flexible entry requirements.",
@@ -943,7 +943,7 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     scholarships_url: "https://students.asu.edu/financialaid",
     admissions_url: "https://admission.asu.edu/apply",
     campus_image_url: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/asu.edu?size=160"
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Arizona_State_University_logo.svg/256px-Arizona_State_University_logo.svg.png"
   },
   syracuse: {
     summary: "Known for private university networks, strong business management, social science, and communications.",
@@ -954,7 +954,7 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     scholarships_url: "https://www.syracuse.edu/admissions/cost-aid/",
     admissions_url: "https://www.syracuse.edu/admissions/apply/",
     campus_image_url: "https://images.unsplash.com/photo-1607237138185-3d7c54e15992?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/syracuse.edu?size=160"
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Syracuse_Orange_logo.svg/256px-Syracuse_Orange_logo.svg.png"
   },
   umass: {
     summary: "Flagship public campus in Massachusetts, highly rated for computer science research and food services.",
@@ -965,7 +965,7 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     scholarships_url: "https://www.umass.edu/financialaid/",
     admissions_url: "https://www.umass.edu/admissions/apply",
     campus_image_url: "https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/umass.edu?size=160"
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/UMass_Amherst_logo.svg/256px-UMass_Amherst_logo.svg.png"
   },
   iastate: {
     summary: "Known for engineering, agriculture, and science, offering lower tuition rates and excellent post-grad outcomes.",
@@ -976,9 +976,9 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     scholarships_url: "https://www.financialaid.iastate.edu/",
     admissions_url: "https://www.admissions.iastate.edu/apply",
     campus_image_url: "https://images.unsplash.com/photo-1592284619077-d779f0f90769?auto=format&fit=crop&w=1200&q=80",
-    logo_url: "https://logo.clearbit.com/iastate.edu?size=160"
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Iowa_State_Cyclones_logo.svg/256px-Iowa_State_Cyclones_logo.svg.png"
   }
-};
+};;
 
 export function getUniversityProfile(university: University): UniversityProfile {
   const profile = UNIVERSITY_PROFILES[university.id];
