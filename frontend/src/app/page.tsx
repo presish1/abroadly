@@ -127,7 +127,7 @@ export default function Home() {
       <GoogleOneTap />
 
       {/* ── Hero — StudyFetch Inspired Light Theme ───────── */}
-      <section className="relative overflow-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-50 via-[#fafafa] to-[#fafafa] flex min-h-[calc(100dvh-4.5rem)] flex-col items-center justify-center pb-12 pt-20 sm:min-h-[85vh] sm:pt-24 sm:pb-16">
+      <section className="home-hero relative overflow-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-50 via-[#fafafa] to-[#fafafa] flex min-h-[calc(100dvh-4.5rem)] flex-col items-center justify-center pb-12 pt-20 sm:min-h-[85vh] sm:pt-24 sm:pb-16">
         
         {/* Floating Background Images with badges */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden max-w-[1400px] mx-auto z-0 hidden lg:block">
@@ -152,7 +152,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="relative z-10 mx-auto mt-8 flex max-w-4xl flex-col items-center px-4 text-center sm:mt-24">
+        <div className="home-hero-inner relative z-10 mx-auto mt-8 flex max-w-4xl flex-col items-center px-4 text-center sm:mt-24">
           <h1 className="mb-7 animate-[abFadeUp_0.8s_ease-out] text-[clamp(2.3rem,10vw,4.5rem)] font-semibold leading-[1.06] tracking-tight text-slate-900 sm:mb-10">
             Study abroad, figured out.
           </h1>
