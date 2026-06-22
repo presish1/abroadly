@@ -12,8 +12,10 @@ import {
 import {
   getStudentDocuments,
   getStudentDocumentDownloadUrl,
+  getStudent,
   uploadFile,
   type StudentDocument,
+  type StudentOut,
 } from "@/lib/api";
 import {
   ESSENTIAL_SLOTS,
@@ -23,6 +25,8 @@ import {
   type OptionalDocSlot as OptionalSlot,
 } from "@/lib/document-catalog";
 import { StudentQuickTabs } from "@/components/student-quick-tabs";
+import { ModalShell } from "@/components/modal-shell";
+import { ServiceRequestModal } from "@/components/service-request-modal";
 
 
 /* ── Small icon set ──────────────────────────────────────────────────── */
@@ -31,7 +35,6 @@ const Icon = {
   check: () => (<svg viewBox="0 0 20 20" className="h-3.5 w-3.5" fill="none"><path d="M5 10.5l3.5 3.5L15 6.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>),
   upload: () => (<svg viewBox="0 0 24 24" className="h-5 w-5" fill="none"><path d="M12 16V4m0 0-4 4m4-4 4 4M4 20h16" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>),
   arrowRight: () => (<svg viewBox="0 0 16 16" className="h-3 w-3" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>),
-  close: () => (<svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>),
   doc: () => (<svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none"><path d="M3.5 1.5h6L13 5v9.5H3.5z M9 1.5V5h4" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/></svg>),
   chat: () => (<svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none"><path d="M3 3.5h10v7H7l-3 3v-3H3z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/></svg>),
   dashboard: () => (<svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none"><rect x="2.5" y="2.5" width="4.5" height="4.5" rx="1" stroke="currentColor" strokeWidth="1.4"/><rect x="9" y="2.5" width="4.5" height="4.5" rx="1" stroke="currentColor" strokeWidth="1.4"/><rect x="2.5" y="9" width="4.5" height="4.5" rx="1" stroke="currentColor" strokeWidth="1.4"/><rect x="9" y="9" width="4.5" height="4.5" rx="1" stroke="currentColor" strokeWidth="1.4"/></svg>),
@@ -116,33 +119,31 @@ function SampleSheet({
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
       if (e.key === "ArrowRight") setIdx((i) => Math.min(pages, i + 1));
       if (e.key === "ArrowLeft") setIdx((i) => Math.max(1, i - 1));
     };
     window.addEventListener("keydown", handler);
-    document.body.style.overflow = "hidden";
-    return () => {
-      window.removeEventListener("keydown", handler);
-      document.body.style.overflow = "";
-    };
-  }, [onClose, pages]);
+    return () => window.removeEventListener("keydown", handler);
+  }, [pages]);
 
   if (!slot.sampleSlug || !pages) return null;
   const src = `/samples/${slot.sampleSlug}/page-${String(idx).padStart(2, "0")}.webp`;
 
   return (
-    <>
-      <div className="docs-sheet-overlay" onClick={onClose} />
-      <aside className="docs-sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+    <ModalShell
+      open
+      onClose={onClose}
+      titleId="sheet-title"
+      layerClassName="docs-sheet-layer"
+      panelClassName="docs-sheet"
+      closeLabel="Close sample"
+      mobileSheet
+    >
         <header className="docs-sheet-header">
           <div className="min-w-0">
             <p className="text-[10.5px] font-bold uppercase tracking-[0.1em] text-[#0A6E45]">Sample</p>
             <h2 id="sheet-title" className="mt-1 truncate text-[15px] font-bold text-[#1B1916]">{slot.label}</h2>
           </div>
-          <button type="button" onClick={onClose} aria-label="Close" className="ab-focus flex h-8 w-8 items-center justify-center rounded-lg text-[#8A847B] hover:bg-[#F0EDE4] hover:text-[#1B1916] transition-colors">
-            <Icon.close />
-          </button>
         </header>
 
         <div className="docs-sheet-body">
@@ -190,8 +191,7 @@ function SampleSheet({
             Upload your {slot.label.toLowerCase()}
           </button>
         </footer>
-      </aside>
-    </>
+    </ModalShell>
   );
 }
 
@@ -326,9 +326,11 @@ export default function DocumentsPage() {
   const router = useRouter();
   const [studentId, setStudentId] = useState<string | null>(null);
   const [documents, setDocuments] = useState<StudentDocument[]>([]);
+  const [student, setStudent] = useState<StudentOut | null>(null);
   const [loading, setLoading] = useState(true);
   const [sampleSlot, setSampleSlot] = useState<Slot | null>(null);
   const [openGroup, setOpenGroup] = useState<string | null>(null);
+  const [classBookingOpen, setClassBookingOpen] = useState(false);
 
   useEffect(() => {
     const sid = typeof window !== "undefined" ? localStorage.getItem("abroadly_student_id") : null;
@@ -348,6 +350,11 @@ export default function DocumentsPage() {
   }, [studentId]);
 
   useEffect(() => { if (studentId) refresh(); }, [studentId, refresh]);
+
+  useEffect(() => {
+    if (!studentId) return;
+    getStudent(studentId).then(setStudent).catch(() => {});
+  }, [studentId]);
 
   const readiness = useMemo(() => computeDocReadiness(documents), [documents]);
   const {
@@ -400,6 +407,22 @@ export default function DocumentsPage() {
         </header>
 
         <div className="docs-scroll">
+          <section className="docs-mobile-class-card flex md:hidden" aria-labelledby="docs-class-title">
+            <div className="min-w-0 flex-1">
+              <p className="text-[10px] font-bold uppercase text-[#0A6E45]">Included with Abroadly</p>
+              <h2 id="docs-class-title" className="mt-1 text-[16px] font-extrabold text-[#1B1916]">Claim your free IELTS / PTE class</h2>
+              <p className="mt-1 text-[12px] leading-5 text-[#6B655C]">Your test and preferred time are already filled from onboarding.</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setClassBookingOpen(true)}
+              disabled={!student}
+              className="ab-focus min-h-11 shrink-0 rounded-[10px] bg-[#0A6E45] px-3.5 text-[12px] font-bold text-white disabled:cursor-wait disabled:opacity-50"
+            >
+              Confirm time
+            </button>
+          </section>
+
           <div className="docs-progress">
             <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
               <div className="flex items-baseline gap-2">
@@ -513,6 +536,16 @@ export default function DocumentsPage() {
               el?.click();
             }, 80);
           }}
+        />
+      )}
+
+      {classBookingOpen && student && (
+        <ServiceRequestModal
+          student={student}
+          requestType="class_booking"
+          preferredTest={student.planned_english_test || student.english_test_type || "IELTS"}
+          onConfirmed={setStudent}
+          onClose={() => setClassBookingOpen(false)}
         />
       )}
     </div>

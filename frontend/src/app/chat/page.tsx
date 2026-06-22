@@ -923,7 +923,7 @@ function UploadPromptModal({
 }) {
   const inputRef = useRef<HTMLInputElement | null>(null);
   return (
-    <ModalShell open onClose={onClose} titleId="upload-prompt-title" panelClassName="upload-modal" closeLabel="Close upload prompt">
+    <ModalShell open onClose={onClose} titleId="upload-prompt-title" panelClassName="upload-modal" closeLabel="Close upload prompt" mobileSheet>
         <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#FDECEE] text-[#E11D2A]">
           <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none">
             <path d="M12 16V8m0 0-3.5 3.5M12 8l3.5 3.5M5 19h14" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
@@ -1316,7 +1316,7 @@ function ProfilePopup({
 
                   <div>
                     <label className={labelClass} htmlFor="profile-phone">Phone <span className="text-[#b42318]">*</span></label>
-                    <input id="profile-phone" type="tel" required className={inputClass} value={form.phone} onChange={(e) => setField("phone", e.target.value)} placeholder="+977 98XXXXXXXX" autoComplete="tel" />
+                    <input id="profile-phone" type="tel" inputMode="tel" required className={inputClass} value={form.phone} onChange={(e) => setField("phone", e.target.value)} placeholder="+977 98XXXXXXXX" autoComplete="tel" />
                     {errors.phone && <p className={errorClass}>{errors.phone}</p>}
                   </div>
 
@@ -1341,12 +1341,12 @@ function ProfilePopup({
                   <div className="grid gap-3 sm:grid-cols-2">
                     <div>
                       <label className={labelClass} htmlFor="profile-gpa">Current GPA</label>
-                      <input id="profile-gpa" type="number" step="0.01" min="0" max="4.5" className={inputClass} value={form.gpa} onChange={(e) => setField("gpa", e.target.value)} placeholder="3.25" />
+                      <input id="profile-gpa" type="number" inputMode="decimal" step="0.01" min="0" max="4.5" className={inputClass} value={form.gpa} onChange={(e) => setField("gpa", e.target.value)} placeholder="3.25" />
                       {errors.gpa && <p className={errorClass}>{errors.gpa}</p>}
                     </div>
                     <div>
                       <label className={labelClass} htmlFor="profile-expected-gpa">Expected GPA</label>
-                      <input id="profile-expected-gpa" type="number" step="0.01" min="0" max="4.5" className={inputClass} value={form.expected_gpa} onChange={(e) => setField("expected_gpa", e.target.value)} placeholder="3.60" />
+                      <input id="profile-expected-gpa" type="number" inputMode="decimal" step="0.01" min="0" max="4.5" className={inputClass} value={form.expected_gpa} onChange={(e) => setField("expected_gpa", e.target.value)} placeholder="3.60" />
                       {errors.expected_gpa && <p className={errorClass}>{errors.expected_gpa}</p>}
                     </div>
                   </div>
@@ -1507,7 +1507,7 @@ export default function ChatPage() {
   // Per-slot hidden inputs for the sidebar quick-upload checkboxes.
   const sidebarFileRefs = useRef<Record<string, HTMLInputElement | null>>({});
   const messagesScrollRef = useRef<HTMLDivElement>(null);
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const chatLayoutRef = useRef<HTMLElement>(null);
   const taRef = useRef<HTMLTextAreaElement>(null);
   const shouldStickToBottom = useRef(true);
   const [showScrollToBottom, setShowScrollToBottom] = useState(false);
@@ -1644,20 +1644,54 @@ export default function ChatPage() {
     setShowScrollToBottom(!nearBottom && el.scrollHeight > el.clientHeight + 40);
   }
 
+  const scrollMessagesToBottom = useCallback((behavior: ScrollBehavior = "smooth") => {
+    const container = messagesScrollRef.current;
+    if (!container) return;
+    container.scrollTo({ top: container.scrollHeight, behavior });
+  }, []);
+
   useEffect(() => {
     if (shouldStickToBottom.current) {
-      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+      scrollMessagesToBottom("smooth");
     }
-  }, [messages, thinking]);
+  }, [messages, thinking, scrollMessagesToBottom]);
 
   useEffect(() => {
     requestAnimationFrame(syncScrollState);
   }, [messages.length, thinking]);
 
-  // Autofocus the composer once the session is ready.
+  // Keep mobile arrival calm; opening the keyboard automatically hides useful context.
   useEffect(() => {
-    if (studentId) taRef.current?.focus();
+    if (studentId && window.matchMedia("(min-width: 768px)").matches) taRef.current?.focus();
   }, [studentId]);
+
+  useEffect(() => {
+    const root = chatLayoutRef.current;
+    if (!root) return;
+    const mobile = window.matchMedia("(max-width: 767px)");
+    const viewport = window.visualViewport;
+
+    const updateViewportHeight = () => {
+      if (!mobile.matches) {
+        root.style.removeProperty("--chat-viewport-height");
+        return;
+      }
+      root.style.setProperty("--chat-viewport-height", `${Math.round(viewport?.height ?? window.innerHeight)}px`);
+    };
+
+    updateViewportHeight();
+    mobile.addEventListener("change", updateViewportHeight);
+    window.addEventListener("resize", updateViewportHeight);
+    viewport?.addEventListener("resize", updateViewportHeight);
+    viewport?.addEventListener("scroll", updateViewportHeight);
+    return () => {
+      mobile.removeEventListener("change", updateViewportHeight);
+      window.removeEventListener("resize", updateViewportHeight);
+      viewport?.removeEventListener("resize", updateViewportHeight);
+      viewport?.removeEventListener("scroll", updateViewportHeight);
+      root.style.removeProperty("--chat-viewport-height");
+    };
+  }, []);
 
   function growTextarea() {
     const el = taRef.current;
@@ -1915,7 +1949,7 @@ export default function ChatPage() {
   }, [messages, student]);
 
   return (
-    <main className="chat-layout">
+    <main ref={chatLayoutRef} className="chat-layout chat-page-shell">
       {/* ── Sidebar ───────────────────────────────────────────────────
           A compact right-side work rail for documents and to-do. The left rail
           owns brand, quick tabs, and human-help CTA.
@@ -2059,7 +2093,7 @@ export default function ChatPage() {
       </aside>
 
       {/* ── Chat area ─────────────────────────────────────────────── */}
-      <section className="chat-main">
+      <section className="chat-main chat-conversation-main">
         {/* Header */}
         <header className="chat-header">
           <div className="flex items-center gap-3">
@@ -2081,7 +2115,7 @@ export default function ChatPage() {
             <button
               type="button"
               onClick={() => setProfileOpen(true)}
-              className="ab-focus chat-header-btn flex items-center gap-1.5 lg:hidden"
+              className="ab-focus chat-header-btn hidden items-center gap-1.5 md:flex lg:hidden"
               title="Open profile"
             >
               <ProfileTabIcon />
@@ -2089,7 +2123,7 @@ export default function ChatPage() {
             </button>
             <Link
               href="/dashboard"
-              className="ab-focus chat-header-btn flex items-center gap-1.5 xl:hidden"
+              className="ab-focus chat-header-btn hidden items-center gap-1.5 md:flex xl:hidden"
               title="Open your full dashboard — to-do, recommended universities, timeline"
             >
               <svg viewBox="0 0 20 20" className="h-3.5 w-3.5" fill="none">
@@ -2100,7 +2134,7 @@ export default function ChatPage() {
               </svg>
               <span className="hidden sm:inline">Dashboard</span>
             </Link>
-            <Link href="/chat/documents" className="ab-focus chat-header-btn flex items-center gap-1.5 lg:hidden">
+            <Link href="/chat/documents" className="ab-focus chat-header-btn hidden items-center gap-1.5 md:flex lg:hidden">
               <FolderIcon />
               <span className="hidden sm:inline">Docs</span>
               {uploadedCount > 0 && <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-[#E8F2EC] px-1 text-[9px] font-bold text-[#0A6E45]">{uploadedCount}</span>}
@@ -2222,7 +2256,7 @@ export default function ChatPage() {
               )}
             </div>
 
-            <div ref={bottomRef} className="h-4" />
+            <div className="h-4" />
           </div>
         </div>
 
@@ -2230,8 +2264,18 @@ export default function ChatPage() {
         <footer className="chat-footer">
           <div className="mx-auto max-w-3xl">
             {/* Suggestion rail — always one tap from the next question */}
-            {!thinking && railSuggestions.length > 0 && (
+            {!thinking && (
               <div className="chat-suggestion-rail">
+                {student && (
+                  <button
+                    type="button"
+                    onClick={() => setClassBookingPrompt({ test: student.planned_english_test || student.english_test_type || "IELTS" })}
+                    className="ab-focus chat-suggestion-chip chat-class-chip md:hidden"
+                  >
+                    <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[#E8F2EC] text-[9px] font-extrabold text-[#0A6E45]">Free</span>
+                    <span className="truncate">IELTS / PTE class</span>
+                  </button>
+                )}
                 {railSuggestions.map((s, i) => (
                   <button key={i} type="button" onClick={() => sendMessage(s, "suggestion")} className="ab-focus chat-suggestion-chip">
                     {hasMessages ? <ArrowUpIcon /> : <span className="text-[#E11D2A]">✦</span>}
@@ -2315,12 +2359,9 @@ export default function ChatPage() {
         {showScrollToBottom && (
           <button
             type="button"
-            onClick={() => {
-              bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-              requestAnimationFrame(() => taRef.current?.focus());
-            }}
+            onClick={() => scrollMessagesToBottom("smooth")}
             aria-label="Scroll to newest message"
-            className="ab-focus fixed bottom-24 right-4 z-50 inline-flex h-12 w-12 items-center justify-center rounded-full border border-[#E8E5DD] bg-white text-[#0A6E45] shadow-[0_10px_24px_rgba(15,15,15,0.14)] md:bottom-6"
+            className="ab-focus chat-scroll-newest"
           >
             <ArrowUpIcon />
           </button>

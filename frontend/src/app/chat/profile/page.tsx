@@ -6,6 +6,7 @@ import { Check, LoaderCircle, Save } from "lucide-react";
 import { getStudentDocuments, type StudentDocument, getStudent, updateStudent, uploadProfilePhoto, type StudentOut } from "@/lib/api";
 import { ESSENTIAL_SLOTS, computeDocReadiness } from "@/lib/document-catalog";
 import { StudentQuickTabs } from "@/components/student-quick-tabs";
+import { CounsellorSupportCard } from "@/components/counsellor-support-card";
 import { compressImageToTarget } from "@/lib/image-compress";
 interface ProfileFormState {
   full_name: string;
@@ -440,7 +441,7 @@ export default function ChatProfilePage() {
                         </div>
                         <div>
                           <label className={LABEL_CLS}>Phone</label>
-                          <input className={INPUT_CLS} value={form.phone} onChange={(e) => setField("phone", e.target.value)} placeholder="e.g. +977..." />
+                          <input className={INPUT_CLS} type="tel" inputMode="tel" autoComplete="tel" value={form.phone} onChange={(e) => setField("phone", e.target.value)} placeholder="e.g. +977..." />
                           {errors.phone && <p className={ERROR_CLS}>{errors.phone}</p>}
                         </div>
                         <div>
@@ -465,7 +466,7 @@ export default function ChatProfilePage() {
                         <div className="mt-4 space-y-4">
                           <div>
                             <label className={LABEL_CLS}>Current GPA</label>
-                            <input className={INPUT_CLS} type="number" step="0.01" value={form.gpa} onChange={(e) => setField("gpa", e.target.value)} placeholder="e.g. 3.4" />
+                            <input className={INPUT_CLS} type="number" inputMode="decimal" step="0.01" value={form.gpa} onChange={(e) => setField("gpa", e.target.value)} placeholder="e.g. 3.4" />
                             {errors.gpa && <p className={ERROR_CLS}>{errors.gpa}</p>}
                           </div>
                           <div className="rounded-[16px] border border-[#EFECE4] bg-white px-4 py-3">
@@ -526,6 +527,18 @@ export default function ChatProfilePage() {
                           </div>
                         </div>
                       </div>
+                    </div>
+
+                    <div className="md:hidden">
+                      <p className="mb-3 text-[10px] font-bold uppercase text-[#0A6E45]">Support</p>
+                      <CounsellorSupportCard
+                        student={student}
+                        onUpdated={(updated) => {
+                          setStudent(updated);
+                          setForm(profileFormFromStudent(updated));
+                        }}
+                        variant="row"
+                      />
                     </div>
 
                     <div className="rounded-[20px] border border-[#EFECE4] bg-[#FCFBF8] p-5">
