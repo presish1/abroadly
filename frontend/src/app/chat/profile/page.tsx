@@ -305,15 +305,15 @@ export default function ChatProfilePage() {
                       </div>
                       <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#EEF7F1] text-[11px] font-black text-[#0A6E45]">{profilePct}%</div>
                     </div>
-                    <div className="mt-4 flex items-center gap-3 rounded-[16px] border border-[#E8E5DD] bg-[#FBFAF7] p-3">
+                    <div className="mt-4 flex items-center gap-3 rounded-[14px] border border-[#E8E5DD] bg-[#FBFAF7] p-3">
                       <button
                         type="button"
                         onClick={() => photoInputRef.current?.click()}
-                        className="ab-focus group relative flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-[14px] border border-[#E8E5DD] bg-white text-[16px] font-black text-[#0A6E45] transition hover:border-[#0A6E45]"
+                        className="ab-focus group relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-[12px] border border-[#E8E5DD] bg-white text-[15px] font-black text-[#0A6E45] transition hover:border-[#0A6E45]"
                         aria-label="Upload profile photo"
                       >
                         {uploadingPhoto ? (
-                          <span className="text-[10px] font-black text-[#0A6E45]">...</span>
+                          <span className="text-[10px] font-black text-[#0A6E45]">• • •</span>
                         ) : student.profile_photo_url ? (
                           <img src={student.profile_photo_url} alt={student.full_name} className="h-full w-full object-cover" />
                         ) : (
@@ -323,9 +323,9 @@ export default function ChatProfilePage() {
                       <div className="min-w-0 flex-1">
                         <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#0A6E45]">Profile photo</p>
                         <p className="mt-1 text-[12px] font-semibold text-[#1B1916]">
-                          {student.profile_photo_url ? "Photo uploaded" : "Add a clear face shot"}
+                          {student.profile_photo_url ? "Update your photo" : "Add a clear face shot"}
                         </p>
-                        <p className="mt-0.5 text-[11px] text-[#6B655C]">Used in counselor handoff and profile view.</p>
+                        <p className="mt-0.5 text-[11px] text-[#6B655C]">Face photo helps keep your profile recognizable.</p>
                       </div>
                       <button
                         type="button"
