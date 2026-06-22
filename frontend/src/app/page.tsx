@@ -116,7 +116,7 @@ function Eyebrow({ children, className = "" }: { children: React.ReactNode; clas
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-[#fafafa]">
+    <main className="min-h-[100dvh] overflow-x-hidden bg-[#fafafa]">
       <NavBar
         sectionLinks={[
           ["How it works", "#how-it-works"],
@@ -127,7 +127,7 @@ export default function Home() {
       <GoogleOneTap />
 
       {/* ── Hero — StudyFetch Inspired Light Theme ───────── */}
-      <section className="relative overflow-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-50 via-[#fafafa] to-[#fafafa] min-h-[85vh] flex flex-col items-center justify-center pt-24 pb-16">
+      <section className="relative overflow-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-50 via-[#fafafa] to-[#fafafa] flex min-h-[calc(100dvh-4.5rem)] flex-col items-center justify-center pb-12 pt-20 sm:min-h-[85vh] sm:pt-24 sm:pb-16">
         
         {/* Floating Background Images with badges */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden max-w-[1400px] mx-auto z-0 hidden lg:block">
@@ -152,17 +152,17 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="relative z-10 mx-auto flex flex-col items-center text-center px-4 max-w-4xl mt-12 sm:mt-24">
-          <h1 className="text-[2.5rem] leading-[1.1] font-semibold text-slate-900 tracking-tight sm:text-[3.5rem] md:text-[4.5rem] mb-10 animate-[abFadeUp_0.8s_ease-out]">
+        <div className="relative z-10 mx-auto mt-8 flex max-w-4xl flex-col items-center px-4 text-center sm:mt-24">
+          <h1 className="mb-7 animate-[abFadeUp_0.8s_ease-out] text-[clamp(2.3rem,10vw,4.5rem)] font-semibold leading-[1.06] tracking-tight text-slate-900 sm:mb-10">
             Study abroad, figured out.
           </h1>
 
-          <div className="ab-fade-up w-full">
+          <div className="ab-fade-up w-full max-w-3xl">
             <HeroIntentForm />
           </div>
 
           {/* university trust strip */}
-          <div className="ab-fade-up mt-12 flex w-full flex-col items-center gap-4 pt-7">
+          <div className="ab-fade-up mt-9 flex w-full flex-col items-center gap-4 pt-5 sm:mt-12 sm:pt-7">
             <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-400">
               Free, independent guidance for universities like
             </p>
