@@ -11,6 +11,7 @@ import {
   fetchDocObjectUrl,
   toggleAI,
   sendCounselorReply,
+  updateStudentStatus,
   type StudentDetail,
   type ChatTurn,
   type DocItem,
@@ -144,6 +145,16 @@ export default function StudentDetailPage() {
     setSending(false);
   }
 
+  async function handleStatusChange(newStatus: string) {
+    if (!student || !id) return;
+    try {
+      await updateStudentStatus(id, newStatus);
+      setStudent({ ...student, lead_status: newStatus });
+    } catch (err: any) {
+      alert(err.message || "Failed to update status.");
+    }
+  }
+
   if (!student) {
     return <div className="p-8 text-sm text-gray-400">Loading...</div>;
   }
@@ -226,6 +237,28 @@ export default function StudentDetailPage() {
               </div>
             </div>
           )}
+
+          {/* Internal Status */}
+          <div className="mt-4 rounded-xl border border-gray-100 p-3 bg-slate-50/50">
+            <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wide">Internal Status</p>
+            <div className="mt-1.5">
+              <select
+                value={student.lead_status || "new"}
+                onChange={(e) => handleStatusChange(e.target.value)}
+                className="w-full rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-bold text-[var(--ab-ink)] focus:border-[var(--ab-plum)] focus:outline-none"
+              >
+                <option value="new">New</option>
+                <option value="engaged">Engaged</option>
+                <option value="qualified">Qualified</option>
+                <option value="contacted">Contacted</option>
+                <option value="applied">Applied</option>
+                <option value="visa_pending">Visa Pending</option>
+                <option value="visa_approved">Visa Approved</option>
+                <option value="enrolled">Enrolled</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+            </div>
+          </div>
 
           {/* Key profile fields (compact) */}
           <div className="mt-4 space-y-2">

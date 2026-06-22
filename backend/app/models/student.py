@@ -52,6 +52,7 @@ class StudentModel(Base):
     ai_paused = Column(Boolean, default=False, server_default="false")
     profile_completed = Column(Boolean, default=True, server_default="true")
     call_consent = Column(Boolean, default=False, server_default="false")
+    profile_photo_url = Column(String, nullable=True)
     # Lead qualification columns (accumulated per chat turn)
     lead_score = Column(Integer, default=0, server_default="0")
     lead_strong_count = Column(Integer, default=0, server_default="0")
@@ -126,6 +127,7 @@ class StudentBase(BaseModel):
     intended_study_level: str | None = Field(None, max_length=32)
     preferred_intake: str | None = Field(None, max_length=80)
     budget_range: str | None = Field(None, max_length=80)
+    profile_photo_url: str | None = None
 
 
 class StudentCreate(StudentBase):
@@ -155,6 +157,7 @@ class StudentUpdate(BaseModel):
     intended_study_level: str | None = None
     preferred_intake: str | None = None
     budget_range: str | None = None
+    profile_photo_url: str | None = None
 
 
 class StudentOut(StudentBase):

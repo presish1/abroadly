@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useRef } from "react";
 import {
   Button,
   Card,
@@ -29,7 +29,7 @@ import {
   type University,
 } from "@/lib/university-data";
 import { COUNTRY_PROFILES, nextIntakeFor, type CountryCode, type CountryProfile } from "@/lib/country-data";
-import type { StudentOut, StudentDocument, ChatTurn } from "@/lib/api";
+import { uploadProfilePhoto, type StudentOut, type StudentDocument, type ChatTurn } from "@/lib/api";
 
 const DOC_SLOTS = [
   { id: "grade_sheet", label: "Transcript", hint: "+2 / bachelor's marksheet" },
@@ -129,10 +129,29 @@ export interface AntdDashboardProps {
   onSelectCountry: (c: CountryCode) => void;
   onSendQuery: (q: string) => void;
   onBookTest: () => void;
+  onUpdateStudent?: (s: StudentOut) => void;
 }
 
-export function AntdDashboard({ student, documents, activeCountry, countries, onSelectCountry, onSendQuery, onBookTest }: AntdDashboardProps) {
+export function AntdDashboard({ student, documents, activeCountry, countries, onSelectCountry, onSendQuery, onBookTest, onUpdateStudent }: AntdDashboardProps) {
   const screens = Grid.useBreakpoint();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+
+  async function handlePhotoUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingPhoto(true);
+    try {
+      const res = await uploadProfilePhoto(student.id, file);
+      if (onUpdateStudent) {
+        onUpdateStudent({ ...student, profile_photo_url: res.profile_photo_url });
+      }
+    } catch (err: any) {
+      alert(err.message || "Failed to upload profile photo.");
+    } finally {
+      setUploadingPhoto(false);
+    }
+  }
   const country = COUNTRY_PROFILES[activeCountry];
   const intake = nextIntakeFor(country.code);
   const firstName = student.full_name?.split(" ")[0] ?? "there";
@@ -242,11 +261,38 @@ export function AntdDashboard({ student, documents, activeCountry, countries, on
         <div className="mx-auto max-w-[1280px] px-5 py-6 lg:px-8">
           <div className="grid gap-5 xl:grid-cols-[300px_minmax(0,1fr)]">
             {/* ── Left rail ───────────────────────────────────────── */}
-            <aside className="grid gap-5 md:grid-cols-3 xl:sticky xl:top-[84px] xl:flex xl:flex-col xl:self-start">
+            <aside className="order-2 xl:order-1 grid gap-5 md:grid-cols-3 xl:sticky xl:top-[84px] xl:flex xl:flex-col xl:self-start">
               {/* profile */}
               <Panel bodyPad={18}>
                 <div className="flex items-center gap-3">
-                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#0A6E45] text-[16px] font-extrabold text-white">{initials}</span>
+                  <div
+                    onClick={() => fileInputRef.current?.click()}
+                    className="relative flex h-12 w-12 shrink-0 cursor-pointer items-center justify-center rounded-2xl bg-[#0A6E45] text-[16px] font-extrabold text-white overflow-hidden group transition hover:scale-105"
+                    title="Click to upload profile photo"
+                  >
+                    {uploadingPhoto ? (
+                      <div className="flex h-full w-full items-center justify-center bg-black/40 text-[10px] text-white font-bold animate-pulse">
+                        ...
+                      </div>
+                    ) : student.profile_photo_url ? (
+                      <img src={student.profile_photo_url} alt={student.full_name} className="h-full w-full object-cover" />
+                    ) : (
+                      initials
+                    )}
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
+                      <svg viewBox="0 0 24 24" className="h-4 w-4 text-white" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" />
+                      </svg>
+                    </div>
+                  </div>
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handlePhotoUpload}
+                    accept="image/*"
+                    className="hidden"
+                  />
                   <div className="min-w-0">
                     <p className="truncate text-[15px] font-extrabold tracking-[-0.01em]">{student.full_name ?? "Your profile"}</p>
                     <p className="truncate text-[12px] text-[#6B655C]">{student.preferred_field ?? "Set your field"}</p>
@@ -294,7 +340,7 @@ export function AntdDashboard({ student, documents, activeCountry, countries, on
             </aside>
 
             {/* ── Main grid ───────────────────────────────────────── */}
-            <main className="flex flex-col gap-5">
+            <main className="order-1 xl:order-2 flex flex-col gap-5 pb-20 md:pb-5">
               {/* greeting */}
               <div className="flex flex-wrap items-end justify-between gap-2">
                 <div>
@@ -485,6 +531,48 @@ export function AntdDashboard({ student, documents, activeCountry, countries, on
         </div>
           </div>
         </section>
+        {/* ── Mobile Sticky Bottom Tab Bar ─────────────────────────────── */}
+        <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[#FAF9F6]/95 backdrop-blur-md border-t border-[#E8E5DD] px-4 py-2.5 flex justify-around items-center md:hidden pb-[env(safe-area-inset-bottom,12px)] pt-2.5 shadow-[0_-4px_12px_rgba(15,15,15,0.03)]">
+          <Link href="/dashboard" className="flex flex-col items-center gap-0.5 text-center text-[#0A6E45] transition-colors">
+            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="3" width="7" height="9" />
+              <rect x="14" y="3" width="7" height="5" />
+              <rect x="14" y="12" width="7" height="9" />
+              <rect x="3" y="16" width="7" height="5" />
+            </svg>
+            <span className="text-[10px] font-bold">Dashboard</span>
+          </Link>
+
+          <Link href="/chat" className="flex flex-col items-center gap-0.5 text-center text-[#8A847B] hover:text-[#1B1916] transition-colors">
+            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg>
+            <span className="text-[10px] font-bold">Chat</span>
+          </Link>
+
+          <Link href="/chat/documents" className="flex flex-col items-center gap-0.5 text-center text-[#8A847B] hover:text-[#1B1916] transition-colors">
+            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+            </svg>
+            <span className="text-[10px] font-bold">Documents</span>
+          </Link>
+
+          <Link href="/universities" className="flex flex-col items-center gap-0.5 text-center text-[#8A847B] hover:text-[#1B1916] transition-colors">
+            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+              <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5" />
+            </svg>
+            <span className="text-[10px] font-bold">Universities</span>
+          </Link>
+
+          <Link href="/chat/profile" className="flex flex-col items-center gap-0.5 text-center text-[#8A847B] hover:text-[#1B1916] transition-colors">
+            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+            <span className="text-[10px] font-bold">Profile</span>
+          </Link>
+        </nav>
       </div>
     </ConfigProvider>
   );

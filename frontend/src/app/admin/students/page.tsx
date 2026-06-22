@@ -83,6 +83,19 @@ export default function StudentsListPage() {
                   <span className={`h-1 w-1 rounded-full ${s.ai_paused ? "bg-red-500" : "bg-emerald-500"}`} />
                   {s.ai_paused ? "Paused" : "AI"}
                 </span>
+                <span className={`inline-flex items-center gap-1 rounded-full px-1.5 py-0.5 text-[9px] font-bold capitalize ${
+                  s.lead_status === "new" ? "bg-blue-50 text-blue-600" :
+                  s.lead_status === "engaged" ? "bg-purple-50 text-purple-600" :
+                  s.lead_status === "qualified" ? "bg-indigo-50 text-indigo-600" :
+                  s.lead_status === "contacted" ? "bg-amber-50 text-amber-600" :
+                  s.lead_status === "applied" ? "bg-cyan-50 text-cyan-600" :
+                  s.lead_status === "visa_pending" ? "bg-orange-50 text-orange-600" :
+                  s.lead_status === "visa_approved" ? "bg-teal-50 text-teal-600" :
+                  s.lead_status === "enrolled" ? "bg-emerald-50 text-emerald-600" :
+                  "bg-gray-50 text-gray-600"
+                }`}>
+                  {s.lead_status?.replace("_", " ") || "New"}
+                </span>
               </div>
               <p className="text-[11px] text-gray-400 truncate">{s.email}</p>
               {s.last_message && (

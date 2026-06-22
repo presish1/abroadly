@@ -7,12 +7,13 @@ from datetime import datetime
 from pathlib import Path
 
 import google.generativeai as genai
-from fastapi import APIRouter, File, Form, HTTPException, Request, UploadFile
+from fastapi import APIRouter, File, Form, HTTPException, Request, UploadFile, Depends
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
-from app.core.db import get_chroma
+from app.core.db import get_chroma, get_session
 from app.core.limiter import limiter
 
 router = APIRouter()
@@ -307,3 +308,51 @@ async def download_document(student_id: str, doc_id: str):
                     headers={"Content-Disposition": f'inline; filename="{path.name}"'},
                 )
     raise HTTPException(status_code=404, detail="Document not found")
+
+
+@router.post("/{student_id}/profile-photo")
+async def upload_profile_photo(
+    student_id: str,
+    file: UploadFile = File(...),
+    db: AsyncSession = Depends(get_session),
+):
+    """Upload a profile picture for a student. Overwrites any existing photo."""
+    ext = Path(file.filename or "").suffix.lower()
+    if ext not in {".jpg", ".jpeg", ".png", ".webp"}:
+        raise HTTPException(status_code=400, detail="Only JPG, JPEG, PNG, or WEBP images are allowed.")
+    
+    data = await file.read()
+    if not data:
+        raise HTTPException(status_code=400, detail="Empty file.")
+    
+    dest_dir = Path(settings.upload_dir) / student_id
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Remove existing pfp.*
+    for path in dest_dir.iterdir():
+        if path.stem == "pfp" and path.is_file():
+            try:
+                path.unlink()
+            except Exception:
+                pass
+                
+    dest_path = dest_dir / f"pfp{ext}"
+    dest_path.write_bytes(data)
+    
+    try:
+        sid = uuid.UUID(student_id)
+    except ValueError:
+        raise HTTPException(status_code=422, detail="Invalid student ID")
+        
+    from app.models.student import StudentModel
+    from sqlalchemy import select
+    result = await db.execute(select(StudentModel).where(StudentModel.id == sid))
+    student = result.scalar_one_or_none()
+    if not student:
+        raise HTTPException(status_code=404, detail="Student not found")
+        
+    photo_url = f"/api/upload/{student_id}/documents/pfp/download"
+    student.profile_photo_url = photo_url
+    await db.commit()
+    
+    return {"profile_photo_url": photo_url}

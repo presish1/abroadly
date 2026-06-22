@@ -56,6 +56,7 @@ class StudentListItem(BaseModel):
     gpa: float | None
     ai_paused: bool
     call_consent: bool = False
+    lead_status: str | None = None
     created_at: datetime
     chat_count: int = 0
     doc_count: int = 0
@@ -88,6 +89,7 @@ class StudentDetail(BaseModel):
     goals: str | None
     ai_paused: bool
     call_consent: bool = False
+    lead_status: str | None = None
     created_at: datetime
     updated_at: datetime
     chat_count: int = 0
@@ -108,6 +110,10 @@ class ToggleAIRequest(BaseModel):
 
 class ReplyRequest(BaseModel):
     content: str
+
+
+class UpdateStatusRequest(BaseModel):
+    status: str
 
 
 class DocItem(BaseModel):
@@ -445,6 +451,7 @@ async def admin_list_students(
             education_level=s.education_level, target_countries=s.target_countries or [],
             preferred_field=s.preferred_field, gpa=s.gpa,
             ai_paused=s.ai_paused or False, call_consent=s.call_consent or False,
+            lead_status=s.lead_status or "new",
             created_at=s.created_at,
             chat_count=chat_count, doc_count=doc_count, last_message=last_message,
         ))
@@ -481,6 +488,7 @@ async def admin_get_student(
         preferred_intake=s.preferred_intake, budget_range=s.budget_range,
         goals=s.goals, ai_paused=s.ai_paused or False,
         call_consent=s.call_consent or False,
+        lead_status=s.lead_status or "new",
         created_at=s.created_at, updated_at=s.updated_at,
         chat_count=chat_count, doc_count=doc_count,
     )
@@ -579,3 +587,20 @@ async def admin_reply(
     db.add(turn)
     await db.commit()
     return {"id": str(turn.id), "role": "counselor", "content": req.content}
+
+
+# ── Update Student Status ─────────────────────────────────────────────
+
+@router.put("/students/{student_id}/status")
+async def admin_update_student_status(
+    student_id: str,
+    req: UpdateStatusRequest,
+    _admin: str = Depends(get_current_admin),
+    db: AsyncSession = Depends(get_session),
+) -> dict:
+    sid = _parse_uuid(student_id)
+    s = await _get_student(db, sid)
+    s.lead_status = req.status
+    s.updated_at = datetime.utcnow()
+    await db.commit()
+    return {"lead_status": s.lead_status}

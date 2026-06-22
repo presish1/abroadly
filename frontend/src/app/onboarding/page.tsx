@@ -1,133 +1,111 @@
 import Link from "next/link";
 import { GoogleSignInButton } from "../google-sign-in-button";
-import { NavBar } from "../nav-bar";
-import { SiteFooter } from "../site-footer";
-
-const trustItems = [
-  {
-    title: "Verified identity",
-    body:
-      "Your profile starts from a Google account, so every chat is tied to a real, verified email — no fake accounts, no spam.",
-  },
-  {
-    title: "One profile setup",
-    body:
-      "You add your academic details once after sign-in. Every future answer reuses that context — no repeating yourself.",
-  },
-  {
-    title: "Private by design",
-    body:
-      "The Google secret stays on the server and is never sent to the browser. We store only the profile fields you choose to share.",
-  },
-];
 
 const nextChips = [
   "Education + GPA",
-  "Target countries",
+  "Target country",
   "Field & goals",
   "Saved once",
 ];
 
 export default function OnboardingPage() {
   return (
-    <main className="min-h-screen bg-[var(--ab-paper)] text-[var(--ab-ink)]">
-      {/* Same nav shape as the landing — but no Sign-in link here (this IS the
-          sign-in page), and the right CTA points at the chat for returning users. */}
-      <NavBar showSignIn={false} primary={{ href: "/chat", label: "Open chat" }} />
+    <main 
+      className="relative min-h-screen flex flex-col md:flex-row items-stretch text-[var(--ab-ink)] font-sans bg-cover bg-center overflow-x-hidden"
+      style={{ 
+        backgroundImage: "linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.75)), url('https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1920&q=80')" 
+      }}
+    >
+      {/* Left Side: Brand Text Overlay (Floating look, hidden on Mobile) */}
+      <section className="hidden md:flex md:w-[50%] lg:w-[55%] xl:w-[60%] flex-col justify-between p-10 lg:p-16 text-white select-none z-10">
+        {/* Top: Logo & Name */}
+        <Link href="/" className="inline-flex items-center gap-2.5 text-white font-extrabold text-[22px] tracking-tight hover:opacity-90 transition">
+          <img src="/images/abroadly-logo.png" alt="Abroadly" className="h-8 w-8 object-contain bg-white rounded-lg p-1" />
+          <span>Abroadly</span>
+        </Link>
 
-      {/* ── Hero ─────────────────────────────────────────────────────── */}
-      <section className="ab-dot-grid relative overflow-hidden">
-        <div className="mx-auto max-w-3xl px-5 pb-20 pt-20 text-center sm:px-8 sm:pt-28 sm:pb-28">
-          <div className="ab-fade-up ab-d1 inline-flex items-center gap-2 rounded-full border border-[var(--ab-line)] bg-white px-3.5 py-1.5 text-[13px] font-semibold text-[var(--ab-ink-soft)] shadow-[var(--shadow-xs)]">
-            <span className="h-2 w-2 rounded-full bg-[var(--ab-brand)]" />
-            Free · sign-in takes 30 seconds
-          </div>
-
-          <h1 className="ab-fade-up ab-d2 ab-display-2 mx-auto mt-7 max-w-2xl">
-            Sign in with Google to begin.
+        {/* Middle/Bottom: Premium Text Overlay */}
+        <div className="my-auto max-w-lg lg:max-w-xl py-12">
+          <span className="text-[12px] font-bold uppercase tracking-[0.15em] text-[#7DDBB1] mb-4 block">
+            Welcome to Abroadly
+          </span>
+          <h1 className="text-[40px] lg:text-[50px] xl:text-[56px] font-black leading-tight tracking-[-0.035em] text-white">
+            Your personal path to global education.
           </h1>
-
-          <p className="ab-fade-up ab-d3 ab-subhead mx-auto mt-5 max-w-xl">
-            We tie your profile to a verified email, then ask for a few academic
-            details once — so every answer is tailored to your real situation.
+          <p className="mt-6 text-[15px] lg:text-[17px] text-white/80 leading-relaxed font-medium max-w-md">
+            Verify your email, setup your study preferences once, and unlock precise admits matched to your academic record.
           </p>
+        </div>
 
-          {/* Sign-in card — single, focused action */}
-          <div className="ab-fade-up ab-d4 relative mx-auto mt-10 max-w-md sm:mt-12">
-            <div className="ab-hero-glow pointer-events-none absolute -inset-x-10 -top-12 bottom-0 -z-10" />
-            <div className="rounded-2xl border border-[var(--ab-line)] bg-white p-6 shadow-[var(--shadow-lg)] sm:p-7">
+        {/* Bottom: Footer Info */}
+        <p className="text-[11px] text-white/40">
+          &copy; {new Date().getFullYear()} Abroadly.online &middot; All rights reserved.
+        </p>
+      </section>
+
+      {/* Right Side: Centered/Floating card */}
+      <section className="flex-1 flex items-center justify-center p-4 sm:p-10 lg:p-16 xl:p-24 z-10">
+        <div className="w-full max-w-[440px] bg-white rounded-2xl shadow-2xl p-6 sm:p-8 md:p-10 flex flex-col justify-between border border-slate-100/50">
+          <div>
+            {/* Back Button */}
+            <div className="flex justify-between items-center mb-6">
+              <Link href="/" className="ab-focus inline-flex items-center gap-1.5 text-[12px] font-bold text-[var(--ab-muted)] hover:text-[var(--ab-ink)] transition">
+                &larr; Back to home
+              </Link>
+            </div>
+
+            {/* Mobile Logo Header */}
+            <div className="flex items-center gap-2 md:hidden mb-6">
+              <img src="/images/abroadly-logo.png" alt="Abroadly" className="h-8 w-8 object-contain bg-slate-50 rounded-lg p-1" />
+              <span className="text-[18px] font-black tracking-tight text-[var(--ab-ink)]">Abroadly</span>
+            </div>
+
+            <h2 className="text-[28px] font-black tracking-[-0.03em] text-[var(--ab-ink)]">Sign in</h2>
+            <p className="mt-2 text-[13.5px] font-semibold text-[var(--ab-muted)] leading-relaxed">
+              New to Abroadly? We&apos;ll create your profile automatically.
+            </p>
+
+            {/* Google Sign-in Card */}
+            <div className="mt-8">
               <GoogleSignInButton
                 variant="outline"
                 label="Continue with Google"
-                caption="No password — your email confirms identity"
-                className="w-full justify-start"
+                caption="No password needed — email verification"
+                className="w-full justify-center py-6 border-[#ded8ee] hover:border-[#673de6]"
               />
-
-              <p className="mt-4 text-left text-[12.5px] leading-6 text-[var(--ab-muted)]">
-                Abroadly never sees your Google password. We store only the academic
-                profile you choose to share.
-              </p>
-
-              <div className="mt-5 border-t border-[var(--ab-line-soft)] pt-4 text-left">
-                <p className="ab-eyebrow">Up next</p>
-                <div className="mt-3 grid grid-cols-2 gap-1.5 text-[12px] font-semibold text-[var(--ab-ink)]">
-                  {nextChips.map((chip) => (
-                    <span
-                      key={chip}
-                      className="rounded-lg border border-[var(--ab-line-soft)] bg-[var(--ab-paper)] px-3 py-2"
-                    >
-                      {chip}
-                    </span>
-                  ))}
-                </div>
-              </div>
             </div>
 
-            <p className="mt-5 text-[12.5px] text-[var(--ab-muted-soft)]">
-              Already onboarded?{" "}
-              <Link
-                href="/chat"
-                className="ab-focus rounded font-semibold text-[var(--ab-ink)] underline-offset-2 hover:underline"
-              >
-                Open chat &rarr;
-              </Link>
+            <p className="mt-5 text-[12px] leading-relaxed text-[var(--ab-muted)] font-medium">
+              Abroadly secures your session using Google authentication. We never see your password, and store only the fields you choose to share.
             </p>
+
+            {/* Up Next List */}
+            <div className="mt-8 border-t border-slate-100 pt-6">
+              <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[var(--ab-muted)] mb-3">Up next in profile setup</p>
+              <div className="grid grid-cols-2 gap-2 text-[11px] font-semibold text-[var(--ab-ink)]">
+                {nextChips.map((chip) => (
+                  <span
+                    key={chip}
+                    className="rounded-lg border border-slate-100 bg-slate-50/50 p-2.5 flex items-center gap-2"
+                  >
+                    <span className="text-[#0A6E45] font-black">✓</span> {chip}
+                  </span>
+                ))}
+              </div>
+            </div>
           </div>
+
+          <p className="mt-8 text-center text-[12px] text-[var(--ab-muted-soft)] border-t border-slate-100 pt-4 font-medium">
+            Already onboarded?{" "}
+            <Link
+              href="/chat"
+              className="ab-focus rounded font-black text-[var(--ab-ink)] underline underline-offset-2 hover:text-black"
+            >
+              Open chat &rarr;
+            </Link>
+          </p>
         </div>
       </section>
-
-      {/* ── What happens next ────────────────────────────────────────── */}
-      <section className="ab-section border-t border-[var(--ab-line)] bg-white">
-        <div className="mx-auto max-w-6xl px-5 sm:px-8">
-          <div className="max-w-2xl">
-            <p className="ab-eyebrow">What happens next</p>
-            <h2 className="ab-display-2 mt-3">
-              Three short moments before your first answer.
-            </h2>
-            <p className="ab-subhead mt-4 max-w-xl">
-              Setup is quick, deliberate, and shaped around how a student
-              actually thinks — not a brochure form.
-            </p>
-          </div>
-
-          <div className="mt-12 grid gap-5 lg:grid-cols-3">
-            {trustItems.map((item, i) => (
-              <article
-                key={item.title}
-                className="rounded-2xl border border-[var(--ab-line)] bg-[var(--ab-paper)] p-7 transition hover:-translate-y-0.5 hover:border-[#D8D3C8] hover:shadow-[var(--shadow-md)]"
-              >
-                <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#E8F2EC] text-[15px] font-extrabold tracking-[-0.01em] text-[var(--ab-brand)]">
-                  0{i + 1}
-                </span>
-                <h3 className="ab-h3 mt-5">{item.title}</h3>
-                <p className="ab-body mt-2.5 text-[14px] leading-7">{item.body}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <SiteFooter />
     </main>
   );
 }

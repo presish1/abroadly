@@ -105,6 +105,7 @@ export interface StudentListItem {
   gpa: number | null;
   ai_paused: boolean;
   call_consent?: boolean;
+  lead_status?: string | null;
   created_at: string;
   chat_count: number;
   doc_count: number;
@@ -143,6 +144,7 @@ export interface StudentDetail {
   goals: string | null;
   ai_paused: boolean;
   call_consent?: boolean;
+  lead_status?: string | null;
   created_at: string;
   updated_at: string;
   chat_count: number;
@@ -217,5 +219,12 @@ export async function sendCounselorReply(id: string, content: string): Promise<v
   await adminFetch(`/students/${id}/reply`, {
     method: "POST",
     body: JSON.stringify({ content }),
+  });
+}
+
+export async function updateStudentStatus(id: string, status: string): Promise<{ lead_status: string }> {
+  return adminFetch(`/students/${id}/status`, {
+    method: "PUT",
+    body: JSON.stringify({ status }),
   });
 }

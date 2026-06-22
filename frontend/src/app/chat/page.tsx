@@ -15,6 +15,7 @@ import {
   requestCounselorCall,
   logoutStudent,
   signalStudent,
+  uploadProfilePhoto,
   type ChatResponse,
   type ChatSource,
   type ChatTurn,
@@ -984,6 +985,22 @@ function ProfilePopup({
   const [errors, setErrors] = useState<Partial<Record<keyof ProfileFormState, string>>>({});
   const [apiError, setApiError] = useState("");
   const [saving, setSaving] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+
+  async function handlePhotoUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingPhoto(true);
+    try {
+      const res = await uploadProfilePhoto(student.id, file);
+      onSaved({ ...student, profile_photo_url: res.profile_photo_url });
+    } catch (err: any) {
+      alert(err.message || "Failed to upload profile photo.");
+    } finally {
+      setUploadingPhoto(false);
+    }
+  }
   const targetCountries = student.target_countries || [];
   const initial = (student.full_name || "Y").charAt(0).toUpperCase();
   const phoneMissing = !student.phone?.trim();
@@ -1110,9 +1127,34 @@ function ProfilePopup({
           <section className="rounded-[28px] border border-[#E8E5DD] bg-[linear-gradient(135deg,#0B1631_0%,#12244a_55%,#0A6E45_100%)] p-5 text-white shadow-[0_18px_44px_-26px_rgba(10,110,69,0.45)]">
             <div className="flex items-start justify-between gap-4">
               <div className="flex min-w-0 items-center gap-3">
-                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-[18px] bg-white text-[18px] font-black text-[#12244a] shadow-[0_10px_24px_-12px_rgba(255,255,255,0.25)]">
-                  {initial}
+                <div
+                  onClick={() => fileInputRef.current?.click()}
+                  className="relative flex h-14 w-14 shrink-0 cursor-pointer items-center justify-center rounded-[18px] bg-white text-[18px] font-black text-[#12244a] shadow-[0_10px_24px_-12px_rgba(255,255,255,0.25)] overflow-hidden group transition hover:scale-105"
+                  title="Click to upload profile photo"
+                >
+                  {uploadingPhoto ? (
+                    <div className="flex h-full w-full items-center justify-center bg-black/40 text-[10px] text-white font-bold animate-pulse">
+                      ...
+                    </div>
+                  ) : student.profile_photo_url ? (
+                    <img src={student.profile_photo_url} alt={student.full_name} className="h-full w-full object-cover" />
+                  ) : (
+                    initial
+                  )}
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
+                    <svg viewBox="0 0 24 24" className="h-5 w-5 text-white" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" />
+                    </svg>
+                  </div>
                 </div>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handlePhotoUpload}
+                  accept="image/*"
+                  className="hidden"
+                />
                 <div className="min-w-0">
                   <h3 id="profile-modal-title" className="truncate text-[18px] font-extrabold tracking-[-0.02em]">
                     {student.full_name || "Your profile"}

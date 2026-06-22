@@ -208,6 +208,8 @@ _ADD_QEVAL_SOURCE = "ALTER TABLE chat_audit ADD COLUMN IF NOT EXISTS qeval_sourc
 _ADD_LATENCY_MS = "ALTER TABLE chat_audit ADD COLUMN IF NOT EXISTS latency_ms INT;"
 _ADD_PROVIDER = "ALTER TABLE chat_audit ADD COLUMN IF NOT EXISTS provider TEXT;"
 
+_ADD_PROFILE_PHOTO_URL = "ALTER TABLE students ADD COLUMN IF NOT EXISTS profile_photo_url TEXT;"
+
 
 async def create_tables() -> None:
     """Create all application tables if they don't exist + run idempotent migrations."""
@@ -242,3 +244,4 @@ async def create_tables() -> None:
         await conn.execute(text(_ADD_QEVAL_SOURCE))
         await conn.execute(text(_ADD_LATENCY_MS))
         await conn.execute(text(_ADD_PROVIDER))
+        await conn.execute(text(_ADD_PROFILE_PHOTO_URL))

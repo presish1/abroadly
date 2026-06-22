@@ -60,6 +60,7 @@ export interface StudentUpdatePayload {
   target_countries?: string[];
   goals?: string | null;
   preferred_field?: string | null;
+  profile_photo_url?: string | null;
 }
 
 export interface StudentOut {
@@ -90,6 +91,7 @@ export interface StudentOut {
   ai_paused: boolean;
   profile_completed: boolean;
   call_consent: boolean;
+  profile_photo_url: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -362,3 +364,14 @@ export async function exchangeGoogleCode(
 export const sendChat = (payload: { student_id: string; message: string; source?: string }) =>
   chat(payload.student_id, payload.message, undefined, payload.source);
 export const uploadDoc = uploadFile;
+
+export async function uploadProfilePhoto(studentId: string, file: File): Promise<{ profile_photo_url: string }> {
+  const fd = new FormData();
+  fd.append("file", file);
+  return handle<{ profile_photo_url: string }>(
+    await fetch(`${BASE}/upload/${studentId}/profile-photo`, {
+      method: "POST",
+      body: fd,
+    })
+  );
+}

@@ -1083,6 +1083,7 @@ export default function DashboardPage() {
         onSelectCountry={setActiveCountry}
         onSendQuery={onSendQuery}
         onBookTest={() => setTestBookingOpen(true)}
+        onUpdateStudent={setStudent}
       />
       {testBookingOpen && (
         <ServiceRequestModal
