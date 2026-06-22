@@ -257,7 +257,7 @@ export default function ChatProfilePage() {
     }
   }
 
-  const INPUT_CLS = "w-full rounded-md border border-[#E8E5DD] bg-[#FAF9F6] px-3.5 py-3 text-[14px] font-semibold text-[#1B1916] placeholder:text-[#A8A29A] focus:border-[#1F3D78] focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#1F3D78]/12 transition-colors";
+  const INPUT_CLS = "w-full rounded-md border border-[#E8E5DD] bg-[#FAF9F6] px-3.5 py-3 text-[14px] font-semibold text-[#1B1916] placeholder:text-[#A8A29A] focus:border-[#0A6E45] focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#0A6E45]/12 transition-colors";
   const LABEL_CLS = "mb-1.5 block text-[12px] font-bold uppercase tracking-[0.06em] text-[#6B655C]";
   const ERROR_CLS = "mt-1.5 text-[12px] font-bold text-[#B42318]";
   const COUNTRIES = ["USA", "UK", "Australia", "Canada"];
@@ -272,38 +272,14 @@ export default function ChatProfilePage() {
             <div className="border-b border-[#E8E5DD] bg-[#FBFAF7] px-5 py-5 sm:px-6">
               <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                 <div className="max-w-2xl">
-                  <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#1F3D78]">Profile</p>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#0A6E45]">Profile</p>
                   <h1 className="mt-2 text-[30px] font-black tracking-[-0.04em] text-[#1B1916] sm:text-[36px]">
                     {student.full_name}'s study profile
                   </h1>
                   <p className="mt-2 text-[14px] leading-7 text-[#6B655C]">{headerNote}</p>
                 </div>
 
-                <div className="grid gap-3 sm:grid-cols-3">
-                  <button
-                    type="button"
-                    onClick={() => photoInputRef.current?.click()}
-                    className="ab-focus group relative overflow-hidden rounded-[18px] border border-[#E8E5DD] bg-[#FAF9F6] p-3 text-left transition hover:border-[#1F3D78] hover:bg-white"
-                    aria-label="Upload profile photo"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-[16px] bg-white text-[16px] font-black text-[#12244a] ring-1 ring-[#E8E5DD]">
-                        {student.profile_photo_url ? (
-                          <img src={student.profile_photo_url} alt={student.full_name} className="h-full w-full object-cover" />
-                        ) : (
-                          initials
-                        )}
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#1F3D78]">Profile photo</p>
-                        <p className="mt-1 text-[12px] font-semibold text-[#1B1916]">
-                          {student.profile_photo_url ? "Update your photo" : "Upload a photo"}
-                        </p>
-                        <p className="mt-0.5 text-[11px] text-[#6B655C]">Use a clear face shot</p>
-                      </div>
-                    </div>
-                  </button>
-                  <input ref={photoInputRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoUpload} />
+                <div className="grid gap-3 sm:grid-cols-2">
                   <div className="rounded-[18px] border border-[#E8E5DD] bg-white px-4 py-3">
                     <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#8A847B]">Progress</p>
                     <p className="mt-1 text-[24px] font-black leading-none text-[#1B1916]">{profilePct}%</p>
@@ -324,11 +300,43 @@ export default function ChatProfilePage() {
                   <section className="rounded-[24px] border border-[#E8E5DD] bg-white p-4">
                     <div className="flex items-center justify-between gap-3">
                       <div>
-                        <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#1F3D78]">Study passport</p>
+                      <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#0A6E45]">Study passport</p>
                         <h2 className="mt-1 text-[18px] font-black tracking-[-0.02em] text-[#1B1916]">What we already know</h2>
                       </div>
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#EAF0F8] text-[11px] font-black text-[#1F3D78]">{profilePct}%</div>
+                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#EEF7F1] text-[11px] font-black text-[#0A6E45]">{profilePct}%</div>
                     </div>
+                    <div className="mt-4 flex items-center gap-3 rounded-[20px] border border-[#E8E5DD] bg-[#FBFAF7] p-3">
+                      <button
+                        type="button"
+                        onClick={() => photoInputRef.current?.click()}
+                        className="ab-focus group relative flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-[18px] border border-[#E8E5DD] bg-white text-[16px] font-black text-[#0A6E45] transition hover:border-[#0A6E45]"
+                        aria-label="Upload profile photo"
+                      >
+                        {uploadingPhoto ? (
+                          <span className="text-[10px] font-black text-[#0A6E45]">...</span>
+                        ) : student.profile_photo_url ? (
+                          <img src={student.profile_photo_url} alt={student.full_name} className="h-full w-full object-cover" />
+                        ) : (
+                          initials
+                        )}
+                      </button>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#0A6E45]">Profile photo</p>
+                        <p className="mt-1 text-[12px] font-semibold text-[#1B1916]">
+                          {student.profile_photo_url ? "Photo uploaded" : "Add a clear face shot"}
+                        </p>
+                        <p className="mt-0.5 text-[11px] text-[#6B655C]">Used in counselor handoff and profile view.</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => photoInputRef.current?.click()}
+                        disabled={uploadingPhoto}
+                        className="ab-focus inline-flex shrink-0 items-center justify-center rounded-full bg-[#0A6E45] px-3.5 py-2 text-[11px] font-bold text-white transition hover:bg-[#085636] disabled:opacity-50"
+                      >
+                          {uploadingPhoto ? "Uploading..." : student.profile_photo_url ? "Change" : "Upload"}
+                      </button>
+                    </div>
+                    <input ref={photoInputRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoUpload} />
                     <div className="mt-4 space-y-3">
                       {[
                         ["Name", student.full_name],
@@ -348,7 +356,7 @@ export default function ChatProfilePage() {
                   </section>
 
                   <section className="rounded-[24px] border border-[#E8E5DD] bg-white p-4">
-                    <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#1F3D78]">Next best fixes</p>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#0A6E45]">Next best fixes</p>
                     <div className="mt-3 space-y-2">
                       {[
                         student.phone?.trim() ? null : "Add your phone number",
@@ -357,7 +365,7 @@ export default function ChatProfilePage() {
                         form.preferred_field.trim() ? null : "Set your study field",
                       ].filter(Boolean).map((item) => (
                         <div key={item as string} className="flex items-center gap-2 rounded-[16px] bg-[#FAF9F6] px-3 py-2 text-[12px] font-semibold text-[#3F3A33]">
-                          <span className="h-2 w-2 rounded-full bg-[#1F3D78]" />
+                          <span className="h-2 w-2 rounded-full bg-[#0A6E45]" />
                           {item}
                         </div>
                       ))}
@@ -367,16 +375,16 @@ export default function ChatProfilePage() {
                         form.gpa.trim() ? null : "Review your GPA",
                         form.preferred_field.trim() ? null : "Set your study field",
                       ].filter(Boolean).length && (
-                        <p className="rounded-[16px] bg-[#EEF3FB] px-3 py-3 text-[12px] font-semibold text-[#1F3D78]">Everything important is filled. Keep it updated when things change.</p>
+                        <p className="rounded-[16px] bg-[#EEF7F1] px-3 py-3 text-[12px] font-semibold text-[#0A6E45]">Everything important is filled. Keep it updated when things change.</p>
                       )}
                     </div>
                   </section>
 
                   <section className="rounded-[24px] border border-[#E8E5DD] bg-white p-4">
-                    <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#1F3D78]">Shortcuts</p>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#0A6E45]">Shortcuts</p>
                     <div className="mt-3 grid gap-2">
-                      <a href="/chat/documents" className="ab-focus rounded-[16px] border border-[#E8E5DD] px-3 py-2.5 text-[12px] font-bold text-[#1B1916] transition hover:border-[#1F3D78] hover:bg-[#FAF9F6]">Manage documents</a>
-                      <a href="/universities" className="ab-focus rounded-[16px] border border-[#E8E5DD] px-3 py-2.5 text-[12px] font-bold text-[#1B1916] transition hover:border-[#1F3D78] hover:bg-[#FAF9F6]">Browse universities</a>
+                      <a href="/chat/documents" className="ab-focus rounded-[16px] border border-[#E8E5DD] px-3 py-2.5 text-[12px] font-bold text-[#1B1916] transition hover:border-[#0A6E45] hover:bg-[#FAF9F6]">Manage documents</a>
+                      <a href="/universities" className="ab-focus rounded-[16px] border border-[#E8E5DD] px-3 py-2.5 text-[12px] font-bold text-[#1B1916] transition hover:border-[#0A6E45] hover:bg-[#FAF9F6]">Browse universities</a>
                     </div>
                   </section>
                 </div>
@@ -386,13 +394,13 @@ export default function ChatProfilePage() {
                 <div className="max-w-3xl">
                   <div className="flex items-center justify-between gap-3">
                     <div>
-                      <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#1F3D78]">Edit profile</p>
+                      <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#0A6E45]">Edit profile</p>
                       <h2 className="mt-1 text-[22px] font-black tracking-[-0.03em] text-[#1B1916]">Only the essentials are editable here</h2>
                       <p className="mt-1.5 text-[13.5px] leading-6 text-[#6B655C]">
                         The rest of your onboarding data stays visible in the sidebar, so this stays clean and focused.
                       </p>
                     </div>
-                    <div className="hidden rounded-full border border-[#D8E2F2] bg-[#EEF3FB] px-3 py-1.5 text-[11px] font-bold text-[#1F3D78] md:inline-flex">
+                    <div className="hidden rounded-full border border-[#D7E7DD] bg-[#EEF7F1] px-3 py-1.5 text-[11px] font-bold text-[#0A6E45] md:inline-flex">
                       {saved ? "Saved" : "Live profile"}
                     </div>
                   </div>
@@ -417,7 +425,7 @@ export default function ChatProfilePage() {
                     <div className="rounded-[24px] border border-[#EFECE4] bg-[#FCFBF8] p-5">
                       <div className="mb-4 flex items-center justify-between gap-3">
                         <div>
-                          <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#1F3D78]">Identity</p>
+                          <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#0A6E45]">Identity</p>
                           <p className="mt-1 text-[12.5px] text-[#6B655C]">How the assistant should address you.</p>
                         </div>
                         <span className="rounded-full bg-white px-3 py-1 text-[11px] font-bold text-[#8A847B]">Profile basics</span>
@@ -450,7 +458,7 @@ export default function ChatProfilePage() {
 
                     <div className="grid gap-5 lg:grid-cols-2">
                       <div className="rounded-[24px] border border-[#EFECE4] bg-[#FCFBF8] p-5">
-                        <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#1F3D78]">Academics</p>
+                        <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#0A6E45]">Academics</p>
                         <p className="mt-1 text-[12.5px] text-[#6B655C]">We use this to judge fit and suggest realistic universities.</p>
                         <div className="mt-4 space-y-4">
                           <div>
@@ -474,7 +482,7 @@ export default function ChatProfilePage() {
                       </div>
 
                       <div className="rounded-[24px] border border-[#EFECE4] bg-[#FCFBF8] p-5">
-                        <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#1F3D78]">Destination & goals</p>
+                        <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#0A6E45]">Destination & goals</p>
                         <p className="mt-1 text-[12.5px] text-[#6B655C]">This is the part that shapes recommendations the most.</p>
 
                         <div className="mt-4 space-y-4">
@@ -490,11 +498,11 @@ export default function ChatProfilePage() {
                                     onClick={() => toggleCountry(c)}
                                     className={`ab-focus inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-[13px] font-bold transition ${
                                       active
-                                        ? "border-[#1F3D78] bg-[#EAF0F8] text-[#1F3D78]"
+                                    ? "border-[#0A6E45] bg-[#EEF7F1] text-[#0A6E45]"
                                         : "border-[#E8E5DD] bg-white text-[#6B655C] hover:border-[#D8D3C8] hover:bg-[#FAF9F6]"
                                     }`}
                                   >
-                                    <span className={`flex h-4.5 w-4.5 items-center justify-center rounded-full border ${active ? "border-[#1F3D78] bg-[#1F3D78]" : "border-[#C9C3B8]"}`}>
+                                    <span className={`flex h-4.5 w-4.5 items-center justify-center rounded-full border ${active ? "border-[#0A6E45] bg-[#0A6E45]" : "border-[#C9C3B8]"}`}>
                                       {active && <svg viewBox="0 0 10 10" className="h-2 w-2 text-white" fill="none"><path d="M2 5L4 7L8 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>}
                                     </span>
                                     {c}
@@ -519,7 +527,7 @@ export default function ChatProfilePage() {
                     </div>
 
                     <div className="rounded-[24px] border border-[#EFECE4] bg-[#FCFBF8] p-5">
-                      <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#1F3D78]">Student summary</p>
+                      <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#0A6E45]">Student summary</p>
                       <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                         {[
                           ["Countries", targetCountries.length ? `${targetCountries.length} selected` : "Not set"],
@@ -543,7 +551,7 @@ export default function ChatProfilePage() {
 
                     <div className="flex gap-3 border-t border-[#E8E5DD] pt-5 sm:items-center">
                       <div className="flex items-center gap-3 text-[13px]">
-                        <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#EEF3FB] text-[#1F3D78]">✓</span>
+                        <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#EEF7F1] text-[#0A6E45]">✓</span>
                         <div>
                           <p className="font-bold text-[#1B1916]">{saved ? "Saved" : "Ready to update"}</p>
                           <p className="text-[#6B655C]">Your profile changes apply immediately to chat and recommendations.</p>

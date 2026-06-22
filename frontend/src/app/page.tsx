@@ -1,11 +1,20 @@
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { HeroIntentForm } from "./hero-intent-form";
 import { HeroUniversityStrip } from "./hero-university-strip";
 import { NavBar } from "./nav-bar";
 import { SiteFooter } from "./site-footer";
 import { HeroVideoSection } from "@/components/hero-video-section";
-import { EnglishClassPopup } from "@/components/english-class-popup";
-import { GoogleOneTap } from "@/components/google-one-tap";
+
+const GoogleOneTap = dynamic(
+  () => import("@/components/google-one-tap").then((mod) => mod.GoogleOneTap),
+  { ssr: false }
+);
+
+const EnglishClassPopup = dynamic(
+  () => import("@/components/english-class-popup").then((mod) => mod.EnglishClassPopup),
+  { ssr: false }
+);
 
 const steps = [
   {
