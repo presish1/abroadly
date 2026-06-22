@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import type { FormEvent, ReactNode } from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { GoogleSignInButton } from "@/app/google-sign-in-button";
 import { NavBar } from "@/app/nav-bar";
@@ -157,6 +157,20 @@ export default function ProfileDetailsPage() {
   const [form, setForm] = useState<ProfileForm>(EMPTY_FORM);
   const [step, setStep] = useState<Step>(1);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
   const [apiError, setApiError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
@@ -343,13 +357,53 @@ export default function ProfileDetailsPage() {
 
   if (loadState === "loading") {
     return (
-      <main className="min-h-screen bg-[var(--ab-paper)] text-[var(--ab-ink)]">
-        <NavBar showSignIn={false} primary={{ href: "/chat", label: "Open chat" }} />
-        <section className="mx-auto flex max-w-md flex-col items-center px-5 py-28 text-center">
-          <div className="h-10 w-10 animate-pulse rounded-lg bg-[var(--ab-line)]" />
-          <h1 className="mt-5 text-xl font-black">Preparing your profile</h1>
-          <p className="mt-2 text-sm text-[var(--ab-muted)]">Checking your Google session.</p>
-        </section>
+      <main className="min-h-screen bg-[var(--ab-paper-2)] text-[var(--ab-ink)]">
+        <NavBar showSignIn={false} primary={{ href: "/", label: "Home" }} />
+        <div className="mx-auto max-w-6xl px-4 py-8 sm:px-8 sm:py-12">
+          {/* Header Skeleton */}
+          <header className="flex flex-col gap-3">
+            <div className="h-4 w-24 animate-pulse rounded bg-[#E9E6DF]" />
+            <div className="mt-2 h-8 w-56 animate-pulse rounded bg-[#E9E6DF]" />
+            <div className="mt-2 h-4 w-full max-w-2xl animate-pulse rounded bg-[#E9E6DF]" />
+          </header>
+
+          {/* Progress Indicator Skeleton */}
+          <div className="mt-7 grid grid-cols-3 gap-2">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="flex items-center gap-2 border-b-2 border-[var(--ab-line)] pb-3">
+                <div className="h-6 w-6 shrink-0 animate-pulse rounded-full bg-[#E9E6DF]" />
+                <div className="flex-1 space-y-1.5">
+                  <div className="h-3 w-16 animate-pulse rounded bg-[#E9E6DF]" />
+                  <div className="hidden h-2.5 w-10 animate-pulse rounded bg-[#E9E6DF] sm:block" />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Form Skeleton */}
+          <div className="mt-6 overflow-hidden rounded-lg border border-[var(--ab-line)] bg-white shadow-[var(--shadow-sm)]">
+            <div className="min-h-[470px] p-5 sm:p-8 lg:p-10">
+              <div className="h-4 w-16 animate-pulse rounded bg-[#E9E6DF]" />
+              <div className="mt-2 h-6 w-32 animate-pulse rounded bg-[#E9E6DF]" />
+              <div className="mt-1 h-3.5 w-72 animate-pulse rounded bg-[#E9E6DF]" />
+
+              <div className="mt-7 grid gap-5 sm:grid-cols-2">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i}>
+                    <div className="mb-2 h-3.5 w-24 animate-pulse rounded bg-[#E9E6DF]" />
+                    <div className="h-11 w-full animate-pulse rounded-lg bg-[#F5F2EB]" />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Footer Skeleton */}
+            <div className="flex flex-col-reverse gap-3 border-t border-[var(--ab-line)] bg-[#FAFAF8] px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-8">
+              <div className="h-3 w-64 animate-pulse rounded bg-[#E9E6DF]" />
+              <div className="h-10 w-28 animate-pulse rounded-lg bg-[#E9E6DF]" />
+            </div>
+          </div>
+        </div>
       </main>
     );
   }
@@ -563,23 +617,82 @@ export default function ProfileDetailsPage() {
                 <h2 id="step-three-title" className="mt-2 text-xl font-black tracking-[-0.02em]">Destination and support</h2>
                 <p className="mt-1 text-[13px] text-[var(--ab-muted)]">Choose what you are aiming for. You can refine this later in chat.</p>
 
-                <div className="mt-7">
+                <div className="mt-7" ref={dropdownRef}>
                   <div className="flex items-center justify-between gap-4">
                     <p className={LABEL_CLS}>Interested countries</p>
-                    <span className="text-[11px] font-semibold text-[var(--ab-muted-soft)]">{form.target_countries.length} selected</span>
                   </div>
-                  <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
-                    {COUNTRY_OPTIONS.map((country) => {
-                      const selected = form.target_countries.includes(country);
-                      return (
-                        <button key={country} type="button" onClick={() => toggleCountry(country)} className={`ab-focus flex min-h-11 items-center gap-2 rounded-lg border px-3 text-left text-[12px] font-bold transition ${selected ? "border-[var(--ab-brand)] bg-[#F0F8F4]" : "border-[var(--ab-line)] bg-white hover:border-[#CBC7BD]"}`}>
-                          <span className={`flex h-4 w-4 shrink-0 items-center justify-center rounded border ${selected ? "border-[var(--ab-brand)] bg-[var(--ab-brand)] text-white" : "border-[#B8B3A9]"}`}>{selected ? "✓" : ""}</span>
-                          {country}
-                        </button>
-                      );
-                    })}
+                  <div className="relative">
+                    <button
+                      type="button"
+                      onClick={() => setIsDropdownOpen((prev) => !prev)}
+                      className={`ab-focus flex h-11 w-full items-center justify-between rounded-lg border border-[var(--ab-line)] bg-white px-3.5 text-[14px] font-medium text-[var(--ab-ink)] transition hover:border-[#D4D0C7] focus:border-[var(--ab-brand)] focus:ring-4 focus:ring-[rgba(10,110,69,0.11)] ${
+                        isDropdownOpen ? "border-[var(--ab-brand)]" : ""
+                      }`}
+                    >
+                      <span className={form.target_countries.length === 0 ? "text-[#AAA69D]" : "text-[var(--ab-ink)] font-semibold"}>
+                        {form.target_countries.length === 0
+                          ? "Select target countries..."
+                          : `${form.target_countries.length} countr${form.target_countries.length === 1 ? "y" : "ies"} selected`}
+                      </span>
+                      <svg
+                        className={`h-4 w-4 text-[var(--ab-muted)] transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`}
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+
+                    {isDropdownOpen && (
+                      <div className="absolute left-0 right-0 z-50 mt-1 max-h-60 overflow-y-auto rounded-lg border border-[var(--ab-line)] bg-white py-1 shadow-lg animate-in fade-in slide-in-from-top-1 duration-150">
+                        {COUNTRY_OPTIONS.map((country) => {
+                          const selected = form.target_countries.includes(country);
+                          return (
+                            <button
+                              key={country}
+                              type="button"
+                              onClick={() => toggleCountry(country)}
+                              className={`flex w-full items-center justify-between px-4 py-2.5 text-left text-[13.5px] font-semibold transition ${
+                                selected
+                                  ? "bg-[#F0F8F4] text-[var(--ab-ink)]"
+                                  : "text-[var(--ab-ink-soft)] hover:bg-[#F7F6F2]"
+                              }`}
+                            >
+                              <span className="flex items-center gap-2.5">
+                                <span className={`flex h-4 w-4 shrink-0 items-center justify-center rounded border ${selected ? "border-[var(--ab-brand)] bg-[var(--ab-brand)] text-white" : "border-[#B8B3A9]"}`}>
+                                  {selected && "✓"}
+                                </span>
+                                {country}
+                              </span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
                   </div>
                   <ErrorText>{errors.target_countries}</ErrorText>
+
+                  {/* Selected countries pills/chips below */}
+                  {form.target_countries.length > 0 && (
+                    <div className="mt-3 flex flex-wrap gap-1.5">
+                      {form.target_countries.map((country) => (
+                        <span
+                          key={country}
+                          className="inline-flex items-center gap-1 rounded-full border border-[var(--ab-line)] bg-[#F5F2EB] px-2.5 py-1 text-[12px] font-bold text-[var(--ab-ink)] shadow-[var(--shadow-xs)]"
+                        >
+                          {country}
+                          <button
+                            type="button"
+                            onClick={() => toggleCountry(country)}
+                            className="ml-0.5 inline-flex h-3.5 w-3.5 items-center justify-center rounded-full text-[var(--ab-muted)] hover:bg-[#E9E6DF] hover:text-[var(--ab-ink)]"
+                          >
+                            ×
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 <div className="mt-6 grid gap-5 sm:grid-cols-2">

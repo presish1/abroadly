@@ -78,7 +78,12 @@ export default function GoogleCallbackPage() {
     <Suspense
       fallback={
         <main className="flex min-h-screen items-center justify-center bg-[#fbfaf7] px-5 text-[#21143d]">
-          <p className="text-sm font-bold text-[#6a607f]">Signing you in...</p>
+          <section className="w-full max-w-md rounded-lg border border-[#ded8ee] bg-white p-6 text-center shadow-sm animate-pulse">
+            <div className="mx-auto h-11 w-11 rounded-md bg-[#ded8ee]" />
+            <div className="mx-auto mt-6 h-6 w-36 rounded-md bg-[#ded8ee]" />
+            <div className="mx-auto mt-4 h-3.5 w-64 rounded bg-[#ded8ee]" />
+            <div className="mx-auto mt-2 h-3.5 w-44 rounded bg-[#ded8ee]" />
+          </section>
         </main>
       }
     >
