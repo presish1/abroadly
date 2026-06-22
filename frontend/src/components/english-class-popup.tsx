@@ -126,6 +126,7 @@ export function EnglishClassPopup() {
     if (getIsDismissed()) return;
     const timer = setTimeout(() => {
       setShow(true);
+      void fireConfetti();
     }, 6000);
     return () => clearTimeout(timer);
   }, []);
@@ -156,11 +157,7 @@ export function EnglishClassPopup() {
       onPointerUp={handlePointerUp}
       onPointerLeave={handlePointerUp}
     >
-      {/* Swipe hint */}
-      <p className="mb-2 text-center text-[10px] font-semibold text-white/70 tracking-wide drop-shadow pointer-events-none">
-        ← Swipe right to dismiss
-      </p>
-      <div className="overflow-hidden rounded-[24px] bg-white p-6 shadow-[0_24px_60px_rgba(0,0,0,0.18)] border border-slate-100 animate-[abFadeUp_0.45s_ease-out]">
+      <div className="overflow-hidden rounded-[24px] border border-white/60 bg-white/90 p-6 backdrop-blur-md shadow-[0_20px_50px_rgba(10,110,69,0.12),0_4px_16px_rgba(0,0,0,0.06)] animate-[abFadeUp_0.45s_ease-out]">
         {/* X close */}
         <button
           onClick={handleClose}
@@ -186,7 +183,7 @@ export function EnglishClassPopup() {
             </div>
 
             <p className="text-[13.5px] text-slate-600 mb-5 leading-relaxed">
-              Claim a free IELTS/PTE/TOEFL proficiency class tailored to your target university. Upload 8 documents to unlock it.
+              Claim a free IELTS/PTE/TOEFL proficiency class tailored to your target university.
             </p>
 
             <button
@@ -215,6 +212,7 @@ export function EnglishClassPopupCompact({ onOpenDocuments }: { onOpenDocuments?
     if (getIsDismissed()) return;
     const timer = setTimeout(() => {
       setShow(true);
+      void fireConfetti();
     }, 10000);
     return () => clearTimeout(timer);
   }, []);
@@ -239,14 +237,14 @@ export function EnglishClassPopupCompact({ onOpenDocuments }: { onOpenDocuments?
   return (
     <div
       ref={ref}
-      className="fixed bottom-4 right-4 z-[1000] w-[calc(100vw-2rem)] max-w-xs touch-pan-y select-none sm:right-5 sm:bottom-5"
+      className="fixed top-20 left-4 z-[1000] w-[calc(100vw-2rem)] max-w-xs touch-pan-y select-none sm:top-24 sm:left-6"
       style={{}}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       onPointerLeave={handlePointerUp}
     >
-      <div className="overflow-hidden rounded-[20px] bg-white p-4 shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-100 animate-[abFadeUp_0.4s_ease-out]">
+      <div className="overflow-hidden rounded-[20px] border border-white/60 bg-white/90 p-4 backdrop-blur-md shadow-[0_20px_50px_rgba(10,110,69,0.1),0_4px_16px_rgba(0,0,0,0.04)] animate-[abFadeUp_0.4s_ease-out]">
         {/* X close */}
         <button
           onClick={handleClose}
@@ -271,7 +269,7 @@ export function EnglishClassPopupCompact({ onOpenDocuments }: { onOpenDocuments?
               <div>
                 <p className="text-[13px] font-bold text-slate-900 leading-snug">Free English Class</p>
                 <p className="mt-0.5 text-[11.5px] text-slate-500 leading-relaxed">
-                  Upload 8 docs → free IELTS/PTE/TOEFL class tailored to your uni.
+                  Claim a free IELTS/PTE/TOEFL proficiency class tailored to your target university.
                 </p>
               </div>
             </div>
@@ -282,10 +280,6 @@ export function EnglishClassPopupCompact({ onOpenDocuments }: { onOpenDocuments?
             >
               <span>🎁</span> Claim free class
             </button>
-
-            <p className="mt-2 text-center text-[9.5px] text-slate-400 font-medium">
-              Swipe right to dismiss
-            </p>
           </>
         )}
       </div>

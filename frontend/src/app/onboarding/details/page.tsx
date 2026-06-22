@@ -241,14 +241,13 @@ export default function ProfileDetailsPage() {
     setApiError("");
   }
 
-  function toggleCountry(country: string) {
+  function selectCountry(country: string) {
     setForm((prev) => ({
       ...prev,
-      target_countries: prev.target_countries.includes(country)
-        ? prev.target_countries.filter((item) => item !== country)
-        : [...prev.target_countries, country],
+      target_countries: [country],
     }));
     setErrors((prev) => ({ ...prev, target_countries: "" }));
+    setIsDropdownOpen(false);
   }
 
   function validateStep(targetStep: Step): boolean {
@@ -619,7 +618,7 @@ export default function ProfileDetailsPage() {
 
                 <div className="mt-7" ref={dropdownRef}>
                   <div className="flex items-center justify-between gap-4">
-                    <p className={LABEL_CLS}>Interested countries</p>
+                    <p className={LABEL_CLS}>Interested country</p>
                   </div>
                   <div className="relative">
                     <button
@@ -631,8 +630,8 @@ export default function ProfileDetailsPage() {
                     >
                       <span className={form.target_countries.length === 0 ? "text-[#AAA69D]" : "text-[var(--ab-ink)] font-semibold"}>
                         {form.target_countries.length === 0
-                          ? "Select target countries..."
-                          : `${form.target_countries.length} countr${form.target_countries.length === 1 ? "y" : "ies"} selected`}
+                          ? "Select target country..."
+                          : form.target_countries[0]}
                       </span>
                       <svg
                         className={`h-4 w-4 text-[var(--ab-muted)] transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`}
@@ -652,19 +651,19 @@ export default function ProfileDetailsPage() {
                             <button
                               key={country}
                               type="button"
-                              onClick={() => toggleCountry(country)}
+                              onClick={() => selectCountry(country)}
                               className={`flex w-full items-center justify-between px-4 py-2.5 text-left text-[13.5px] font-semibold transition ${
                                 selected
-                                  ? "bg-[#F0F8F4] text-[var(--ab-ink)]"
+                                  ? "bg-[#F0F8F4] text-[var(--ab-brand)]"
                                   : "text-[var(--ab-ink-soft)] hover:bg-[#F7F6F2]"
                               }`}
                             >
-                              <span className="flex items-center gap-2.5">
-                                <span className={`flex h-4 w-4 shrink-0 items-center justify-center rounded border ${selected ? "border-[var(--ab-brand)] bg-[var(--ab-brand)] text-white" : "border-[#B8B3A9]"}`}>
-                                  {selected && "✓"}
-                                </span>
-                                {country}
-                              </span>
+                              <span>{country}</span>
+                              {selected && (
+                                <svg className="h-4 w-4 text-[var(--ab-brand)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                </svg>
+                              )}
                             </button>
                           );
                         })}
@@ -672,27 +671,6 @@ export default function ProfileDetailsPage() {
                     )}
                   </div>
                   <ErrorText>{errors.target_countries}</ErrorText>
-
-                  {/* Selected countries pills/chips below */}
-                  {form.target_countries.length > 0 && (
-                    <div className="mt-3 flex flex-wrap gap-1.5">
-                      {form.target_countries.map((country) => (
-                        <span
-                          key={country}
-                          className="inline-flex items-center gap-1 rounded-full border border-[var(--ab-line)] bg-[#F5F2EB] px-2.5 py-1 text-[12px] font-bold text-[var(--ab-ink)] shadow-[var(--shadow-xs)]"
-                        >
-                          {country}
-                          <button
-                            type="button"
-                            onClick={() => toggleCountry(country)}
-                            className="ml-0.5 inline-flex h-3.5 w-3.5 items-center justify-center rounded-full text-[var(--ab-muted)] hover:bg-[#E9E6DF] hover:text-[var(--ab-ink)]"
-                          >
-                            ×
-                          </button>
-                        </span>
-                      ))}
-                    </div>
-                  )}
                 </div>
 
                 <div className="mt-6 grid gap-5 sm:grid-cols-2">
