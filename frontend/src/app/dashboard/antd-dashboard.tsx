@@ -23,8 +23,8 @@ import {
   gpaToPercentage,
   inferField,
   pickUniversities,
-  universityCampusImageUrl,
-  universityLogoUrl,
+  universityLogoCandidates,
+  universityVerifiedCampusImageUrl,
   type AdmissionFit,
   type University,
 } from "@/lib/university-data";
@@ -85,18 +85,21 @@ function Panel({
 }
 
 function UniLogo({ name, url }: { name: string; url: string }) {
-  const [failed, setFailed] = useState(false);
+  const [candidateIndex, setCandidateIndex] = useState(0);
+  const university = { name, official_url: url } as University;
+  const source = universityLogoCandidates(university)[candidateIndex];
   const initial = name.replace(/\(.*?\)/g, "").trim()[0]?.toUpperCase() ?? "U";
-  if (failed)
+  if (!source)
     return <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#F4F2EC] text-[12px] font-extrabold text-[#6B655C]">{initial}</span>;
   return (
     <img
-      src={universityLogoUrl({ official_url: url } as University)}
+      src={source}
       alt=""
       width={32}
       height={32}
       loading="lazy"
-      onError={() => setFailed(true)}
+      referrerPolicy="no-referrer"
+      onError={() => setCandidateIndex((current) => current + 1)}
       className="h-8 w-8 shrink-0 rounded-lg border border-[#EFECE4] bg-white object-contain p-1"
     />
   );
@@ -335,17 +338,21 @@ export function AntdDashboard({ student, documents, activeCountry, countries, on
                     <div className="mt-3 flex flex-wrap gap-2">
                       {unis.slice(0, 3).map((u) => {
                         const fit = classifyFit(studentPct, u.entry_pct_min);
+                        const campusImage = universityVerifiedCampusImageUrl(u);
                         return (
-                          <div key={u.id} className="overflow-hidden rounded-xl border border-[#EFECE4] bg-[#FAF9F6]">
-                            <div className="relative h-24">
-                              <img
-                                src={universityCampusImageUrl(u)}
-                                alt={`${u.name} campus view`}
-                                className="h-full w-full object-cover"
-                                loading="lazy"
-                              />
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-black/5 to-transparent" />
-                              <div className="absolute left-2.5 top-2.5 rounded-full bg-white/90 p-1.5 shadow-[0_8px_18px_rgba(15,15,15,0.15)] backdrop-blur">
+                          <div key={u.id} className="overflow-hidden rounded-lg border border-[#EFECE4] bg-[#FCFBF8]">
+                            <div className="relative flex h-24 items-center justify-center bg-[#F1F0EC]">
+                              {campusImage && (
+                                <img
+                                  src={campusImage}
+                                  alt={`${u.name} campus view`}
+                                  className="h-full w-full object-cover"
+                                  loading="lazy"
+                                  referrerPolicy="no-referrer"
+                                />
+                              )}
+                              {campusImage && <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-black/5 to-transparent" />}
+                              <div className={`${campusImage ? "absolute left-2.5 top-2.5 bg-white/92 shadow-[0_8px_18px_rgba(15,15,15,0.15)] backdrop-blur" : "bg-white"} rounded-[7px] p-1.5`}>
                                 <UniLogo name={u.name} url={u.official_url} />
                               </div>
                             </div>

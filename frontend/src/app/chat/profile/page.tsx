@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useMemo } from "react";
+import { Check, LoaderCircle, Save } from "lucide-react";
 import { getStudentDocuments, type StudentDocument, getStudent, updateStudent, type StudentOut } from "@/lib/api";
 import { ESSENTIAL_SLOTS, computeDocReadiness } from "@/lib/document-catalog";
 import { StudentQuickTabs } from "@/components/student-quick-tabs";
@@ -354,7 +355,23 @@ export default function ChatProfilePage() {
                     </div>
                   </div>
 
-                  <form onSubmit={saveProfile} className="mt-6 space-y-7">
+                  <form onSubmit={saveProfile} className="mt-6 space-y-7 pb-16">
+                    <button
+                      type="submit"
+                      disabled={saving}
+                      className="ab-focus profile-save-float"
+                      aria-live="polite"
+                    >
+                      {saving ? (
+                        <LoaderCircle aria-hidden className="animate-spin" />
+                      ) : saved ? (
+                        <Check aria-hidden />
+                      ) : (
+                        <Save aria-hidden />
+                      )}
+                      {saving ? "Saving..." : saved ? "Saved" : "Save profile"}
+                    </button>
+
                     <div className="rounded-[24px] border border-[#EFECE4] bg-[#FCFBF8] p-5">
                       <div className="mb-4 flex items-center justify-between gap-3">
                         <div>
@@ -482,7 +499,7 @@ export default function ChatProfilePage() {
                       </div>
                     )}
 
-                    <div className="flex flex-col-reverse gap-3 border-t border-[#E8E5DD] pt-5 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex gap-3 border-t border-[#E8E5DD] pt-5 sm:items-center">
                       <div className="flex items-center gap-3 text-[13px]">
                         <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#F4FAF7] text-[#0A6E45]">✓</span>
                         <div>
@@ -490,13 +507,6 @@ export default function ChatProfilePage() {
                           <p className="text-[#6B655C]">Your profile changes apply immediately to chat and recommendations.</p>
                         </div>
                       </div>
-                      <button
-                        type="submit"
-                        disabled={saving}
-                        className="ab-focus inline-flex min-h-11 items-center justify-center rounded-full bg-[#0A6E45] px-5 text-[14px] font-bold text-white shadow-[0_10px_24px_-14px_rgba(10,110,69,0.45)] transition hover:bg-[#085A38] disabled:opacity-50"
-                      >
-                        {saving ? "Saving..." : "Save profile"}
-                      </button>
                     </div>
                   </form>
                 </div>

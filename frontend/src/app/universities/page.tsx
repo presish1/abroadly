@@ -16,8 +16,8 @@ import {
   inferField,
   pickCourses,
   pickUniversities,
-  universityCampusImageUrl,
-  universityLogoUrl,
+  universityLogoCandidates,
+  universityVerifiedCampusImageUrl,
   type AdmissionFit,
   type Course,
   type University,
@@ -120,14 +120,15 @@ function uniInitials(name: string): string {
 }
 
 function OfficialThumb({ university, size = "large" }: { university: University; size?: "small" | "large" }) {
-  const [failed, setFailed] = useState(false);
-  const profile = getUniversityProfile(university);
+  const [candidateIndex, setCandidateIndex] = useState(0);
+  const candidates = universityLogoCandidates(university);
+  const source = candidates[candidateIndex];
   const classes =
     size === "small"
-      ? "h-9 w-9 rounded-[10px] p-1.5"
-      : "h-14 w-14 rounded-[14px] p-2";
+      ? "h-9 w-9 rounded-[7px] p-1.5"
+      : "h-14 w-14 rounded-[9px] p-2";
 
-  if (failed) {
+  if (!source) {
     return (
       <span className={`flex shrink-0 items-center justify-center border border-[#E8E5DD] bg-[#F4F2EC] text-[12px] font-black text-[#3F3A33] ${classes}`}>
         {uniInitials(university.name)}
@@ -136,31 +137,55 @@ function OfficialThumb({ university, size = "large" }: { university: University;
   }
 
   return (
-    <img
-      src={universityLogoUrl(university)}
-      alt={`${university.name} logo`}
-      loading="lazy"
-      onError={() => setFailed(true)}
-      className={`shrink-0 border border-[#E8E5DD] bg-white object-contain ${classes}`}
-      title={`Thumbnail from ${new URL(profile.international_url).hostname.replace(/^www\./, "")}`}
-    />
+    <a
+      href={university.official_url}
+      target="_blank"
+      rel="noreferrer noopener"
+      className="ab-focus shrink-0"
+      title={`Open ${university.name} official website`}
+    >
+      <img
+        src={source}
+        alt={`${university.name} logo`}
+        loading="lazy"
+        referrerPolicy="no-referrer"
+        onError={() => setCandidateIndex((current) => current + 1)}
+        className={`border border-[#E8E5DD] bg-white object-contain ${classes}`}
+      />
+    </a>
   );
 }
 
 function UniversityVisual({ university }: { university: University }) {
+  const [failed, setFailed] = useState(false);
+  const profile = getUniversityProfile(university);
+  const imageUrl = universityVerifiedCampusImageUrl(university);
+
+  if (!imageUrl || failed) return null;
+
   return (
-    <div className="relative overflow-hidden rounded-[18px] border border-[#E8E5DD] bg-[#F4F2EC]">
+    <div className="relative overflow-hidden rounded-[12px] border border-[#E8E5DD] bg-[#F1F0EC]">
       <img
-        src={universityCampusImageUrl(university)}
+        src={imageUrl}
         alt={`${university.name} campus view`}
         loading="lazy"
-        className="h-28 w-full object-cover sm:h-32"
+        referrerPolicy="no-referrer"
+        onError={() => setFailed(true)}
+        className="h-36 w-full object-cover sm:h-44"
+        style={{ objectPosition: profile.campus_image_position ?? "50% 50%" }}
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-black/5 to-transparent" />
-      <div className="absolute left-3 top-3 flex items-center gap-2 rounded-full bg-white/90 px-2.5 py-1.5 shadow-[0_6px_20px_rgba(15,15,15,0.18)] backdrop-blur">
-        <OfficialThumb university={university} size="small" />
-        <span className="text-[10.5px] font-black uppercase tracking-[0.08em] text-[#1B1916]">Campus</span>
-      </div>
+      <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-black/5" />
+      {profile.campus_image_source_url && (
+        <a
+          href={profile.campus_image_source_url}
+          target="_blank"
+          rel="noreferrer noopener"
+          className="ab-focus absolute right-3 top-3 inline-flex min-h-7 items-center gap-1.5 rounded-[6px] bg-white/92 px-2.5 text-[10px] font-black text-[#2D2B27] shadow-[0_5px_16px_rgba(15,15,15,0.16)] backdrop-blur"
+          title="Open official campus photo source"
+        >
+          Photo source <OpenIcon />
+        </a>
+      )}
       <div className="absolute bottom-0 left-0 right-0 p-3">
         <div className="flex items-end justify-between gap-2">
           <p className="text-[11px] font-semibold text-white/90 drop-shadow">{university.city}</p>
@@ -235,16 +260,19 @@ function UniversityCard({
   const profile = getUniversityProfile(university);
 
   return (
-    <article className="group rounded-[18px] border border-[#E4E2DD] bg-white p-4 shadow-[0_1px_2px_rgba(15,15,15,0.04)] transition hover:-translate-y-0.5 hover:border-[#CFCBC3] hover:shadow-[0_14px_34px_-22px_rgba(15,15,15,0.35)]">
+    <article className="group rounded-[12px] border border-[#E4E2DD] bg-white p-4 shadow-[0_1px_2px_rgba(15,15,15,0.04)] transition hover:-translate-y-0.5 hover:border-[#CFCBC3] hover:shadow-[0_14px_34px_-22px_rgba(15,15,15,0.35)]">
       <UniversityVisual university={university} />
-      <div className="flex items-start justify-between gap-4">
-        <div className="min-w-0">
+      <div className="mt-4 flex items-start justify-between gap-4 first:mt-0">
+        <div className="flex min-w-0 items-start gap-3">
+          <OfficialThumb university={university} />
+          <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
             <p className="text-[10.5px] font-black uppercase tracking-[0.08em] text-[#6E6A62]">{tierLabel(university.tier)}</p>
             <span className="h-1 w-1 rounded-full bg-[#D9D7D1]" />
             <p className="text-[11px] font-semibold text-[#6B655C]">{university.city}</p>
           </div>
           <h2 className="mt-1 text-[17px] font-black leading-[1.18] tracking-[-0.02em] text-[#171612]">{university.name}</h2>
+          </div>
         </div>
         <FitBadge fit={fit} />
       </div>
@@ -252,18 +280,18 @@ function UniversityCard({
       <p className="mt-4 text-[13px] leading-[1.65] text-[#3F3A33]">{profile.summary}</p>
 
       <div className="mt-4 grid grid-cols-3 gap-2">
-        <div className="rounded-[12px] border border-[#EFECE4] bg-[#FAFAF8] p-3">
+        <div className="rounded-[8px] border border-[#EFECE4] bg-[#FCFBF8] p-3">
           <p className="text-[9.5px] font-black uppercase tracking-[0.08em] text-[#8A847B]">Tuition / yr</p>
           <p className="mt-1 text-[13px] font-black text-[#171612]">
             {currencySymbol(university.tuition_currency)}
             {(university.tuition_min / 1000).toFixed(0)}k-{(university.tuition_max / 1000).toFixed(0)}k
           </p>
         </div>
-        <div className="rounded-[12px] border border-[#EFECE4] bg-[#FAFAF8] p-3">
+        <div className="rounded-[8px] border border-[#EFECE4] bg-[#FCFBF8] p-3">
           <p className="text-[9.5px] font-black uppercase tracking-[0.08em] text-[#8A847B]">IELTS</p>
           <p className="mt-1 text-[13px] font-black text-[#171612]">{university.ielts_min}+ overall</p>
         </div>
-        <div className="rounded-[12px] border border-[#EFECE4] bg-[#FAFAF8] p-3">
+        <div className="rounded-[8px] border border-[#EFECE4] bg-[#FCFBF8] p-3">
           <p className="text-[9.5px] font-black uppercase tracking-[0.08em] text-[#8A847B]">Entry feel</p>
           <p className="mt-1 text-[13px] font-black text-[#171612]">{university.entry_pct_min}% approx</p>
         </div>
@@ -277,7 +305,7 @@ function UniversityCard({
         ))}
       </div>
 
-      <p className="mt-3 rounded-[12px] border border-[#EFECE4] bg-[#FAFAF8] px-3 py-2.5 text-[12px] leading-[1.55] text-[#6B655C]">
+      <p className="mt-3 rounded-[8px] border border-[#EFECE4] bg-[#FCFBF8] px-3 py-2.5 text-[12px] leading-[1.55] text-[#6B655C]">
         {profile.campus_note}
       </p>
 
@@ -289,20 +317,20 @@ function UniversityCard({
               `Review ${university.name} for me. I want to study ${preferredField ?? "my field"}. Explain fit, entry requirements, fees, scholarships, risks, and whether I should shortlist it.`,
             )
           }
-          className="ab-focus inline-flex min-h-9 items-center gap-2 rounded-[9px] bg-[#2D2B27] px-3.5 text-[12px] font-black text-white transition hover:bg-[#111111]"
+          className="ab-focus inline-flex min-h-9 items-center gap-2 rounded-[6px] bg-[#2D2B27] px-3.5 text-[12px] font-black text-white transition hover:bg-[#111111]"
         >
           Ask Abroadly <ArrowRightIcon />
         </button>
-        <a href={university.official_url} target="_blank" rel="noreferrer noopener" className="ab-focus inline-flex min-h-9 items-center gap-2 rounded-[9px] border border-[#D9D7D1] bg-white px-3.5 text-[12px] font-bold text-[#2D2B27] transition hover:border-[#111111]">
+        <a href={university.official_url} target="_blank" rel="noreferrer noopener" className="ab-focus inline-flex min-h-9 items-center gap-2 rounded-[6px] border border-[#D9D7D1] bg-white px-3.5 text-[12px] font-bold text-[#2D2B27] transition hover:border-[#111111]">
           Official site <OpenIcon />
         </a>
-        <a href={profile.admissions_url} target="_blank" rel="noreferrer noopener" className="ab-focus inline-flex min-h-9 items-center gap-2 rounded-[9px] border border-[#D9D7D1] bg-white px-3.5 text-[12px] font-bold text-[#2D2B27] transition hover:border-[#111111]">
+        <a href={profile.admissions_url} target="_blank" rel="noreferrer noopener" className="ab-focus inline-flex min-h-9 items-center gap-2 rounded-[6px] border border-[#D9D7D1] bg-white px-3.5 text-[12px] font-bold text-[#2D2B27] transition hover:border-[#111111]">
           Apply <OpenIcon />
         </a>
-        <a href={profile.courses_url} target="_blank" rel="noreferrer noopener" className="ab-focus inline-flex min-h-9 items-center gap-2 rounded-[9px] border border-[#D9D7D1] bg-white px-3.5 text-[12px] font-bold text-[#2D2B27] transition hover:border-[#111111]">
+        <a href={profile.courses_url} target="_blank" rel="noreferrer noopener" className="ab-focus inline-flex min-h-9 items-center gap-2 rounded-[6px] border border-[#D9D7D1] bg-white px-3.5 text-[12px] font-bold text-[#2D2B27] transition hover:border-[#111111]">
           Courses <OpenIcon />
         </a>
-        <a href={profile.scholarships_url} target="_blank" rel="noreferrer noopener" className="ab-focus inline-flex min-h-9 items-center gap-2 rounded-[9px] border border-[#D9D7D1] bg-white px-3.5 text-[12px] font-bold text-[#2D2B27] transition hover:border-[#111111]">
+        <a href={profile.scholarships_url} target="_blank" rel="noreferrer noopener" className="ab-focus inline-flex min-h-9 items-center gap-2 rounded-[6px] border border-[#D9D7D1] bg-white px-3.5 text-[12px] font-bold text-[#2D2B27] transition hover:border-[#111111]">
           Scholarships <OpenIcon />
         </a>
       </div>
@@ -325,7 +353,7 @@ function CoursePanel({
 }) {
   return (
     <aside className="lg:sticky lg:top-5 lg:self-start">
-      <div className="rounded-[18px] border border-[#E4E2DD] bg-white p-4 shadow-[0_1px_2px_rgba(15,15,15,0.04)]">
+      <div className="rounded-[12px] border border-[#E4E2DD] bg-white p-4 shadow-[0_1px_2px_rgba(15,15,15,0.04)]">
         <div className="flex items-center justify-between gap-3">
           <div>
             <p className="text-[10.5px] font-black uppercase tracking-[0.08em] text-[#6E6A62]">Courses</p>
@@ -333,7 +361,7 @@ function CoursePanel({
               {courseFieldLabel(field)} in {COUNTRY_PROFILES[country].name}
             </h2>
           </div>
-          <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-[#F1F0EC] text-[#2D2B27]">
+          <span className="flex h-9 w-9 items-center justify-center rounded-[7px] bg-[#F1F0EC] text-[#2D2B27]">
             <SearchIcon />
           </span>
         </div>
@@ -345,7 +373,7 @@ function CoursePanel({
           {courses.map(({ course, university }) => {
             const profile = getUniversityProfile(university);
             return (
-              <div key={course.id} className="rounded-[14px] border border-[#EFECE4] bg-[#FAFAF8] p-3">
+              <div key={course.id} className="rounded-[9px] border border-[#EFECE4] bg-[#FCFBF8] p-3">
                 <div className="flex items-start gap-2.5">
                   <OfficialThumb university={university} size="small" />
                   <div className="min-w-0 flex-1">
@@ -470,7 +498,7 @@ export default function UniversitiesPage() {
     return (
       <div className="chat-layout">
         <StudentQuickTabs active="universities" />
-        <main className="chat-main flex items-center justify-center bg-[#F4F2EC] text-sm font-semibold text-[#6B655C]">
+        <main className="chat-main flex items-center justify-center bg-[#FDFCF9] text-sm font-semibold text-[#6B655C]">
           Loading university profiles...
         </main>
       </div>
@@ -481,11 +509,11 @@ export default function UniversitiesPage() {
     return (
       <div className="chat-layout">
         <StudentQuickTabs active="universities" />
-        <main className="chat-main flex items-center justify-center bg-[#F4F2EC] px-6">
-          <div className="max-w-md rounded-[18px] border border-[#E4E2DD] bg-white p-6 shadow-[0_1px_2px_rgba(15,15,15,0.04)]">
+        <main className="chat-main flex items-center justify-center bg-[#FDFCF9] px-6">
+          <div className="max-w-md rounded-[12px] border border-[#E4E2DD] bg-white p-6 shadow-[0_1px_2px_rgba(15,15,15,0.04)]">
             <h1 className="text-lg font-black tracking-[-0.02em] text-[#171612]">Could not load universities</h1>
             <p className="mt-2 text-sm leading-6 text-[#6B655C]">{error || "Please open chat and try again."}</p>
-            <Link href="/chat" className="ab-focus mt-4 inline-flex min-h-9 items-center gap-2 rounded-[9px] bg-[#2D2B27] px-3.5 text-sm font-black text-white">
+            <Link href="/chat" className="ab-focus mt-4 inline-flex min-h-9 items-center gap-2 rounded-[6px] bg-[#2D2B27] px-3.5 text-sm font-black text-white">
               Open chat <ArrowRightIcon />
             </Link>
           </div>
@@ -505,9 +533,9 @@ export default function UniversitiesPage() {
         callConsented={student.call_consent}
       />
 
-      <main className="chat-main overflow-y-auto bg-[#F4F2EC]">
+      <main className="chat-main overflow-y-auto bg-[#FDFCF9]">
         <div className="mx-auto max-w-[1440px] px-5 py-5 lg:px-8">
-          <header className="rounded-[18px] border border-[#E4E2DD] bg-[#FAFAF8] px-5 py-4 shadow-[0_1px_2px_rgba(15,15,15,0.04)]">
+          <header className="rounded-[12px] border border-[#E4E2DD] bg-[#FEFEFC] px-5 py-4 shadow-[0_1px_2px_rgba(15,15,15,0.04)]">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <h1 className="text-[25px] font-black leading-tight tracking-[-0.03em] text-[#171612]">
@@ -527,7 +555,7 @@ export default function UniversitiesPage() {
                       setActiveCountry(country);
                       setFitFilter("all");
                     }}
-                    className={`ab-focus min-h-9 rounded-[9px] border px-3.5 text-[12px] font-black transition ${
+                    className={`ab-focus min-h-9 rounded-[6px] border px-3.5 text-[12px] font-black transition ${
                       activeCountry === country
                         ? "border-[#2D2B27] bg-[#2D2B27] text-white"
                         : "border-[#D9D7D1] bg-white text-[#2D2B27] hover:border-[#111111]"
