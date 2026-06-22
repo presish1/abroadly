@@ -202,9 +202,9 @@ body {
   width: 272px;
   flex-shrink: 0;
   flex-direction: column;
-  padding: 18px 20px 14px;
-  background: #FAFAF8;
-  border-right: 1px solid #E9E7E2;
+  padding: 18px 16px 16px;
+  background: #FFFFFF;
+  border-right: 1px solid #E7E5DF;
 }
 
 @media (min-width: 1080px) {
@@ -220,7 +220,7 @@ body {
   }
 
   .chat-right-rail {
-    padding-inline: 13px;
+    padding-inline: 12px;
   }
 
   .chat-sidebar section {
@@ -228,247 +228,213 @@ body {
   }
 
   .chat-right-tab {
-    padding-inline: 9px;
+    gap: 11px;
+    padding-inline: 10px;
   }
-}
-
-.chat-right-rail-kicker {
-  margin-top: 14px;
-  padding: 14px 8px 0;
-  color: #6E6A62;
-  font-size: 10px;
-  font-weight: 750;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  border-top: 1px solid #ECEAE3;
 }
 
 .chat-left-brand {
   display: flex;
-  height: 52px;
+  min-height: 62px;
   align-items: center;
   justify-content: flex-start;
+  gap: 9px;
   background: transparent;
-  padding: 0 4px;
+  margin-bottom: 18px;
+  padding: 0 10px 12px;
+  border-bottom: 1px solid #EFEEE9;
+  color: #201F1C;
   transition: opacity 0.15s ease;
 }
 
-.chat-left-brand .brand-wordmark,
-.chat-left-brand .brand-wordmark img {
-  height: 52px;
-  mix-blend-mode: multiply;
+.chat-left-brand img {
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+}
+
+.chat-left-brand > span {
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0;
 }
 
 .chat-left-brand:hover {
   opacity: 0.8;
 }
 
+.chat-left-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
 .chat-right-tab {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 10px;
-  min-height: 46px;
+  gap: 14px;
+  min-height: 56px;
   width: 100%;
-  padding: 7px 10px 7px 12px;
-  border-radius: 9px;
-  border: 1px solid transparent;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 6px;
   background: transparent;
-  color: #2D2B27;
+  color: #2C2A27;
   text-align: left;
   box-shadow: none;
-  transition: background-color 0.15s ease, color 0.15s ease;
+  transition: background-color 0.14s ease, color 0.14s ease;
 }
 
 .chat-right-tab:hover {
-  background: #F1F0EC;
-  border-color: transparent;
+  background: #F5F4F1;
   box-shadow: none;
   transform: none;
 }
 
-/* Active "you are here" — emerald left-bar accent + cream-tinted fill.
- * Notion-style: a thin vertical accent on the leading edge instead of a
- * loud full pill. Icon tile flips to emerald-mint, label deepens to ink. */
 .chat-right-tab-active,
 .chat-right-tab[aria-current="page"] {
-  background: #ECF5EF;
-  color: #1B1916;
-}
-
-.chat-right-tab-active::before,
-.chat-right-tab[aria-current="page"]::before {
-  content: "";
-  position: absolute;
-  left: 3px;
-  top: 9px;
-  bottom: 9px;
-  width: 3px;
-  border-radius: 999px;
-  background: #0A6E45;
+  background: #EEF5F0;
+  color: #145C3C;
+  box-shadow: inset 3px 0 0 #147A4F;
 }
 
 .chat-right-tab-active .chat-right-tab-icon,
 .chat-right-tab[aria-current="page"] .chat-right-tab-icon {
-  background: #DCF0E5;
-  color: #0A6E45;
-  box-shadow: inset 0 0 0 1px rgba(10, 110, 69, 0.08);
+  color: #147A4F;
 }
 
 .chat-right-tab-active .chat-right-tab-label,
 .chat-right-tab[aria-current="page"] .chat-right-tab-label {
-  color: #0A6E45;
+  color: #145C3C;
 }
 
 .chat-right-tab-icon {
   display: flex;
-  height: 28px;
-  width: 28px;
+  height: 30px;
+  width: 30px;
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  border-radius: 7px;
-  background: #EEEEEA;
-  color: #5B5852;
-  box-shadow: none;
+  color: #34312E;
+}
+
+.chat-right-tab-icon svg {
+  width: 24px;
+  height: 24px;
+  stroke-width: 1.8;
 }
 
 .chat-right-tab-copy {
+  flex: 1;
   min-width: 0;
   display: flex;
-  flex-direction: column;
+  align-items: center;
 }
 
 .chat-right-tab-label {
-  color: #2D2B27;
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1.15;
-}
-
-.chat-right-tab-hint {
-  margin-top: 2px;
-  color: #8B887F;
-  font-size: 10.5px;
-  font-weight: 600;
+  overflow: hidden;
+  color: #2C2A27;
+  font-size: 15px;
+  font-weight: 650;
   line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-/* Tiny 8-dot progress row under the Documents count. Filled dots reflect
- * how many essentials the student has uploaded. Subtle on purpose — it's
- * an at-a-glance signal, not a full bar. */
-.chat-right-tab-progress {
-  display: inline-flex;
-  gap: 3px;
-  margin-top: 5px;
+.chat-right-tab-count,
+.chat-right-tab-alert {
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
 }
 
-.chat-right-tab-progress-dot {
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  border-radius: 999px;
-  background: #E4E2DD;
-  transition: background-color 0.18s ease;
+.chat-right-tab-count {
+  color: #8A867E;
 }
 
-.chat-right-tab-progress-dot.is-filled {
-  background: #0A6E45;
-}
-
-.chat-right-tab-active .chat-right-tab-progress-dot:not(.is-filled),
-.chat-right-tab[aria-current="page"] .chat-right-tab-progress-dot:not(.is-filled) {
-  background: #C7E0CF;
+.chat-right-tab-alert {
+  color: #B64B24;
 }
 
 .chat-left-counselor {
   margin-top: auto;
-  border: 1px solid #E4E2DD;
-  border-radius: 10px;
-  background: #FFFFFF;
-  padding: 12px;
+  overflow: hidden;
+  border: 0;
+  border-radius: 8px;
+  background: #174F35;
+  padding: 16px;
   box-shadow: none;
 }
 
 .chat-left-counselor-kicker {
-  color: #6E6A62;
+  color: #BFD9CA;
   font-size: 10px;
   font-weight: 750;
-  letter-spacing: 0.08em;
+  letter-spacing: 0;
   text-transform: uppercase;
 }
 
 .chat-left-counselor h2 {
-  margin-top: 7px;
-  color: #2D2B27;
-  font-size: 13.5px;
-  font-weight: 760;
-  letter-spacing: -0.01em;
+  margin-top: 9px;
+  color: #FFFFFF;
+  font-size: 17px;
+  font-weight: 720;
+  line-height: 1.25;
+  letter-spacing: 0;
 }
 
 .chat-left-counselor p:not(.chat-left-counselor-kicker) {
-  margin-top: 5px;
-  color: #6E6A62;
-  font-size: 11.5px;
-  font-weight: 560;
-  line-height: 1.5;
+  margin-top: 8px;
+  color: #D8E8DF;
+  font-size: 12px;
+  font-weight: 520;
+  line-height: 1.55;
 }
 
 .chat-left-counselor-btn,
 .chat-left-counselor-status {
   margin-top: 12px;
   display: inline-flex;
-  min-height: 36px;
+  min-height: 40px;
   width: 100%;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  border-radius: 8px;
+  border-radius: 6px;
   font-size: 12px;
   font-weight: 720;
 }
 
 .chat-left-counselor-btn {
-  background: #2D2B27;
-  color: #FFFFFF;
-  transition: background-color 0.15s ease;
+  background: #FFFFFF;
+  color: #174F35;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .chat-left-counselor-btn:hover {
-  background: #111111;
+  background: #F2F7F4;
+  color: #0F3B28;
   transform: none;
 }
 
-/* Settled confirmation — not a button anymore. Soft emerald-tinted chip
- * with a small accent dot on the leading edge. */
 .chat-left-counselor-status {
-  position: relative;
-  border: 1px solid #D5EADD;
-  background: #ECF5EF;
-  color: #0A6E45;
-  justify-content: flex-start;
-  padding: 0 12px 0 22px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.12);
+  color: #FFFFFF;
+  justify-content: center;
+  padding: 0 10px;
   font-weight: 700;
-  letter-spacing: -0.005em;
+  letter-spacing: 0;
 }
 
-.chat-left-counselor-status::before {
-  content: "";
-  position: absolute;
-  left: 11px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 6px;
-  height: 6px;
-  border-radius: 999px;
-  background: #0A6E45;
-  box-shadow: 0 0 0 3px rgba(10, 110, 69, 0.16);
-}
-
-/* The checkmark inside Request received: hide it (we use the accent dot
- * instead) to avoid a double-affordance feel. */
-.chat-left-counselor-status > svg {
-  display: none;
+.chat-left-counselor-status > svg,
+.chat-left-counselor-btn > svg {
+  width: 15px;
+  height: 15px;
+  stroke-width: 1.9;
 }
 
 /* ── Chat main area ────────────────────────────────────────────────── */
