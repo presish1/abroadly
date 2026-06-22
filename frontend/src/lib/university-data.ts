@@ -63,6 +63,12 @@ export interface UniversityProfile {
   logo_url?: string;
   /** Optional high-resolution campus photo override URL */
   campus_image_url?: string;
+  /** Only verified images are shown as campus photography in the UI */
+  campus_image_verified?: boolean;
+  /** Official page that identifies the photographed campus */
+  campus_image_source_url?: string;
+  /** Per-image crop focus used by the shortlist card */
+  campus_image_position?: string;
 }
 
 export interface Course {
@@ -231,7 +237,10 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://study.unimelb.edu.au/find/",
     scholarships_url: "https://scholarships.unimelb.edu.au/",
     admissions_url: "https://study.unimelb.edu.au/how-to-apply",
-    campus_image_url: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=1200&q=80",
+    campus_image_url: "https://www.unimelb.edu.au/__data/assets/image/0008/4903739/varieties/medium.jpg",
+    campus_image_verified: true,
+    campus_image_source_url: "https://www.unimelb.edu.au/sustainabilityreport/domain-1-amplifying-action-through-campus-and-communities/climate-leadership",
+    campus_image_position: "50% 46%",
     logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/University_of_Melbourne_crest_logo.svg/256px-University_of_Melbourne_crest_logo.svg.png"
   },
   sydney: {
@@ -243,7 +252,10 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     scholarships_url: "https://www.sydney.edu.au/scholarships/",
     admissions_url: "https://www.sydney.edu.au/study/how-to-apply/international-students.html",
     thumbnail_url: "https://www.sydney.edu.au/content/dam/0q5a0458_homepage_shoes_-grey.jpg",
-    campus_image_url: "https://images.unsplash.com/photo-1595113311144-2425a927d74b?auto=format&fit=crop&w=1200&q=80",
+    campus_image_url: "https://www.sydney.edu.au/content/dam/campus-facilities-and-amenities/buildings/quadrangle/high-quad-shot1.jpg",
+    campus_image_verified: true,
+    campus_image_source_url: "https://www.sydney.edu.au/engage/visit.html",
+    campus_image_position: "50% 52%",
     logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/University_of_Sydney_logo.svg/256px-University_of_Sydney_logo.svg.png"
   },
   anu: {
@@ -254,7 +266,10 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://programsandcourses.anu.edu.au/",
     scholarships_url: "https://www.anu.edu.au/study/scholarships",
     admissions_url: "https://www.anu.edu.au/study/apply",
-    campus_image_url: "https://images.unsplash.com/photo-1627556704353-016ad90c9b98?auto=format&fit=crop&w=1200&q=80",
+    campus_image_url: "https://d15k2d11r6t6rl.cloudfront.net/pub/26iz/3hlwrs6g/y71/sh7/x2h/Campus-Credit-Nic-Vevers.jpg",
+    campus_image_verified: true,
+    campus_image_source_url: "https://www.anu.edu.au/files/2025-05/VC%27s%20update%2C%20IT%20outage%20and%20more.html",
+    campus_image_position: "50% 48%",
     logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Australian_National_University_logo.svg/256px-Australian_National_University_logo.svg.png"
   },
   unsw: {
@@ -265,7 +280,10 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://www.unsw.edu.au/study/search",
     scholarships_url: "https://www.unsw.edu.au/study/how-to-apply/scholarships",
     admissions_url: "https://www.unsw.edu.au/study/how-to-apply/international",
-    campus_image_url: "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1200&q=80",
+    campus_image_url: "https://www.unsw.edu.au/content/dam/images/unsw-wide/general/buildings-facilities/2023-02-kensington/2023-02-16-General-campus-images-0021.cropimg.width%3D700.crop%3Dbasic.jpg",
+    campus_image_verified: true,
+    campus_image_source_url: "https://www.unsw.edu.au/giving/about-us",
+    campus_image_position: "50% 48%",
     logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/UNSW_Sydney_coat_of_arms.svg/256px-UNSW_Sydney_coat_of_arms.svg.png"
   },
   monash: {
@@ -276,7 +294,10 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://www.monash.edu/study/courses/find-a-course",
     scholarships_url: "https://www.monash.edu/study/fees-scholarships/scholarships",
     admissions_url: "https://www.monash.edu/study/how-to-apply/international-student-applications",
-    campus_image_url: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1200&q=80",
+    campus_image_url: "https://www.monash.edu/__data/assets/image/0005/1575365/students-studying-outside-campus-centre-2018.jpg",
+    campus_image_verified: true,
+    campus_image_source_url: "https://www.monash.edu/orientation/campuses/clayton",
+    campus_image_position: "50% 54%",
     logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Monash_University_logo.svg/256px-Monash_University_logo.svg.png"
   },
   uq: {
@@ -287,7 +308,10 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://study.uq.edu.au/study-options/programs",
     scholarships_url: "https://scholarships.uq.edu.au/",
     admissions_url: "https://study.uq.edu.au/admissions",
-    campus_image_url: "https://images.unsplash.com/photo-1607237138185-3d7c54e15992?auto=format&fit=crop&w=1200&q=80",
+    campus_image_url: "https://news.uq.edu.au/sites/default/files/styles/uqds_card/public/migrated-files/Entry%20sign.jpg?itok=Mk_YSfjJ",
+    campus_image_verified: true,
+    campus_image_source_url: "https://news.uq.edu.au/2018-06-07-uq-ranked-worlds-top-50-universities",
+    campus_image_position: "50% 50%",
     logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/The_University_of_Queensland_logo.svg/256px-The_University_of_Queensland_logo.svg.png"
   },
   uwa: {
@@ -298,7 +322,10 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://www.uwa.edu.au/study/courses",
     scholarships_url: "https://www.uwa.edu.au/study/scholarships",
     admissions_url: "https://www.uwa.edu.au/study/how-to-apply/international",
-    campus_image_url: "https://images.unsplash.com/photo-1592284619077-d779f0f90769?auto=format&fit=crop&w=1200&q=80",
+    campus_image_url: "https://www.assethub.uwa.edu.au/api/public/content/be26030f6498435790434f117d54b831?v=a20d4c8c",
+    campus_image_verified: true,
+    campus_image_source_url: "https://www.uwa.edu.au/about/leadership-and-governance/strategy-and-values/sustainability/sustainable-campus-operations",
+    campus_image_position: "50% 48%",
     logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/The_University_of_Western_Australia_crest.svg/256px-The_University_of_Western_Australia_crest.svg.png"
   },
   adelaide: {
@@ -309,7 +336,10 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://www.adelaide.edu.au/degree-finder/",
     scholarships_url: "https://international.adelaide.edu.au/admissions/scholarships",
     admissions_url: "https://international.adelaide.edu.au/admissions/how-to-apply",
-    campus_image_url: "https://images.unsplash.com/photo-1576085898323-218337e3e43c?auto=format&fit=crop&w=1200&q=80",
+    campus_image_url: "https://adelaide.edu.au/adobe/dynamicmedia/deliver/dm-aid--9cee3dbc-9c05-4322-8963-2ef6f2cc7ef9/hero-banner-sq-750x750-adelaide-city.jpg?preferwebp=true&quality=82",
+    campus_image_verified: true,
+    campus_image_source_url: "https://adelaide.edu.au/life-at-adelaide/campuses/adelaide-city-campus/",
+    campus_image_position: "50% 52%",
     logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/University_of_Adelaide_logo.svg/256px-University_of_Adelaide_logo.svg.png"
   },
   deakin: {
@@ -1004,16 +1034,31 @@ export function universityThumbnailUrl(university: University): string {
   }
 }
 
-/** Primary logo/mark used in university cards and strips. */
-export function universityLogoUrl(university: University): string {
+/** University site marks first, with curated artwork and initials as fallbacks. */
+export function universityLogoCandidates(university: University): string[] {
   const profile = UNIVERSITY_PROFILES[university.id];
-  if (profile?.logo_url) return profile.logo_url;
+  const urls: string[] = [];
+  if (profile?.logo_url) urls.push(profile.logo_url);
   try {
-    const host = new URL(university.official_url).hostname.replace(/^www\./, "");
-    return `https://logo.clearbit.com/${host}?size=160`;
+    const origin = new URL(university.official_url).origin;
+    const hostname = new URL(origin).hostname;
+    urls.push(
+      `https://www.google.com/s2/favicons?domain_url=${encodeURIComponent(origin)}&sz=128`,
+      `${origin}/favicon.ico`,
+      `${origin}/apple-touch-icon.png`,
+      `https://icons.duckduckgo.com/ip3/${hostname}.ico`,
+    );
   } catch {
-    return universityThumbnailUrl(university);
+    // The curated profile and initials fallback below still keep the card usable.
   }
+  const thumbnail = universityThumbnailUrl(university);
+  if (thumbnail) urls.push(thumbnail);
+  return [...new Set(urls)];
+}
+
+/** Primary logo/mark used by legacy consumers. */
+export function universityLogoUrl(university: University): string {
+  return universityLogoCandidates(university)[0] ?? university.official_url;
 }
 
 const COUNTRY_CAMPUS_FALLBACKS: Record<University["country"], string> = {
@@ -1030,6 +1075,14 @@ export function universityCampusImageUrl(university: University): string {
   if (profile?.campus_image_url) return profile.campus_image_url;
   if (profile?.thumbnail_url) return profile.thumbnail_url;
   return COUNTRY_CAMPUS_FALLBACKS[university.country];
+}
+
+/** Verified campus photography only; stock scenes must not be labelled as a campus. */
+export function universityVerifiedCampusImageUrl(university: University): string | null {
+  const profile = UNIVERSITY_PROFILES[university.id];
+  return profile?.campus_image_verified && profile.campus_image_url
+    ? profile.campus_image_url
+    : null;
 }
 
 export function fieldLabel(field: Course["field"]): string {
