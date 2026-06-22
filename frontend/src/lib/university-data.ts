@@ -59,6 +59,10 @@ export interface UniversityProfile {
   admissions_url: string;
   /** Optional official-domain thumbnail; falls back to the university favicon */
   thumbnail_url?: string;
+  /** Optional high-quality or transparent logo override URL */
+  logo_url?: string;
+  /** Optional high-resolution campus photo override URL */
+  campus_image_url?: string;
 }
 
 export interface Course {
@@ -218,6 +222,7 @@ export const COURSES: Course[] = [
 ];
 
 export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
+  // --- Australia ---
   melbourne: {
     summary: "Research-heavy, globally recognised, and strongest when the student has a high academic profile and wants a Melbourne base.",
     best_for: ["Research profile", "Melbourne city life", "Selective applicants"],
@@ -226,6 +231,8 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://study.unimelb.edu.au/find/",
     scholarships_url: "https://scholarships.unimelb.edu.au/",
     admissions_url: "https://study.unimelb.edu.au/how-to-apply",
+    campus_image_url: "https://images.unsplash.com/photo-1624396115160-2f3b9c978e8c?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/unimelb.edu.au?size=160"
   },
   sydney: {
     summary: "A strong Sydney option for students who want a broad course catalogue, city internships, and a highly recognised university brand.",
@@ -236,6 +243,8 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     scholarships_url: "https://www.sydney.edu.au/scholarships/",
     admissions_url: "https://www.sydney.edu.au/study/how-to-apply/international-students.html",
     thumbnail_url: "https://www.sydney.edu.au/content/dam/0q5a0458_homepage_shoes_-grey.jpg",
+    campus_image_url: "https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/sydney.edu.au?size=160"
   },
   anu: {
     summary: "A compact, academic Canberra choice for students interested in public policy, data, research, science, and quieter student life.",
@@ -245,6 +254,8 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://programsandcourses.anu.edu.au/",
     scholarships_url: "https://www.anu.edu.au/study/scholarships",
     admissions_url: "https://www.anu.edu.au/study/apply",
+    campus_image_url: "https://images.unsplash.com/photo-1598977123418-45f04b615923?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/anu.edu.au?size=160"
   },
   unsw: {
     summary: "A practical Sydney shortlist choice for computing, engineering, commerce, and data-focused students who want strong industry links.",
@@ -254,6 +265,8 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://www.unsw.edu.au/study/search",
     scholarships_url: "https://www.unsw.edu.au/study/how-to-apply/scholarships",
     admissions_url: "https://www.unsw.edu.au/study/how-to-apply/international",
+    campus_image_url: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/unsw.edu.au?size=160"
   },
   monash: {
     summary: "Large, flexible, and well-known with strong options across IT, engineering, business, health, and pathway-style planning.",
@@ -263,6 +276,8 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://www.monash.edu/study/courses/find-a-course",
     scholarships_url: "https://www.monash.edu/study/fees-scholarships/scholarships",
     admissions_url: "https://www.monash.edu/study/how-to-apply/international-student-applications",
+    campus_image_url: "https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/monash.edu?size=160"
   },
   uq: {
     summary: "A strong Brisbane option for students who want a major research university with warmer weather and comparatively calmer city life.",
@@ -272,6 +287,8 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://study.uq.edu.au/study-options/programs",
     scholarships_url: "https://scholarships.uq.edu.au/",
     admissions_url: "https://study.uq.edu.au/admissions",
+    campus_image_url: "https://images.unsplash.com/photo-1527891751199-7225231a68dd?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/uq.edu.au?size=160"
   },
   uwa: {
     summary: "A Perth-based option for students who want a quieter city, strong engineering/business pathways, and a campus-led experience.",
@@ -281,6 +298,8 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://www.uwa.edu.au/study/courses",
     scholarships_url: "https://www.uwa.edu.au/study/scholarships",
     admissions_url: "https://www.uwa.edu.au/study/how-to-apply/international",
+    campus_image_url: "https://images.unsplash.com/photo-1592284619077-d779f0f90769?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/uwa.edu.au?size=160"
   },
   adelaide: {
     summary: "A Go8 option with a more manageable city feel, useful for students comparing prestige with cost and lifestyle.",
@@ -290,6 +309,8 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://www.adelaide.edu.au/degree-finder/",
     scholarships_url: "https://international.adelaide.edu.au/admissions/scholarships",
     admissions_url: "https://international.adelaide.edu.au/admissions/how-to-apply",
+    campus_image_url: "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/adelaide.edu.au?size=160"
   },
   deakin: {
     summary: "A practical Melbourne/Geelong choice for students who want applied courses, flexible campuses, and a slightly more accessible entry profile.",
@@ -299,6 +320,8 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://www.deakin.edu.au/courses",
     scholarships_url: "https://www.deakin.edu.au/study/fees-and-scholarships/scholarships",
     admissions_url: "https://www.deakin.edu.au/study/how-to-apply/international-students",
+    campus_image_url: "https://images.unsplash.com/photo-1541829019-21873760d09b?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/deakin.edu.au?size=160"
   },
   rmit: {
     summary: "A city-campus university with a strong practical feel for design, IT, engineering, media, and business.",
@@ -308,6 +331,8 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://www.rmit.edu.au/study-with-us/international-students/programs-for-international-students",
     scholarships_url: "https://www.rmit.edu.au/students/careers-opportunities/scholarships",
     admissions_url: "https://www.rmit.edu.au/study-with-us/international-students/apply-to-rmit-international-students",
+    campus_image_url: "https://images.unsplash.com/photo-1579389083395-4507e9f4a181?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/rmit.edu.au?size=160"
   },
   latrobe: {
     summary: "A friendly Melbourne option for students looking at nursing, business, IT, and broader pathway flexibility.",
@@ -317,6 +342,8 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://www.latrobe.edu.au/courses",
     scholarships_url: "https://www.latrobe.edu.au/international/fees/scholarships",
     admissions_url: "https://www.latrobe.edu.au/international/apply",
+    campus_image_url: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/latrobe.edu.au?size=160"
   },
   uts: {
     summary: "A highly urban Sydney choice for students who want technology, business, design, and practical industry-facing study.",
@@ -326,6 +353,8 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://www.uts.edu.au/study/find-a-course",
     scholarships_url: "https://www.uts.edu.au/study/international/essential-information/scholarships-international-students",
     admissions_url: "https://www.uts.edu.au/study/international/how-apply",
+    campus_image_url: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/uts.edu.au?size=160"
   },
   macquarie: {
     summary: "A Sydney option with a campus setting, strong business/IT pathways, and good fit for students comparing city access with space.",
@@ -335,6 +364,8 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://www.mq.edu.au/study/find-a-course",
     scholarships_url: "https://www.mq.edu.au/study/admissions-and-entry/scholarships",
     admissions_url: "https://www.mq.edu.au/study/admissions-and-entry/apply/international",
+    campus_image_url: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/mq.edu.au?size=160"
   },
   qut: {
     summary: "A Brisbane university with a practical, career-oriented style across IT, engineering, business, creative industries, and health.",
@@ -344,6 +375,8 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://www.qut.edu.au/study",
     scholarships_url: "https://www.qut.edu.au/study/fees-and-scholarships/scholarships",
     admissions_url: "https://www.qut.edu.au/study/applying/international-applying",
+    campus_image_url: "https://images.unsplash.com/photo-1507537297725-24a1c029d3ca?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/qut.edu.au?size=160"
   },
   griffith: {
     summary: "A Queensland choice for students interested in health, business, hospitality, aviation, social sciences, and Gold Coast/Brisbane life.",
@@ -353,6 +386,8 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://www.griffith.edu.au/study/degrees?studentType=international",
     scholarships_url: "https://www.griffith.edu.au/international/scholarships-finance",
     admissions_url: "https://www.griffith.edu.au/apply/international",
+    campus_image_url: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/griffith.edu.au?size=160"
   },
   curtin: {
     summary: "A Perth university with practical strengths in engineering, IT, business, health, and applied sciences.",
@@ -362,6 +397,8 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://www.curtin.edu.au/study/search/",
     scholarships_url: "https://www.curtin.edu.au/study/scholarships/",
     admissions_url: "https://www.curtin.edu.au/study/international-students/apply/",
+    campus_image_url: "https://images.unsplash.com/photo-1498243691581-b148c5c44725?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/curtin.edu.au?size=160"
   },
   wollongong: {
     summary: "A coastal NSW option with strengths in computing, engineering, business, and a more contained student-city feel.",
@@ -371,6 +408,8 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://www.uow.edu.au/study/courses/",
     scholarships_url: "https://www.uow.edu.au/study/scholarships/",
     admissions_url: "https://www.uow.edu.au/study/international/apply/",
+    campus_image_url: "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/uow.edu.au?size=160"
   },
   swinburne: {
     summary: "A Melbourne technology/design option for students who like applied learning, creative fields, and industry projects.",
@@ -380,6 +419,8 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://www.swinburne.edu.au/courses/find-a-course/",
     scholarships_url: "https://www.swinburne.edu.au/courses/fees/scholarships/",
     admissions_url: "https://www.swinburne.edu.au/courses/applying/international/",
+    campus_image_url: "https://images.unsplash.com/photo-1581092921461-eab62e97a780?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/swinburne.edu.au?size=160"
   },
   westernsydney: {
     summary: "A practical Sydney-region option for nursing, business, IT, and students who want wider campus choices across Western Sydney.",
@@ -389,7 +430,554 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     courses_url: "https://www.westernsydney.edu.au/future/study/courses",
     scholarships_url: "https://www.westernsydney.edu.au/international/home/apply/scholarships",
     admissions_url: "https://www.westernsydney.edu.au/international/home/apply/admissions",
+    campus_image_url: "https://images.unsplash.com/photo-1595113311144-2425a927d74b?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/westernsydney.edu.au?size=160"
   },
+
+  // --- United Kingdom (UK) ---
+  ox: {
+    summary: "Collegiate model, intensive tutorial system, and unrivaled global prestige for highly academic achievers.",
+    best_for: ["Academic excellence", "Tutorial system", "Historic prestige"],
+    campus_note: "Oxford city. Historic colleges spread across the town. High living costs, but world-class library and academic networks.",
+    international_url: "https://www.ox.ac.uk/admissions/undergraduate",
+    courses_url: "https://www.ox.ac.uk/admissions/undergraduate/courses",
+    scholarships_url: "https://www.ox.ac.uk/admissions/undergraduate/fees-and-funding/oxford-support",
+    admissions_url: "https://www.ox.ac.uk/admissions/undergraduate/applying-to-oxford",
+    campus_image_url: "https://images.unsplash.com/photo-1548625361-155deee223c0?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/en/thumb/f/ff/Oxford-University-Logo.svg/256px-Oxford-University-Logo.svg.png"
+  },
+  cam: {
+    summary: "Collegiate setup with a deep focus on science, mathematics, and computing research alongside prestigious traditions.",
+    best_for: ["Scientific research", "Collegiate tradition", "Elite networks"],
+    campus_note: "Cambridge city. Quiet, cycle-friendly town along the River Cam. High living costs but beautiful architectural campuses.",
+    international_url: "https://www.undergraduate.study.cam.ac.uk/",
+    courses_url: "https://www.undergraduate.study.cam.ac.uk/courses",
+    scholarships_url: "https://www.undergraduate.study.cam.ac.uk/fees-and-funding/financial-support",
+    admissions_url: "https://www.undergraduate.study.cam.ac.uk/applying",
+    campus_image_url: "https://images.unsplash.com/photo-1519452635265-7b1fbfd1e4e0?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/en/thumb/c/c3/University_of_Cambridge_coat_of_arms_official.svg/256px-University_of_Cambridge_coat_of_arms_official.svg.png"
+  },
+  imperial: {
+    summary: "A global powerhouse dedicated strictly to science, engineering, business, and medicine in central London.",
+    best_for: ["Engineering / STEM", "London connections", "High-salary outcomes"],
+    campus_note: "South Kensington, London. Surrounded by world-class museums. Extremely high living costs, but intense industrial links.",
+    international_url: "https://www.imperial.ac.uk/study/",
+    courses_url: "https://www.imperial.ac.uk/study/courses/",
+    scholarships_url: "https://www.imperial.ac.uk/study/fees-and-funding/",
+    admissions_url: "https://www.imperial.ac.uk/study/apply/",
+    campus_image_url: "https://images.unsplash.com/photo-1532649538693-f3a2ec1bf8bd?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Imperial_College_London_logo.svg/256px-Imperial_College_London_logo.svg.png"
+  },
+  ucl: {
+    summary: "London's global university, offering a highly comprehensive curriculum with a research-intensive approach in Bloomsbury.",
+    best_for: ["Interdisciplinary study", "London campus life", "Broad course choices"],
+    campus_note: "Bloomsbury, central London. Classic urban campus integrated into the city. High living costs but very international student population.",
+    international_url: "https://www.ucl.ac.uk/prospective-students/",
+    courses_url: "https://www.ucl.ac.uk/prospective-students/undergraduate/degrees",
+    scholarships_url: "https://www.ucl.ac.uk/scholarships",
+    admissions_url: "https://www.ucl.ac.uk/prospective-students/undergraduate/application-and-entry",
+    campus_image_url: "https://images.unsplash.com/photo-1525920980995-f8a382bf42c5?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/ucl.ac.uk?size=160"
+  },
+  lse: {
+    summary: "A world-renowned institution specializing exclusively in social sciences, economics, and business management in central London.",
+    best_for: ["Economics / Finance", "Global policy networks", "Central London location"],
+    campus_note: "Holborn, central London. Small, highly energetic urban campus near financial and legal hubs. High living costs.",
+    international_url: "https://www.lse.ac.uk/",
+    courses_url: "https://www.lse.ac.uk/study-at-lse/Undergraduate",
+    scholarships_url: "https://www.lse.ac.uk/study-at-lse/Undergraduate/fees-and-funding",
+    admissions_url: "https://www.lse.ac.uk/study-at-lse/Undergraduate/How-to-apply",
+    campus_image_url: "https://images.unsplash.com/photo-1526244437225-c63d0edd3a04?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/lse.ac.uk?size=160"
+  },
+  kcl: {
+    summary: "A distinguished university with campuses throughout central London, heavily recognized for medicine, law, and business.",
+    best_for: ["Medical studies", "Law / Social Science", "Historic London campus"],
+    campus_note: "Strand and Guy's campuses in central London. Excellent clinical connections and historic library assets.",
+    international_url: "https://www.kcl.ac.uk/",
+    courses_url: "https://www.kcl.ac.uk/study/undergraduate",
+    scholarships_url: "https://www.kcl.ac.uk/study/undergraduate/fees-and-funding",
+    admissions_url: "https://www.kcl.ac.uk/study/undergraduate/apply",
+    campus_image_url: "https://images.unsplash.com/photo-1513829096960-ef02213d2579?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/kcl.ac.uk?size=160"
+  },
+  manchester: {
+    summary: "Largest single-site UK university with outstanding industrial history, particularly strong in engineering, computer science, and business.",
+    best_for: ["Engineering / STEM", "Student city life", "Employability"],
+    campus_note: "Manchester city. Large, integrated campus just south of the city center. Vibrant student community, moderate living costs.",
+    international_url: "https://www.manchester.ac.uk/",
+    courses_url: "https://www.manchester.ac.uk/study/undergraduate/courses/",
+    scholarships_url: "https://www.manchester.ac.uk/study/undergraduate/fees-funding/scholarships-awards/",
+    admissions_url: "https://www.manchester.ac.uk/study/undergraduate/applications/",
+    campus_image_url: "https://images.unsplash.com/photo-1569974498991-d3c12a504f9f?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/manchester.ac.uk?size=160"
+  },
+  edinburgh: {
+    summary: "One of Scotland's ancient universities, highly prestigious for computer science, artificial intelligence, and arts.",
+    best_for: ["AI and computing", "Scottish architecture", "Research prestige"],
+    campus_note: "Edinburgh city. Historic, stone-facade buildings integrated into the Scottish capital. High student satisfaction, cooler weather.",
+    international_url: "https://www.ed.ac.uk/",
+    courses_url: "https://www.ed.ac.uk/studying/undergraduate/degrees",
+    scholarships_url: "https://www.ed.ac.uk/student-funding/undergraduate",
+    admissions_url: "https://www.ed.ac.uk/studying/undergraduate/applying",
+    campus_image_url: "https://images.unsplash.com/photo-1606166325012-909ff726ada8?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/ed.ac.uk?size=160"
+  },
+  bristol: {
+    summary: "A highly selective Russell Group university located in a creative, progressive city with top-tier engineering and tech outcomes.",
+    best_for: ["STEM / CS", "Creative city vibes", "High admission standards"],
+    campus_note: "Clifton area, Bristol. Beautiful hilly campus integrated with historic suburbs. Moderate-to-high living costs.",
+    international_url: "https://www.bristol.ac.uk/",
+    courses_url: "https://www.bristol.ac.uk/study/undergraduate/search/",
+    scholarships_url: "https://www.bristol.ac.uk/fees-funding/awards/",
+    admissions_url: "https://www.bristol.ac.uk/study/undergraduate/apply/",
+    campus_image_url: "https://images.unsplash.com/photo-1569336415962-a4bd9f69cd83?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/bristol.ac.uk?size=160"
+  },
+  warwick: {
+    summary: "A modern campus-based Russell Group university with top-tier business school (WBS) and highly rated math/CS research.",
+    best_for: ["Business school", "Mathematics / Data", "Green campus life"],
+    campus_note: "Outskirts of Coventry. Large, self-contained green campus with excellent modern facilities and sports complexes.",
+    international_url: "https://warwick.ac.uk/",
+    courses_url: "https://warwick.ac.uk/study/undergraduate/courses/",
+    scholarships_url: "https://warwick.ac.uk/study/undergraduate/fees/scholarships/",
+    admissions_url: "https://warwick.ac.uk/study/undergraduate/apply/",
+    campus_image_url: "https://images.unsplash.com/photo-1559135197-8a45ea74d367?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/warwick.ac.uk?size=160"
+  },
+  glasgow: {
+    summary: "Historic university with stunning gothic architecture, offering excellent engineering, nursing, and science programs in Scotland's biggest city.",
+    best_for: ["Nursing / Health", "STEM studies", "Gothic campus scenery"],
+    campus_note: "West End, Glasgow. A gorgeous, castle-like main campus. Glasgow is extremely friendly and has moderate living costs.",
+    international_url: "https://www.gla.ac.uk/",
+    courses_url: "https://www.gla.ac.uk/undergraduate/degrees/",
+    scholarships_url: "https://www.gla.ac.uk/undergraduate/scholarships/",
+    admissions_url: "https://www.gla.ac.uk/undergraduate/apply/",
+    campus_image_url: "https://images.unsplash.com/photo-1592398579471-7b0f7e4b4737?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/gla.ac.uk?size=160"
+  },
+  durham: {
+    summary: "A prestigious collegiate university located in a historic cathedral town, emphasizing tradition, small-group teaching, and sport.",
+    best_for: ["Collegiate lifestyle", "Social sciences / Law", "High entry standards"],
+    campus_note: "Durham city. Compact collegiate campus centered around a medieval castle. Safe, quiet, and highly community-focused.",
+    international_url: "https://www.durham.ac.uk/",
+    courses_url: "https://www.durham.ac.uk/study/undergraduate/courses/",
+    scholarships_url: "https://www.durham.ac.uk/study/fees-and-funding/scholarships-and-bursaries/",
+    admissions_url: "https://www.durham.ac.uk/study/undergraduate/how-to-apply/",
+    campus_image_url: "https://images.unsplash.com/photo-1507608869274-d3177c8bb4c7?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/durham.ac.uk?size=160"
+  },
+  leeds: {
+    summary: "A highly popular single-site city campus university known for engineering, design, and top-tier student union experiences.",
+    best_for: ["Design / Engineering", "Energetic campus life", "Student support"],
+    campus_note: "Leeds city center. Walkable single-site campus with an incredible library network. Affordable living in a major student town.",
+    international_url: "https://www.leeds.ac.uk/",
+    courses_url: "https://courses.leeds.ac.uk/",
+    scholarships_url: "https://www.leeds.ac.uk/undergraduate-fees-funding/doc/scholarships",
+    admissions_url: "https://www.leeds.ac.uk/undergraduate-applying",
+    campus_image_url: "https://images.unsplash.com/photo-1576085898323-218337e3e43c?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/leeds.ac.uk?size=160"
+  },
+  sheffield: {
+    summary: "Renowned for engineering and manufacturing partnerships, with a world-class student union in a green, friendly city.",
+    best_for: ["Engineering / CS", "Outstanding student union", "Affordable living"],
+    campus_note: "Sheffield city. Integrated campus with modern engineering complexes. Very close to the Peak District park; highly affordable.",
+    international_url: "https://www.sheffield.ac.uk/",
+    courses_url: "https://www.sheffield.ac.uk/undergraduate/courses",
+    scholarships_url: "https://www.sheffield.ac.uk/undergraduate/fees-funding",
+    admissions_url: "https://www.sheffield.ac.uk/undergraduate/apply",
+    campus_image_url: "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/sheffield.ac.uk?size=160"
+  },
+  newcastle: {
+    summary: "A historic civic university located right in the center of Newcastle, popular for engineering and nursing.",
+    best_for: ["Nursing / Health", "Engineering", "City center campus"],
+    campus_note: "Newcastle city center. Beautiful red brick campus. Low living costs and highly energetic city culture.",
+    international_url: "https://www.ncl.ac.uk/",
+    courses_url: "https://www.ncl.ac.uk/undergraduate/degrees/",
+    scholarships_url: "https://www.ncl.ac.uk/undergraduate/fees-funding/scholarships-bursaries/",
+    admissions_url: "https://www.ncl.ac.uk/undergraduate/applications/",
+    campus_image_url: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/ncl.ac.uk?size=160"
+  },
+  lancaster: {
+    summary: "Collegiate campus with high student satisfaction and excellent business school rankings in the northwest of England.",
+    best_for: ["Business school", "Collegiate community", "Rural scenery"],
+    campus_note: "Lancaster outskirts. Self-contained campus. Safe collegiate communities, lower cost of living.",
+    international_url: "https://www.lancaster.ac.uk/",
+    courses_url: "https://www.lancaster.ac.uk/study/undergraduate/courses/",
+    scholarships_url: "https://www.lancaster.ac.uk/study/fees-and-funding/scholarships-and-bursaries/",
+    admissions_url: "https://www.lancaster.ac.uk/study/undergraduate/how-to-apply/",
+    campus_image_url: "https://images.unsplash.com/photo-1607237138185-3d7c54e15992?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/lancaster.ac.uk?size=160"
+  },
+  loughborough: {
+    summary: "Voted top in the UK for sport and campus community, offering strong engineering, business, and design degrees.",
+    best_for: ["Sports sciences", "Engineering", "Active campus life"],
+    campus_note: "Loughborough town. Massive single-site green campus with elite athletic infrastructure and green spaces.",
+    international_url: "https://www.lboro.ac.uk/",
+    courses_url: "https://www.lboro.ac.uk/study/undergraduate/courses/",
+    scholarships_url: "https://www.lboro.ac.uk/study/undergraduate/fees-funding/scholarships/",
+    admissions_url: "https://www.lboro.ac.uk/study/undergraduate/apply/",
+    campus_image_url: "https://images.unsplash.com/photo-1587280501635-68a0e82cd5ff?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/lboro.ac.uk?size=160"
+  },
+  bath: {
+    summary: "Highly ranked for placement opportunities, sports, and technical subjects in a beautiful historic Roman spa town.",
+    best_for: ["Industrial placements", "STEM subjects", "Safe historic town"],
+    campus_note: "Claverton Down, Bath. Modern hilltop campus with outstanding sports village overlooking a historic UNESCO city.",
+    international_url: "https://www.bath.ac.uk/",
+    courses_url: "https://www.bath.ac.uk/courses/undergraduate/",
+    scholarships_url: "https://www.bath.ac.uk/topics/undergraduate-scholarships-bursaries-and-other-funding/",
+    admissions_url: "https://www.bath.ac.uk/guides/applying-for-undergraduate-courses/",
+    campus_image_url: "https://images.unsplash.com/photo-1509228627152-72ae9ae6848d?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/bath.ac.uk?size=160"
+  },
+  surrey: {
+    summary: "Outstanding professional placement statistics, strong business programs, and closeness to London with a green campus.",
+    best_for: ["Professional placements", "Business / Hospitality", "London proximity"],
+    campus_note: "Guildford. Picturesque lakeside campus near a historic market town. Close to London (35 mins by train).",
+    international_url: "https://www.surrey.ac.uk/",
+    courses_url: "https://www.surrey.ac.uk/undergraduate",
+    scholarships_url: "https://www.surrey.ac.uk/fees-and-funding/scholarships-and-bursaries",
+    admissions_url: "https://www.surrey.ac.uk/apply",
+    campus_image_url: "https://images.unsplash.com/photo-1627556704353-016ad90c9b98?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/surrey.ac.uk?size=160"
+  },
+  york: {
+    summary: "Collegiate research-intensive university in a historic walled city, known for computer science, social policy, and creative arts.",
+    best_for: ["Social sciences", "Safe collegiate campus", "Creative design"],
+    campus_note: "Heslington, York. Beautiful lakeside campus with colleges centered around a historic city. Very safe atmosphere.",
+    international_url: "https://www.york.ac.uk/",
+    courses_url: "https://www.york.ac.uk/study/undergraduate/courses/",
+    scholarships_url: "https://www.york.ac.uk/study/undergraduate/fees-funding/scholarships/",
+    admissions_url: "https://www.york.ac.uk/study/undergraduate/applying/",
+    campus_image_url: "https://images.unsplash.com/photo-1492538368577-505f89740112?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/york.ac.uk?size=160"
+  },
+  coventry: {
+    summary: "One of the UK's leading modern universities, focused on employability, modern labs, and an integrated city campus.",
+    best_for: ["Practical engineering", "Affordable city living", "Career support"],
+    campus_note: "Coventry city center. Integrated city campus with state-of-the-art student center and tech hubs. Affordable living costs.",
+    international_url: "https://www.coventry.ac.uk/",
+    courses_url: "https://www.coventry.ac.uk/study-at-coventry/course-search/",
+    scholarships_url: "https://www.coventry.ac.uk/international-students-hub/finance/scholarships-and-discounts/",
+    admissions_url: "https://www.coventry.ac.uk/study-at-coventry/apply-now/",
+    campus_image_url: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/coventry.ac.uk?size=160"
+  },
+  uwe: {
+    summary: "A large modern university in Bristol, prioritizing partnerships, practice-led courses, and excellent graduate employment rates.",
+    best_for: ["Practice-led learning", "Business connections", "Vibrant city base"],
+    campus_note: "Frenchay campus, Bristol. Large modern site with excellent labs and transport links to downtown Bristol.",
+    international_url: "https://www.uwe.ac.uk/",
+    courses_url: "https://www.uwe.ac.uk/courses",
+    scholarships_url: "https://www.uwe.ac.uk/courses/funding/scholarships",
+    admissions_url: "https://www.uwe.ac.uk/study/applying-to-uwe-bristol",
+    campus_image_url: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/uwe.ac.uk?size=160"
+  },
+  hertfordshire: {
+    summary: "A modern university located just outside London, offering practical business, IT, and health science courses at a budget price.",
+    best_for: ["Budget UK study", "IT / CS labs", "London commuter options"],
+    campus_note: "Hatfield. Modern campuses with excellent computing facilities. Close to London (20 mins by train), lower costs.",
+    international_url: "https://www.herts.ac.uk/",
+    courses_url: "https://www.herts.ac.uk/courses",
+    scholarships_url: "https://www.herts.ac.uk/international/fees,-funding-and-scholarships/scholarships",
+    admissions_url: "https://www.herts.ac.uk/apply",
+    campus_image_url: "https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/herts.ac.uk?size=160"
+  },
+  northumbria: {
+    summary: "A practice-heavy modern university in Newcastle, with strong industry ties in business, IT, nursing, and architecture.",
+    best_for: ["Nursing / Health", "Business management", "Vibrant student town"],
+    campus_note: "Newcastle city center. Modern architecture and library structures. Affordable living and great transport access.",
+    international_url: "https://www.northumbria.ac.uk/",
+    courses_url: "https://www.northumbria.ac.uk/study-at-northumbria/courses/",
+    scholarships_url: "https://www.northumbria.ac.uk/study-at-northumbria/fees-funding/international-scholarships/",
+    admissions_url: "https://www.northumbria.ac.uk/study-at-northumbria/how-to-apply/",
+    campus_image_url: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/northumbria.ac.uk?size=160"
+  },
+  westminster: {
+    summary: "Located in the heart of London, offering highly globalized classrooms in media, law, and design.",
+    best_for: ["Media / Design", "Central London", "Multicultural environment"],
+    campus_note: "Regent Street and Harrow, London. Historic urban sites right in the commercial and fashion heart of London.",
+    international_url: "https://www.westminster.ac.uk/",
+    courses_url: "https://www.westminster.ac.uk/courses",
+    scholarships_url: "https://www.westminster.ac.uk/study/fees-and-funding/scholarships",
+    admissions_url: "https://www.westminster.ac.uk/study/how-to-apply",
+    campus_image_url: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/westminster.ac.uk?size=160"
+  },
+  greenwich: {
+    summary: "Stunning historic campus location along the River Thames, offering popular business and computing degrees in London.",
+    best_for: ["Business / Commerce", "London campus setting", "Practical IT"],
+    campus_note: "Greenwich, London. Main campus is a UNESCO World Heritage site with historic architecture on the riverbank.",
+    international_url: "https://www.gre.ac.uk/",
+    courses_url: "https://www.gre.ac.uk/study/courses",
+    scholarships_url: "https://www.gre.ac.uk/finance/funding-your-studies/scholarships-and-bursaries",
+    admissions_url: "https://www.gre.ac.uk/study/apply",
+    campus_image_url: "https://images.unsplash.com/photo-1524850301259-77298c48b499?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/gre.ac.uk?size=160"
+  },
+  demontfort: {
+    summary: "Known for design and creative industries in Leicester, with strong career coaching and accessible entry limits.",
+    best_for: ["Creative arts", "Employability support", "Accessible entry"],
+    campus_note: "Leicester. Integrated city campus near a multicultural, budget-friendly town. Excellent design studios.",
+    international_url: "https://www.dmu.ac.uk/",
+    courses_url: "https://www.dmu.ac.uk/study/courses/undergraduate-courses/undergraduate-courses.aspx",
+    scholarships_url: "https://www.dmu.ac.uk/international/fees-and-scholarships/scholarships.aspx",
+    admissions_url: "https://www.dmu.ac.uk/international/how-to-apply/how-to-apply.aspx",
+    campus_image_url: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/dmu.ac.uk?size=160"
+  },
+  bcu: {
+    summary: "A modern, industry-focused city university located in the heart of Birmingham, known for design and business.",
+    best_for: ["Creative subjects", "Birmingham CBD access", "Career mentoring"],
+    campus_note: "Birmingham city center. Modern campus buildings with advanced media centers. Low-to-moderate living costs.",
+    international_url: "https://www.bcu.ac.uk/",
+    courses_url: "https://www.bcu.ac.uk/courses",
+    scholarships_url: "https://www.bcu.ac.uk/international/fees/scholarships",
+    admissions_url: "https://www.bcu.ac.uk/about-us/maps-and-campuses/how-to-apply",
+    campus_image_url: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/bcu.ac.uk?size=160"
+  },
+  salford: {
+    summary: "A practical university located near MediaCityUK in Manchester, ideal for media, engineering, and nursing.",
+    best_for: ["Media / Broadcast", "Engineering", "Manchester networks"],
+    campus_note: "Salford, adjacent to Manchester. Modern campus with direct links to BBC/ITV centers. Affordable living.",
+    international_url: "https://www.salford.ac.uk/",
+    courses_url: "https://www.salford.ac.uk/search/courses",
+    scholarships_url: "https://www.salford.ac.uk/international/scholarships",
+    admissions_url: "https://www.salford.ac.uk/international/apply",
+    campus_image_url: "https://images.unsplash.com/photo-1590069261209-f8e9b8642343?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/salford.ac.uk?size=160"
+  },
+
+  // --- Canada (CAN) ---
+  toronto: {
+    summary: "Canada's top research powerhouse, highly selective, with three campuses across a multicultural city.",
+    best_for: ["STEM / CS", "Global prestige", "Research facilities"],
+    campus_note: "Downtown Toronto (St. George campus). Historic architecture in a busy metropolis. High living costs.",
+    international_url: "https://www.utoronto.ca/",
+    courses_url: "https://future.utoronto.ca/academics/programs/",
+    scholarships_url: "https://future.utoronto.ca/finances/scholarships/",
+    admissions_url: "https://future.utoronto.ca/apply/",
+    campus_image_url: "https://images.unsplash.com/photo-1568790308560-fc429f17a9a2?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/utoronto.ca?size=160"
+  },
+  ubc: {
+    summary: "A spectacular coastal campus with a top global rank, strong in engineering, computer science, and business.",
+    best_for: ["Ocean-side campus", "Engineering", "International networks"],
+    campus_note: "Vancouver (Point Grey). Stunning campus bordered by beaches and forests. High living costs.",
+    international_url: "https://www.ubc.ca/",
+    courses_url: "https://you.ubc.ca/programs/",
+    scholarships_url: "https://you.ubc.ca/financial-planning/scholarships-awards-international-students/",
+    admissions_url: "https://you.ubc.ca/applying-ubc/",
+    campus_image_url: "https://images.unsplash.com/photo-1627556704353-016ad90c9b98?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/ubc.ca?size=160"
+  },
+  mcgill: {
+    summary: "Prestigious bilingual city setting with outstanding medical, engineering, and science credentials.",
+    best_for: ["STEM research", "Historic campus", "Montreal life"],
+    campus_note: "Montreal, Quebec. Historic stone campus at the foot of Mount Royal. High city quality, bilingual setting.",
+    international_url: "https://www.mcgill.ca/",
+    courses_url: "https://www.mcgill.ca/undergraduate-admissions/programs",
+    scholarships_url: "https://www.mcgill.ca/undergraduate-admissions/funding",
+    admissions_url: "https://www.mcgill.ca/undergraduate-admissions/apply",
+    campus_image_url: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/mcgill.ca?size=160"
+  },
+  waterloo: {
+    summary: "Famous globally for its massive co-op program, yielding incredible employment outcomes in computer science and tech.",
+    best_for: ["Co-op program", "Tech / CS careers", "Entrepreneurship"],
+    campus_note: "Waterloo, Ontario. Modern, tech-focused campus in Canada's tech hub. Moderate living costs.",
+    international_url: "https://uwaterloo.ca/",
+    courses_url: "https://uwaterloo.ca/future-students/programs",
+    scholarships_url: "https://uwaterloo.ca/future-students/financing/scholarships",
+    admissions_url: "https://uwaterloo.ca/future-students/admissions/how-apply",
+    campus_image_url: "https://images.unsplash.com/photo-1507537297725-24a1c029d3ca?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/uwaterloo.ca?size=160"
+  },
+  mcmaster: {
+    summary: "A top research university in Ontario, highly ranked for health sciences and engineering.",
+    best_for: ["Health sciences", "Engineering", "Intimate campus"],
+    campus_note: "Hamilton, Ontario. Traditional, tree-lined collegiate campus. Lower living costs than nearby Toronto.",
+    international_url: "https://www.mcmaster.ca/",
+    courses_url: "https://future.mcmaster.ca/programs/",
+    scholarships_url: "https://future.mcmaster.ca/financial-aid/",
+    admissions_url: "https://future.mcmaster.ca/apply/",
+    campus_image_url: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/mcmaster.ca?size=160"
+  },
+  alberta: {
+    summary: "A major research university in Edmonton with vast resource networks and excellent engineering and IT pathways.",
+    best_for: ["STEM research", "Alberta resource networks", "Affordable province"],
+    campus_note: "Edmonton. Large campus overlooking the river. Cold winters, but highly supportive city and lower taxes.",
+    international_url: "https://www.ualberta.ca/",
+    courses_url: "https://www.ualberta.ca/en/programs/index.html",
+    scholarships_url: "https://www.ualberta.ca/en/admissions-programs/tuition-and-scholarships/index.html",
+    admissions_url: "https://www.ualberta.ca/en/admissions-programs/apply/index.html",
+    campus_image_url: "https://images.unsplash.com/photo-1616512659455-111d3367649f?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/ualberta.ca?size=160"
+  },
+  calgary: {
+    summary: "Located near the Rocky Mountains, offering strong corporate ties, engineering, and tech in Canada's energy hub.",
+    best_for: ["Energy / Tech", "Mountain access", "Industry ties"],
+    campus_note: "Calgary, Alberta. Modern, sunlit campus. Growing tech city with highly affordable housing options.",
+    international_url: "https://www.ucalgary.ca/",
+    courses_url: "https://www.ucalgary.ca/future-students/undergraduate/explore-programs",
+    scholarships_url: "https://www.ucalgary.ca/registrar/finances/awards",
+    admissions_url: "https://www.ucalgary.ca/future-students/undergraduate/apply",
+    campus_image_url: "https://images.unsplash.com/photo-1523580494863-6f30312245d5?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/ucalgary.ca?size=160"
+  },
+  manitoba: {
+    summary: "Highly affordable tuition rates among the U15 research group, offering solid engineering and business pathways.",
+    best_for: ["Affordable tuition", "Pragmatic pathway", "Winnipeg center"],
+    campus_note: "Winnipeg, Manitoba. Safe collegiate campus. Very cold winters, but very friendly and low-cost city.",
+    international_url: "https://umanitoba.ca/",
+    courses_url: "https://umanitoba.ca/explore/programs-of-study",
+    scholarships_url: "https://umanitoba.ca/financial-aid-and-awards",
+    admissions_url: "https://umanitoba.ca/explore/admissions-requirements",
+    campus_image_url: "https://images.unsplash.com/photo-1541829019-21873760d09b?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/umanitoba.ca?size=160"
+  },
+  concordia: {
+    summary: "A progressive, downtown Montreal university, famous for practical business, software engineering, and design.",
+    best_for: ["Design / Software", "Downtown lifestyle", "Creative community"],
+    campus_note: "Downtown Montreal. Modern buildings integrated with the city center. Vibrant, multi-cultural atmosphere.",
+    international_url: "https://www.concordia.ca/",
+    courses_url: "https://www.concordia.ca/academics/undergraduate.html",
+    scholarships_url: "https://www.concordia.ca/offices/faao.html",
+    admissions_url: "https://www.concordia.ca/admissions/undergraduate/apply.html",
+    campus_image_url: "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/concordia.ca?size=160"
+  },
+  windsor: {
+    summary: "Located on the US-Canada border, offering strong automotive engineering, computing, and business degrees.",
+    best_for: ["Automotive / STEM", "Border connections", "Affordable Ontario study"],
+    campus_note: "Windsor, Ontario (facing Detroit). Green campus with lower accommodation costs than Toronto.",
+    international_url: "https://www.uwindsor.ca/",
+    courses_url: "https://www.uwindsor.ca/156/programs",
+    scholarships_url: "https://www.uwindsor.ca/studentawards/",
+    admissions_url: "https://www.uwindsor.ca/registrar/540/how-to-apply",
+    campus_image_url: "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/uwindsor.ca?size=160"
+  },
+
+  // --- United States of America (USA) ---
+  mit: {
+    summary: "World-leading institute for computing, robotics, and engineering with an intense, entrepreneurial campus culture.",
+    best_for: ["STEM / Tech elite", "Entrepreneurship", "Research resources"],
+    campus_note: "Cambridge, Massachusetts. Modern architectural buildings along the Charles River. High living costs.",
+    international_url: "https://www.mit.edu/",
+    courses_url: "http://catalog.mit.edu/schools/",
+    scholarships_url: "https://sfs.mit.edu/undergraduate-financial-aid/",
+    admissions_url: "https://mitadmissions.org/apply/",
+    campus_image_url: "https://images.unsplash.com/photo-1564982722883-e07f9c24573c?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/MIT_logo.svg/256px-MIT_logo.svg.png"
+  },
+  stanford: {
+    summary: "Located in Silicon Valley, providing unmatched ties to the tech startup ecosystem and venture capital.",
+    best_for: ["Tech startups", "CS elite", "Silicon Valley vibes"],
+    campus_note: "Stanford, California. Beautiful mission-style sandstone buildings. Sunlit, warm, and highly elite.",
+    international_url: "https://www.stanford.edu/",
+    courses_url: "https://exploredegrees.stanford.edu/",
+    scholarships_url: "https://financialaid.stanford.edu/",
+    admissions_url: "https://admission.stanford.edu/apply/",
+    campus_image_url: "https://images.unsplash.com/photo-1508215885820-4585e56135c8?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Seal_of_Stanford_University.svg/256px-Seal_of_Stanford_University.svg.png"
+  },
+  harvard: {
+    summary: "Oldest US university with massive library networks, huge global brand recognition, and highly selective entrance requirements.",
+    best_for: ["Global networks", "Liberal arts / Sciences", "Brand recognition"],
+    campus_note: "Cambridge, Massachusetts. Historic Harvard Yard campus near Boston. High living costs but unmatched resources.",
+    international_url: "https://www.harvard.edu/",
+    courses_url: "https://handbook.fas.harvard.edu/",
+    scholarships_url: "https://college.harvard.edu/financial-aid",
+    admissions_url: "https://college.harvard.edu/admissions/apply",
+    campus_image_url: "https://images.unsplash.com/photo-1594909122845-11baa439b7bf?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Harvard_University_shield.svg/256px-Harvard_University_shield.svg.png"
+  },
+  cmu: {
+    summary: "Renowned globally as a pioneer in computer science, artificial intelligence, robotics, and design.",
+    best_for: ["AI / Robotics", "Computer Science", "Creative technology"],
+    campus_note: "Pittsburgh, Pennsylvania. Walkable urban campus. Energetic, intensely focused tech community.",
+    international_url: "https://www.cmu.edu/",
+    courses_url: "https://www.cmu.edu/hub/registrar/course-info/",
+    scholarships_url: "https://www.cmu.edu/admission/financial-aid",
+    admissions_url: "https://www.cmu.edu/admission/apply",
+    campus_image_url: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/cmu.edu?size=160"
+  },
+  ucla: {
+    summary: "Top public research university in Los Angeles, combining academic rigor with iconic California culture.",
+    best_for: ["LA networks", "CS / Engineering", "Sports / Vibe"],
+    campus_note: "Westwood, Los Angeles. Safe, leafy campus near Beverly Hills. Sunny weather, high living costs.",
+    international_url: "https://www.ucla.edu/",
+    courses_url: "https://catalog.registrar.ucla.edu/",
+    scholarships_url: "https://www.financialaid.ucla.edu/",
+    admissions_url: "https://admission.ucla.edu/apply",
+    campus_image_url: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/ucla.edu?size=160"
+  },
+  purdue: {
+    summary: "Known for aerospace, engineering, and tech, offering high-value outcomes in a supportive college town.",
+    best_for: ["Engineering", "STEM values", "Manageable budget"],
+    campus_note: "West Lafayette, Indiana. Classic Midwestern college town. Excellent labs and lower living expenses.",
+    international_url: "https://www.purdue.edu/",
+    courses_url: "https://catalog.purdue.edu/",
+    scholarships_url: "https://www.purdue.edu/sfa/",
+    admissions_url: "https://www.purdue.edu/admissions/apply/",
+    campus_image_url: "https://images.unsplash.com/photo-1584697964400-2af6a2f6204c?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/purdue.edu?size=160"
+  },
+  asu: {
+    summary: "Ranked #1 for innovation, offering a massive curriculum with advanced labs and flexible entry requirements.",
+    best_for: ["Innovation / Tech", "Warm weather", "Accessible entry"],
+    campus_note: "Tempe, Arizona. Sunlit, sprawling desert campus. Excellent modern infrastructure and lively student culture.",
+    international_url: "https://www.asu.edu/",
+    courses_url: "https://catalog.asu.edu/",
+    scholarships_url: "https://students.asu.edu/financialaid",
+    admissions_url: "https://admission.asu.edu/apply",
+    campus_image_url: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/asu.edu?size=160"
+  },
+  syracuse: {
+    summary: "Known for private university networks, strong business management, social science, and communications.",
+    best_for: ["Business / Management", "Alumni network", "Campus pride"],
+    campus_note: "Syracuse, New York. Hilltop campus with beautiful architecture. Cold winters, strong school spirit.",
+    international_url: "https://www.syracuse.edu/",
+    courses_url: "https://course-catalog.syracuse.edu/",
+    scholarships_url: "https://www.syracuse.edu/admissions/cost-aid/",
+    admissions_url: "https://www.syracuse.edu/admissions/apply/",
+    campus_image_url: "https://images.unsplash.com/photo-1607237138185-3d7c54e15992?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/syracuse.edu?size=160"
+  },
+  umass: {
+    summary: "Flagship public campus in Massachusetts, highly rated for computer science research and food services.",
+    best_for: ["Computer Science", "STEM options", "New England town"],
+    campus_note: "Amherst, Massachusetts. Beautiful, safe New England college town. Very high student dining ratings.",
+    international_url: "https://www.umass.edu/",
+    courses_url: "https://www.umass.edu/registrar/courses",
+    scholarships_url: "https://www.umass.edu/financialaid/",
+    admissions_url: "https://www.umass.edu/admissions/apply",
+    campus_image_url: "https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/umass.edu?size=160"
+  },
+  iastate: {
+    summary: "Known for engineering, agriculture, and science, offering lower tuition rates and excellent post-grad outcomes.",
+    best_for: ["Engineering values", "Affordable living", "Traditional campus"],
+    campus_note: "Ames, Iowa. Large, green, park-like campus. Affordable, friendly Midwestern community.",
+    international_url: "https://www.iastate.edu/",
+    courses_url: "https://catalog.iastate.edu/azcourses/",
+    scholarships_url: "https://www.financialaid.iastate.edu/",
+    admissions_url: "https://www.admissions.iastate.edu/apply",
+    campus_image_url: "https://images.unsplash.com/photo-1592284619077-d779f0f90769?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://logo.clearbit.com/iastate.edu?size=160"
+  }
 };
 
 export function getUniversityProfile(university: University): UniversityProfile {
@@ -418,6 +1006,8 @@ export function universityThumbnailUrl(university: University): string {
 
 /** Primary logo/mark used in university cards and strips. */
 export function universityLogoUrl(university: University): string {
+  const profile = UNIVERSITY_PROFILES[university.id];
+  if (profile?.logo_url) return profile.logo_url;
   try {
     const host = new URL(university.official_url).hostname.replace(/^www\./, "");
     return `https://logo.clearbit.com/${host}?size=160`;
@@ -437,6 +1027,7 @@ const COUNTRY_CAMPUS_FALLBACKS: Record<University["country"], string> = {
 /** A campus image or campus-like scene for university cards. */
 export function universityCampusImageUrl(university: University): string {
   const profile = UNIVERSITY_PROFILES[university.id];
+  if (profile?.campus_image_url) return profile.campus_image_url;
   if (profile?.thumbnail_url) return profile.thumbnail_url;
   return COUNTRY_CAMPUS_FALLBACKS[university.country];
 }
