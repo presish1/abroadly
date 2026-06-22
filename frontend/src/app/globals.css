@@ -69,6 +69,23 @@ html {
   scroll-behavior: smooth;
 }
 
+button,
+a,
+input,
+textarea,
+select {
+  touch-action: manipulation;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(10, 110, 69, 0.18), 0 0 0 4px rgba(10, 110, 69, 0.12);
+}
+
 body {
   min-height: 100%;
   background: var(--ab-paper);
@@ -113,7 +130,6 @@ body {
 
 .chat-layout {
   display: flex;
-  height: 100vh;
   height: 100dvh;
   overflow: hidden;
   background: #FAFAF8;
@@ -535,6 +551,9 @@ body {
   color: #111111;
   border-color: #D9D7D1;
 }
+.chat-header-btn {
+  min-height: 48px;
+}
 
 /* ── Messages container ────────────────────────────────────────────── */
 
@@ -557,7 +576,7 @@ body {
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  padding: 10px 0;
+  padding: 8px 0;
   animation: chatFadeIn 0.35s ease both;
 }
 
@@ -853,7 +872,7 @@ body {
   border: none;
   background: transparent;
   padding: 15px 18px 6px;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 500;
   color: var(--ab-ink);
   resize: none;
@@ -877,6 +896,15 @@ body {
 .chat-action-btn:hover {
   background: #F1F0EC;
   color: #2D2B27;
+}
+.chat-action-btn,
+.chat-send-btn,
+.chat-suggestion-chip,
+.chat-launcher-card,
+.chat-upload-nudge,
+.class-claim-inline,
+.chat-header-btn {
+  min-height: 48px;
 }
 .chat-action-btn:disabled {
   opacity: 0.35;
@@ -1515,6 +1543,10 @@ body {
   box-shadow: 0 0 0 3px rgba(10, 110, 69, 0.16);
 }
 
+.chat-mobile-nav {
+  display: none;
+}
+
 @media (max-width: 640px) {
   .profile-panel-layer { align-items: flex-end; }
 
@@ -1760,7 +1792,10 @@ body {
   .chat-layout,
   .chat-main { background: #FFFFFF; }
 
-  .chat-main { min-width: 0; }
+  .chat-main {
+    min-width: 0;
+    padding-bottom: 88px;
+  }
 
   .chat-header {
     min-height: 58px;
@@ -1770,14 +1805,16 @@ body {
   }
 
   .chat-header-btn {
-    min-width: 36px;
-    min-height: 36px;
+    min-width: 48px;
+    min-height: 48px;
     justify-content: center;
     padding: 0 9px;
   }
 
-  .chat-messages { padding: 12px 10px 6px; }
-  .chat-row { gap: 7px; padding: 7px 0; }
+  .chat-messages {
+    padding: 12px 10px 6px;
+  }
+  .chat-row { gap: 7px; padding: 6px 0; }
   .chat-row-ai > :first-child { width: 28px; height: 28px; border-radius: 8px; }
   .chat-row-user > :last-child { display: none; }
   .chat-bubble-user { max-width: 86%; padding: 10px 13px; border-radius: 14px 14px 4px 14px; }
@@ -1785,20 +1822,41 @@ body {
   .chat-bubble-text { font-size: 13.5px; line-height: 1.65; }
 
   .chat-footer {
-    padding: 7px 8px calc(8px + env(safe-area-inset-bottom));
+    padding: 7px 8px calc(76px + env(safe-area-inset-bottom));
     border-top: 1px solid #EFECE4;
     background: rgba(250, 250, 248, 0.96);
     backdrop-filter: blur(14px);
   }
 
-  .chat-suggestion-rail { margin: 0 -2px; padding-bottom: 8px; }
+  .chat-suggestion-rail {
+    margin: 0 -2px;
+    padding-bottom: 8px;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .chat-suggestion-rail::-webkit-scrollbar { display: none; }
   .chat-suggestion-chip { max-width: 82vw; padding: 7px 11px; font-size: 11.5px; }
   .chat-input-wrap { border-radius: 16px; box-shadow: 0 6px 20px rgba(15,15,15,0.07); }
-  .chat-input { min-height: 48px; padding: 12px 13px 3px; font-size: 16px; }
+  .chat-input { min-height: 48px; padding: 12px 13px 3px; font-size: 16px; max-height: 120px; }
   .chat-footer > div > p { display: none; }
   .chat-welcome { padding: 28px 8px 16px; }
   .chat-launcher { margin-top: 20px; gap: 8px; }
   .chat-launcher-card { padding: 11px; }
+  .chat-upload-nudge { min-height: 56px; }
+  .chat-mobile-nav {
+    display: block;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 60;
+    border-top: 1px solid #E8E5DD;
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 -8px 26px rgba(15, 15, 15, 0.06);
+    padding: 10px 8px calc(10px + env(safe-area-inset-bottom));
+  }
 }
 
 /* ── Public typography vocabulary ──────────────────────────────────────

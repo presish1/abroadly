@@ -1506,8 +1506,11 @@ export default function ChatPage() {
   const hasPriorityDoc = useRef(false);
   // Per-slot hidden inputs for the sidebar quick-upload checkboxes.
   const sidebarFileRefs = useRef<Record<string, HTMLInputElement | null>>({});
+  const messagesScrollRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const taRef = useRef<HTMLTextAreaElement>(null);
+  const shouldStickToBottom = useRef(true);
+  const [showScrollToBottom, setShowScrollToBottom] = useState(false);
 
   // Hold a ref to sendMessage so the URL-deep-link effect (below) can call the
   // latest version without re-running every time sendMessage's deps change.
@@ -1632,9 +1635,24 @@ export default function ChatPage() {
     if (phoneRequired) setProfileOpen(true);
   }, [phoneRequired]);
 
+  function syncScrollState() {
+    const el = messagesScrollRef.current;
+    if (!el) return;
+    const distanceFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
+    const nearBottom = distanceFromBottom < 140;
+    shouldStickToBottom.current = nearBottom;
+    setShowScrollToBottom(!nearBottom && el.scrollHeight > el.clientHeight + 40);
+  }
+
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (shouldStickToBottom.current) {
+      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
   }, [messages, thinking]);
+
+  useEffect(() => {
+    requestAnimationFrame(syncScrollState);
+  }, [messages.length, thinking]);
 
   // Autofocus the composer once the session is ready.
   useEffect(() => {
@@ -2091,7 +2109,7 @@ export default function ChatPage() {
         </header>
 
         {/* Messages */}
-        <div className="chat-messages">
+        <div ref={messagesScrollRef} className="chat-messages" onScroll={syncScrollState}>
           <div className="mx-auto max-w-3xl">
             {/* Empty state — personalized launcher */}
             {!hasMessages && (
@@ -2130,7 +2148,7 @@ export default function ChatPage() {
             )}
 
             {/* Conversation */}
-            <div className="space-y-1">
+            <div className="space-y-2">
               {messages.map((msg, i) => {
                 if (msg.role === "welcome_video") {
                   return (
@@ -2233,6 +2251,9 @@ export default function ChatPage() {
                 onKeyDown={onKey}
                 disabled={thinking}
                 rows={1}
+                autoCorrect="on"
+                autoCapitalize="sentences"
+                inputMode="text"
               />
               <div className="flex items-center gap-1.5 px-2 pb-2">
                 <button type="button" onClick={() => setAttachmentMenuOpen((open) => !open)} title="Reference an uploaded document" aria-label="Reference an uploaded document" aria-expanded={attachmentMenuOpen} className={`ab-focus chat-action-btn ${attachmentMenuOpen ? "is-active" : ""}`}>
@@ -2291,6 +2312,19 @@ export default function ChatPage() {
             <p className="mt-2 text-center text-[10px] text-[#B5B0A6]">Abroadly can make mistakes. Verify important details with official sources.</p>
           </div>
         </footer>
+        {showScrollToBottom && (
+          <button
+            type="button"
+            onClick={() => {
+              bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+              requestAnimationFrame(() => taRef.current?.focus());
+            }}
+            aria-label="Scroll to newest message"
+            className="ab-focus fixed bottom-24 right-4 z-50 inline-flex h-12 w-12 items-center justify-center rounded-full border border-[#E8E5DD] bg-white text-[#0A6E45] shadow-[0_10px_24px_rgba(15,15,15,0.14)] md:bottom-6"
+          >
+            <ArrowUpIcon />
+          </button>
+        )}
       </section>
 
       {/* The dashboard is now a full standalone page at /dashboard — the chat-header
