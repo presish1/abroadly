@@ -1,64 +1,294 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
-import confetti from "canvas-confetti";
 
+/* ── Canvas-confetti (loaded lazily so SSR stays clean) ─────────────── */
+async function fireConfetti() {
+  try {
+    const confetti = (await import("canvas-confetti")).default;
+    confetti({
+      particleCount: 180,
+      spread: 100,
+      origin: { y: 0.85 },
+      colors: ["#0044FF", "#4C3CE8", "#FFCC00", "#EA4335", "#34A853", "#FF9900"],
+      zIndex: 99999,
+      startVelocity: 38,
+      gravity: 0.85,
+      scalar: 1.1,
+    });
+    setTimeout(() => {
+      confetti({
+        particleCount: 80,
+        spread: 70,
+        origin: { y: 0.9, x: 0.2 },
+        colors: ["#0044FF", "#FFCC00", "#34A853"],
+        zIndex: 99999,
+      });
+    }, 180);
+    setTimeout(() => {
+      confetti({
+        particleCount: 80,
+        spread: 70,
+        origin: { y: 0.9, x: 0.8 },
+        colors: ["#4C3CE8", "#EA4335", "#FF9900"],
+        zIndex: 99999,
+      });
+    }, 360);
+  } catch {
+    // confetti is optional
+  }
+}
+
+const STORAGE_KEY = "ab_eng_popup_dismissed";
+const SESSION_KEY = "ab_eng_popup_session";
+
+function getIsDismissed(): boolean {
+  // Per-session: show again on each new login session
+  if (typeof sessionStorage !== "undefined") {
+    return sessionStorage.getItem(SESSION_KEY) === "1";
+  }
+  return false;
+}
+
+function markDismissed() {
+  try { sessionStorage.setItem(SESSION_KEY, "1"); } catch { /* ignore */ }
+}
+
+/* ── Drag/swipe to dismiss hook ─────────────────────────────────────── */
+function useDragDismiss(onDismiss: () => void, centered = true) {
+  const ref = useRef<HTMLDivElement>(null);
+  const startX = useRef(0);
+  const isDragging = useRef(false);
+
+  const handlePointerDown = useCallback((e: React.PointerEvent) => {
+    startX.current = e.clientX;
+    isDragging.current = true;
+    if (ref.current) { ref.current.style.transition = "none"; ref.current.setPointerCapture(e.pointerId); }
+  }, []);
+
+  const handlePointerMove = useCallback((e: React.PointerEvent) => {
+    if (!isDragging.current || !ref.current) return;
+    const dx = e.clientX - startX.current;
+    if (dx > 0) {
+      ref.current.style.transform = centered ? `translateX(calc(-50% + ${dx}px))` : `translateX(${dx}px)`;
+      ref.current.style.opacity = String(Math.max(0, 1 - dx / 180));
+    }
+  }, [centered]);
+
+  const handlePointerUp = useCallback((e: React.PointerEvent) => {
+    if (!isDragging.current || !ref.current) return;
+    isDragging.current = false;
+    const dx = e.clientX - startX.current;
+    if (dx > 90) {
+      ref.current.style.transition = "all 0.28s ease";
+      ref.current.style.transform = centered ? `translateX(calc(-50% + 500px))` : `translateX(500px)`;
+      ref.current.style.opacity = "0";
+      setTimeout(onDismiss, 300);
+    } else {
+      ref.current.style.transition = "all 0.28s ease";
+      ref.current.style.transform = centered ? "translateX(-50%)" : "translateX(0)";
+      ref.current.style.opacity = "1";
+    }
+  }, [onDismiss]);
+
+  return { ref, handlePointerDown, handlePointerMove, handlePointerUp };
+}
+
+/* ── Shared popup icon ───────────────────────────────────────────────── */
+function BookIcon({ small = false }: { small?: boolean }) {
+  const size = small ? "h-8 w-8" : "h-10 w-10";
+  const icon = small ? "h-4 w-4" : "h-5 w-5";
+  return (
+    <div className={`flex ${size} shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-600`}>
+      <svg className={icon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2.5"
+          d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+        />
+      </svg>
+    </div>
+  );
+}
+
+/* ── Full popup (landing page) ───────────────────────────────────────── */
 export function EnglishClassPopup() {
   const [show, setShow] = useState(false);
+  const [claimed, setClaimed] = useState(false);
+  const { ref, handlePointerDown, handlePointerMove, handlePointerUp } = useDragDismiss(() => {
+    setShow(false);
+    markDismissed();
+  });
 
   useEffect(() => {
-    // Show popup after 8 seconds of engagement
+    if (getIsDismissed()) return;
     const timer = setTimeout(() => {
-      // Only show if they haven't seen it recently
       setShow(true);
-      // Fire confetti from the bottom center when it pops up
-      confetti({
-        particleCount: 150,
-        spread: 80,
-        origin: { y: 0.9 },
-        colors: ['#0044FF', '#4C3CE8', '#FFCC00', '#EA4335', '#34A853'],
-        zIndex: 9999
-      });
-    }, 8000);
-
+    }, 6000);
     return () => clearTimeout(timer);
   }, []);
+
+  const handleClose = () => {
+    setShow(false);
+    markDismissed();
+  };
+
+  const handleClaim = async () => {
+    setClaimed(true);
+    await fireConfetti();
+    setTimeout(() => {
+      setShow(false);
+      markDismissed();
+    }, 2200);
+  };
 
   if (!show) return null;
 
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-sm overflow-hidden rounded-[24px] bg-white p-6 shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-slate-200 animate-[abFadeUp_0.5s_ease-out]">
-      <button 
-        onClick={() => setShow(false)}
-        className="absolute right-4 top-4 text-slate-400 hover:text-slate-600"
-        aria-label="Close popup"
-      >
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
-      
-      <div className="flex items-center gap-3 mb-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-blue-600">
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-          </svg>
-        </div>
-        <h3 className="font-bold text-slate-900 text-[17px] leading-tight">Free English Class</h3>
-      </div>
-      
-      <p className="text-sm text-slate-600 mb-5">
-        Upload 8 documents to your profile to claim a free IELTS/PTE/TOEFL proficiency class tailored to your target university.
+    <div
+      ref={ref}
+      className="fixed bottom-6 left-1/2 z-[1000] -translate-x-1/2 w-[92%] max-w-sm touch-pan-y select-none"
+      style={{ transform: "translateX(-50%)" }}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerLeave={handlePointerUp}
+    >
+      {/* Swipe hint */}
+      <p className="mb-2 text-center text-[10px] font-semibold text-white/70 tracking-wide drop-shadow pointer-events-none">
+        ← Swipe right to dismiss
       </p>
-      
-      <Link
-        href="/onboarding"
-        onClick={() => setShow(false)}
-        className="flex w-full items-center justify-center rounded-full bg-[#0044FF] py-3 text-sm font-bold text-white shadow-md transition hover:-translate-y-0.5 hover:bg-blue-600"
-      >
-        Claim my free class
-      </Link>
+      <div className="overflow-hidden rounded-[24px] bg-white p-6 shadow-[0_24px_60px_rgba(0,0,0,0.18)] border border-slate-100 animate-[abFadeUp_0.45s_ease-out]">
+        {/* X close */}
+        <button
+          onClick={handleClose}
+          className="absolute right-4 top-4 flex h-7 w-7 items-center justify-center rounded-full text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+          aria-label="Close"
+        >
+          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+
+        {claimed ? (
+          <div className="py-2 text-center">
+            <div className="text-3xl mb-2">🎉</div>
+            <h3 className="text-[17px] font-bold text-slate-900">You're in!</h3>
+            <p className="mt-1 text-sm text-slate-500">We'll reach out to schedule your free class.</p>
+          </div>
+        ) : (
+          <>
+            <div className="flex items-center gap-3 mb-3">
+              <BookIcon />
+              <h3 className="font-bold text-slate-900 text-[17px] leading-tight">Free English Class</h3>
+            </div>
+
+            <p className="text-[13.5px] text-slate-600 mb-5 leading-relaxed">
+              Claim a free IELTS/PTE/TOEFL proficiency class tailored to your target university. Upload 8 documents to unlock it.
+            </p>
+
+            <button
+              onClick={handleClaim}
+              className="flex w-full items-center justify-center gap-2 rounded-full bg-[#0044FF] py-3 text-sm font-bold text-white shadow-lg shadow-blue-500/30 transition hover:-translate-y-0.5 hover:bg-blue-600 active:scale-95"
+            >
+              <span>🎁</span> Claim my free class
+            </button>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ── Compact popup (chat page) ───────────────────────────────────────── */
+export function EnglishClassPopupCompact({ onOpenDocuments }: { onOpenDocuments?: () => void }) {
+  const [show, setShow] = useState(false);
+  const [claimed, setClaimed] = useState(false);
+  const { ref, handlePointerDown, handlePointerMove, handlePointerUp } = useDragDismiss(() => {
+    setShow(false);
+    markDismissed();
+  }, false); // false = not centered, swipe from right edge
+
+  useEffect(() => {
+    if (getIsDismissed()) return;
+    const timer = setTimeout(() => {
+      setShow(true);
+    }, 10000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleClose = () => {
+    setShow(false);
+    markDismissed();
+  };
+
+  const handleClaim = async () => {
+    setClaimed(true);
+    await fireConfetti();
+    setTimeout(() => {
+      setShow(false);
+      markDismissed();
+      onOpenDocuments?.();
+    }, 1800);
+  };
+
+  if (!show) return null;
+
+  return (
+    <div
+      ref={ref}
+      className="fixed bottom-4 right-4 z-[1000] w-[calc(100vw-2rem)] max-w-xs touch-pan-y select-none sm:right-5 sm:bottom-5"
+      style={{}}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerLeave={handlePointerUp}
+    >
+      <div className="overflow-hidden rounded-[20px] bg-white p-4 shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-100 animate-[abFadeUp_0.4s_ease-out]">
+        {/* X close */}
+        <button
+          onClick={handleClose}
+          className="absolute right-3 top-3 flex h-6 w-6 items-center justify-center rounded-full text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+          aria-label="Close"
+        >
+          <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+
+        {claimed ? (
+          <div className="py-1 text-center">
+            <div className="text-2xl mb-1">🎉</div>
+            <p className="text-sm font-bold text-slate-900">You're in!</p>
+            <p className="text-xs text-slate-500 mt-0.5">We'll reach out soon.</p>
+          </div>
+        ) : (
+          <>
+            <div className="flex items-start gap-2.5 pr-5">
+              <BookIcon small />
+              <div>
+                <p className="text-[13px] font-bold text-slate-900 leading-snug">Free English Class</p>
+                <p className="mt-0.5 text-[11.5px] text-slate-500 leading-relaxed">
+                  Upload 8 docs → free IELTS/PTE/TOEFL class tailored to your uni.
+                </p>
+              </div>
+            </div>
+
+            <button
+              onClick={handleClaim}
+              className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-full bg-[#0044FF] py-2 text-[12px] font-bold text-white shadow-md shadow-blue-500/25 transition hover:-translate-y-0.5 hover:bg-blue-600 active:scale-95"
+            >
+              <span>🎁</span> Claim free class
+            </button>
+
+            <p className="mt-2 text-center text-[9.5px] text-slate-400 font-medium">
+              Swipe right to dismiss
+            </p>
+          </>
+        )}
+      </div>
     </div>
   );
 }

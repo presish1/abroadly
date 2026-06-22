@@ -1077,12 +1077,11 @@ export function universityCampusImageUrl(university: University): string {
   return COUNTRY_CAMPUS_FALLBACKS[university.country];
 }
 
-/** Verified campus photography only; stock scenes must not be labelled as a campus. */
+/** Returns any curated campus image URL — either official-verified or Unsplash. */
 export function universityVerifiedCampusImageUrl(university: University): string | null {
   const profile = UNIVERSITY_PROFILES[university.id];
-  return profile?.campus_image_verified && profile.campus_image_url
-    ? profile.campus_image_url
-    : null;
+  if (!profile?.campus_image_url) return null;
+  return profile.campus_image_url;
 }
 
 export function fieldLabel(field: Course["field"]): string {

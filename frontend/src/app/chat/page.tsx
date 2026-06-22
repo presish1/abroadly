@@ -32,6 +32,7 @@ import { ESSENTIAL_SLOTS, computeDocReadiness } from "@/lib/document-catalog";
 import { StudentQuickTabs } from "@/components/student-quick-tabs";
 import { ServiceRequestModal } from "@/components/service-request-modal";
 import { ModalShell } from "@/components/modal-shell";
+import { EnglishClassPopupCompact } from "@/components/english-class-popup";
 import {
   decideChatEngagement,
   emptyChatEngagementMemory,
@@ -2318,6 +2319,7 @@ export default function ChatPage() {
           }}
         />
       )}
+      <EnglishClassPopupCompact onOpenDocuments={() => router.push("/chat/documents")} />
     </main>
   );
 }

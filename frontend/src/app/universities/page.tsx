@@ -161,7 +161,16 @@ function UniversityVisual({ university }: { university: University }) {
   const profile = getUniversityProfile(university);
   const imageUrl = universityVerifiedCampusImageUrl(university);
 
-  if (!imageUrl || failed) return null;
+  if (!imageUrl || failed) {
+    // Fallback: show a subtle gradient placeholder with the university name
+    return (
+      <div className="relative h-24 overflow-hidden rounded-[12px] bg-gradient-to-br from-[#F1F0EC] to-[#E8E5DD] sm:h-32">
+        <div className="absolute inset-0 flex items-center justify-center">
+          <p className="text-[11px] font-black uppercase tracking-[0.08em] text-[#A8A29A]">{university.city} · {university.country}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative overflow-hidden rounded-[12px] border border-[#E8E5DD] bg-[#F1F0EC]">
@@ -171,7 +180,7 @@ function UniversityVisual({ university }: { university: University }) {
         loading="lazy"
         referrerPolicy="no-referrer"
         onError={() => setFailed(true)}
-        className="h-36 w-full object-cover sm:h-44"
+        className="h-32 w-full object-cover sm:h-44"
         style={{ objectPosition: profile.campus_image_position ?? "50% 50%" }}
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-black/5" />
@@ -180,13 +189,13 @@ function UniversityVisual({ university }: { university: University }) {
           href={profile.campus_image_source_url}
           target="_blank"
           rel="noreferrer noopener"
-          className="ab-focus absolute right-3 top-3 inline-flex min-h-7 items-center gap-1.5 rounded-[6px] bg-white/92 px-2.5 text-[10px] font-black text-[#2D2B27] shadow-[0_5px_16px_rgba(15,15,15,0.16)] backdrop-blur"
+          className="ab-focus absolute right-2 top-2 inline-flex min-h-6 items-center gap-1 rounded-[5px] bg-white/90 px-2 text-[9.5px] font-black text-[#2D2B27] shadow backdrop-blur"
           title="Open official campus photo source"
         >
-          Photo source <OpenIcon />
+          Photo <OpenIcon />
         </a>
       )}
-      <div className="absolute bottom-0 left-0 right-0 p-3">
+      <div className="absolute bottom-0 left-0 right-0 p-2.5">
         <div className="flex items-end justify-between gap-2">
           <p className="text-[11px] font-semibold text-white/90 drop-shadow">{university.city}</p>
           <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-white/85 drop-shadow">
@@ -260,82 +269,81 @@ function UniversityCard({
   const profile = getUniversityProfile(university);
 
   return (
-    <article className="group rounded-[12px] border border-[#E4E2DD] bg-white p-4 shadow-[0_1px_2px_rgba(15,15,15,0.04)] transition hover:-translate-y-0.5 hover:border-[#CFCBC3] hover:shadow-[0_14px_34px_-22px_rgba(15,15,15,0.35)]">
+    <article className="group rounded-[12px] border border-[#E4E2DD] bg-white shadow-[0_1px_2px_rgba(15,15,15,0.04)] transition hover:-translate-y-0.5 hover:border-[#CFCBC3] hover:shadow-[0_14px_34px_-22px_rgba(15,15,15,0.35)] overflow-hidden">
       <UniversityVisual university={university} />
-      <div className="mt-4 flex items-start justify-between gap-4 first:mt-0">
-        <div className="flex min-w-0 items-start gap-3">
-          <OfficialThumb university={university} />
-          <div className="min-w-0">
-          <div className="flex flex-wrap items-center gap-2">
-            <p className="text-[10.5px] font-black uppercase tracking-[0.08em] text-[#6E6A62]">{tierLabel(university.tier)}</p>
-            <span className="h-1 w-1 rounded-full bg-[#D9D7D1]" />
-            <p className="text-[11px] font-semibold text-[#6B655C]">{university.city}</p>
+      <div className="p-4">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex min-w-0 items-start gap-3">
+            <OfficialThumb university={university} />
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-1.5">
+                <p className="text-[10px] font-black uppercase tracking-[0.08em] text-[#6E6A62]">{tierLabel(university.tier)}</p>
+                <span className="h-1 w-1 rounded-full bg-[#D9D7D1]" />
+                <p className="text-[10.5px] font-semibold text-[#6B655C]">{university.city}</p>
+              </div>
+              <h2 className="mt-1 text-[16px] font-black leading-[1.2] tracking-[-0.02em] text-[#171612] sm:text-[17px]">{university.name}</h2>
+            </div>
           </div>
-          <h2 className="mt-1 text-[17px] font-black leading-[1.18] tracking-[-0.02em] text-[#171612]">{university.name}</h2>
+          <FitBadge fit={fit} />
+        </div>
+
+        <p className="mt-3 text-[12.5px] leading-[1.65] text-[#3F3A33] sm:text-[13px]">{profile.summary}</p>
+
+        <div className="mt-3 grid grid-cols-3 gap-1.5 sm:gap-2">
+          <div className="rounded-[7px] border border-[#EFECE4] bg-[#FCFBF8] p-2 sm:p-3">
+            <p className="text-[9px] font-black uppercase tracking-[0.08em] text-[#8A847B]">Tuition / yr</p>
+            <p className="mt-0.5 text-[12px] font-black text-[#171612] sm:text-[13px]">
+              {currencySymbol(university.tuition_currency)}
+              {(university.tuition_min / 1000).toFixed(0)}k–{(university.tuition_max / 1000).toFixed(0)}k
+            </p>
+          </div>
+          <div className="rounded-[7px] border border-[#EFECE4] bg-[#FCFBF8] p-2 sm:p-3">
+            <p className="text-[9px] font-black uppercase tracking-[0.08em] text-[#8A847B]">IELTS</p>
+            <p className="mt-0.5 text-[12px] font-black text-[#171612] sm:text-[13px]">{university.ielts_min}+ band</p>
+          </div>
+          <div className="rounded-[7px] border border-[#EFECE4] bg-[#FCFBF8] p-2 sm:p-3">
+            <p className="text-[9px] font-black uppercase tracking-[0.08em] text-[#8A847B]">Entry</p>
+            <p className="mt-0.5 text-[12px] font-black text-[#171612] sm:text-[13px]">{university.entry_pct_min}%+</p>
           </div>
         </div>
-        <FitBadge fit={fit} />
-      </div>
 
-      <p className="mt-4 text-[13px] leading-[1.65] text-[#3F3A33]">{profile.summary}</p>
-
-      <div className="mt-4 grid grid-cols-3 gap-2">
-        <div className="rounded-[8px] border border-[#EFECE4] bg-[#FCFBF8] p-3">
-          <p className="text-[9.5px] font-black uppercase tracking-[0.08em] text-[#8A847B]">Tuition / yr</p>
-          <p className="mt-1 text-[13px] font-black text-[#171612]">
-            {currencySymbol(university.tuition_currency)}
-            {(university.tuition_min / 1000).toFixed(0)}k-{(university.tuition_max / 1000).toFixed(0)}k
-          </p>
+        <div className="mt-3 flex flex-wrap gap-1.5">
+          {profile.best_for.map((item) => (
+            <span key={item} className="rounded-full border border-[#E8E5DD] bg-[#FAFAF8] px-2 py-0.5 text-[10.5px] font-bold text-[#3F3A33]">
+              {item}
+            </span>
+          ))}
         </div>
-        <div className="rounded-[8px] border border-[#EFECE4] bg-[#FCFBF8] p-3">
-          <p className="text-[9.5px] font-black uppercase tracking-[0.08em] text-[#8A847B]">IELTS</p>
-          <p className="mt-1 text-[13px] font-black text-[#171612]">{university.ielts_min}+ overall</p>
+
+        <p className="mt-3 rounded-[8px] border border-[#EFECE4] bg-[#FCFBF8] px-3 py-2 text-[11.5px] leading-[1.55] text-[#6B655C]">
+          {profile.campus_note}
+        </p>
+
+        <div className="mt-3 flex flex-wrap items-center gap-1.5 sm:gap-2">
+          <button
+            type="button"
+            onClick={() =>
+              onAsk(
+                `Review ${university.name} for me. I want to study ${preferredField ?? "my field"}. Explain fit, entry requirements, fees, scholarships, risks, and whether I should shortlist it.`,
+              )
+            }
+            className="ab-focus inline-flex min-h-8 items-center gap-1.5 rounded-[6px] bg-[#2D2B27] px-3 text-[11.5px] font-black text-white transition hover:bg-[#111111] sm:min-h-9 sm:px-3.5 sm:text-[12px]"
+          >
+            Ask Abroadly <ArrowRightIcon />
+          </button>
+          <a href={university.official_url} target="_blank" rel="noreferrer noopener" className="ab-focus inline-flex min-h-8 items-center gap-1.5 rounded-[6px] border border-[#D9D7D1] bg-white px-3 text-[11.5px] font-bold text-[#2D2B27] transition hover:border-[#111111] sm:min-h-9 sm:px-3.5 sm:text-[12px]">
+            Site <OpenIcon />
+          </a>
+          <a href={profile.admissions_url} target="_blank" rel="noreferrer noopener" className="ab-focus inline-flex min-h-8 items-center gap-1.5 rounded-[6px] border border-[#D9D7D1] bg-white px-3 text-[11.5px] font-bold text-[#2D2B27] transition hover:border-[#111111] sm:min-h-9 sm:px-3.5 sm:text-[12px]">
+            Apply <OpenIcon />
+          </a>
+          <a href={profile.scholarships_url} target="_blank" rel="noreferrer noopener" className="ab-focus inline-flex min-h-8 items-center gap-1.5 rounded-[6px] border border-[#D9D7D1] bg-white px-3 text-[11.5px] font-bold text-[#2D2B27] transition hover:border-[#111111] sm:min-h-9 sm:px-3.5 sm:text-[12px]">
+            Scholarships <OpenIcon />
+          </a>
         </div>
-        <div className="rounded-[8px] border border-[#EFECE4] bg-[#FCFBF8] p-3">
-          <p className="text-[9.5px] font-black uppercase tracking-[0.08em] text-[#8A847B]">Entry feel</p>
-          <p className="mt-1 text-[13px] font-black text-[#171612]">{university.entry_pct_min}% approx</p>
-        </div>
+
+        <p className="mt-2.5 text-[10.5px] leading-[1.45] text-[#8A847B]">{FIT_COPY[fit].note} Always confirm on official pages.</p>
       </div>
-
-      <div className="mt-4 flex flex-wrap gap-2">
-        {profile.best_for.map((item) => (
-          <span key={item} className="rounded-full border border-[#E8E5DD] bg-[#FAFAF8] px-2.5 py-1 text-[11px] font-bold text-[#3F3A33]">
-            {item}
-          </span>
-        ))}
-      </div>
-
-      <p className="mt-3 rounded-[8px] border border-[#EFECE4] bg-[#FCFBF8] px-3 py-2.5 text-[12px] leading-[1.55] text-[#6B655C]">
-        {profile.campus_note}
-      </p>
-
-      <div className="mt-4 flex flex-wrap items-center gap-2">
-        <button
-          type="button"
-          onClick={() =>
-            onAsk(
-              `Review ${university.name} for me. I want to study ${preferredField ?? "my field"}. Explain fit, entry requirements, fees, scholarships, risks, and whether I should shortlist it.`,
-            )
-          }
-          className="ab-focus inline-flex min-h-9 items-center gap-2 rounded-[6px] bg-[#2D2B27] px-3.5 text-[12px] font-black text-white transition hover:bg-[#111111]"
-        >
-          Ask Abroadly <ArrowRightIcon />
-        </button>
-        <a href={university.official_url} target="_blank" rel="noreferrer noopener" className="ab-focus inline-flex min-h-9 items-center gap-2 rounded-[6px] border border-[#D9D7D1] bg-white px-3.5 text-[12px] font-bold text-[#2D2B27] transition hover:border-[#111111]">
-          Official site <OpenIcon />
-        </a>
-        <a href={profile.admissions_url} target="_blank" rel="noreferrer noopener" className="ab-focus inline-flex min-h-9 items-center gap-2 rounded-[6px] border border-[#D9D7D1] bg-white px-3.5 text-[12px] font-bold text-[#2D2B27] transition hover:border-[#111111]">
-          Apply <OpenIcon />
-        </a>
-        <a href={profile.courses_url} target="_blank" rel="noreferrer noopener" className="ab-focus inline-flex min-h-9 items-center gap-2 rounded-[6px] border border-[#D9D7D1] bg-white px-3.5 text-[12px] font-bold text-[#2D2B27] transition hover:border-[#111111]">
-          Courses <OpenIcon />
-        </a>
-        <a href={profile.scholarships_url} target="_blank" rel="noreferrer noopener" className="ab-focus inline-flex min-h-9 items-center gap-2 rounded-[6px] border border-[#D9D7D1] bg-white px-3.5 text-[12px] font-bold text-[#2D2B27] transition hover:border-[#111111]">
-          Scholarships <OpenIcon />
-        </a>
-      </div>
-
-      <p className="mt-3 text-[11px] leading-[1.45] text-[#8A847B]">{FIT_COPY[fit].note} Always confirm exact requirements on the official pages.</p>
     </article>
   );
 }
