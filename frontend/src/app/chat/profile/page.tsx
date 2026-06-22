@@ -88,6 +88,10 @@ function englishGoalLabel(value: string | null | undefined): string {
   }
 }
 
+function firstItem(value: string | null | undefined): string {
+  return value?.trim() || "Not set";
+}
+
 export default function ChatProfilePage() {
   const router = useRouter();
   const [student, setStudent] = useState<StudentOut | null>(null);
@@ -148,6 +152,9 @@ export default function ChatProfilePage() {
       ].filter((item) => Boolean(item)).length / 14
     ) * 100
   );
+  const headerNote = student.profile_completed
+    ? "Your profile is already onboarded. This page is for keeping it precise."
+    : "Finish the basics once, then keep refining the same record over time.";
   const englishLine = student.english_test_taken
     ? [student.english_test_type, student.english_overall_score ? `Overall ${student.english_overall_score}` : null, student.english_lowest_score ? `Lowest ${student.english_lowest_score}` : null]
         .filter(Boolean)
@@ -238,226 +245,263 @@ export default function ChatProfilePage() {
       <section className="chat-main docs-main overflow-y-auto">
         <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
           <div className="overflow-hidden rounded-[30px] border border-[#E8E5DD] bg-white shadow-[0_18px_42px_-28px_rgba(31,27,75,0.18)]">
-            <div className="grid gap-6 bg-[linear-gradient(180deg,#FBFAF7_0%,#FFFFFF_100%)] p-6 sm:p-8 lg:grid-cols-[1.25fr_0.75fr] lg:items-end">
-              <div>
-                <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#0A6E45]">Profile</p>
-                <h1 className="mt-2 text-[30px] font-black tracking-[-0.04em] text-[#1B1916] sm:text-[36px]">
-                  Your study record, not a blank form.
-                </h1>
-                <p className="mt-3 max-w-2xl text-[14px] leading-7 text-[#6B655C]">
-                  This page now reflects the details you already gave us during onboarding: academic background, English-test status, destination plan, and budget intent — so nothing feels generic.
-                </p>
-              </div>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <div className="rounded-[20px] border border-[#E8E5DD] bg-[#FAF9F6] p-4">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#0A6E45]">Profile strength</p>
-                  <div className="mt-3 flex items-end justify-between gap-3">
-                    <div>
-                      <p className="text-[28px] font-black leading-none text-[#1B1916]">{profilePct}%</p>
-                      <p className="mt-1 text-[12px] text-[#6B655C]">Based on onboarding data</p>
-                    </div>
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#E8F2EC] text-[11px] font-black text-[#0A6E45]">{profilePct}%</div>
-                  </div>
+            <div className="border-b border-[#E8E5DD] bg-[#FBFAF7] px-5 py-5 sm:px-6">
+              <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+                <div className="max-w-2xl">
+                  <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#0A6E45]">Profile</p>
+                  <h1 className="mt-2 text-[30px] font-black tracking-[-0.04em] text-[#1B1916] sm:text-[36px]">
+                    {student.full_name}'s study profile
+                  </h1>
+                  <p className="mt-2 text-[14px] leading-7 text-[#6B655C]">{headerNote}</p>
                 </div>
-                <div className="rounded-[20px] border border-[#E8E5DD] bg-[#FAF9F6] p-4">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#0A6E45]">Documents</p>
-                  <p className="mt-3 text-[28px] font-black leading-none text-[#1B1916]">{essentialsDone}<span className="text-[#A8A29A]">/{essentialsTotal}</span></p>
-                  <p className="mt-1 text-[12px] text-[#6B655C]">{essentialsPct}% essentials uploaded</p>
+
+                <div className="grid gap-3 sm:grid-cols-3">
+                  <div className="rounded-[18px] border border-[#E8E5DD] bg-white px-4 py-3">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#8A847B]">Progress</p>
+                    <p className="mt-1 text-[24px] font-black leading-none text-[#1B1916]">{profilePct}%</p>
+                    <p className="mt-1 text-[11px] text-[#6B655C]">Profile completeness</p>
+                  </div>
+                  <div className="rounded-[18px] border border-[#E8E5DD] bg-white px-4 py-3">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#8A847B]">Docs</p>
+                    <p className="mt-1 text-[24px] font-black leading-none text-[#1B1916]">{essentialsDone}<span className="text-[#A8A29A]">/{essentialsTotal}</span></p>
+                    <p className="mt-1 text-[11px] text-[#6B655C]">{essentialsPct}% uploaded</p>
+                  </div>
+                  <div className="rounded-[18px] border border-[#E8E5DD] bg-white px-4 py-3">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#8A847B]">Status</p>
+                    <p className="mt-1 text-[15px] font-black leading-tight text-[#1B1916]">{student.profile_completed ? "Onboarded" : "Still setting up"}</p>
+                    <p className="mt-1 text-[11px] text-[#6B655C]">{student.profile_completed ? "Keep it current" : "Finish once, reuse everywhere"}</p>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <div className="mt-6 grid gap-6 xl:grid-cols-[0.98fr_1.02fr]">
-            <aside className="space-y-6">
-              <section className="rounded-[26px] border border-[#E8E5DD] bg-white p-5 shadow-[0_1px_2px_rgba(15,15,15,0.04)]">
-                <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#0A6E45]">At a glance</p>
-                <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                  {[
-                    ["Name", student.full_name],
-                    ["Phone", student.phone],
-                    ["City / district", student.location],
-                    ["Study level", studyLevelLabel],
-                    ["Intake", intakeLabel],
-                    ["Budget", budgetLabel],
-                  ].map(([label, value]) => (
-                    <div key={label} className="rounded-[18px] border border-[#EFECE4] bg-[#FBFBF9] px-4 py-3">
-                      <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#8A847B]">{label}</p>
-                      <p className="mt-1.5 text-[13px] font-semibold text-[#1B1916]">{value || "Not set"}</p>
+            <div className="grid gap-0 xl:grid-cols-[320px_minmax(0,1fr)]">
+              <aside className="border-b border-[#E8E5DD] bg-[#FCFBF8] p-5 xl:border-b-0 xl:border-r">
+                <div className="sticky top-5 space-y-4">
+                  <section className="rounded-[24px] border border-[#E8E5DD] bg-white p-4">
+                    <div className="flex items-center justify-between gap-3">
+                      <div>
+                        <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#0A6E45]">Study passport</p>
+                        <h2 className="mt-1 text-[18px] font-black tracking-[-0.02em] text-[#1B1916]">What we already know</h2>
+                      </div>
+                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#E8F2EC] text-[11px] font-black text-[#0A6E45]">{profilePct}%</div>
                     </div>
-                  ))}
-                </div>
-              </section>
-
-              <section className="rounded-[26px] border border-[#E8E5DD] bg-white p-5 shadow-[0_1px_2px_rgba(15,15,15,0.04)]">
-                <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#0A6E45]">Academic snapshot</p>
-                <div className="mt-4 grid gap-3">
-                  {[
-                    ["Qualification year", student.qualification_year ? String(student.qualification_year) : "Not set"],
-                    ["Education level", educationLabel(student.education_level)],
-                    ["Academic score", student.academic_score || student.gpa?.toString() || "Not set"],
-                    ["Score style", scoreTypeLabel(student.score_type)],
-                  ].map(([label, value]) => (
-                    <div key={label} className="flex items-center justify-between gap-4 rounded-[16px] border border-[#EFECE4] bg-[#FBFBF9] px-4 py-3">
-                      <span className="text-[12px] font-semibold text-[#6B655C]">{label}</span>
-                      <span className="text-[12.5px] font-bold text-[#1B1916]">{value}</span>
+                    <div className="mt-4 space-y-3">
+                      {[
+                        ["Name", student.full_name],
+                        ["Phone", student.phone],
+                        ["Location", student.location],
+                        ["Education", educationLabel(student.education_level)],
+                        ["Study level", studyLevelLabel],
+                        ["Countries", targetCountries.length ? `${targetCountries.length} selected` : "Not set"],
+                        ["Budget", budgetLabel],
+                      ].map(([label, value]) => (
+                        <div key={label} className="flex items-center justify-between gap-4 border-b border-dashed border-[#EFEAE0] pb-2 last:border-b-0 last:pb-0">
+                          <span className="text-[12px] font-semibold text-[#6B655C]">{label}</span>
+                          <span className="text-right text-[12.5px] font-bold text-[#1B1916]">{firstItem(value)}</span>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              </section>
+                  </section>
 
-              <section className="rounded-[26px] border border-[#E8E5DD] bg-white p-5 shadow-[0_1px_2px_rgba(15,15,15,0.04)]">
-                <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#0A6E45]">English plan</p>
-                <div className="mt-4 space-y-3">
-                  <div className="rounded-[18px] border border-[#EFECE4] bg-[#FBFBF9] px-4 py-3">
-                    <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#8A847B]">Test taken</p>
-                    <p className="mt-1.5 text-[13px] font-semibold text-[#1B1916]">{yesNoLabel(student.english_test_taken)}</p>
-                  </div>
-                  <div className="rounded-[18px] border border-[#EFECE4] bg-[#FBFBF9] px-4 py-3">
-                    <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#8A847B]">
-                      {student.english_test_taken ? "Test details" : "Class / test goal"}
-                    </p>
-                    <p className="mt-1.5 text-[13px] font-semibold text-[#1B1916]">
-                      {englishLine || "Not set"}
-                    </p>
-                  </div>
-                </div>
-              </section>
+                  <section className="rounded-[24px] border border-[#E8E5DD] bg-white p-4">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#0A6E45]">Next best fixes</p>
+                    <div className="mt-3 space-y-2">
+                      {[
+                        student.phone?.trim() ? null : "Add your phone number",
+                        targetCountries.length ? null : "Choose target countries",
+                        form.gpa.trim() ? null : "Review your GPA",
+                        form.preferred_field.trim() ? null : "Set your study field",
+                      ].filter(Boolean).map((item) => (
+                        <div key={item as string} className="flex items-center gap-2 rounded-[16px] bg-[#FAF9F6] px-3 py-2 text-[12px] font-semibold text-[#3F3A33]">
+                          <span className="h-2 w-2 rounded-full bg-[#0A6E45]" />
+                          {item}
+                        </div>
+                      ))}
+                      {![
+                        student.phone?.trim() ? null : "Add your phone number",
+                        targetCountries.length ? null : "Choose target countries",
+                        form.gpa.trim() ? null : "Review your GPA",
+                        form.preferred_field.trim() ? null : "Set your study field",
+                      ].filter(Boolean).length && (
+                        <p className="rounded-[16px] bg-[#F4FAF7] px-3 py-3 text-[12px] font-semibold text-[#0A6E45]">Everything important is filled. Keep it updated when things change.</p>
+                      )}
+                    </div>
+                  </section>
 
-              <section className="rounded-[26px] border border-[#E8E5DD] bg-white p-5 shadow-[0_1px_2px_rgba(15,15,15,0.04)]">
-                <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#0A6E45]">Destination plan</p>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {targetCountries.length ? targetCountries.map((country) => (
-                    <span key={country} className="inline-flex items-center rounded-full border border-[#D7E7DE] bg-[#ECF5EF] px-3 py-1.5 text-[12px] font-bold text-[#0A6E45]">
-                      {country}
-                    </span>
-                  )) : (
-                    <p className="text-[13px] text-[#6B655C]">No destination chosen yet.</p>
-                  )}
+                  <section className="rounded-[24px] border border-[#E8E5DD] bg-white p-4">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#0A6E45]">Shortcuts</p>
+                    <div className="mt-3 grid gap-2">
+                      <a href="/chat/documents" className="ab-focus rounded-[16px] border border-[#E8E5DD] px-3 py-2.5 text-[12px] font-bold text-[#1B1916] transition hover:border-[#0A6E45] hover:bg-[#FAF9F6]">Manage documents</a>
+                      <a href="/universities" className="ab-focus rounded-[16px] border border-[#E8E5DD] px-3 py-2.5 text-[12px] font-bold text-[#1B1916] transition hover:border-[#0A6E45] hover:bg-[#FAF9F6]">Browse universities</a>
+                    </div>
+                  </section>
                 </div>
-                <div className="mt-4 rounded-[18px] border border-[#EFECE4] bg-[#FBFBF9] px-4 py-3">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#8A847B]">Preferred field</p>
-                  <p className="mt-1.5 text-[13px] font-semibold text-[#1B1916]">{student.preferred_field || "Not set"}</p>
-                </div>
-                <div className="mt-3 rounded-[18px] border border-[#EFECE4] bg-[#FBFBF9] px-4 py-3">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#8A847B]">Goals</p>
-                  <p className="mt-1.5 line-clamp-4 text-[13px] leading-6 text-[#3F3A33]">{student.goals || "No goal added yet."}</p>
-                </div>
-              </section>
-            </aside>
+              </aside>
 
-            <section className="rounded-[26px] border border-[#E8E5DD] bg-white p-5 shadow-[0_1px_2px_rgba(15,15,15,0.04)] sm:p-6">
-              <div className="flex flex-wrap items-end justify-between gap-3">
-                <div>
-                  <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#0A6E45]">Edit core details</p>
-                  <h2 className="mt-1 text-[22px] font-black tracking-[-0.03em] text-[#1B1916]">Keep the live profile clean</h2>
-                  <p className="mt-1.5 max-w-xl text-[13.5px] leading-6 text-[#6B655C]">
-                    These are the fields we use most often in chat and recommendations. The rest of your onboarding data is summarized on the left so you can see what the assistant already knows.
-                  </p>
-                </div>
-                <div className="rounded-full border border-[#D7E7DE] bg-[#F4FAF7] px-3 py-1.5 text-[11px] font-bold text-[#0A6E45]">
-                  {student.profile_completed ? "Onboarded" : "Needs review"}
-                </div>
-              </div>
-
-              <form onSubmit={saveProfile} className="mt-6 space-y-6">
-                <div className="grid gap-5 sm:grid-cols-2">
-                  <div>
-                    <label className={LABEL_CLS}>Full name</label>
-                    <input className={INPUT_CLS} value={form.full_name} onChange={(e) => setField("full_name", e.target.value)} placeholder="Legal name" />
-                    {errors.full_name && <p className={ERROR_CLS}>{errors.full_name}</p>}
-                  </div>
-                  <div>
-                    <label className={LABEL_CLS}>Phone</label>
-                    <input className={INPUT_CLS} value={form.phone} onChange={(e) => setField("phone", e.target.value)} placeholder="e.g. +977..." />
-                    {errors.phone && <p className={ERROR_CLS}>{errors.phone}</p>}
-                  </div>
-                </div>
-
-                <div className="grid gap-5 sm:grid-cols-2">
-                  <div>
-                    <label className={LABEL_CLS}>Education level</label>
-                    <select className={INPUT_CLS} value={form.education_level} onChange={(e) => setField("education_level", e.target.value as any)}>
-                      <option value="high_school">High School (12th)</option>
-                      <option value="bachelors">Bachelor's Degree</option>
-                      <option value="masters">Master's Degree</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className={LABEL_CLS}>City / district</label>
-                    <input className={INPUT_CLS} value={form.location} onChange={(e) => setField("location", e.target.value)} placeholder="Where are you located?" />
-                  </div>
-                </div>
-
-                <div className="grid gap-5 sm:grid-cols-2">
-                  <div>
-                    <label className={LABEL_CLS}>Current GPA</label>
-                    <input className={INPUT_CLS} type="number" step="0.01" value={form.gpa} onChange={(e) => setField("gpa", e.target.value)} placeholder="e.g. 3.4" />
-                    {errors.gpa && <p className={ERROR_CLS}>{errors.gpa}</p>}
-                  </div>
-                </div>
-
-                <div>
-                  <label className={LABEL_CLS}>Field of interest</label>
-                  <input className={INPUT_CLS} value={form.preferred_field} onChange={(e) => setField("preferred_field", e.target.value)} placeholder="e.g. Computer Science, Business..." />
-                </div>
-
-                <div>
-                  <label className={LABEL_CLS}>Target countries</label>
-                  <div className="mt-3 flex flex-wrap gap-2.5">
-                    {COUNTRIES.map((c) => {
-                      const active = form.target_countries.includes(c);
-                      return (
-                        <button
-                          key={c}
-                          type="button"
-                          onClick={() => toggleCountry(c)}
-                          className={`ab-focus flex items-center gap-2 rounded-full border px-4 py-2.5 text-[13px] font-bold transition ${
-                            active
-                              ? "border-[#0A6E45] bg-[#E8F2EC] text-[#0A6E45] shadow-[inset_0_0_0_1px_rgba(10,110,69,0.08)]"
-                              : "border-[#E8E5DD] bg-white text-[#6B655C] hover:border-[#D8D3C8] hover:bg-[#FAF9F6]"
-                          }`}
-                        >
-                          <span className={`flex h-4.5 w-4.5 items-center justify-center rounded-full border ${active ? "border-[#0A6E45] bg-[#0A6E45]" : "border-[#C9C3B8]"}`}>
-                            {active && <svg viewBox="0 0 10 10" className="h-2 w-2 text-white" fill="none"><path d="M2 5L4 7L8 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>}
-                          </span>
-                          {c}
-                        </button>
-                      );
-                    })}
-                  </div>
-                  {errors.target_countries && <p className={ERROR_CLS}>{errors.target_countries}</p>}
-                </div>
-
-                <div>
-                  <label className={LABEL_CLS}>Your goals</label>
-                  <textarea className={`${INPUT_CLS} min-h-[110px] resize-y`} value={form.goals} onChange={(e) => setField("goals", e.target.value)} placeholder="What are you hoping to achieve by studying abroad?" />
-                </div>
-
-                {apiError && (
-                  <div className="rounded-[18px] border border-[#F5C2BC] bg-[#FFF4F2] px-4 py-3 text-[13px] font-semibold text-[#B42318]">
-                    {apiError}
-                  </div>
-                )}
-
-                <div className="flex flex-col-reverse gap-3 border-t border-[#E8E5DD] pt-5 sm:flex-row sm:items-center sm:justify-between">
-                  <div className="flex items-center gap-3 text-[13px]">
-                    <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#F4FAF7] text-[#0A6E45]">✓</span>
+              <section className="p-5 sm:p-6 lg:p-7">
+                <div className="max-w-3xl">
+                  <div className="flex items-center justify-between gap-3">
                     <div>
-                      <p className="font-bold text-[#1B1916]">{saved ? "Saved" : "Ready to update"}</p>
-                      <p className="text-[#6B655C]">The assistant and dashboard will use the updated profile instantly.</p>
+                      <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#0A6E45]">Edit profile</p>
+                      <h2 className="mt-1 text-[22px] font-black tracking-[-0.03em] text-[#1B1916]">Only the essentials are editable here</h2>
+                      <p className="mt-1.5 text-[13.5px] leading-6 text-[#6B655C]">
+                        The rest of your onboarding data stays visible in the sidebar, so this stays clean and focused.
+                      </p>
+                    </div>
+                    <div className="hidden rounded-full border border-[#D7E7DE] bg-[#F4FAF7] px-3 py-1.5 text-[11px] font-bold text-[#0A6E45] md:inline-flex">
+                      {saved ? "Saved" : "Live profile"}
                     </div>
                   </div>
-                  <button
-                    type="submit"
-                    disabled={saving}
-                    className="ab-focus inline-flex min-h-11 items-center justify-center rounded-full bg-[#0A6E45] px-5 text-[14px] font-bold text-white shadow-[0_10px_24px_-14px_rgba(10,110,69,0.45)] transition hover:bg-[#085A38] disabled:opacity-50"
-                  >
-                    {saving ? "Saving..." : "Save profile"}
-                  </button>
+
+                  <form onSubmit={saveProfile} className="mt-6 space-y-7">
+                    <div className="rounded-[24px] border border-[#EFECE4] bg-[#FCFBF8] p-5">
+                      <div className="mb-4 flex items-center justify-between gap-3">
+                        <div>
+                          <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#0A6E45]">Identity</p>
+                          <p className="mt-1 text-[12.5px] text-[#6B655C]">How the assistant should address you.</p>
+                        </div>
+                        <span className="rounded-full bg-white px-3 py-1 text-[11px] font-bold text-[#8A847B]">Profile basics</span>
+                      </div>
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        <div>
+                          <label className={LABEL_CLS}>Full name</label>
+                          <input className={INPUT_CLS} value={form.full_name} onChange={(e) => setField("full_name", e.target.value)} placeholder="Legal name" />
+                          {errors.full_name && <p className={ERROR_CLS}>{errors.full_name}</p>}
+                        </div>
+                        <div>
+                          <label className={LABEL_CLS}>Phone</label>
+                          <input className={INPUT_CLS} value={form.phone} onChange={(e) => setField("phone", e.target.value)} placeholder="e.g. +977..." />
+                          {errors.phone && <p className={ERROR_CLS}>{errors.phone}</p>}
+                        </div>
+                        <div>
+                          <label className={LABEL_CLS}>City / district</label>
+                          <input className={INPUT_CLS} value={form.location} onChange={(e) => setField("location", e.target.value)} placeholder="Where are you located?" />
+                        </div>
+                        <div>
+                          <label className={LABEL_CLS}>Education level</label>
+                          <select className={INPUT_CLS} value={form.education_level} onChange={(e) => setField("education_level", e.target.value as any)}>
+                            <option value="high_school">High School (12th)</option>
+                            <option value="bachelors">Bachelor's Degree</option>
+                            <option value="masters">Master's Degree</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="grid gap-5 lg:grid-cols-2">
+                      <div className="rounded-[24px] border border-[#EFECE4] bg-[#FCFBF8] p-5">
+                        <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#0A6E45]">Academics</p>
+                        <p className="mt-1 text-[12.5px] text-[#6B655C]">We use this to judge fit and suggest realistic universities.</p>
+                        <div className="mt-4 space-y-4">
+                          <div>
+                            <label className={LABEL_CLS}>Current GPA</label>
+                            <input className={INPUT_CLS} type="number" step="0.01" value={form.gpa} onChange={(e) => setField("gpa", e.target.value)} placeholder="e.g. 3.4" />
+                            {errors.gpa && <p className={ERROR_CLS}>{errors.gpa}</p>}
+                          </div>
+                          <div className="rounded-[18px] border border-[#EFECE4] bg-white px-4 py-3">
+                            <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#8A847B]">Qualification year</p>
+                            <p className="mt-1.5 text-[13px] font-semibold text-[#1B1916]">{student.qualification_year ? String(student.qualification_year) : "Not set"}</p>
+                          </div>
+                          <div className="rounded-[18px] border border-[#EFECE4] bg-white px-4 py-3">
+                            <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#8A847B]">Score style</p>
+                            <p className="mt-1.5 text-[13px] font-semibold text-[#1B1916]">{scoreTypeLabel(student.score_type)}</p>
+                          </div>
+                          <div className="rounded-[18px] border border-[#EFECE4] bg-white px-4 py-3">
+                            <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#8A847B]">Academic score</p>
+                            <p className="mt-1.5 text-[13px] font-semibold text-[#1B1916]">{student.academic_score || "Not set"}</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="rounded-[24px] border border-[#EFECE4] bg-[#FCFBF8] p-5">
+                        <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#0A6E45]">Destination & goals</p>
+                        <p className="mt-1 text-[12.5px] text-[#6B655C]">This is the part that shapes recommendations the most.</p>
+
+                        <div className="mt-4 space-y-4">
+                          <div>
+                            <label className={LABEL_CLS}>Target countries</label>
+                            <div className="flex flex-wrap gap-2.5">
+                              {COUNTRIES.map((c) => {
+                                const active = form.target_countries.includes(c);
+                                return (
+                                  <button
+                                    key={c}
+                                    type="button"
+                                    onClick={() => toggleCountry(c)}
+                                    className={`ab-focus inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-[13px] font-bold transition ${
+                                      active
+                                        ? "border-[#0A6E45] bg-[#E8F2EC] text-[#0A6E45]"
+                                        : "border-[#E8E5DD] bg-white text-[#6B655C] hover:border-[#D8D3C8] hover:bg-[#FAF9F6]"
+                                    }`}
+                                  >
+                                    <span className={`flex h-4.5 w-4.5 items-center justify-center rounded-full border ${active ? "border-[#0A6E45] bg-[#0A6E45]" : "border-[#C9C3B8]"}`}>
+                                      {active && <svg viewBox="0 0 10 10" className="h-2 w-2 text-white" fill="none"><path d="M2 5L4 7L8 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>}
+                                    </span>
+                                    {c}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                            {errors.target_countries && <p className={ERROR_CLS}>{errors.target_countries}</p>}
+                          </div>
+
+                          <div>
+                            <label className={LABEL_CLS}>Preferred field</label>
+                            <input className={INPUT_CLS} value={form.preferred_field} onChange={(e) => setField("preferred_field", e.target.value)} placeholder="Computer Science, Nursing, Business..." />
+                          </div>
+
+                          <div>
+                            <label className={LABEL_CLS}>Goals</label>
+                            <textarea className={`${INPUT_CLS} min-h-[120px] resize-y`} value={form.goals} onChange={(e) => setField("goals", e.target.value)} placeholder="What are you hoping to achieve by studying abroad?" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="rounded-[24px] border border-[#EFECE4] bg-[#FCFBF8] p-5">
+                      <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#0A6E45]">Student summary</p>
+                      <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                        {[
+                          ["Countries", targetCountries.length ? `${targetCountries.length} selected` : "Not set"],
+                          ["Field", firstItem(student.preferred_field)],
+                          ["English", student.english_test_taken ? firstItem(student.english_test_type) : firstItem(student.english_goal)],
+                          ["Intake", intakeLabel],
+                        ].map(([label, value]) => (
+                          <div key={label} className="rounded-[18px] border border-[#EFECE4] bg-white px-4 py-3">
+                            <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#8A847B]">{label}</p>
+                            <p className="mt-1.5 text-[13px] font-semibold text-[#1B1916]">{value}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {apiError && (
+                      <div className="rounded-[18px] border border-[#F5C2BC] bg-[#FFF4F2] px-4 py-3 text-[13px] font-semibold text-[#B42318]">
+                        {apiError}
+                      </div>
+                    )}
+
+                    <div className="flex flex-col-reverse gap-3 border-t border-[#E8E5DD] pt-5 sm:flex-row sm:items-center sm:justify-between">
+                      <div className="flex items-center gap-3 text-[13px]">
+                        <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#F4FAF7] text-[#0A6E45]">✓</span>
+                        <div>
+                          <p className="font-bold text-[#1B1916]">{saved ? "Saved" : "Ready to update"}</p>
+                          <p className="text-[#6B655C]">Your profile changes apply immediately to chat and recommendations.</p>
+                        </div>
+                      </div>
+                      <button
+                        type="submit"
+                        disabled={saving}
+                        className="ab-focus inline-flex min-h-11 items-center justify-center rounded-full bg-[#0A6E45] px-5 text-[14px] font-bold text-white shadow-[0_10px_24px_-14px_rgba(10,110,69,0.45)] transition hover:bg-[#085A38] disabled:opacity-50"
+                      >
+                        {saving ? "Saving..." : "Save profile"}
+                      </button>
+                    </div>
+                  </form>
                 </div>
-              </form>
-            </section>
+              </section>
+            </div>
           </div>
         </div>
       </section>
