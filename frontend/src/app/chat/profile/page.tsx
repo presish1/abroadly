@@ -297,7 +297,7 @@ export default function ChatProfilePage() {
             <div className="grid gap-0 xl:grid-cols-[320px_minmax(0,1fr)]">
               <aside className="border-b border-[#E8E5DD] bg-[#FCFBF8] p-5 xl:border-b-0 xl:border-r">
                 <div className="space-y-4">
-                  <section className="rounded-[24px] border border-[#E8E5DD] bg-white p-4">
+                  <section className="rounded-[20px] border border-[#E8E5DD] bg-white p-4">
                     <div className="flex items-center justify-between gap-3">
                       <div>
                       <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#0A6E45]">Study passport</p>
@@ -305,11 +305,11 @@ export default function ChatProfilePage() {
                       </div>
                       <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#EEF7F1] text-[11px] font-black text-[#0A6E45]">{profilePct}%</div>
                     </div>
-                    <div className="mt-4 flex items-center gap-3 rounded-[20px] border border-[#E8E5DD] bg-[#FBFAF7] p-3">
+                    <div className="mt-4 flex items-center gap-3 rounded-[16px] border border-[#E8E5DD] bg-[#FBFAF7] p-3">
                       <button
                         type="button"
                         onClick={() => photoInputRef.current?.click()}
-                        className="ab-focus group relative flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-[18px] border border-[#E8E5DD] bg-white text-[16px] font-black text-[#0A6E45] transition hover:border-[#0A6E45]"
+                        className="ab-focus group relative flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-[14px] border border-[#E8E5DD] bg-white text-[16px] font-black text-[#0A6E45] transition hover:border-[#0A6E45]"
                         aria-label="Upload profile photo"
                       >
                         {uploadingPhoto ? (
@@ -355,7 +355,7 @@ export default function ChatProfilePage() {
                     </div>
                   </section>
 
-                  <section className="rounded-[24px] border border-[#E8E5DD] bg-white p-4">
+                  <section className="rounded-[20px] border border-[#E8E5DD] bg-white p-4">
                     <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#0A6E45]">Next best fixes</p>
                     <div className="mt-3 space-y-2">
                       {[
@@ -380,7 +380,7 @@ export default function ChatProfilePage() {
                     </div>
                   </section>
 
-                  <section className="rounded-[24px] border border-[#E8E5DD] bg-white p-4">
+                  <section className="rounded-[20px] border border-[#E8E5DD] bg-white p-4">
                     <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#0A6E45]">Shortcuts</p>
                     <div className="mt-3 grid gap-2">
                       <a href="/chat/documents" className="ab-focus rounded-[16px] border border-[#E8E5DD] px-3 py-2.5 text-[12px] font-bold text-[#1B1916] transition hover:border-[#0A6E45] hover:bg-[#FAF9F6]">Manage documents</a>
@@ -422,7 +422,7 @@ export default function ChatProfilePage() {
                       {saving ? "Saving..." : saved ? "Saved" : "Save profile"}
                     </button>
 
-                    <div className="rounded-[24px] border border-[#EFECE4] bg-[#FCFBF8] p-5">
+                    <div className="rounded-[20px] border border-[#EFECE4] bg-[#FCFBF8] p-5">
                       <div className="mb-4 flex items-center justify-between gap-3">
                         <div>
                           <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#0A6E45]">Identity</p>
@@ -457,7 +457,7 @@ export default function ChatProfilePage() {
                     </div>
 
                     <div className="grid gap-5 lg:grid-cols-2">
-                      <div className="rounded-[24px] border border-[#EFECE4] bg-[#FCFBF8] p-5">
+                      <div className="rounded-[20px] border border-[#EFECE4] bg-[#FCFBF8] p-5">
                         <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#0A6E45]">Academics</p>
                         <p className="mt-1 text-[12.5px] text-[#6B655C]">We use this to judge fit and suggest realistic universities.</p>
                         <div className="mt-4 space-y-4">
@@ -466,22 +466,22 @@ export default function ChatProfilePage() {
                             <input className={INPUT_CLS} type="number" step="0.01" value={form.gpa} onChange={(e) => setField("gpa", e.target.value)} placeholder="e.g. 3.4" />
                             {errors.gpa && <p className={ERROR_CLS}>{errors.gpa}</p>}
                           </div>
-                          <div className="rounded-[18px] border border-[#EFECE4] bg-white px-4 py-3">
+                          <div className="rounded-[16px] border border-[#EFECE4] bg-white px-4 py-3">
                             <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#8A847B]">Qualification year</p>
                             <p className="mt-1.5 text-[13px] font-semibold text-[#1B1916]">{student.qualification_year ? String(student.qualification_year) : "Not set"}</p>
                           </div>
-                          <div className="rounded-[18px] border border-[#EFECE4] bg-white px-4 py-3">
+                          <div className="rounded-[16px] border border-[#EFECE4] bg-white px-4 py-3">
                             <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#8A847B]">Score style</p>
                             <p className="mt-1.5 text-[13px] font-semibold text-[#1B1916]">{scoreTypeLabel(student.score_type)}</p>
                           </div>
-                          <div className="rounded-[18px] border border-[#EFECE4] bg-white px-4 py-3">
+                          <div className="rounded-[16px] border border-[#EFECE4] bg-white px-4 py-3">
                             <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#8A847B]">Academic score</p>
                             <p className="mt-1.5 text-[13px] font-semibold text-[#1B1916]">{student.academic_score || "Not set"}</p>
                           </div>
                         </div>
                       </div>
 
-                      <div className="rounded-[24px] border border-[#EFECE4] bg-[#FCFBF8] p-5">
+                      <div className="rounded-[20px] border border-[#EFECE4] bg-[#FCFBF8] p-5">
                         <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#0A6E45]">Destination & goals</p>
                         <p className="mt-1 text-[12.5px] text-[#6B655C]">This is the part that shapes recommendations the most.</p>
 
@@ -526,7 +526,7 @@ export default function ChatProfilePage() {
                       </div>
                     </div>
 
-                    <div className="rounded-[24px] border border-[#EFECE4] bg-[#FCFBF8] p-5">
+                    <div className="rounded-[20px] border border-[#EFECE4] bg-[#FCFBF8] p-5">
                       <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#0A6E45]">Student summary</p>
                       <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                         {[
@@ -535,7 +535,7 @@ export default function ChatProfilePage() {
                           ["English", student.english_test_taken ? firstItem(student.english_test_type) : firstItem(student.english_goal)],
                           ["Intake", intakeLabel],
                         ].map(([label, value]) => (
-                          <div key={label} className="rounded-[18px] border border-[#EFECE4] bg-white px-4 py-3">
+                          <div key={label} className="rounded-[16px] border border-[#EFECE4] bg-white px-4 py-3">
                             <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#8A847B]">{label}</p>
                             <p className="mt-1.5 text-[13px] font-semibold text-[#1B1916]">{value}</p>
                           </div>
@@ -544,7 +544,7 @@ export default function ChatProfilePage() {
                     </div>
 
                     {apiError && (
-                      <div className="rounded-[18px] border border-[#F5C2BC] bg-[#FFF4F2] px-4 py-3 text-[13px] font-semibold text-[#B42318]">
+                      <div className="rounded-[16px] border border-[#F5C2BC] bg-[#FFF4F2] px-4 py-3 text-[13px] font-semibold text-[#B42318]">
                         {apiError}
                       </div>
                     )}

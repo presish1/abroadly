@@ -1494,11 +1494,14 @@ body {
 }
 
 .profile-page .chat-left-counselor-btn {
-  background: #0A6E45;
+  background: #FFFFFF;
+  color: #0A6E45;
+  border: 1px solid #D7E7DD;
 }
 
 .profile-page .chat-left-counselor-btn:hover {
-  background: #085636;
+  background: #F4FBF7;
+  color: #085636;
 }
 
 .profile-page .chat-left-counselor-status {
