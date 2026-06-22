@@ -16,6 +16,7 @@ import {
 } from "antd";
 import { abroadlyAntdTheme } from "@/lib/antd-theme";
 import { StudentQuickTabs } from "@/components/student-quick-tabs";
+import { CounsellorSupportCard } from "@/components/counsellor-support-card";
 import { compressImageToTarget } from "@/lib/image-compress";
 import { BrandWordmark } from "@/components/brand-wordmark";
 import { ESSENTIAL_SLOTS } from "@/lib/document-catalog";
@@ -334,7 +335,7 @@ export function AntdDashboard({ student, documents, activeCountry, countries, on
               </Panel>
 
               {/* counsellor */}
-              <div className="rounded-2xl border border-[#E8E5DD] bg-gradient-to-br from-[#0E2A4D] to-[#13325c] p-[18px] text-white">
+              <div className="hidden rounded-2xl border border-[#E8E5DD] bg-gradient-to-br from-[#0E2A4D] to-[#13325c] p-[18px] text-white md:block">
                 <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#7DDBB1]">Free counsellor</p>
                 <p className="mt-1.5 text-[14px] font-bold leading-[1.4]">Stuck on a decision? Talk it through with a real person.</p>
                 <Link href="/chat"><Button block style={{ marginTop: 14, background: "#fff", color: "#0E2A4D", borderColor: "#fff", fontWeight: 700 }}>Request a call</Button></Link>
@@ -362,6 +363,10 @@ export function AntdDashboard({ student, documents, activeCountry, countries, on
                   <Button type="primary" onClick={focus.tag === "Test" ? onBookTest : () => onSendQuery(focus.query)}>{focus.label} →</Button>
                   <Link href="/chat?docs=open"><Button ghost style={{ color: "#fff", borderColor: "rgba(255,255,255,0.28)" }}>Manage documents</Button></Link>
                 </div>
+              </div>
+
+              <div className="md:hidden">
+                <CounsellorSupportCard student={student} onUpdated={onUpdateStudent} />
               </div>
 
               {/* fact tiles */}

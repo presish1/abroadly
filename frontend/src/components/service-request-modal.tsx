@@ -69,7 +69,7 @@ export function ServiceRequestModal({
   }
 
   return (
-    <ModalShell open onClose={onClose} titleId="service-modal-title" panelClassName="service-modal" closeLabel="Close booking">
+    <ModalShell open onClose={onClose} titleId="service-modal-title" panelClassName="service-modal" closeLabel="Close booking" mobileSheet>
         {confirmed ? (
           <div className="py-2 text-center">
             <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#ECF5EF] text-[#0A6E45]">

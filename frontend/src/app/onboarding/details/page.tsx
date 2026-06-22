@@ -481,7 +481,7 @@ export default function ProfileDetailsPage() {
                   </div>
                   <div>
                     <label htmlFor="email" className={LABEL_CLS}>Verified email</label>
-                    <input id="email" className={`${INPUT_CLS} cursor-not-allowed bg-[#F7F6F2] text-[var(--ab-muted)]`} value={student?.email || ""} readOnly />
+                    <input id="email" type="email" inputMode="email" autoComplete="email" className={`${INPUT_CLS} cursor-not-allowed bg-[#F7F6F2] text-[var(--ab-muted)]`} value={student?.email || ""} readOnly />
                     <p className="mt-1.5 text-[11px] text-[var(--ab-muted-soft)]">Managed by Google and cannot be changed here.</p>
                   </div>
                   <div>
@@ -603,7 +603,7 @@ export default function ProfileDetailsPage() {
                   </div>
                   <div>
                     <label htmlFor="academic_score" className={LABEL_CLS}>Score or grade</label>
-                    <input id="academic_score" className={INPUT_CLS} value={form.academic_score} onChange={(e) => setField("academic_score", e.target.value)} placeholder={form.score_type === "percentage" ? "Example: 72%" : form.score_type === "gpa" ? "Example: 3.25" : "Enter your result"} />
+                    <input id="academic_score" inputMode={form.score_type === "gpa" || form.score_type === "percentage" || form.score_type === "cgpa_10" ? "decimal" : "text"} className={INPUT_CLS} value={form.academic_score} onChange={(e) => setField("academic_score", e.target.value)} placeholder={form.score_type === "percentage" ? "Example: 72%" : form.score_type === "gpa" ? "Example: 3.25" : "Enter your result"} />
                     <ErrorText>{errors.academic_score}</ErrorText>
                   </div>
                 </div>
