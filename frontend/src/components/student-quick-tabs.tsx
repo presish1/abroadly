@@ -11,6 +11,7 @@ import {
   Phone,
   UserRound,
 } from "lucide-react";
+import { EnglishClassPopupCompact } from "./english-class-popup";
 
 export type StudentQuickTab = "profile" | "chat" | "dashboard" | "documents" | "universities";
 
@@ -44,7 +45,9 @@ export function StudentQuickTabs({
   const counselorHref = `/chat?send=${encodeURIComponent("I would like to request a counsellor callback.")}`;
   const profileTitle = phoneRequired
     ? "Open profile - phone number needed"
-    : `Open profile${firstName ? ` for ${firstName}` : ""}`;
+    : firstName
+      ? `Open profile for ${firstName}`
+      : "Open profile";
 
   return (
     <aside className="chat-right-rail" aria-label="Student quick tabs">
@@ -166,6 +169,9 @@ export function StudentQuickTabs({
           <span className="class-claim-action">Confirm a time <span aria-hidden>→</span></span>
         </Link>
       )}
+
+      {/* English class popup */}
+      <EnglishClassPopupCompact variant="sidebar" onOpenDocuments={onDocumentsClick} />
 
       <div className="chat-left-counselor">
         <p className="chat-left-counselor-kicker">Counsellor</p>

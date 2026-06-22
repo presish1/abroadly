@@ -1,50 +1,10 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import Link from "next/link";
 
-/* ── Canvas-confetti (loaded lazily so SSR stays clean) ─────────────── */
-async function fireConfetti() {
-  try {
-    const confetti = (await import("canvas-confetti")).default;
-    confetti({
-      particleCount: 180,
-      spread: 100,
-      origin: { y: 0.85 },
-      colors: ["#0044FF", "#4C3CE8", "#FFCC00", "#EA4335", "#34A853", "#FF9900"],
-      zIndex: 99999,
-      startVelocity: 38,
-      gravity: 0.85,
-      scalar: 1.1,
-    });
-    setTimeout(() => {
-      confetti({
-        particleCount: 80,
-        spread: 70,
-        origin: { y: 0.9, x: 0.2 },
-        colors: ["#0044FF", "#FFCC00", "#34A853"],
-        zIndex: 99999,
-      });
-    }, 180);
-    setTimeout(() => {
-      confetti({
-        particleCount: 80,
-        spread: 70,
-        origin: { y: 0.9, x: 0.8 },
-        colors: ["#4C3CE8", "#EA4335", "#FF9900"],
-        zIndex: 99999,
-      });
-    }, 360);
-  } catch {
-    // confetti is optional
-  }
-}
-
-const STORAGE_KEY = "ab_eng_popup_dismissed";
 const SESSION_KEY = "ab_eng_popup_session";
 
 function getIsDismissed(): boolean {
-  // Per-session: show again on each new login session
   if (typeof sessionStorage !== "undefined") {
     return sessionStorage.getItem(SESSION_KEY) === "1";
   }
@@ -62,9 +22,14 @@ function useDragDismiss(onDismiss: () => void, centered = true) {
   const isDragging = useRef(false);
 
   const handlePointerDown = useCallback((e: React.PointerEvent) => {
+    // FIX: prevent drag-dismiss when clicking buttons or links (ensures X button works properly)
+    if ((e.target as HTMLElement).closest("button, a")) return;
     startX.current = e.clientX;
     isDragging.current = true;
-    if (ref.current) { ref.current.style.transition = "none"; ref.current.setPointerCapture(e.pointerId); }
+    if (ref.current) { 
+      ref.current.style.transition = "none"; 
+      ref.current.setPointerCapture(e.pointerId); 
+    }
   }, []);
 
   const handlePointerMove = useCallback((e: React.PointerEvent) => {
@@ -90,7 +55,7 @@ function useDragDismiss(onDismiss: () => void, centered = true) {
       ref.current.style.transform = centered ? "translateX(-50%)" : "translateX(0)";
       ref.current.style.opacity = "1";
     }
-  }, [onDismiss]);
+  }, [onDismiss, centered]);
 
   return { ref, handlePointerDown, handlePointerMove, handlePointerUp };
 }
@@ -117,6 +82,8 @@ function BookIcon({ small = false }: { small?: boolean }) {
 export function EnglishClassPopup() {
   const [show, setShow] = useState(false);
   const [claimed, setClaimed] = useState(false);
+  const autoDismissRef = useRef<NodeJS.Timeout | null>(null);
+
   const { ref, handlePointerDown, handlePointerMove, handlePointerUp } = useDragDismiss(() => {
     setShow(false);
     markDismissed();
@@ -124,21 +91,35 @@ export function EnglishClassPopup() {
 
   useEffect(() => {
     if (getIsDismissed()) return;
-    const timer = setTimeout(() => {
+    
+    // Show after a random delay: between 10 to 25 seconds
+    const randomDelay = Math.floor(Math.random() * 15000) + 10000;
+    
+    const showTimer = setTimeout(() => {
       setShow(true);
-      void fireConfetti();
-    }, 6000);
-    return () => clearTimeout(timer);
+      
+      // Auto-disappear after 12 seconds
+      autoDismissRef.current = setTimeout(() => {
+        setShow(false);
+        markDismissed();
+      }, 12000);
+    }, randomDelay);
+
+    return () => {
+      clearTimeout(showTimer);
+      if (autoDismissRef.current) clearTimeout(autoDismissRef.current);
+    };
   }, []);
 
   const handleClose = () => {
+    if (autoDismissRef.current) clearTimeout(autoDismissRef.current);
     setShow(false);
     markDismissed();
   };
 
-  const handleClaim = async () => {
+  const handleClaim = () => {
+    if (autoDismissRef.current) clearTimeout(autoDismissRef.current);
     setClaimed(true);
-    await fireConfetti();
     setTimeout(() => {
       setShow(false);
       markDismissed();
@@ -200,9 +181,17 @@ export function EnglishClassPopup() {
 }
 
 /* ── Compact popup (chat page) ───────────────────────────────────────── */
-export function EnglishClassPopupCompact({ onOpenDocuments }: { onOpenDocuments?: () => void }) {
+export function EnglishClassPopupCompact({
+  variant = "floating",
+  onOpenDocuments,
+}: {
+  variant?: "floating" | "sidebar";
+  onOpenDocuments?: () => void;
+}) {
   const [show, setShow] = useState(false);
   const [claimed, setClaimed] = useState(false);
+  const autoDismissRef = useRef<NodeJS.Timeout | null>(null);
+
   const { ref, handlePointerDown, handlePointerMove, handlePointerUp } = useDragDismiss(() => {
     setShow(false);
     markDismissed();
@@ -210,35 +199,96 @@ export function EnglishClassPopupCompact({ onOpenDocuments }: { onOpenDocuments?
 
   useEffect(() => {
     if (getIsDismissed()) return;
-    const timer = setTimeout(() => {
+    
+    // Show after a random delay: between 10 to 25 seconds
+    const randomDelay = Math.floor(Math.random() * 15000) + 10000;
+    
+    const showTimer = setTimeout(() => {
       setShow(true);
-      void fireConfetti();
-    }, 10000);
-    return () => clearTimeout(timer);
+      
+      // Auto-disappear after 12 seconds
+      autoDismissRef.current = setTimeout(() => {
+        setShow(false);
+        markDismissed();
+      }, 12000);
+    }, randomDelay);
+
+    return () => {
+      clearTimeout(showTimer);
+      if (autoDismissRef.current) clearTimeout(autoDismissRef.current);
+    };
   }, []);
 
   const handleClose = () => {
+    if (autoDismissRef.current) clearTimeout(autoDismissRef.current);
     setShow(false);
     markDismissed();
   };
 
-  const handleClaim = async () => {
+  const handleClaim = () => {
+    if (autoDismissRef.current) clearTimeout(autoDismissRef.current);
     setClaimed(true);
-    await fireConfetti();
     setTimeout(() => {
       setShow(false);
       markDismissed();
-      onOpenDocuments?.();
+      if (onOpenDocuments) {
+        onOpenDocuments();
+      } else {
+        window.location.href = "/chat/documents";
+      }
     }, 1800);
   };
 
   if (!show) return null;
 
+  if (variant === "sidebar") {
+    return (
+      <div className="relative w-full rounded-[20px] border border-[#E8E5DD] bg-white p-4 shadow-sm animate-[abFadeUp_0.4s_ease-out] mt-auto mb-3 select-none">
+        {/* X close */}
+        <button
+          onClick={handleClose}
+          className="absolute right-3 top-3 flex h-6 w-6 items-center justify-center rounded-full text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+          aria-label="Close"
+        >
+          <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+
+        {claimed ? (
+          <div className="py-1 text-center">
+            <div className="text-2xl mb-1">🎉</div>
+            <p className="text-sm font-bold text-slate-900">You're in!</p>
+            <p className="text-xs text-slate-500 mt-0.5">We'll reach out soon.</p>
+          </div>
+        ) : (
+          <>
+            <div className="flex items-start gap-2.5 pr-5">
+              <BookIcon small />
+              <div>
+                <p className="text-[13px] font-bold text-slate-900 leading-snug">Free English Class</p>
+                <p className="mt-0.5 text-[11.5px] text-slate-500 leading-relaxed">
+                  Claim a free IELTS/PTE/TOEFL proficiency class tailored to your target university.
+                </p>
+              </div>
+            </div>
+
+            <button
+              onClick={handleClaim}
+              className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-full bg-[#0044FF] py-2 text-[12px] font-bold text-white shadow-md shadow-blue-500/25 transition hover:-translate-y-0.5 hover:bg-blue-600 active:scale-95"
+            >
+              <span>🎁</span> Claim free class
+            </button>
+          </>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div
       ref={ref}
-      className="fixed top-20 left-4 z-[1000] w-[calc(100vw-2rem)] max-w-xs touch-pan-y select-none sm:top-24 sm:left-6"
-      style={{}}
+      className="fixed top-20 left-4 z-[1000] w-[calc(100vw-2rem)] max-w-xs touch-pan-y select-none sm:top-24 sm:left-6 md:hidden"
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
@@ -286,3 +336,4 @@ export function EnglishClassPopupCompact({ onOpenDocuments }: { onOpenDocuments?
     </div>
   );
 }
+

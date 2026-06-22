@@ -2361,7 +2361,7 @@ export default function ChatPage() {
           }}
         />
       )}
-      <EnglishClassPopupCompact onOpenDocuments={() => router.push("/chat/documents")} />
+      <EnglishClassPopupCompact variant="floating" onOpenDocuments={() => router.push("/chat/documents")} />
     </main>
   );
 }
