@@ -10,7 +10,9 @@ import { SiteFooter } from "@/app/site-footer";
 import {
   completeGoogleProfile,
   getCurrentStudent,
+  getPendingGoogleProfile,
   type EducationLevel,
+  type PendingGoogleProfile,
   type StudentOut,
 } from "@/lib/api";
 
@@ -154,6 +156,7 @@ export default function ProfileDetailsPage() {
   const router = useRouter();
   const [loadState, setLoadState] = useState<LoadState>("loading");
   const [student, setStudent] = useState<StudentOut | null>(null);
+  const [pendingProfile, setPendingProfile] = useState<PendingGoogleProfile | null>(null);
   const [form, setForm] = useState<ProfileForm>(EMPTY_FORM);
   const [step, setStep] = useState<Step>(1);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -176,8 +179,27 @@ export default function ProfileDetailsPage() {
 
   useEffect(() => {
     let cancelled = false;
-    getCurrentStudent()
-      .then((current) => {
+
+    function applyLandingIntent() {
+      try {
+        const rawIntent = localStorage.getItem("abroadly_intent");
+        if (rawIntent) {
+          const intent = JSON.parse(rawIntent) as { degree?: string; country?: string };
+          setForm((prev) => ({
+            ...prev,
+            intended_study_level: prev.intended_study_level || intent.degree || "",
+            target_countries: prev.target_countries.length ? prev.target_countries : intent.country ? [intent.country] : [],
+          }));
+          localStorage.removeItem("abroadly_intent");
+        }
+      } catch {
+        // Ignore malformed one-shot landing intent.
+      }
+    }
+
+    async function loadProfileSession() {
+      try {
+        const current = await getCurrentStudent();
         if (cancelled) return;
         localStorage.setItem("abroadly_student_id", current.id);
         if (current.profile_completed && current.phone?.trim()) {
@@ -185,6 +207,7 @@ export default function ProfileDetailsPage() {
           return;
         }
         setStudent(current);
+        setPendingProfile(null);
         setForm({
           ...EMPTY_FORM,
           full_name: current.full_name || "",
@@ -209,26 +232,32 @@ export default function ProfileDetailsPage() {
           goals: current.goals || "",
           call_consent: current.call_consent || false,
         });
-
-        try {
-          const rawIntent = localStorage.getItem("abroadly_intent");
-          if (rawIntent) {
-            const intent = JSON.parse(rawIntent) as { degree?: string; country?: string };
-            setForm((prev) => ({
-              ...prev,
-              intended_study_level: prev.intended_study_level || intent.degree || "",
-              target_countries: prev.target_countries.length ? prev.target_countries : intent.country ? [intent.country] : [],
-            }));
-            localStorage.removeItem("abroadly_intent");
-          }
-        } catch {
-          // Ignore malformed one-shot landing intent.
-        }
+        applyLandingIntent();
         setLoadState("ready");
-      })
-      .catch(() => {
+        return;
+      } catch {
+        // A brand-new Google user has no student row yet. Try the pending
+        // onboarding cookie before sending them back to sign in.
+      }
+
+      try {
+        const pending = await getPendingGoogleProfile();
+        if (cancelled) return;
+        localStorage.removeItem("abroadly_student_id");
+        setStudent(null);
+        setPendingProfile(pending);
+        setForm({
+          ...EMPTY_FORM,
+          full_name: pending.full_name || "",
+        });
+        applyLandingIntent();
+        setLoadState("ready");
+      } catch {
         if (!cancelled) setLoadState("signed_out");
-      });
+      }
+    }
+
+    void loadProfileSession();
 
     return () => {
       cancelled = true;
@@ -354,6 +383,8 @@ export default function ProfileDetailsPage() {
     else void saveProfile();
   }
 
+  const verifiedEmail = student?.email || pendingProfile?.email || "";
+
   if (loadState === "loading") {
     return (
       <main className="min-h-screen bg-[var(--ab-paper-2)] text-[var(--ab-ink)]">
@@ -435,7 +466,7 @@ export default function ProfileDetailsPage() {
             <h1 className="mt-2 text-[28px] font-black leading-tight tracking-[-0.035em] sm:text-[34px]">Your study profile</h1>
             <p className="mt-2 max-w-2xl text-[13.5px] leading-6 text-[var(--ab-muted)]">Three short steps help Abroadly give answers that fit your grades, English readiness and destination.</p>
           </div>
-          <p className="text-[12px] font-semibold text-[var(--ab-muted-soft)]">Saved to {student?.email}</p>
+          <p className="text-[12px] font-semibold text-[var(--ab-muted-soft)]">Google-verified: {verifiedEmail}</p>
         </header>
 
         <ol className="mt-7 grid grid-cols-3 gap-2" aria-label="Profile setup progress">
@@ -481,7 +512,7 @@ export default function ProfileDetailsPage() {
                   </div>
                   <div>
                     <label htmlFor="email" className={LABEL_CLS}>Verified email</label>
-                    <input id="email" type="email" inputMode="email" autoComplete="email" className={`${INPUT_CLS} cursor-not-allowed bg-[#F7F6F2] text-[var(--ab-muted)]`} value={student?.email || ""} readOnly />
+                    <input id="email" type="email" inputMode="email" autoComplete="email" className={`${INPUT_CLS} cursor-not-allowed bg-[#F7F6F2] text-[var(--ab-muted)]`} value={verifiedEmail} readOnly />
                     <p className="mt-1.5 text-[11px] text-[var(--ab-muted-soft)]">Managed by Google and cannot be changed here.</p>
                   </div>
                   <div>
@@ -720,7 +751,7 @@ export default function ProfileDetailsPage() {
           </div>
 
           <footer className="flex flex-col-reverse gap-3 border-t border-[var(--ab-line)] bg-[#FAFAF8] px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-8">
-            <p className="text-[11px] leading-5 text-[var(--ab-muted-soft)]">Your answers are saved to your Google-verified profile.</p>
+            <p className="text-[11px] leading-5 text-[var(--ab-muted-soft)]">Your account is created only after this form is completed.</p>
             <div className="flex gap-2">
               {step > 1 && (
                 <button type="button" onClick={() => changeStep((step - 1) as Step)} className="ab-focus h-10 rounded-lg border border-[var(--ab-line)] bg-white px-4 text-[12.5px] font-black text-[var(--ab-ink)] transition hover:border-[#BBB6AB]">Previous</button>

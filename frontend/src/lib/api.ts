@@ -96,6 +96,12 @@ export interface StudentOut {
   updated_at: string;
 }
 
+export interface PendingGoogleProfile {
+  email: string;
+  full_name: string;
+  profile_photo_url: string | null;
+}
+
 export interface ChatSource {
   chunk_id: string;
   source_type: string;
@@ -150,8 +156,10 @@ export interface StudentDocument {
 }
 
 export interface GoogleAuthResponse {
-  student: StudentOut;
+  student: StudentOut | null;
+  pending_profile: PendingGoogleProfile | null;
   is_new_student: boolean;
+  requires_profile: boolean;
 }
 
 // ---------------------------------------------------------------------------
@@ -210,6 +218,14 @@ export async function updateStudent(
 export async function getCurrentStudent(): Promise<StudentOut> {
   return handle<StudentOut>(
     await fetch(`${BASE}/auth/me`, {
+      credentials: "include",
+    })
+  );
+}
+
+export async function getPendingGoogleProfile(): Promise<PendingGoogleProfile> {
+  return handle<PendingGoogleProfile>(
+    await fetch(`${BASE}/auth/onboarding-session`, {
       credentials: "include",
     })
   );

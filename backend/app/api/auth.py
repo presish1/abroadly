@@ -12,7 +12,7 @@ from typing import Literal
 from urllib.parse import urlencode
 
 import httpx
-from fastapi import APIRouter, Cookie, Depends, HTTPException, status
+from fastapi import APIRouter, BackgroundTasks, Cookie, Depends, HTTPException, Response, status
 from fastapi.responses import JSONResponse, RedirectResponse
 from pydantic import BaseModel, Field, model_validator
 from sqlalchemy import select
@@ -20,6 +20,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
 from app.core.db import get_session
+from app.core.email import send_welcome_email
 from app.models.student import (
     ChatTurnModel,
     EducationLevel,
@@ -40,8 +41,10 @@ _GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token"
 _GOOGLE_USERINFO_URL = "https://openidconnect.googleapis.com/v1/userinfo"
 _STATE_COOKIE = "abroadly_google_oauth_state"
 _SESSION_COOKIE = "abroadly_student_session"
+_PENDING_ONBOARDING_COOKIE = "abroadly_pending_google_onboarding"
 _OAUTH_TIMEOUT = 15.0
 _SESSION_DAYS = 30
+_PENDING_ONBOARDING_HOURS = 24
 _JWT_ALGORITHM = "HS256"
 
 
@@ -50,9 +53,17 @@ class GoogleExchangeRequest(BaseModel):
     state: str
 
 
+class PendingGoogleProfile(BaseModel):
+    email: str
+    full_name: str
+    profile_photo_url: str | None = None
+
+
 class GoogleAuthResponse(BaseModel):
-    student: StudentOut
+    student: StudentOut | None = None
+    pending_profile: PendingGoogleProfile | None = None
     is_new_student: bool
+    requires_profile: bool = False
 
 
 class CompleteProfileRequest(BaseModel):
@@ -137,6 +148,20 @@ def _create_student_session_token(student_id: str) -> str:
     return jwt.encode(payload, settings.jwt_secret, algorithm=_JWT_ALGORITHM)
 
 
+def _create_pending_onboarding_token(profile: PendingGoogleProfile) -> str:
+    now = datetime.now(timezone.utc)
+    payload = {
+        "sub": profile.email,
+        "typ": "pending_google_onboarding",
+        "email": profile.email,
+        "full_name": profile.full_name,
+        "profile_photo_url": profile.profile_photo_url,
+        "iat": now,
+        "exp": now + timedelta(hours=_PENDING_ONBOARDING_HOURS),
+    }
+    return jwt.encode(payload, settings.jwt_secret, algorithm=_JWT_ALGORITHM)
+
+
 def _decode_student_session_token(token: str) -> str:
     try:
         payload = jwt.decode(token, settings.jwt_secret, algorithms=[_JWT_ALGORITHM])
@@ -150,10 +175,27 @@ def _decode_student_session_token(token: str) -> str:
         )
 
 
+def _decode_pending_onboarding_token(token: str) -> PendingGoogleProfile:
+    try:
+        payload = jwt.decode(token, settings.jwt_secret, algorithms=[_JWT_ALGORITHM])
+        if payload.get("typ") != "pending_google_onboarding":
+            raise ValueError("wrong token type")
+        return PendingGoogleProfile(
+            email=str(payload["email"]).strip().lower(),
+            full_name=(str(payload.get("full_name") or "").strip() or str(payload["email"]).split("@")[0])[:120],
+            profile_photo_url=_clean_text(payload.get("profile_photo_url")),
+        )
+    except Exception:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="invalid_onboarding_session",
+        )
+
+
 def _clean_text(value: str | None) -> str | None:
     if value is None:
         return None
-    cleaned = value.strip()
+    cleaned = str(value).strip()
     return cleaned or None
 
 
@@ -207,37 +249,35 @@ async def _fetch_google_profile(code: str) -> dict:
         return profile_resp.json()
 
 
-async def _upsert_google_student(db: AsyncSession, profile: dict) -> tuple[StudentModel, bool]:
+def _pending_profile_from_google(profile: dict) -> PendingGoogleProfile:
     email = (profile.get("email") or "").strip().lower()
     email_verified = profile.get("email_verified")
     if not email or email_verified is not True:
         raise HTTPException(status_code=400, detail="google_email_not_verified")
 
-    full_name = (profile.get("name") or email.split("@")[0]).strip()[:120]
-    result = await db.execute(select(StudentModel).where(StudentModel.email == email))
+    full_name = (profile.get("name") or "").strip()[:120] or email.split("@")[0]
+    return PendingGoogleProfile(
+        email=email,
+        full_name=full_name,
+        profile_photo_url=_clean_text(profile.get("picture")),
+    )
+
+
+async def _find_google_student(db: AsyncSession, profile: dict) -> tuple[StudentModel | None, PendingGoogleProfile]:
+    pending_profile = _pending_profile_from_google(profile)
+    result = await db.execute(select(StudentModel).where(StudentModel.email == pending_profile.email))
     existing = result.scalar_one_or_none()
     if existing:
         if not existing.full_name:
-            existing.full_name = full_name
+            existing.full_name = pending_profile.full_name
+        if pending_profile.profile_photo_url and not existing.profile_photo_url:
+            existing.profile_photo_url = pending_profile.profile_photo_url
         existing.updated_at = datetime.utcnow()
         await db.commit()
         await db.refresh(existing)
-        return existing, False
+        return existing, pending_profile
 
-    student = StudentModel(
-        id=uuid.uuid4(),
-        full_name=full_name,
-        email=email,
-        education_level="other",
-        target_countries=[],
-        profile_completed=False,
-        created_at=datetime.utcnow(),
-        updated_at=datetime.utcnow(),
-    )
-    db.add(student)
-    await db.commit()
-    await db.refresh(student)
-    return student, True
+    return None, pending_profile
 
 
 async def _ensure_welcome_video_turn(db: AsyncSession, student: StudentModel) -> None:
@@ -331,21 +371,54 @@ async def google_exchange(
         raise HTTPException(status_code=400, detail="invalid_oauth_state")
 
     profile = await _fetch_google_profile(req.code)
-    student, is_new = await _upsert_google_student(db, profile)
-    payload = GoogleAuthResponse(student=_student_to_out(student), is_new_student=is_new)
+    student, pending_profile = await _find_google_student(db, profile)
+    if student is not None:
+        payload = GoogleAuthResponse(
+            student=_student_to_out(student),
+            is_new_student=False,
+            requires_profile=not student.profile_completed,
+        )
+    else:
+        payload = GoogleAuthResponse(
+            pending_profile=pending_profile,
+            is_new_student=True,
+            requires_profile=True,
+        )
 
     response = JSONResponse(payload.model_dump(mode="json"))
-    response.set_cookie(
-        _SESSION_COOKIE,
-        _create_student_session_token(str(student.id)),
-        max_age=_SESSION_DAYS * 24 * 60 * 60,
-        httponly=True,
-        secure=_cookie_secure(),
-        samesite="lax",
-        path="/",
-    )
+    if student is not None:
+        response.set_cookie(
+            _SESSION_COOKIE,
+            _create_student_session_token(str(student.id)),
+            max_age=_SESSION_DAYS * 24 * 60 * 60,
+            httponly=True,
+            secure=_cookie_secure(),
+            samesite="lax",
+            path="/",
+        )
+        response.delete_cookie(_PENDING_ONBOARDING_COOKIE, path="/")
+    else:
+        response.set_cookie(
+            _PENDING_ONBOARDING_COOKIE,
+            _create_pending_onboarding_token(pending_profile),
+            max_age=_PENDING_ONBOARDING_HOURS * 60 * 60,
+            httponly=True,
+            secure=_cookie_secure(),
+            samesite="lax",
+            path="/",
+        )
+        response.delete_cookie(_SESSION_COOKIE, path="/")
     response.delete_cookie(_STATE_COOKIE, path="/")
     return response
+
+
+@router.get("/onboarding-session", response_model=PendingGoogleProfile)
+async def onboarding_session(
+    pending_session: str | None = Cookie(None, alias=_PENDING_ONBOARDING_COOKIE),
+) -> PendingGoogleProfile:
+    if not pending_session:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="onboarding_session_required")
+    return _decode_pending_onboarding_token(pending_session)
 
 
 @router.get("/me", response_model=StudentOut)
@@ -356,9 +429,53 @@ async def me(student: StudentModel = Depends(get_current_student)) -> StudentOut
 @router.put("/profile", response_model=StudentOut)
 async def complete_profile(
     req: CompleteProfileRequest,
-    student: StudentModel = Depends(get_current_student),
+    background_tasks: BackgroundTasks,
+    response: Response,
+    student_session: str | None = Cookie(None, alias=_SESSION_COOKIE),
+    pending_session: str | None = Cookie(None, alias=_PENDING_ONBOARDING_COOKIE),
     db: AsyncSession = Depends(get_session),
 ) -> StudentOut:
+    student: StudentModel | None = None
+    created_student = False
+
+    if student_session:
+        try:
+            sid = uuid.UUID(_decode_student_session_token(student_session))
+        except HTTPException:
+            if not pending_session:
+                raise
+        except ValueError:
+            if not pending_session:
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="invalid_student_session")
+        else:
+            result = await db.execute(select(StudentModel).where(StudentModel.id == sid))
+            student = result.scalar_one_or_none()
+            if student is None and not pending_session:
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="student_not_found")
+
+    if student is None:
+        if not pending_session:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="onboarding_session_required")
+        pending_profile = _decode_pending_onboarding_token(pending_session)
+        result = await db.execute(select(StudentModel).where(StudentModel.email == pending_profile.email))
+        student = result.scalar_one_or_none()
+        if student is None:
+            student = StudentModel(
+                id=uuid.uuid4(),
+                full_name=pending_profile.full_name,
+                email=pending_profile.email,
+                education_level=req.education_level,
+                target_countries=[],
+                profile_completed=False,
+                profile_photo_url=pending_profile.profile_photo_url,
+                created_at=datetime.utcnow(),
+                updated_at=datetime.utcnow(),
+            )
+            db.add(student)
+            created_student = True
+        elif pending_profile.profile_photo_url and not student.profile_photo_url:
+            student.profile_photo_url = pending_profile.profile_photo_url
+
     student.full_name = req.full_name.strip()
     student.phone = _clean_required_text(req.phone, "phone_required")
     student.location = _clean_text(req.location)
@@ -397,6 +514,22 @@ async def complete_profile(
     await _ensure_welcome_video_turn(db, student)
     await db.commit()
     await db.refresh(student)
+    if created_student:
+        background_tasks.add_task(
+            send_welcome_email,
+            to=student.email,
+            full_name=student.full_name or "",
+        )
+    response.set_cookie(
+        _SESSION_COOKIE,
+        _create_student_session_token(str(student.id)),
+        max_age=_SESSION_DAYS * 24 * 60 * 60,
+        httponly=True,
+        secure=_cookie_secure(),
+        samesite="lax",
+        path="/",
+    )
+    response.delete_cookie(_PENDING_ONBOARDING_COOKIE, path="/")
     return _student_to_out(student)
 
 
@@ -404,4 +537,5 @@ async def complete_profile(
 async def logout() -> JSONResponse:
     response = JSONResponse({"ok": True})
     response.delete_cookie(_SESSION_COOKIE, path="/")
+    response.delete_cookie(_PENDING_ONBOARDING_COOKIE, path="/")
     return response

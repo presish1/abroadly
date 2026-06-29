@@ -62,7 +62,7 @@ export default function OnboardingPage() {
 
             <h2 className="text-[28px] font-black tracking-[-0.03em] text-[var(--ab-ink)]">Sign in</h2>
             <p className="mt-2 text-[13.5px] font-semibold text-[var(--ab-muted)] leading-relaxed">
-              New to Abroadly? We&apos;ll create your profile automatically.
+              New to Abroadly? We&apos;ll create your profile after the one-time setup.
             </p>
 
             {/* Google Sign-in Card */}

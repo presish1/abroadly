@@ -28,8 +28,17 @@ function GoogleCallbackInner() {
     exchangeGoogleCode(code, state)
       .then((res) => {
         if (cancelled) return;
-        localStorage.setItem("abroadly_student_id", res.student.id);
-        router.replace(res.student.profile_completed ? "/chat" : "/onboarding/details");
+        if (res.student) {
+          localStorage.setItem("abroadly_student_id", res.student.id);
+          router.replace(res.student.profile_completed ? "/chat" : "/onboarding/details");
+          return;
+        }
+        if (res.requires_profile && res.pending_profile) {
+          localStorage.removeItem("abroadly_student_id");
+          router.replace("/onboarding/details");
+          return;
+        }
+        setError("Google sign-in did not return a usable profile. Please try again.");
       })
       .catch(() => {
         if (!cancelled) setError("Google sign-in failed. Please try again.");

@@ -37,13 +37,41 @@ def test_student_session_token_round_trips(monkeypatch):
     assert auth._decode_student_session_token(token) == student_id
 
 
-@pytest.mark.asyncio
-async def test_google_profile_requires_verified_email():
+def test_pending_onboarding_token_round_trips(monkeypatch):
+    monkeypatch.setattr(settings, "jwt_secret", "test-secret-for-google-student-cookie")
+    pending = auth.PendingGoogleProfile(
+        email="sita@example.com",
+        full_name="Sita Sharma",
+        profile_photo_url="https://example.com/photo.jpg",
+    )
+
+    token = auth._create_pending_onboarding_token(pending)
+    decoded = auth._decode_pending_onboarding_token(token)
+
+    assert decoded == pending
+
+
+def test_google_profile_requires_verified_email():
     with pytest.raises(HTTPException) as exc:
-        await auth._upsert_google_student(None, {"email": "student@example.com", "email_verified": False})
+        auth._pending_profile_from_google({"email": "student@example.com", "email_verified": False})
 
     assert exc.value.status_code == 400
     assert exc.value.detail == "google_email_not_verified"
+
+
+def test_google_pending_profile_uses_verified_identity():
+    pending = auth._pending_profile_from_google(
+        {
+            "email": " SITA@EXAMPLE.COM ",
+            "email_verified": True,
+            "name": " Sita Sharma ",
+            "picture": " https://example.com/photo.jpg ",
+        }
+    )
+
+    assert pending.email == "sita@example.com"
+    assert pending.full_name == "Sita Sharma"
+    assert pending.profile_photo_url == "https://example.com/photo.jpg"
 
 
 def test_complete_profile_requires_non_blank_phone():
