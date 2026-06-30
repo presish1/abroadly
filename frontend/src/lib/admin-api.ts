@@ -106,6 +106,8 @@ export interface StudentListItem {
   ai_paused: boolean;
   call_consent?: boolean;
   lead_status?: string | null;
+  account_status?: string;
+  deletion_requested_at?: string | null;
   created_at: string;
   chat_count: number;
   doc_count: number;
@@ -145,6 +147,8 @@ export interface StudentDetail {
   ai_paused: boolean;
   call_consent?: boolean;
   lead_status?: string | null;
+  account_status?: string;
+  deletion_requested_at?: string | null;
   created_at: string;
   updated_at: string;
   chat_count: number;

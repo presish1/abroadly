@@ -178,6 +178,7 @@ export default function StudentDetailPage() {
     { label: "Study level", value: student.intended_study_level, icon: "\u{1F393}" },
     { label: "Preferred intake", value: student.preferred_intake, icon: "\u{1F4C6}" },
     { label: "Budget", value: student.budget_range, icon: "\u{1F4B0}" },
+    { label: "Account status", value: student.account_status === "pending_deletion" ? "Pending deletion" : null, icon: "\u{1F5D1}\u{FE0F}" },
     { label: "Goals", value: student.goals, icon: "\u{1F3AF}" },
   ];
 
@@ -234,6 +235,20 @@ export default function StudentDetailPage() {
               <div>
                 <p className="text-[11px] font-bold text-red-700">Requested a call</p>
                 <p className="text-[10px] text-red-500">{student.phone || "No phone on file — ask in chat"}</p>
+              </div>
+            </div>
+          )}
+
+          {student.account_status === "pending_deletion" && (
+            <div className="mt-3 flex items-center gap-2 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2.5">
+              <span className="text-base">{"\u{1F5D1}\u{FE0F}"}</span>
+              <div>
+                <p className="text-[11px] font-bold text-rose-700">Pending deletion</p>
+                <p className="text-[10px] text-rose-500">
+                  {student.deletion_requested_at
+                    ? `Requested ${timeAgo(student.deletion_requested_at)}`
+                    : "Account is marked, not removed"}
+                </p>
               </div>
             </div>
           )}

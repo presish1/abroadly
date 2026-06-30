@@ -2,8 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useMemo, useRef } from "react";
-import { Check, LoaderCircle, Save } from "lucide-react";
-import { getStudentDocuments, type StudentDocument, getStudent, updateStudent, uploadProfilePhoto, type StudentOut } from "@/lib/api";
+import { Check, LoaderCircle, Save, Trash2 } from "lucide-react";
+import { getStudentDocuments, type StudentDocument, getStudent, updateStudent, uploadProfilePhoto, requestAccountDeletion, type StudentOut } from "@/lib/api";
 import { ESSENTIAL_SLOTS, computeDocReadiness } from "@/lib/document-catalog";
 import { StudentQuickTabs } from "@/components/student-quick-tabs";
 import { CounsellorSupportCard } from "@/components/counsellor-support-card";
@@ -15,7 +15,6 @@ interface ProfileFormState {
   education_level: any;
   gpa: string;
   preferred_field: string;
-  target_countries: string[];
   goals: string;
 }
 
@@ -27,7 +26,6 @@ function profileFormFromStudent(student: StudentOut): ProfileFormState {
     education_level: student.education_level || "plus_two",
     gpa: student.gpa == null ? "" : String(student.gpa),
     preferred_field: student.preferred_field || "",
-    target_countries: student.target_countries || [],
     goals: student.goals || "",
   };
 }
@@ -95,6 +93,10 @@ function firstItem(value: string | null | undefined): string {
   return value?.trim() || "Not set";
 }
 
+function phoneDigits(value: string | null | undefined): string {
+  return (value || "").replace(/\D/g, "");
+}
+
 export default function ChatProfilePage() {
   const router = useRouter();
   const [student, setStudent] = useState<StudentOut | null>(null);
@@ -108,6 +110,10 @@ export default function ChatProfilePage() {
   const [apiError, setApiError] = useState("");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [deleteConfirmPhone, setDeleteConfirmPhone] = useState("");
+  const [deleteError, setDeleteError] = useState("");
+  const [deleteSubmitting, setDeleteSubmitting] = useState(false);
+  const [deleteRequested, setDeleteRequested] = useState(false);
 
   useEffect(() => {
     const sid = typeof window !== "undefined" ? localStorage.getItem("abroadly_student_id") : null;
@@ -181,21 +187,6 @@ export default function ChatProfilePage() {
     setSaved(false);
   }
 
-  function toggleCountry(country: string) {
-    setForm((prev) => {
-      if (!prev) return prev;
-      const selected = prev.target_countries.includes(country);
-      return {
-        ...prev,
-        target_countries: selected
-          ? prev.target_countries.filter((item) => item !== country)
-          : [...prev.target_countries, country],
-      };
-    });
-    setErrors((prev) => ({ ...prev, target_countries: "" }));
-    setSaved(false);
-  }
-
   async function handlePhotoUpload(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     event.target.value = "";
@@ -223,9 +214,6 @@ export default function ChatProfilePage() {
     if (gpa === undefined || (gpa !== null && (gpa < 0 || gpa > 4.5))) {
       next.gpa = "Use a GPA between 0 and 4.5.";
     }
-    if (form.target_countries.length === 0) {
-      next.target_countries = "Select at least one target country.";
-    }
 
     setErrors(next);
     return Object.keys(next).length === 0;
@@ -246,7 +234,6 @@ export default function ChatProfilePage() {
         location: form.location.trim() || null,
         education_level: form.education_level,
         gpa: gpa === undefined ? null : gpa,
-        target_countries: form.target_countries,
         preferred_field: form.preferred_field.trim() || null,
         goals: form.goals.trim() || null,
       });
@@ -260,10 +247,40 @@ export default function ChatProfilePage() {
     }
   }
 
-  const INPUT_CLS = "w-full rounded-md border border-[#E8E5DD] bg-[#FAF9F6] px-3.5 py-3 text-[14px] font-semibold text-[#1B1916] placeholder:text-[#A8A29A] focus:border-[#0A6E45] focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#0A6E45]/12 transition-colors";
+  const deletionPending = student.account_status === "pending_deletion" || Boolean(student.deletion_requested_at) || deleteRequested;
+  const storedPhoneDigits = phoneDigits(student.phone);
+  const confirmPhoneDigits = phoneDigits(deleteConfirmPhone);
+  const deletePhoneMatches = Boolean(storedPhoneDigits) && confirmPhoneDigits === storedPhoneDigits;
+  const deletePhoneMismatch = Boolean(deleteConfirmPhone.trim()) && Boolean(storedPhoneDigits) && !deletePhoneMatches;
+
+  async function handleDeletionRequest() {
+    if (!storedPhoneDigits) {
+      setDeleteError("Add your phone number before requesting deletion.");
+      return;
+    }
+    if (!deletePhoneMatches) {
+      setDeleteError("The phone number does not match this account.");
+      return;
+    }
+
+    setDeleteSubmitting(true);
+    setDeleteError("");
+    try {
+      const updated = await requestAccountDeletion(student.id, deleteConfirmPhone);
+      setStudent(updated);
+      setForm(profileFormFromStudent(updated));
+      setDeleteConfirmPhone("");
+      setDeleteRequested(true);
+    } catch (err: unknown) {
+      setDeleteError(err instanceof Error ? err.message : "Could not mark the account for deletion.");
+    } finally {
+      setDeleteSubmitting(false);
+    }
+  }
+
+    const INPUT_CLS = "w-full rounded-md border border-[#E8E5DD] bg-[#FAF9F6] px-3.5 py-3 text-base md:text-[14px] font-semibold text-[#1B1916] placeholder:text-[#A8A29A] focus:border-[#0A6E45] focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#0A6E45]/12 transition-colors";
   const LABEL_CLS = "mb-1.5 block text-[12px] font-bold uppercase tracking-[0.06em] text-[#6B655C]";
   const ERROR_CLS = "mt-1.5 text-[12px] font-bold text-[#B42318]";
-  const COUNTRIES = ["USA", "UK", "Australia", "Canada"];
 
   return (
     <div className="chat-layout profile-page">
@@ -271,7 +288,7 @@ export default function ChatProfilePage() {
 
       <section className="chat-main docs-main overflow-y-auto">
         <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-          <div className="overflow-hidden rounded-[30px] border border-[#E8E5DD] bg-white shadow-[0_18px_42px_-28px_rgba(31,27,75,0.18)]">
+            <div className="overflow-hidden rounded-[22px] border border-[#E8E5DD] bg-white shadow-[0_18px_42px_-28px_rgba(31,27,75,0.18)]">
             <div className="border-b border-[#E8E5DD] bg-[#FBFAF7] px-5 py-5 sm:px-6">
               <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                 <div className="max-w-2xl">
@@ -361,22 +378,20 @@ export default function ChatProfilePage() {
                   <section className="rounded-[20px] border border-[#E8E5DD] bg-white p-4">
                     <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#0A6E45]">Next best fixes</p>
                     <div className="mt-3 space-y-2">
-                      {[
-                        student.phone?.trim() ? null : "Add your phone number",
-                        targetCountries.length ? null : "Choose target countries",
-                        form.gpa.trim() ? null : "Review your GPA",
-                        form.preferred_field.trim() ? null : "Set your study field",
+                        {[
+                          student.phone?.trim() ? null : "Add your phone number",
+                          form.gpa.trim() ? null : "Review your GPA",
+                          form.preferred_field.trim() ? null : "Set your study field",
                       ].filter(Boolean).map((item) => (
                         <div key={item as string} className="flex items-center gap-2 rounded-[16px] bg-[#FAF9F6] px-3 py-2 text-[12px] font-semibold text-[#3F3A33]">
                           <span className="h-2 w-2 rounded-full bg-[#0A6E45]" />
                           {item}
                         </div>
                       ))}
-                      {![
-                        student.phone?.trim() ? null : "Add your phone number",
-                        targetCountries.length ? null : "Choose target countries",
-                        form.gpa.trim() ? null : "Review your GPA",
-                        form.preferred_field.trim() ? null : "Set your study field",
+                        {![
+                          student.phone?.trim() ? null : "Add your phone number",
+                          form.gpa.trim() ? null : "Review your GPA",
+                          form.preferred_field.trim() ? null : "Set your study field",
                       ].filter(Boolean).length && (
                         <p className="rounded-[16px] bg-[#EEF7F1] px-3 py-3 text-[12px] font-semibold text-[#0A6E45]">Everything important is filled. Keep it updated when things change.</p>
                       )}
@@ -402,10 +417,10 @@ export default function ChatProfilePage() {
                       <p className="mt-1.5 text-[13.5px] leading-6 text-[#6B655C]">
                         The rest of your onboarding data stays visible in the sidebar, so this stays clean and focused.
                       </p>
-                    </div>
-                    <div className="hidden rounded-full border border-[#D7E7DD] bg-[#EEF7F1] px-3 py-1.5 text-[11px] font-bold text-[#0A6E45] md:inline-flex">
-                      {saved ? "Saved" : "Live profile"}
-                    </div>
+                      </div>
+                      <div className="hidden rounded-full border border-[#D7E7DD] bg-[#EEF7F1] px-3 py-1.5 text-[11px] font-bold text-[#0A6E45] md:inline-flex">
+                        {deletionPending ? "Pending deletion" : saved ? "Saved" : "Live profile"}
+                      </div>
                   </div>
 
                   <form onSubmit={saveProfile} className="mt-6 space-y-7 pb-16">
@@ -489,32 +504,25 @@ export default function ChatProfilePage() {
                         <p className="mt-1 text-[12.5px] text-[#6B655C]">This is the part that shapes recommendations the most.</p>
 
                         <div className="mt-4 space-y-4">
-                          <div>
-                            <label className={LABEL_CLS}>Target countries</label>
-                            <div className="flex flex-wrap gap-2.5">
-                              {COUNTRIES.map((c) => {
-                                const active = form.target_countries.includes(c);
-                                return (
-                                  <button
-                                    key={c}
-                                    type="button"
-                                    onClick={() => toggleCountry(c)}
-                                    className={`ab-focus inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-[13px] font-bold transition ${
-                                      active
-                                    ? "border-[#0A6E45] bg-[#EEF7F1] text-[#0A6E45]"
-                                        : "border-[#E8E5DD] bg-white text-[#6B655C] hover:border-[#D8D3C8] hover:bg-[#FAF9F6]"
-                                    }`}
-                                  >
-                                    <span className={`flex h-4.5 w-4.5 items-center justify-center rounded-full border ${active ? "border-[#0A6E45] bg-[#0A6E45]" : "border-[#C9C3B8]"}`}>
-                                      {active && <svg viewBox="0 0 10 10" className="h-2 w-2 text-white" fill="none"><path d="M2 5L4 7L8 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>}
+                            <div>
+                              <label className={LABEL_CLS}>Target countries</label>
+                              <div className="flex flex-wrap gap-2">
+                                {targetCountries.length ? (
+                                  targetCountries.map((country) => (
+                                    <span key={country} className="inline-flex rounded-md border border-[#D7E7DD] bg-[#EEF7F1] px-3 py-2 text-[12px] font-bold text-[#0A6E45]">
+                                      {country}
                                     </span>
-                                    {c}
-                                  </button>
-                                );
-                              })}
+                                  ))
+                                ) : (
+                                  <span className="rounded-md border border-[#E8E5DD] bg-white px-3 py-2 text-[12px] font-semibold text-[#8A847B]">
+                                    Not set yet
+                                  </span>
+                                )}
+                              </div>
+                              <p className="mt-2 text-[11.5px] leading-5 text-[#6B655C]">
+                                Destination changes are handled during onboarding so recommendations stay consistent.
+                              </p>
                             </div>
-                            {errors.target_countries && <p className={ERROR_CLS}>{errors.target_countries}</p>}
-                          </div>
 
                           <div>
                             <label className={LABEL_CLS}>Preferred field</label>
@@ -555,10 +563,66 @@ export default function ChatProfilePage() {
                             <p className="mt-1.5 text-[13px] font-semibold text-[#1B1916]">{value}</p>
                           </div>
                         ))}
+                        </div>
                       </div>
-                    </div>
 
-                    {apiError && (
+                      <div className="rounded-[20px] border border-[#F3D5D0] bg-[#FFF8F7] p-5">
+                        <div className="flex items-start gap-3">
+                          <span className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-white text-[#B42318] ring-1 ring-[#F3D5D0]">
+                            <Trash2 aria-hidden className="h-4 w-4" />
+                          </span>
+                          <div className="min-w-0 flex-1">
+                            <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#B42318]">Delete account</p>
+                            <h3 className="mt-1 text-[15px] font-black text-[#1B1916]">
+                              {deletionPending ? "Deletion request received" : "Request account deletion"}
+                            </h3>
+                            <p className="mt-1 text-[12.5px] leading-5 text-[#6B655C]">
+                              {deletionPending
+                                ? "Your account is marked for deletion. The admin team can still review it before cleanup."
+                                : "This will mark your account for deletion. It does not immediately remove your profile, chat history, or documents."}
+                            </p>
+                            {!deletionPending && (
+                              <div className="mt-4 grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
+                                <div>
+                                  <label className={LABEL_CLS} htmlFor="delete-confirm-phone">Type your phone number to confirm</label>
+                                  <input
+                                    id="delete-confirm-phone"
+                                    type="tel"
+                                    inputMode="tel"
+                                    autoComplete="tel"
+                                    className={INPUT_CLS}
+                                    value={deleteConfirmPhone}
+                                    onChange={(event) => {
+                                      setDeleteConfirmPhone(event.target.value);
+                                      setDeleteError("");
+                                    }}
+                                    onKeyDown={(event) => {
+                                      if (event.key === "Enter") event.preventDefault();
+                                    }}
+                                    placeholder={student.phone || "Add phone first"}
+                                  />
+                                  {(deleteError || deletePhoneMismatch) && (
+                                    <p className={ERROR_CLS}>{deleteError || "The phone number does not match this account."}</p>
+                                  )}
+                                  {!storedPhoneDigits && (
+                                    <p className="mt-1.5 text-[12px] font-semibold text-[#8A847B]">Save your phone number first, then you can confirm deletion.</p>
+                                  )}
+                                </div>
+                                <button
+                                  type="button"
+                                  onClick={handleDeletionRequest}
+                                  disabled={deleteSubmitting || !deletePhoneMatches}
+                                  className="ab-focus inline-flex min-h-11 items-center justify-center rounded-md border border-[#D92D20] bg-white px-4 text-[12px] font-bold text-[#B42318] transition hover:bg-[#FFF1F0] disabled:cursor-not-allowed disabled:border-[#E8E5DD] disabled:text-[#A8A29A]"
+                                >
+                                  {deleteSubmitting ? "Marking..." : "Mark for deletion"}
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      {apiError && (
                       <div className="rounded-[16px] border border-[#F5C2BC] bg-[#FFF4F2] px-4 py-3 text-[13px] font-semibold text-[#B42318]">
                         {apiError}
                       </div>

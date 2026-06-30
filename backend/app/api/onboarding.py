@@ -25,6 +25,14 @@ class CallRequest(BaseModel):
     preferred_time: str | None = None
 
 
+class DeletionRequest(BaseModel):
+    phone: str
+
+
+def _phone_digits(value: str | None) -> str:
+    return "".join(ch for ch in (value or "") if ch.isdigit())
+
+
 def _to_out(model: StudentModel) -> StudentOut:
     """Convert ORM row -> Pydantic StudentOut, coercing UUID -> str."""
     return StudentOut.model_validate(
@@ -176,6 +184,38 @@ async def update_student(
         setattr(student, field, value)
     student.updated_at = datetime.utcnow()
 
+    await db.commit()
+    await db.refresh(student)
+    return _to_out(student)
+
+
+@router.post("/{student_id}/deletion-request", response_model=StudentOut)
+async def request_account_deletion(
+    student_id: str,
+    payload: DeletionRequest,
+    db: AsyncSession = Depends(get_session),
+) -> StudentOut:
+    """Mark an account for deletion after confirming the student's phone."""
+    try:
+        sid = uuid.UUID(student_id)
+    except ValueError:
+        raise HTTPException(status_code=422, detail="invalid_student_id")
+
+    result = await db.execute(select(StudentModel).where(StudentModel.id == sid))
+    student = result.scalar_one_or_none()
+    if not student:
+        raise HTTPException(status_code=404, detail="student_not_found")
+
+    stored_phone = _phone_digits(student.phone)
+    typed_phone = _phone_digits(payload.phone)
+    if not stored_phone:
+        raise HTTPException(status_code=422, detail="phone_required")
+    if not typed_phone or typed_phone != stored_phone:
+        raise HTTPException(status_code=422, detail="phone_mismatch")
+
+    student.account_status = "pending_deletion"
+    student.deletion_requested_at = datetime.utcnow()
+    student.updated_at = datetime.utcnow()
     await db.commit()
     await db.refresh(student)
     return _to_out(student)

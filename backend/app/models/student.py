@@ -53,6 +53,8 @@ class StudentModel(Base):
     profile_completed = Column(Boolean, default=True, server_default="true")
     call_consent = Column(Boolean, default=False, server_default="false")
     profile_photo_url = Column(String, nullable=True)
+    account_status = Column(String(32), default="active", server_default="'active'")
+    deletion_requested_at = Column(TIMESTAMP(timezone=True), nullable=True)
     # Lead qualification columns (accumulated per chat turn)
     lead_score = Column(Integer, default=0, server_default="0")
     lead_strong_count = Column(Integer, default=0, server_default="0")
@@ -170,6 +172,8 @@ class StudentOut(StudentBase):
     lead_score: int = 0
     lead_status: str = "new"
     abuse_flagged: bool = False
+    account_status: str = "active"
+    deletion_requested_at: datetime | None = None
     created_at: datetime
     updated_at: datetime
 

@@ -96,6 +96,11 @@ export default function StudentsListPage() {
                 }`}>
                   {s.lead_status?.replace("_", " ") || "New"}
                 </span>
+                {s.account_status === "pending_deletion" && (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-rose-50 px-1.5 py-0.5 text-[9px] font-bold text-rose-600">
+                    Pending deletion
+                  </span>
+                )}
               </div>
               <p className="text-[11px] text-gray-400 truncate">{s.email}</p>
               {s.last_message && (

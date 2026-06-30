@@ -142,12 +142,12 @@ const categories: Category[] = [
 ];
 
 const starterSuggestions: string[] = [
-  "Am I eligible for the UK after +2?",
-  "What does studying in Australia cost?",
-  "Which documents do I need?",
-  "Scholarships for Nepali students?",
-  "UK vs Australia for my budget?",
-  "Help me start my SOP",
+  "Which country is best for my budget?",
+  "Can you help me shortlist universities?",
+  "What documents do I need for visa?",
+  "How much does studying abroad cost?",
+  "Can I study without IELTS?",
+  "Help me plan my application timeline.",
 ];
 
 /* ── Document types for upload ────────────────────────────────────── */
@@ -276,19 +276,6 @@ const EDUCATION_OPTIONS: { value: EducationLevel; label: string }[] = [
   { value: "other", label: "Other" },
 ];
 
-const PROFILE_COUNTRY_OPTIONS = [
-  "United Kingdom",
-  "Australia",
-  "Canada",
-  "United States",
-  "New Zealand",
-  "Germany",
-  "Finland",
-  "Japan",
-  "South Korea",
-  "Ireland",
-];
-
 interface ProfileFormState {
   full_name: string;
   phone: string;
@@ -297,7 +284,6 @@ interface ProfileFormState {
   gpa: string;
   expected_gpa: string;
   preferred_field: string;
-  target_countries: string[];
   goals: string;
 }
 
@@ -316,7 +302,6 @@ function profileFormFromStudent(student: StudentOut): ProfileFormState {
     gpa: student.gpa == null ? "" : String(student.gpa),
     expected_gpa: student.expected_gpa == null ? "" : String(student.expected_gpa),
     preferred_field: student.preferred_field || "",
-    target_countries: student.target_countries || [],
     goals: student.goals || "",
   };
 }
@@ -463,10 +448,14 @@ function AiAvatar() {
   );
 }
 
-function UserAvatar({ initial }: { initial: string }) {
+function UserAvatar({ initial, photoUrl, name }: { initial: string; photoUrl?: string | null; name?: string }) {
   return (
-    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] bg-[#12244a] ring-1 ring-white/10">
-      <span className="text-[11px] font-bold text-white/90">{initial}</span>
+    <div className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-[10px] bg-[#12244a] ring-1 ring-white/10">
+      {photoUrl ? (
+        <img src={photoUrl} alt={name || "Your profile"} className="h-full w-full object-cover" />
+      ) : (
+        <span className="text-[11px] font-bold text-white/90">{initial}</span>
+      )}
     </div>
   );
 }
@@ -1015,7 +1004,7 @@ function ProfilePopup({
         : uploadedCount < documentTotal
           ? "Upload docs"
           : targetCountries.length === 0
-            ? "Pick countries"
+            ? "Review destinations"
             : "Shortlist universities";
   const visibleFields: [string, string | number | null | undefined][] = [
     ["Email", student.email],
@@ -1040,26 +1029,13 @@ function ProfilePopup({
   ].filter(Boolean).length;
   const completionPct = Math.round((completionCount / 6) * 100);
   const inputClass =
-    "w-full rounded-md border border-[#E8E5DD] bg-white px-3 py-2.5 text-[13px] font-semibold text-[#1B1916] placeholder:text-[#A8A29A] focus:border-[#0A6E45] focus:outline-none focus:ring-4 focus:ring-[#0A6E45]/12";
+    "w-full rounded-md border border-[#E8E5DD] bg-white px-3 py-2.5 text-base md:text-[13px] font-semibold text-[#1B1916] placeholder:text-[#A8A29A] focus:border-[#0A6E45] focus:outline-none focus:ring-4 focus:ring-[#0A6E45]/12";
   const labelClass = "mb-1.5 block text-[11px] font-bold uppercase tracking-[0.06em] text-[#6B655C]";
   const errorClass = "mt-1.5 text-[11px] font-bold text-[#b42318]";
 
   function setField<K extends keyof ProfileFormState>(field: K, value: ProfileFormState[K]) {
     setForm((prev) => ({ ...prev, [field]: value }));
     setErrors((prev) => ({ ...prev, [field]: "" }));
-  }
-
-  function toggleCountry(country: string) {
-    setForm((prev) => {
-      const selected = prev.target_countries.includes(country);
-      return {
-        ...prev,
-        target_countries: selected
-          ? prev.target_countries.filter((item) => item !== country)
-          : [...prev.target_countries, country],
-      };
-    });
-    setErrors((prev) => ({ ...prev, target_countries: "" }));
   }
 
   function validateProfileForm(): boolean {
@@ -1074,9 +1050,6 @@ function ProfilePopup({
     }
     if (expectedGpa === undefined || (expectedGpa !== null && (expectedGpa < 0 || expectedGpa > 4.5))) {
       next.expected_gpa = "Use an expected GPA between 0 and 4.5.";
-    }
-    if (form.target_countries.length === 0) {
-      next.target_countries = "Select at least one target country.";
     }
 
     setErrors(next);
@@ -1099,7 +1072,6 @@ function ProfilePopup({
         education_level: form.education_level,
         gpa: gpa === undefined ? null : gpa,
         expected_gpa: expectedGpa === undefined ? null : expectedGpa,
-        target_countries: form.target_countries,
         preferred_field: form.preferred_field.trim() || null,
         goals: form.goals.trim() || null,
       });
@@ -1204,7 +1176,7 @@ function ProfilePopup({
               <div className="rounded-[18px] border border-white/12 bg-white/10 p-3 backdrop-blur">
                 <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-white/65">Countries</p>
                 <p className="mt-2 text-[22px] font-black leading-none">{targetCountries.length || "0"}</p>
-                <p className="mt-1 truncate text-[11px] text-white/72">{targetCountries.length ? targetCountries.join(" · ") : "Add target markets"}</p>
+                <p className="mt-1 truncate text-[11px] text-white/72">{targetCountries.length ? targetCountries.join(" · ") : "Not set"}</p>
               </div>
               <div className="rounded-[18px] border border-white/12 bg-white/10 p-3 backdrop-blur">
                 <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-white/65">Next action</p>
@@ -1291,7 +1263,7 @@ function ProfilePopup({
                   <div className="rounded-2xl border border-[#E8E5DD] bg-[linear-gradient(135deg,#F8FAFF,#F2FBF6)] p-4">
                     <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#0A6E45]">Why this matters</p>
                     <p className="mt-2 text-[13px] leading-6 text-[#3F3A33]">
-                      You’re already signed in. This tab is for tightening the plan: better countries, better docs, and less generic advice.
+                      You’re already signed in. This tab is for tightening the plan: clearer goals, better docs, and less generic advice.
                     </p>
                   </div>
                   <div className="grid gap-2">
@@ -1351,24 +1323,28 @@ function ProfilePopup({
                     </div>
                   </div>
 
-                  <div>
-                    <div className="mb-2 flex items-center justify-between gap-3">
-                      <label className={labelClass}>Target countries</label>
-                      <span className="text-[11px] font-bold text-[#8A847B]">{form.target_countries.length} selected</span>
+                    <div>
+                      <div className="mb-2 flex items-center justify-between gap-3">
+                        <label className={labelClass}>Target countries</label>
+                        <span className="text-[11px] font-bold text-[#8A847B]">{targetCountries.length || 0} selected</span>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {targetCountries.length ? (
+                          targetCountries.map((country) => (
+                            <span key={country} className="rounded-md border border-[#D7E7DD] bg-[#E8F2EC] px-3 py-2 text-[12px] font-bold text-[#0A6E45]">
+                              {country}
+                            </span>
+                          ))
+                        ) : (
+                          <span className="rounded-md border border-[#E8E5DD] bg-white px-3 py-2 text-[12px] font-semibold text-[#8A847B]">
+                            Not set yet
+                          </span>
+                        )}
+                      </div>
+                      <p className="mt-2 text-[11px] leading-5 text-[#8A847B]">
+                        Destination changes are kept out of profile editing so your recommendations stay stable.
+                      </p>
                     </div>
-                    <div className="grid gap-2 sm:grid-cols-2">
-                      {PROFILE_COUNTRY_OPTIONS.map((country) => {
-                        const checked = form.target_countries.includes(country);
-                        return (
-                          <label key={country} className={`flex min-h-11 cursor-pointer items-center gap-2 rounded-2xl border px-3 text-[12px] font-bold transition ${checked ? "border-[#0A6E45] bg-[#E8F2EC] text-[#1B1916]" : "border-[#E8E5DD] bg-white text-[#6B655C] hover:border-[#B8D8C8]"}`}>
-                            <input type="checkbox" checked={checked} onChange={() => toggleCountry(country)} className="h-4 w-4 rounded border-[#D1CABD] text-[#0A6E45] focus:ring-[#0A6E45]" />
-                            <span>{country}</span>
-                          </label>
-                        );
-                      })}
-                    </div>
-                    {errors.target_countries && <p className={errorClass}>{errors.target_countries}</p>}
-                  </div>
 
                   <div>
                     <label className={labelClass} htmlFor="profile-goals">Goals</label>
@@ -1908,6 +1884,7 @@ export default function ChatPage() {
   // Suggestion rail: use generated actions when present, then evolve around
   // the current topic and profile instead of falling back to the same six chips.
   const railSuggestions = useMemo(() => {
+    const allUserQuestions = new Set(messages.filter(m => m.role === "user").map(m => m.text.trim().toLowerCase()));
     let latestAnswer = "";
     let latestQuestion = "";
     for (let i = messages.length - 1; i >= 0; i--) {
@@ -1917,14 +1894,18 @@ export default function ChatPage() {
         const acts = parseAnswer(m.response.answer ?? m.response.clarifying_question ?? "")
           .actions.filter((a) => !a.isUpload)
           .map((a) => a.text);
-        if (acts.length) return Array.from(new Set(acts)).slice(0, 4);
+        if (acts.length) {
+          const freshActs = Array.from(new Set(acts))
+            .filter((item) => !allUserQuestions.has(item.trim().toLowerCase()));
+          if (freshActs.length) return freshActs.slice(0, 4);
+        }
       }
       if (m.role === "user" && !latestQuestion) latestQuestion = m.text;
       if (latestAnswer && latestQuestion) break;
     }
-    if (!latestAnswer) return starterSuggestions;
+    const unusedStarters = starterSuggestions.filter(item => !allUserQuestions.has(item.toLowerCase()));
+    if (!latestAnswer) return unusedStarters.slice(0, 4);
 
-    const allUserQuestions = new Set(messages.filter(m => m.role === "user").map(m => m.text.toLowerCase()));
     const topic = `${latestQuestion} ${latestAnswer}`.toLowerCase();
     const country = student?.target_countries?.[0] || (topic.includes("australia") ? "Australia" : topic.includes("canada") ? "Canada" : "the UK");
     const field = student?.preferred_field || "my field";
@@ -1942,7 +1923,6 @@ export default function ChatPage() {
 
     let filtered = contextual.filter((item) => !allUserQuestions.has(item.toLowerCase()));
     if (filtered.length < 4) {
-      const unusedStarters = starterSuggestions.filter(item => !allUserQuestions.has(item.toLowerCase()));
       filtered = [...filtered, ...unusedStarters];
     }
     return Array.from(new Set(filtered)).slice(0, 4);
@@ -2026,11 +2006,6 @@ export default function ChatPage() {
             <FolderIcon />
             Open document manager
           </Link>
-          <button type="button" onClick={() => setClassBookingPrompt({ test: student?.planned_english_test || student?.english_test_type || "IELTS" })} className="ab-focus class-claim-inline">
-            <span className="class-claim-inline-spark" aria-hidden>✦</span>
-            <span><strong>Free IELTS / PTE class</strong><small>Confirm your preferred time</small></span>
-            <span aria-hidden>→</span>
-          </button>
         </section>
 
         {/* To-do (top 3 pending) */}
@@ -2198,7 +2173,7 @@ export default function ChatPage() {
                       <div className="chat-bubble-user">
                         <p className="whitespace-pre-wrap text-[14px] leading-[1.65]">{msg.text}</p>
                       </div>
-                      <UserAvatar initial={userInitial} />
+                      <UserAvatar initial={userInitial} photoUrl={student?.profile_photo_url} name={student?.full_name || undefined} />
                     </div>
                   );
                 }
@@ -2266,16 +2241,6 @@ export default function ChatPage() {
             {/* Suggestion rail — always one tap from the next question */}
             {!thinking && (
               <div className="chat-suggestion-rail">
-                {student && (
-                  <button
-                    type="button"
-                    onClick={() => setClassBookingPrompt({ test: student.planned_english_test || student.english_test_type || "IELTS" })}
-                    className="ab-focus chat-suggestion-chip chat-class-chip md:hidden"
-                  >
-                    <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[#E8F2EC] text-[9px] font-extrabold text-[#0A6E45]">Free</span>
-                    <span className="truncate">IELTS / PTE class</span>
-                  </button>
-                )}
                 {railSuggestions.map((s, i) => (
                   <button key={i} type="button" onClick={() => sendMessage(s, "suggestion")} className="ab-focus chat-suggestion-chip">
                     {hasMessages ? <ArrowUpIcon /> : <span className="text-[#E11D2A]">✦</span>}

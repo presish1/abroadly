@@ -37,6 +37,7 @@ interface ProfileForm {
   english_class_timing: string;
   planned_english_test: string;
   preferred_field: string;
+  preferred_field_other: string;
   intended_study_level: string;
   preferred_intake: string;
   budget_range: string;
@@ -61,6 +62,7 @@ const EMPTY_FORM: ProfileForm = {
   english_class_timing: "",
   planned_english_test: "",
   preferred_field: "",
+  preferred_field_other: "",
   intended_study_level: "",
   preferred_intake: "",
   budget_range: "",
@@ -98,6 +100,24 @@ const COUNTRY_OPTIONS = [
 
 const ENGLISH_TESTS = ["IELTS", "PTE", "Duolingo", "TOEFL", "Oxford ELLT", "Other test"];
 const CLASS_TIMES = ["Morning", "Afternoon", "Evening", "Weekend", "Flexible"];
+const PREFERRED_FIELD_OPTIONS = [
+  "Business & Management",
+  "Computer Science / IT",
+  "Engineering",
+  "Health Sciences",
+  "Nursing",
+  "Hospitality & Tourism",
+  "Data Science / AI",
+  "Finance & Accounting",
+  "Economics",
+  "Law",
+  "Social Sciences",
+  "Arts & Design",
+  "Education",
+  "Agriculture",
+  "Environmental Science",
+  "Other",
+];
 const STUDY_LEVELS = ["Foundation / pathway", "Diploma", "Bachelor's", "Master's", "PhD / research", "Not sure yet"];
 const INTAKES = ["January / February 2027", "May / July 2027", "September / October 2027", "2028", "Not sure yet"];
 const BUDGETS = ["Under USD 15,000 / year", "USD 15,000-25,000 / year", "USD 25,000-40,000 / year", "Above USD 40,000 / year", "Need help estimating"];
@@ -119,6 +139,13 @@ const ERROR_CLS = "mt-1.5 text-[11.5px] font-semibold text-[#B42318]";
 
 function cleanPhoneForInput(value: string | null): string {
   return (value || "").replace(/^\+977[\s-]*/, "");
+}
+
+function preferredFieldFormValue(value: string | null | undefined): Pick<ProfileForm, "preferred_field" | "preferred_field_other"> {
+  const clean = (value || "").trim();
+  if (!clean) return { preferred_field: "", preferred_field_other: "" };
+  if (PREFERRED_FIELD_OPTIONS.includes(clean)) return { preferred_field: clean, preferred_field_other: "" };
+  return { preferred_field: "Other", preferred_field_other: clean };
 }
 
 function ErrorText({ children }: { children?: ReactNode }) {
@@ -210,6 +237,7 @@ export default function ProfileDetailsPage() {
         setPendingProfile(null);
         setForm({
           ...EMPTY_FORM,
+          ...preferredFieldFormValue(current.preferred_field),
           full_name: current.full_name || "",
           phone: cleanPhoneForInput(current.phone),
           location: current.location || "",
@@ -224,7 +252,6 @@ export default function ProfileDetailsPage() {
           english_goal: (current.english_goal as EnglishGoal | null) || "",
           english_class_timing: current.english_class_timing || "",
           planned_english_test: current.planned_english_test || "",
-          preferred_field: current.preferred_field || "",
           intended_study_level: current.intended_study_level || "",
           preferred_intake: current.preferred_intake || "",
           budget_range: current.budget_range || "",
@@ -311,7 +338,10 @@ export default function ProfileDetailsPage() {
 
     if (targetStep === 3) {
       if (!form.target_countries.length) next.target_countries = "Choose at least one destination.";
-      if (!form.preferred_field.trim()) next.preferred_field = "Tell us what you want to study.";
+      if (!form.preferred_field) next.preferred_field = "Choose what you want to study.";
+      if (form.preferred_field === "Other" && !form.preferred_field_other.trim()) {
+        next.preferred_field_other = "Type your study field.";
+      }
       if (!form.intended_study_level) next.intended_study_level = "Choose your intended study level.";
       if (!form.preferred_intake) next.preferred_intake = "Choose a preferred intake.";
     }
@@ -339,6 +369,10 @@ export default function ProfileDetailsPage() {
     setApiError("");
     try {
       const gpa = form.score_type === "gpa" ? Number(form.academic_score) : undefined;
+      const preferredField =
+        form.preferred_field === "Other"
+          ? form.preferred_field_other.trim()
+          : form.preferred_field.trim();
       const updated = await completeGoogleProfile({
         full_name: form.full_name.trim(),
         phone: form.phone.trim().startsWith("+") ? form.phone.trim() : `+977 ${form.phone.trim()}`,
@@ -361,7 +395,7 @@ export default function ProfileDetailsPage() {
               ...(form.english_goal === "book_test" ? { planned_english_test: form.planned_english_test } : {}),
             }),
         target_countries: form.target_countries,
-        preferred_field: form.preferred_field.trim(),
+        preferred_field: preferredField,
         intended_study_level: form.intended_study_level,
         preferred_intake: form.preferred_intake,
         ...(form.budget_range ? { budget_range: form.budget_range } : {}),
@@ -705,11 +739,40 @@ export default function ProfileDetailsPage() {
                 </div>
 
                 <div className="mt-6 grid gap-5 sm:grid-cols-2">
-                  <div>
-                    <label htmlFor="preferred_field" className={LABEL_CLS}>What do you want to study?</label>
-                    <input id="preferred_field" className={INPUT_CLS} value={form.preferred_field} onChange={(e) => setField("preferred_field", e.target.value)} placeholder="Computer Science, Nursing, Business..." />
-                    <ErrorText>{errors.preferred_field}</ErrorText>
-                  </div>
+                    <div>
+                      <label htmlFor="preferred_field" className={LABEL_CLS}>What do you want to study?</label>
+                      <select
+                        id="preferred_field"
+                        className={INPUT_CLS}
+                        value={form.preferred_field}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          setForm((prev) => ({
+                            ...prev,
+                            preferred_field: value,
+                            preferred_field_other: value === "Other" ? prev.preferred_field_other : "",
+                          }));
+                          setErrors((prev) => ({ ...prev, preferred_field: "", preferred_field_other: "" }));
+                          setApiError("");
+                        }}
+                      >
+                        <option value="">Choose a field</option>
+                        {PREFERRED_FIELD_OPTIONS.map((field) => (
+                          <option key={field} value={field}>{field}</option>
+                        ))}
+                      </select>
+                      {form.preferred_field === "Other" && (
+                        <input
+                          id="preferred_field_other"
+                          className={`${INPUT_CLS} mt-3`}
+                          value={form.preferred_field_other}
+                          onChange={(e) => setField("preferred_field_other", e.target.value)}
+                          placeholder="Type your field"
+                        />
+                      )}
+                      <ErrorText>{errors.preferred_field}</ErrorText>
+                      <ErrorText>{errors.preferred_field_other}</ErrorText>
+                    </div>
                   <div>
                     <label htmlFor="intended_study_level" className={LABEL_CLS}>Intended study level</label>
                     <select id="intended_study_level" className={INPUT_CLS} value={form.intended_study_level} onChange={(e) => setField("intended_study_level", e.target.value)}>
