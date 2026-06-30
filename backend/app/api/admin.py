@@ -57,6 +57,8 @@ class StudentListItem(BaseModel):
     ai_paused: bool
     call_consent: bool = False
     lead_status: str | None = None
+    account_status: str = "active"
+    deletion_requested_at: datetime | None = None
     created_at: datetime
     chat_count: int = 0
     doc_count: int = 0
@@ -90,6 +92,8 @@ class StudentDetail(BaseModel):
     ai_paused: bool
     call_consent: bool = False
     lead_status: str | None = None
+    account_status: str = "active"
+    deletion_requested_at: datetime | None = None
     created_at: datetime
     updated_at: datetime
     chat_count: int = 0
@@ -452,6 +456,8 @@ async def admin_list_students(
             preferred_field=s.preferred_field, gpa=s.gpa,
             ai_paused=s.ai_paused or False, call_consent=s.call_consent or False,
             lead_status=s.lead_status or "new",
+            account_status=s.account_status or "active",
+            deletion_requested_at=s.deletion_requested_at,
             created_at=s.created_at,
             chat_count=chat_count, doc_count=doc_count, last_message=last_message,
         ))
@@ -489,6 +495,8 @@ async def admin_get_student(
         goals=s.goals, ai_paused=s.ai_paused or False,
         call_consent=s.call_consent or False,
         lead_status=s.lead_status or "new",
+        account_status=s.account_status or "active",
+        deletion_requested_at=s.deletion_requested_at,
         created_at=s.created_at, updated_at=s.updated_at,
         chat_count=chat_count, doc_count=doc_count,
     )

@@ -49,7 +49,7 @@ function MobileAction({
   ariaLabel?: string;
 }) {
   const className = `ab-focus group relative flex min-h-[54px] min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-xl px-0.5 py-1.5 text-[9.5px] font-semibold transition-colors sm:text-[10.5px] ${
-    active ? "text-[#0A6E45]" : "text-[#746E65] hover:bg-[#F6F5F1] hover:text-[#3F3A33]"
+    active ? "bg-[#EEF5F0] text-[#0A6E45]" : "text-[#746E65] hover:bg-[#F6F5F1] hover:text-[#3F3A33]"
   }`;
 
   return (
@@ -63,7 +63,6 @@ function MobileAction({
         ) : null}
       </span>
       <span className="whitespace-nowrap leading-none">{label}</span>
-      <span className={`h-1 w-1 rounded-full ${active ? "bg-[#0A6E45]" : "bg-transparent"}`} aria-hidden />
     </Link>
   );
 }

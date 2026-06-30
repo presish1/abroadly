@@ -65,6 +65,8 @@ CREATE TABLE IF NOT EXISTS students (
     preferred_intake TEXT,
     budget_range TEXT,
     goals TEXT,
+    account_status TEXT DEFAULT 'active',
+    deletion_requested_at TIMESTAMPTZ,
     profile_completed BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
@@ -209,6 +211,8 @@ _ADD_LATENCY_MS = "ALTER TABLE chat_audit ADD COLUMN IF NOT EXISTS latency_ms IN
 _ADD_PROVIDER = "ALTER TABLE chat_audit ADD COLUMN IF NOT EXISTS provider TEXT;"
 
 _ADD_PROFILE_PHOTO_URL = "ALTER TABLE students ADD COLUMN IF NOT EXISTS profile_photo_url TEXT;"
+_ADD_ACCOUNT_STATUS = "ALTER TABLE students ADD COLUMN IF NOT EXISTS account_status TEXT DEFAULT 'active';"
+_ADD_DELETION_REQUESTED_AT = "ALTER TABLE students ADD COLUMN IF NOT EXISTS deletion_requested_at TIMESTAMPTZ;"
 
 
 async def create_tables() -> None:
@@ -245,3 +249,5 @@ async def create_tables() -> None:
         await conn.execute(text(_ADD_LATENCY_MS))
         await conn.execute(text(_ADD_PROVIDER))
         await conn.execute(text(_ADD_PROFILE_PHOTO_URL))
+        await conn.execute(text(_ADD_ACCOUNT_STATUS))
+        await conn.execute(text(_ADD_DELETION_REQUESTED_AT))

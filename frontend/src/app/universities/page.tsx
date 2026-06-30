@@ -74,6 +74,8 @@ const MOCK_STUDENT = {
   call_consent: false,
   created_at: new Date().toISOString(),
   updated_at: new Date().toISOString(),
+  account_status: "active",
+  deletion_requested_at: null,
 } as StudentOut;
 
 const MOCK_DOCS = [

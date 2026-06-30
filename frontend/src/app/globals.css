@@ -146,7 +146,6 @@ body {
   flex-direction: column;
   overflow-y: auto;
   background: #FDFCF9;
-  border-left: 1px solid #E7E5DF;
 }
 
 @media (min-width: 1280px) {
@@ -308,7 +307,7 @@ body {
 .chat-right-tab[aria-current="page"] {
   background: #EEF5F0;
   color: #145C3C;
-  box-shadow: inset 3px 0 0 #147A4F;
+  box-shadow: none;
 }
 
 .chat-right-tab-active .chat-right-tab-icon,
@@ -903,7 +902,6 @@ body {
 .chat-suggestion-chip,
 .chat-launcher-card,
 .chat-upload-nudge,
-.class-claim-inline,
 .chat-header-btn {
   min-height: 48px;
 }
@@ -1328,7 +1326,7 @@ body {
   border-color: #0A6E45;
   background: #EDF6F1;
   color: #075B39;
-  box-shadow: inset 0 0 0 1px #0A6E45;
+  box-shadow: none;
 }
 
 /* ── Small service prompts ───────────────────────────────────────── */
@@ -1392,26 +1390,6 @@ body {
 .class-claim-confetti i:nth-child(2) { right: 28px; top: 23px; background: #E11D2A; transform: rotate(-18deg); }
 .class-claim-confetti i:nth-child(3) { right: 11px; top: 35px; background: #1E70EB; transform: rotate(45deg); }
 .class-claim-confetti i:nth-child(4) { right: 35px; top: 8px; background: #0A6E45; border-radius: 50%; }
-
-.class-claim-inline {
-  display: flex;
-  width: 100%;
-  align-items: center;
-  gap: 8px;
-  margin-top: 9px;
-  border: 1px solid #D7E7DE;
-  border-radius: 8px;
-  background: #F4FAF7;
-  padding: 9px 10px;
-  color: #566059;
-  text-align: left;
-}
-
-.class-claim-inline:hover { border-color: #A9D1BC; background: #EDF7F2; }
-.class-claim-inline-spark { color: #E0A21B; }
-.class-claim-inline > span:nth-child(2) { flex: 1; min-width: 0; }
-.class-claim-inline strong { display: block; color: #1B1916; font-size: 10.5px; }
-.class-claim-inline small { display: block; margin-top: 1px; font-size: 9.5px; }
 
 .document-start-callout,
 .docs-next-prompt {
@@ -1526,7 +1504,6 @@ body {
   height: 100dvh;
   max-height: 100dvh;
   overflow: hidden;
-  border-left: 1px solid #EFECE4;
   background: #FFFFFF;
   padding: 24px;
   box-shadow: -18px 0 48px rgba(15, 15, 15, 0.12);
@@ -1575,16 +1552,10 @@ body {
   color: #0A6E45;
 }
 
-.profile-page .chat-right-tab-active::before,
-.profile-page .chat-right-tab[aria-current="page"]::before {
-  background: #0A6E45;
-}
-
 .profile-page .chat-right-tab-active .chat-right-tab-icon,
 .profile-page .chat-right-tab[aria-current="page"] .chat-right-tab-icon {
   background: #DDECE5;
   color: #0A6E45;
-  box-shadow: inset 0 0 0 1px rgba(10, 110, 69, 0.08);
 }
 
 .profile-page .chat-right-tab-active .chat-right-tab-label,
@@ -1630,7 +1601,6 @@ body {
     height: auto;
     max-height: 92dvh;
     overflow-y: auto;
-    border-left: 0;
     border-top: 1px solid #EFECE4;
     border-radius: 20px 20px 0 0;
     padding: 18px 16px calc(18px + env(safe-area-inset-bottom));
@@ -1715,7 +1685,6 @@ body {
   display: flex;
   flex-direction: column;
   background: #faf9f7;
-  border-left: 1px solid rgba(0, 0, 0, 0.06);
   box-shadow: -8px 0 40px rgba(0, 0, 0, 0.08);
   animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -2671,7 +2640,6 @@ body {
   width: min(520px, 100vw);
   display: flex; flex-direction: column;
   background: #FAF9F6;
-  border-left: 1px solid #E8E5DD;
   box-shadow: -12px 0 32px rgba(0,0,0,0.06);
   z-index: 100;
   animation: docs-slide 0.22s ease-out;
@@ -2725,7 +2693,6 @@ body {
   .modal-shell-panel.modal-shell-mobile-sheet.docs-sheet {
     height: auto;
     max-height: 92dvh;
-    border-left: 0;
     border-top: 1px solid #E8E5DD;
     box-shadow: 0 -16px 38px rgba(15, 15, 15, 0.12);
   }

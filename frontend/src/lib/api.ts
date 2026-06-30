@@ -92,6 +92,8 @@ export interface StudentOut {
   profile_completed: boolean;
   call_consent: boolean;
   profile_photo_url: string | null;
+  account_status: string;
+  deletion_requested_at: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -211,6 +213,19 @@ export async function updateStudent(
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
+    })
+  );
+}
+
+export async function requestAccountDeletion(
+  id: string,
+  phone: string
+): Promise<StudentOut> {
+  return handle<StudentOut>(
+    await fetch(`${BASE}/students/${id}/deletion-request`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ phone }),
     })
   );
 }
