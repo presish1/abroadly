@@ -254,6 +254,9 @@ export default function ChatProfilePage() {
   const deletePhoneMismatch = Boolean(deleteConfirmPhone.trim()) && Boolean(storedPhoneDigits) && !deletePhoneMatches;
 
   async function handleDeletionRequest() {
+    const currentStudent = student;
+    if (!currentStudent) return;
+
     if (!storedPhoneDigits) {
       setDeleteError("Add your phone number before requesting deletion.");
       return;
@@ -266,7 +269,7 @@ export default function ChatProfilePage() {
     setDeleteSubmitting(true);
     setDeleteError("");
     try {
-      const updated = await requestAccountDeletion(student.id, deleteConfirmPhone);
+      const updated = await requestAccountDeletion(currentStudent.id, deleteConfirmPhone);
       setStudent(updated);
       setForm(profileFormFromStudent(updated));
       setDeleteConfirmPhone("");
