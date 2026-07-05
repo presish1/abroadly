@@ -244,8 +244,8 @@ export function AntdDashboard({ student, documents, activeCountry, countries, on
           callConsented={student.call_consent}
         />
 
-        <section className="chat-main overflow-y-auto bg-[#F4F2EC]">
-          <div className="min-h-screen bg-[#F4F2EC] text-[#1B1916]">
+        <section className="chat-main dashboard-main overflow-y-auto bg-[#F4F2EC]">
+          <div className="dashboard-shell min-h-screen bg-[#F4F2EC] text-[#1B1916]">
         {/* ── Top bar ─────────────────────────────────────────────── */}
         <header className="sticky top-0 z-20 border-b border-[#E8E5DD] bg-[#FAF9F6]/90 backdrop-blur">
           <div className="mx-auto flex max-w-[1280px] items-center justify-between gap-4 px-5 py-3 lg:px-8">
@@ -538,48 +538,6 @@ export function AntdDashboard({ student, documents, activeCountry, countries, on
         </div>
           </div>
         </section>
-        {/* ── Mobile Sticky Bottom Tab Bar ─────────────────────────────── */}
-        <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[#FAF9F6]/95 backdrop-blur-md border-t border-[#E8E5DD] px-4 py-2.5 flex justify-around items-center md:hidden pb-[env(safe-area-inset-bottom,12px)] pt-2.5 shadow-[0_-4px_12px_rgba(15,15,15,0.03)]">
-          <Link href="/dashboard" className="flex flex-col items-center gap-0.5 text-center text-[#0A6E45] transition-colors">
-            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="3" y="3" width="7" height="9" />
-              <rect x="14" y="3" width="7" height="5" />
-              <rect x="14" y="12" width="7" height="9" />
-              <rect x="3" y="16" width="7" height="5" />
-            </svg>
-            <span className="text-[10px] font-bold">Dashboard</span>
-          </Link>
-
-          <Link href="/chat" className="flex flex-col items-center gap-0.5 text-center text-[#8A847B] hover:text-[#1B1916] transition-colors">
-            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-            </svg>
-            <span className="text-[10px] font-bold">Chat</span>
-          </Link>
-
-          <Link href="/chat/documents" className="flex flex-col items-center gap-0.5 text-center text-[#8A847B] hover:text-[#1B1916] transition-colors">
-            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
-            </svg>
-            <span className="text-[10px] font-bold">Documents</span>
-          </Link>
-
-          <Link href="/universities" className="flex flex-col items-center gap-0.5 text-center text-[#8A847B] hover:text-[#1B1916] transition-colors">
-            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
-              <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5" />
-            </svg>
-            <span className="text-[10px] font-bold">Universities</span>
-          </Link>
-
-          <Link href="/chat/profile" className="flex flex-col items-center gap-0.5 text-center text-[#8A847B] hover:text-[#1B1916] transition-colors">
-            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-              <circle cx="12" cy="7" r="4" />
-            </svg>
-            <span className="text-[10px] font-bold">Profile</span>
-          </Link>
-        </nav>
       </div>
     </ConfigProvider>
   );
