@@ -77,3 +77,34 @@ def test_universities_psychology_typo_and_scholarships_are_in_scope():
 
     assert out.decision == Decision.LOW_CONFIDENCE
     assert out.scope_label == "scholarship"
+
+
+def test_common_scholarship_typo_is_in_scope():
+    assert classify_scope("scholarshps") == "scholarship"
+
+
+def test_unknown_followup_with_history_uses_low_confidence_partial_path():
+    out = default_evaluator.evaluate(
+        query="why",
+        student={"target_countries": ["Australia"], "education_level": "plus_two"},
+        retrieved=RetrievedSet(chunks=[]),
+        history=[
+            {"role": "user", "content": "tell me about scholarships"},
+            {"role": "assistant", "content": "Scholarships are usually partial and merit based."},
+        ],
+    )
+
+    assert out.decision == Decision.LOW_CONFIDENCE
+    assert out.reason == "scope_unknown_history"
+    assert out.debug["partial_answer"] is True
+
+
+def test_unknown_without_history_still_refuses_under_strict_scope():
+    out = default_evaluator.evaluate(
+        query="why",
+        student={"target_countries": ["Australia"], "education_level": "plus_two"},
+        retrieved=RetrievedSet(chunks=[]),
+    )
+
+    assert out.decision == Decision.OUT_OF_SCOPE
+    assert out.reason == "scope_unknown_strict"

@@ -15,8 +15,10 @@ class Evaluator:
         query: str,
         student: dict,
         retrieved: RetrievedSet,
+        history: list[dict] | None = None,
     ) -> EvalDecision:
         scope = classify_scope(query)
+        history = history or []
         retrieval_score = retrieved.top_score
         ground = grounding_score(query, retrieved.chunks)
         confidence = min(retrieval_score, ground)
@@ -48,8 +50,25 @@ class Evaluator:
                 debug=debug,
             )
 
-        # 3. Unknown scope under strict mode -> refuse
+        # 3. Unknown scope under strict mode. Short follow-ups like "why",
+        # "cmon", "yes" or "no" can be meaningful inside an active study-abroad
+        # thread, so route them to partial generation with history instead of a
+        # dead-end refusal.
         if scope == "unknown" and policies.SCOPE_STRICT:
+            if history:
+                debug["partial_answer"] = True
+                debug["history_turns"] = len(history)
+                return EvalDecision(
+                    decision=Decision.LOW_CONFIDENCE,
+                    reason="scope_unknown_history",
+                    confidence=confidence,
+                    retrieval_score=retrieval_score,
+                    grounding_score=ground,
+                    scope_label=scope,
+                    clarification_needed=False,
+                    clarifying_question=None,
+                    debug=debug,
+                )
             return EvalDecision(
                 decision=Decision.OUT_OF_SCOPE,
                 reason="scope_unknown_strict",

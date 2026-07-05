@@ -164,3 +164,25 @@ def test_empty_llm_output_falls_back():
 
 def test_unchanged_when_no_prefix_no_quotes():
     assert _clean_llm_output("How are you?", fallback="x") == "How are you?"
+
+
+def test_single_word_study_abroad_typo_spellchecks_without_llm():
+    with patch("app.normalizer.normalizer.default_llm.normalize", side_effect=AssertionError("should not call LLM")):
+        result = _run(default_normalizer.normalize("scholarshps"))
+
+    assert result.normalized == "scholarships"
+    assert result.was_changed is True
+    assert result.source == "spellcheck"
+
+
+def test_romanized_nepali_with_typo_is_spellchecked_before_llm():
+    async def _fake(system: str, query: str) -> str:
+        assert query == "scholarships ko deadline kahile ho?"
+        return "When is the scholarship deadline?"
+
+    with patch("app.normalizer.normalizer.default_llm.normalize", side_effect=_fake):
+        result = _run(default_normalizer.normalize("scholarshps ko deadline kahile ho?"))
+
+    assert result.normalized == "When is the scholarship deadline?"
+    assert result.was_changed is True
+    assert result.source == "llm"

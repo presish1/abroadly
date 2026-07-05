@@ -23,11 +23,18 @@ def _load_system_prompt() -> str:
 
 
 _JUNK_RE = re.compile(r"(?i)^([a-z])\1+$")  # "iii", "aaa", repeated single letter
+_PLACEHOLDER_VALUES = {
+    "abc", "abcd", "asdf", "qwerty", "test", "testing", "n/a", "na",
+    "none", "null", "unknown", "not sure", "not provided", "-", "--",
+}
 
 
 def _is_junk(value: str) -> bool:
     s = value.strip()
+    lowered = s.lower()
     if len(s) < 2:
+        return True
+    if lowered in _PLACEHOLDER_VALUES:
         return True
     if _JUNK_RE.fullmatch(s):
         return True
@@ -48,7 +55,12 @@ def _format_profile(student: dict) -> str:
         if isinstance(v, str) and _is_junk(v):
             continue
         parts.append(f"{k}: {v}")
-    return "\n".join(parts) or "No profile data provided yet."
+    if not parts:
+        return "No verified student profile data from Postgres is available yet."
+    return "\n".join([
+        "Verified Postgres student-profile facts only. Missing fields are unknown; do not infer them.",
+        *parts,
+    ])
 
 
 def _clean_title(raw: str) -> str:

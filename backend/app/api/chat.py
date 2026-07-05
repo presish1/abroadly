@@ -38,8 +38,9 @@ from app.models.student import (
 )
 from app.normalizer import default_normalizer
 from app.qeval import default_question_evaluator
+from app.qeval.handoff import counselor_offer_for_response
 from app.qeval import rules as qeval_rules
-from app.qeval.lead import accumulate_lead, counselor_tier
+from app.qeval.lead import accumulate_lead
 from app.rag.generator import generate_answer, _clean_title
 from app.rag.reranker import rerank
 from app.rag.retriever import retrieve
@@ -324,7 +325,12 @@ async def chat_endpoint(
     retrieved = await retrieve(query=query, student_id=req.student_id)
     retrieved = await rerank(query=query, retrieved=retrieved)
     _stage_ms["retrieve"] = _ms(_ts)
-    decision: EvalDecision = default_evaluator.evaluate(query=query, student=student, retrieved=retrieved)
+    decision: EvalDecision = default_evaluator.evaluate(
+        query=query,
+        student=student,
+        retrieved=retrieved,
+        history=history,
+    )
 
     sources = [
         Source(
@@ -403,30 +409,15 @@ async def chat_endpoint(
             )
             metric_inc("gemini_calls" if _provider == "gemini" else "groq_fallback_hits")
 
-        # Server-authoritative counselor offer — score-based tier for normal
-        # answers, plus an immediate handoff when the strict scope gate is
-        # genuinely unsure. This keeps confused fallback replies from becoming
-        # a dead end for the student.
-        offer_counselor = False
-        offer_reason: str | None = None
-        offer_counselor_tier: str | None = None
-        if not student_model.call_consent:
-            unsure_fallback = (
-                resp.decision == Decision.OUT_OF_SCOPE
-                and decision.reason == "scope_unknown_strict"
-                and resp.answer == policies.REFUSAL_TEMPLATES["default"]
-            )
-            if unsure_fallback:
-                offer_counselor = True
-                offer_counselor_tier = "strong"
-                offer_reason = "question"
-            else:
-                tier = counselor_tier(student_model.lead_score or 0)
-                if tier:
-                    offer_counselor = True
-                    offer_counselor_tier = tier
-                    # Keep offer_reason populated for legacy frontend consumers.
-                    offer_reason = "qualified" if tier == "strong" else "question"
+        # Server-authoritative counselor offer. Normal answers use lead-score
+        # tiers; finalized refusals show a strong handoff so the student is not
+        # trapped at an "I don't know" dead end.
+        offer_counselor, offer_reason, offer_counselor_tier = counselor_offer_for_response(
+            response_decision=resp.decision,
+            response_answer=resp.answer,
+            call_consent=student_model.call_consent,
+            lead_score=student_model.lead_score,
+        )
 
         total_ms = _ms(_t0)
         # Update audit row's latency_ms — we know it now.
