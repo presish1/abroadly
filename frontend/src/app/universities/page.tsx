@@ -543,8 +543,8 @@ export default function UniversitiesPage() {
         callConsented={student.call_consent}
       />
 
-      <main className="chat-main overflow-y-auto bg-[#FDFCF9]">
-        <div className="mx-auto max-w-[1440px] px-5 py-5 lg:px-8">
+      <main className="chat-main universities-main overflow-y-auto bg-[#FDFCF9]">
+        <div className="universities-shell mx-auto max-w-[1440px] px-5 py-5 lg:px-8">
           <header className="rounded-[12px] border border-[#E4E2DD] bg-[#FEFEFC] px-5 py-4 shadow-[0_1px_2px_rgba(15,15,15,0.04)]">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>

@@ -4,6 +4,15 @@ import Link from "next/link";
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import {
+  CircleDollarSign,
+  ClipboardList,
+  FileCheck2,
+  Globe2,
+  GraduationCap,
+  PenLine,
+  type LucideIcon,
+} from "lucide-react";
+import {
   chat,
   uploadFile,
   getStudent,
@@ -96,7 +105,7 @@ type Message = UserMessage | AiMessage | WelcomeVideoMessage | CounselorMessage 
 /* ── Question launcher (empty state) + suggestion starters ─────────── */
 
 interface Category {
-  icon: string;
+  icon: LucideIcon;
   label: string;
   hint: string;
   question: string;
@@ -104,37 +113,37 @@ interface Category {
 
 const categories: Category[] = [
   {
-    icon: "\u{1F393}",
+    icon: GraduationCap,
     label: "Eligibility",
     hint: "Will my grades qualify?",
     question: "I just finished +2 in Nepal. Am I eligible to study in the UK, and what do universities look for?",
   },
   {
-    icon: "\u{1F4B0}",
+    icon: CircleDollarSign,
     label: "Costs & funding",
     hint: "Tuition, living, scholarships",
     question: "What's the realistic total cost to study in Australia, and what scholarships exist for Nepali students?",
   },
   {
-    icon: "\u{1F4CB}",
+    icon: ClipboardList,
     label: "Documents",
     hint: "What to prepare",
     question: "Give me a complete document checklist for a UK student visa application.",
   },
   {
-    icon: "\u{1F6C2}",
+    icon: FileCheck2,
     label: "Visa process",
     hint: "Steps & timelines",
     question: "How does the UK student visa process work, step by step, and how long does it take?",
   },
   {
-    icon: "\u{270D}\u{FE0F}",
+    icon: PenLine,
     label: "SOP help",
     hint: "Statement of purpose",
     question: "Help me outline a strong statement of purpose for a UK undergraduate application.",
   },
   {
-    icon: "\u{1F30D}",
+    icon: Globe2,
     label: "Compare countries",
     hint: "UK vs Australia vs Canada",
     question: "Compare the UK, Australia and Canada for a Nepali student on a tight budget.",
@@ -2127,23 +2136,26 @@ export default function ChatPage() {
                   <img src="/images/abroadly-logo.png" alt="Abroadly" className="h-full w-full bg-white object-contain p-1" />
                 </div>
                 <h2 className="mt-5 text-[26px] font-extrabold tracking-[-0.02em] text-[var(--ab-ink)]">
-                  {firstName ? `Namaste, ${firstName} ` : "Namaste "}<span className="align-middle">👋</span>
+                  {firstName ? `Namaste, ${firstName}` : "Namaste"}
                 </h2>
                 <p className="mt-2 max-w-md text-[15px] leading-relaxed text-[#6B655C]">
                   I&apos;m your free study-abroad guide. Pick a topic to begin, or just type your question below — no question is too small.
                 </p>
 
                 <div className="chat-launcher">
-                  {categories.map((c) => (
-                    <button key={c.label} type="button" onClick={() => sendMessage(c.question, "category")} className="ab-focus chat-launcher-card group">
-                      <span className="chat-launcher-icon">{c.icon}</span>
-                      <span className="min-w-0">
-                        <span className="block text-[13.5px] font-bold text-[var(--ab-ink)]">{c.label}</span>
-                        <span className="block truncate text-[12px] text-[#8A847B]">{c.hint}</span>
-                      </span>
-                      <span className="chat-launcher-arrow"><ArrowUpIcon /></span>
-                    </button>
-                  ))}
+                  {categories.map((c) => {
+                    const CategoryIcon = c.icon;
+                    return (
+                      <button key={c.label} type="button" onClick={() => sendMessage(c.question, "category")} className="ab-focus chat-launcher-card group">
+                        <span className="chat-launcher-icon"><CategoryIcon aria-hidden className="h-[18px] w-[18px]" /></span>
+                        <span className="min-w-0">
+                          <span className="block text-[13.5px] font-bold text-[var(--ab-ink)]">{c.label}</span>
+                          <span className="block truncate text-[12px] text-[#8A847B]">{c.hint}</span>
+                        </span>
+                        <span className="chat-launcher-arrow"><ArrowUpIcon /></span>
+                      </button>
+                    );
+                  })}
                 </div>
 
                 <Link href="/chat/documents" className="ab-focus chat-upload-nudge is-highlighted">
@@ -2243,7 +2255,7 @@ export default function ChatPage() {
               <div className="chat-suggestion-rail">
                 {railSuggestions.map((s, i) => (
                   <button key={i} type="button" onClick={() => sendMessage(s, "suggestion")} className="ab-focus chat-suggestion-chip">
-                    {hasMessages ? <ArrowUpIcon /> : <span className="text-[#E11D2A]">✦</span>}
+                    <ArrowUpIcon />
                     <span className="truncate">{s}</span>
                   </button>
                 ))}

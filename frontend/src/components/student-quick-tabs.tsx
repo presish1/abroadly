@@ -48,16 +48,19 @@ function MobileAction({
   badge?: string;
   ariaLabel?: string;
 }) {
-  const className = `ab-focus group relative flex min-h-[54px] min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-xl px-0.5 py-1.5 text-[9.5px] font-semibold transition-colors sm:text-[10.5px] ${
-    active ? "bg-[#EEF5F0] text-[#0A6E45]" : "text-[#746E65] hover:bg-[#F6F5F1] hover:text-[#3F3A33]"
+  const className = `ab-focus group relative flex min-h-[58px] min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-[14px] px-0.5 py-1.5 text-[9.5px] font-bold transition-[background-color,color,box-shadow,transform] duration-150 active:scale-[0.98] sm:text-[10.5px] ${
+    active
+      ? "bg-white text-[#0A6E45] shadow-[0_5px_16px_rgba(15,15,15,0.06)] ring-1 ring-[#E3EFE8]"
+      : "text-[#746E65] hover:bg-[#F6F5F1] hover:text-[#3F3A33]"
   }`;
 
   return (
     <Link href={href} aria-label={ariaLabel ?? label} aria-current={active ? "page" : undefined} className={className}>
+      {active ? <span className="absolute top-1.5 h-1 w-1 rounded-full bg-[#0A6E45]" aria-hidden /> : null}
       <span className={`relative flex h-6 w-6 items-center justify-center ${active ? "text-[#0A6E45]" : "text-[#8A847B] group-hover:text-[#3F3A33]"}`}>
         {icon}
         {badge ? (
-          <span className="absolute -right-3 -top-2 flex min-h-4 min-w-5 items-center justify-center rounded-full border border-white bg-[#E8F2EC] px-1 text-[8.5px] font-extrabold leading-none text-[#0A6E45]">
+          <span className="absolute -right-3 -top-2 flex min-h-4 min-w-5 items-center justify-center rounded-full border border-white bg-[#E8F2EC] px-1 text-[8.5px] font-extrabold leading-none text-[#0A6E45] shadow-[0_2px_6px_rgba(15,15,15,0.08)]">
             {badge}
           </span>
         ) : null}
