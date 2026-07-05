@@ -19,7 +19,7 @@ _ALLOW_PATTERNS: list[tuple[str, re.Pattern]] = [
     (
         "scholarship",
         re.compile(
-            r"\b(scholarships?|grants?|funding|tuition waivers?|stipends?|bursar(?:y|ies)|financial aid)\b",
+            r"\b(scholarships?|scholarsh(?:i)?ps?|scholorships?|schlarships?|grants?|funding|tuition waivers?|stipends?|bursar(?:y|ies)|financial aid)\b",
             re.I,
         ),
     ),
@@ -40,7 +40,7 @@ _ALLOW_PATTERNS: list[tuple[str, re.Pattern]] = [
     (
         "study_abroad",
         re.compile(
-            r"\b(study abroad|study in|study at|abroad|overseas|universit(?:y|ies)|colleges?|admission|admissions|apply|application|intakes?|ucas|common app|degrees?|masters?|bachelors?|uk|united kingdom|australia|canada|usa|united states|germany|new zealand|japan|south korea|ireland|netherlands|france|sweden|finland|norway|denmark)\b",
+            r"\b(study abroad|study in|study at|abroad|overseas|universit(?:y|ies)|univer(?:sity|sities|isty|isties)|unversit(?:y|ies)|colleges?|admission|admissions|apply|application|intakes?|ucas|common app|degrees?|masters?|bachelors?|uk|united kingdom|australia|canada|usa|united states|germany|new zealand|japan|south korea|ireland|netherlands|france|sweden|finland|norway|denmark)\b",
             re.I,
         ),
     ),
