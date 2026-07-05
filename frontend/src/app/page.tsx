@@ -159,7 +159,7 @@ export default function Home() {
 
         <div className="home-hero-inner relative z-10 mx-auto mt-8 flex w-full min-w-0 max-w-4xl flex-col items-center px-4 text-center sm:mt-24">
           <h1 className="mb-7 animate-[abFadeUp_0.8s_ease-out] text-[clamp(2.3rem,10vw,4.5rem)] font-semibold leading-[1.06] tracking-tight text-slate-900 sm:mb-10">
-            Study abroad, figured out.
+            Study abroad, made easy.
           </h1>
 
           <div className="ab-fade-up w-full max-w-3xl">
