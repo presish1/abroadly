@@ -403,20 +403,30 @@ async def chat_endpoint(
             )
             metric_inc("gemini_calls" if _provider == "gemini" else "groq_fallback_hits")
 
-        # Server-authoritative counselor offer — score-based tier (replaces old
-        # single-strong-signal trigger). Checked AFTER accumulation so this-turn
-        # points are captured. Frontend still applies the 2-session-turn gate and
-        # the once-per-session counselorOffered guard before showing the card.
+        # Server-authoritative counselor offer — score-based tier for normal
+        # answers, plus an immediate handoff when the strict scope gate is
+        # genuinely unsure. This keeps confused fallback replies from becoming
+        # a dead end for the student.
         offer_counselor = False
         offer_reason: str | None = None
         offer_counselor_tier: str | None = None
         if not student_model.call_consent:
-            tier = counselor_tier(student_model.lead_score or 0)
-            if tier:
+            unsure_fallback = (
+                resp.decision == Decision.OUT_OF_SCOPE
+                and decision.reason == "scope_unknown_strict"
+                and resp.answer == policies.REFUSAL_TEMPLATES["default"]
+            )
+            if unsure_fallback:
                 offer_counselor = True
-                offer_counselor_tier = tier
-                # Keep offer_reason populated for legacy frontend consumers.
-                offer_reason = "qualified" if tier == "strong" else "question"
+                offer_counselor_tier = "strong"
+                offer_reason = "question"
+            else:
+                tier = counselor_tier(student_model.lead_score or 0)
+                if tier:
+                    offer_counselor = True
+                    offer_counselor_tier = tier
+                    # Keep offer_reason populated for legacy frontend consumers.
+                    offer_reason = "qualified" if tier == "strong" else "question"
 
         total_ms = _ms(_t0)
         # Update audit row's latency_ms — we know it now.

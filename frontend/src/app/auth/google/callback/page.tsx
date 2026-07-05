@@ -3,7 +3,40 @@
 import Link from "next/link";
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { exchangeGoogleCode, googleLoginUrl } from "@/lib/api";
+import { exchangeGoogleCode, googleLoginUrl, type GoogleAuthResponse } from "@/lib/api";
+
+let exchangeKey: string | null = null;
+let exchangePromise: Promise<GoogleAuthResponse> | null = null;
+
+function exchangeOnce(code: string, state: string): Promise<GoogleAuthResponse> {
+  const key = `${state}:${code}`;
+  if (exchangeKey !== key || !exchangePromise) {
+    exchangeKey = key;
+    exchangePromise = exchangeGoogleCode(code, state).catch((error) => {
+      exchangeKey = null;
+      exchangePromise = null;
+      throw error;
+    });
+  }
+  return exchangePromise;
+}
+
+function friendlyGoogleError(error: unknown): string {
+  const raw = error instanceof Error ? error.message : "";
+  if (raw.includes("invalid_oauth_state")) {
+    return "This Google sign-in link expired or was opened twice. Please start Google sign-in again.";
+  }
+  if (raw.includes("google_token_exchange_failed")) {
+    return "Google rejected this sign-in attempt. Please try again from the sign-in page.";
+  }
+  if (raw.includes("google_email_not_verified")) {
+    return "Google did not return a verified email for this account. Please use a verified Google account.";
+  }
+  if (raw.includes("google_oauth_not_configured")) {
+    return "Google sign-in is not configured on this server yet.";
+  }
+  return "Google sign-in failed. Please try again.";
+}
 
 function GoogleCallbackInner() {
   const router = useRouter();
@@ -25,7 +58,7 @@ function GoogleCallbackInner() {
     }
 
     let cancelled = false;
-    exchangeGoogleCode(code, state)
+    exchangeOnce(code, state)
       .then((res) => {
         if (cancelled) return;
         if (res.student) {
@@ -40,8 +73,8 @@ function GoogleCallbackInner() {
         }
         setError("Google sign-in did not return a usable profile. Please try again.");
       })
-      .catch(() => {
-        if (!cancelled) setError("Google sign-in failed. Please try again.");
+      .catch((err) => {
+        if (!cancelled) setError(friendlyGoogleError(err));
       });
 
     return () => {

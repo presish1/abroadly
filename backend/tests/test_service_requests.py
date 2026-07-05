@@ -8,6 +8,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 from fastapi import BackgroundTasks
 
+from app.api import admin as admin_api
 from app.api.onboarding import CallRequest, DeletionRequest, request_account_deletion, request_call
 from app.models.student import ServiceRequestModel
 
@@ -140,3 +141,30 @@ def test_deletion_request_rejects_wrong_phone():
     assert getattr(exc.value, "status_code", None) == 422
     assert getattr(exc.value, "detail", None) == "phone_mismatch"
     db.commit.assert_not_awaited()
+
+
+def test_admin_delete_student_removes_related_account_data(tmp_path, monkeypatch):
+    student_id = uuid.uuid4()
+    student = SimpleNamespace(id=student_id)
+    db = SimpleNamespace(
+        execute=AsyncMock(side_effect=[_StudentResult(student), None, None]),
+        delete=AsyncMock(),
+        commit=AsyncMock(),
+    )
+    upload_dir = tmp_path / "uploads"
+    student_dir = upload_dir / str(student_id)
+    student_dir.mkdir(parents=True)
+    (student_dir / "doc.pdf").write_text("test")
+    chroma = SimpleNamespace(delete=MagicMock())
+    monkeypatch.setattr(admin_api.settings, "upload_dir", str(upload_dir))
+    monkeypatch.setattr(admin_api, "get_chroma", lambda: chroma)
+
+    result = asyncio.run(admin_api.admin_delete_student(str(student_id), _admin="admin", db=db))
+
+    assert result.deleted is True
+    assert result.student_id == str(student_id)
+    assert result.documents_removed == 1
+    assert not student_dir.exists()
+    chroma.delete.assert_called_once()
+    db.delete.assert_awaited_once_with(student)
+    db.commit.assert_awaited_once()

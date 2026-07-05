@@ -159,6 +159,18 @@ export async function getStudent(id: string): Promise<StudentDetail> {
   return adminFetch(`/students/${id}`);
 }
 
+export interface DeleteStudentResult {
+  deleted: boolean;
+  student_id: string;
+  documents_removed: number;
+}
+
+export async function deleteStudent(id: string): Promise<DeleteStudentResult> {
+  return adminFetch(`/students/${id}`, {
+    method: "DELETE",
+  });
+}
+
 export interface ChatTurn {
   id: string;
   role: "user" | "assistant" | "counselor";

@@ -1,5 +1,6 @@
 """Stub tests for the eval layer. Run with: pytest backend/tests"""
 from app.eval.evaluator import default_evaluator
+from app.eval.scope_check import classify_scope
 from app.eval.types import Decision, RetrievedChunk, RetrievedSet
 
 
@@ -61,3 +62,18 @@ def test_study_in_uk_documents_is_in_scope_but_low_confidence_without_retrieval(
     )
     assert out.decision == Decision.LOW_CONFIDENCE
     assert out.scope_label == "documents"
+
+
+def test_plural_scholarships_are_in_scope():
+    assert classify_scope("tell me about scholarships") == "scholarship"
+
+
+def test_universities_psychology_typo_and_scholarships_are_in_scope():
+    out = default_evaluator.evaluate(
+        query="Tell me about universities good at psycology and offers scholarships",
+        student={"target_countries": ["Australia"], "education_level": "plus_two"},
+        retrieved=RetrievedSet(chunks=[]),
+    )
+
+    assert out.decision == Decision.LOW_CONFIDENCE
+    assert out.scope_label == "scholarship"

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef, useCallback } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   getStudent,
@@ -12,6 +12,7 @@ import {
   toggleAI,
   sendCounselorReply,
   updateStudentStatus,
+  deleteStudent,
   type StudentDetail,
   type ChatTurn,
   type DocItem,
@@ -96,12 +97,16 @@ type Tab = "chat" | "documents" | "profile";
 
 export default function StudentDetailPage() {
   const { id } = useParams<{ id: string }>();
+  const router = useRouter();
   const [student, setStudent] = useState<StudentDetail | null>(null);
   const [chat, setChat] = useState<ChatTurn[]>([]);
   const [docs, setDocs] = useState<DocItem[]>([]);
   const [reply, setReply] = useState("");
   const [sending, setSending] = useState(false);
   const [tab, setTab] = useState<Tab>("chat");
+  const [deleteConfirm, setDeleteConfirm] = useState("");
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   const loadChat = useCallback(() => {
@@ -152,6 +157,19 @@ export default function StudentDetailPage() {
       setStudent({ ...student, lead_status: newStatus });
     } catch (err: any) {
       alert(err.message || "Failed to update status.");
+    }
+  }
+
+  async function handleAdminDelete() {
+    if (!student || !id || deleteConfirm.trim().toLowerCase() !== student.email.toLowerCase()) return;
+    setDeleting(true);
+    setDeleteError(null);
+    try {
+      await deleteStudent(id);
+      router.replace("/admin/students");
+    } catch (err: unknown) {
+      setDeleteError(err instanceof Error ? err.message : "Failed to delete this student account.");
+      setDeleting(false);
     }
   }
 
@@ -293,6 +311,32 @@ export default function StudentDetailPage() {
           <p className="mt-4 text-[9px] text-gray-300">
             Joined {new Date(student.created_at).toLocaleDateString()}
           </p>
+
+          <div className="mt-5 rounded-xl border border-rose-100 bg-rose-50/60 p-3">
+            <p className="text-[10px] font-bold uppercase tracking-wide text-rose-700">Admin cleanup</p>
+            <p className="mt-1 text-[11px] leading-5 text-rose-700/80">
+              Deletes this app account, chat, requests and uploaded files. Use for test accounts only.
+            </p>
+            <label className="mt-3 block text-[10px] font-bold text-rose-800">
+              Type email to confirm
+              <input
+                type="email"
+                value={deleteConfirm}
+                onChange={(event) => setDeleteConfirm(event.target.value)}
+                placeholder={student.email}
+                className="mt-1 w-full rounded-lg border border-rose-200 bg-white px-2.5 py-2 text-[12px] font-medium text-[var(--ab-ink)] outline-none focus:border-rose-400"
+              />
+            </label>
+            {deleteError && <p className="mt-2 text-[10px] font-semibold text-rose-700">{deleteError}</p>}
+            <button
+              type="button"
+              onClick={handleAdminDelete}
+              disabled={deleting || deleteConfirm.trim().toLowerCase() !== student.email.toLowerCase()}
+              className="mt-3 w-full rounded-lg border border-rose-200 bg-white px-3 py-2 text-[11px] font-bold text-rose-700 transition hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-45"
+            >
+              {deleting ? "Deleting..." : "Delete student account"}
+            </button>
+          </div>
         </div>
       </div>
 

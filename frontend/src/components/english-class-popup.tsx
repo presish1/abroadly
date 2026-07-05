@@ -186,9 +186,11 @@ export function EnglishClassPopup() {
 /* ── Compact popup (chat page) ───────────────────────────────────────── */
 export function EnglishClassPopupCompact({
   variant = "floating",
+  onClaim,
   onOpenDocuments,
 }: {
   variant?: "floating" | "sidebar";
+  onClaim?: () => void;
   onOpenDocuments?: () => void;
 }) {
   const [show, setShow] = useState(false);
@@ -234,7 +236,9 @@ export function EnglishClassPopupCompact({
     setTimeout(() => {
       setShow(false);
       markDismissed();
-      if (onOpenDocuments) {
+      if (onClaim) {
+        onClaim();
+      } else if (onOpenDocuments) {
         onOpenDocuments();
       } else {
         window.location.href = "/chat/documents";

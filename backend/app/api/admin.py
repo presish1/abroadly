@@ -1,6 +1,7 @@
 """Admin API — student management, chat monitoring, manual replies, documents."""
 from __future__ import annotations
 
+import shutil
 import uuid
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -9,7 +10,7 @@ from typing import Literal
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
-from sqlalchemy import func, select
+from sqlalchemy import delete, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.auth import (
@@ -157,6 +158,12 @@ class ServiceRequestItem(BaseModel):
 
 class ServiceRequestStatusUpdate(BaseModel):
     status: Literal["pending", "contacted", "completed", "cancelled"]
+
+
+class DeleteStudentResponse(BaseModel):
+    deleted: bool
+    student_id: str
+    documents_removed: int
 
 
 # ── Helpers ───────────────────────────────────────────────────────────
@@ -500,6 +507,42 @@ async def admin_get_student(
         created_at=s.created_at, updated_at=s.updated_at,
         chat_count=chat_count, doc_count=doc_count,
     )
+
+
+# ── Delete Student Account ───────────────────────────────────────────
+
+@router.delete("/students/{student_id}", response_model=DeleteStudentResponse)
+async def admin_delete_student(
+    student_id: str,
+    _admin: str = Depends(get_current_admin),
+    db: AsyncSession = Depends(get_session),
+) -> DeleteStudentResponse:
+    """Admin-only cleanup for test accounts.
+
+    Student-side deletion requests remain soft so admins can review them. This
+    endpoint is intentionally admin-only and removes the app account plus
+    related chat/request/document data when the team decides to clear it.
+    """
+    sid = _parse_uuid(student_id)
+    student = await _get_student(db, sid)
+    documents_removed = _count_student_docs(str(student.id))
+
+    try:
+        get_chroma().delete(
+            where={"$and": [{"kind": {"$eq": "student"}}, {"student_id": {"$eq": str(student.id)}}]}
+        )
+    except Exception:
+        pass
+
+    upload_path = Path(settings.upload_dir) / str(student.id)
+    if upload_path.exists():
+        shutil.rmtree(upload_path, ignore_errors=True)
+
+    await db.execute(delete(ChatTurnModel).where(ChatTurnModel.student_id == student.id))
+    await db.execute(delete(ServiceRequestModel).where(ServiceRequestModel.student_id == student.id))
+    await db.delete(student)
+    await db.commit()
+    return DeleteStudentResponse(deleted=True, student_id=str(sid), documents_removed=documents_removed)
 
 
 # ── Student chat history ──────────────────────────────────────────────

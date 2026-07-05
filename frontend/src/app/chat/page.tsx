@@ -1759,14 +1759,19 @@ export default function ChatPage() {
         fallbackAnswer.includes("i'm not sure i can help with that one")
         || fallbackAnswer.includes("im not sure i can help with that one");
 
-      // Slot A — counselor card.
-      // Requires: backend says offer_counselor, ≥2 session turns, not already shown, not consented.
-      // SOP/financial bypass: show regardless of score if hasPriorityDoc.
+      // Slot A — counselor card. Normal lead offers wait for two typed turns,
+      // but strict fallback refusals get an immediate human handoff.
       const backendOffersCard = Boolean(res.offer_counselor) && enoughTurns;
       const bypassCard = hasPriorityDoc.current && enoughTurns && !callConsented;
-      const fallbackCounselorCard = enoughTurns && res.decision === "out_of_scope" && fallbackHandoff;
+      const fallbackCounselorCard = res.decision === "out_of_scope" && fallbackHandoff;
+      const shouldShowCounselorCard =
+        !callConsented
+        && (
+          fallbackCounselorCard
+          || (!counselorOffered.current && (backendOffersCard || bypassCard))
+        );
 
-      if (!counselorOffered.current && !callConsented && (backendOffersCard || bypassCard || fallbackCounselorCard)) {
+      if (shouldShowCounselorCard) {
         counselorOffered.current = true;
         const tier: CounselorCardMessage["tier"] = bypassCard
           ? "bypass"
@@ -1866,9 +1871,29 @@ export default function ChatPage() {
     }
     setCallConsented(true); // optimistic
     try {
-      await requestCounselorCall(studentId, student?.phone || undefined);
-    } catch {
-      /* consent is best-effort; keep optimistic UI */
+      const updated = await requestCounselorCall(studentId, student?.phone || undefined);
+      setStudent(updated);
+      setCallConsented(updated.call_consent);
+    } catch (err: unknown) {
+      setCallConsented(false);
+      const message = err instanceof Error ? err.message : "We could not save the callback request.";
+      setMessages((m) => [
+        ...m,
+        {
+          role: "ai",
+          response: {
+            request_id: `callback-error-${Date.now()}`,
+            trace_id: "",
+            decision: "out_of_scope",
+            confidence: 0,
+            answer: `I couldn't save the callback request. Please try once more.\n\n(${message})`,
+            clarifying_question: null,
+            clarification_needed: false,
+            sources: [],
+            reason: "request_failed",
+          },
+        },
+      ]);
     }
   }
 
@@ -2358,6 +2383,7 @@ export default function ChatPage() {
         phoneRequired={phoneRequired}
         callConsented={callConsented}
         onCounselorCall={grantCounselorCall}
+        onClassClaim={() => setClassBookingPrompt({ test: student?.planned_english_test || student?.english_test_type || "IELTS" })}
       />
 
       <DocumentPanel
@@ -2415,7 +2441,11 @@ export default function ChatPage() {
           }}
         />
       )}
-      <EnglishClassPopupCompact variant="floating" onOpenDocuments={() => router.push("/chat/documents")} />
+      <EnglishClassPopupCompact
+        variant="floating"
+        onClaim={() => setClassBookingPrompt({ test: student?.planned_english_test || student?.english_test_type || "IELTS" })}
+        onOpenDocuments={() => router.push("/chat/documents")}
+      />
     </main>
   );
 }

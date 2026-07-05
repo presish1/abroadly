@@ -27,6 +27,7 @@ interface StudentQuickTabsProps {
   onProfileClick?: () => void;
   onDocumentsClick?: () => void;
   onCounselorCall?: () => void;
+  onClassClaim?: () => void;
 }
 
 function tabClass(active: boolean): string {
@@ -80,6 +81,7 @@ export function StudentQuickTabs({
   onProfileClick,
   onDocumentsClick,
   onCounselorCall,
+  onClassClaim,
 }: StudentQuickTabsProps) {
   const counselorHref = `/chat?send=${encodeURIComponent("I would like to request a counsellor callback.")}`;
   const profileTitle = phoneRequired
@@ -201,21 +203,35 @@ export function StudentQuickTabs({
         </nav>
 
         {active === "documents" && (
-          <Link href="/chat?class=claim" className="ab-focus class-claim-card">
-            <span className="class-claim-confetti" aria-hidden>
-              <i />
-              <i />
-              <i />
-              <i />
-            </span>
-            <span className="class-claim-kicker">Included with Abroadly</span>
-            <strong>Claim your free IELTS / PTE class</strong>
-            <span className="class-claim-action">Confirm a time <span aria-hidden>→</span></span>
-          </Link>
+          onClassClaim ? (
+            <button type="button" onClick={onClassClaim} className="ab-focus class-claim-card text-left">
+              <span className="class-claim-confetti" aria-hidden>
+                <i />
+                <i />
+                <i />
+                <i />
+              </span>
+              <span className="class-claim-kicker">Included with Abroadly</span>
+              <strong>Claim your free IELTS / PTE class</strong>
+              <span className="class-claim-action">Confirm a time <span aria-hidden>→</span></span>
+            </button>
+          ) : (
+            <Link href="/chat?class=claim" className="ab-focus class-claim-card">
+              <span className="class-claim-confetti" aria-hidden>
+                <i />
+                <i />
+                <i />
+                <i />
+              </span>
+              <span className="class-claim-kicker">Included with Abroadly</span>
+              <strong>Claim your free IELTS / PTE class</strong>
+              <span className="class-claim-action">Confirm a time <span aria-hidden>→</span></span>
+            </Link>
+          )
         )}
 
         {/* English class popup */}
-        <EnglishClassPopupCompact variant="sidebar" onOpenDocuments={onDocumentsClick} />
+        <EnglishClassPopupCompact variant="sidebar" onClaim={onClassClaim} onOpenDocuments={onDocumentsClick} />
 
         <div className="chat-left-counselor">
           <p className="chat-left-counselor-kicker">Counsellor</p>

@@ -16,7 +16,13 @@ _DENY_PATTERNS: list[tuple[str, re.Pattern]] = [
 ]
 
 _ALLOW_PATTERNS: list[tuple[str, re.Pattern]] = [
-    ("scholarship", re.compile(r"\b(scholarship|grant|funding|tuition waiver|stipend)\b", re.I)),
+    (
+        "scholarship",
+        re.compile(
+            r"\b(scholarships?|grants?|funding|tuition waivers?|stipends?|bursar(?:y|ies)|financial aid)\b",
+            re.I,
+        ),
+    ),
     (
         "visa_info",
         re.compile(
@@ -34,11 +40,17 @@ _ALLOW_PATTERNS: list[tuple[str, re.Pattern]] = [
     (
         "study_abroad",
         re.compile(
-            r"\b(study abroad|study in|study at|abroad|overseas|university|college|admission|admissions|apply|application|intake|ucas|common app|degree|masters|bachelor|uk|united kingdom|australia|canada|usa|united states|germany|new zealand|japan|south korea|ireland|netherlands|france|sweden|finland|norway|denmark)\b",
+            r"\b(study abroad|study in|study at|abroad|overseas|universit(?:y|ies)|colleges?|admission|admissions|apply|application|intakes?|ucas|common app|degrees?|masters?|bachelors?|uk|united kingdom|australia|canada|usa|united states|germany|new zealand|japan|south korea|ireland|netherlands|france|sweden|finland|norway|denmark)\b",
             re.I,
         ),
     ),
-    ("education", re.compile(r"\b(education|course|program|programme|major|field|career|tuition|engineering|nursing|it|computer|business|science|medical school|mbbs)\b", re.I)),
+    (
+        "education",
+        re.compile(
+            r"\b(education|courses?|programs?|programmes?|majors?|fields?|career|tuition|engineering|nursing|it|computer|business|science|psychology|psycology|counselling|counseling|therapy|social work|mental health|medical school|mbbs)\b",
+            re.I,
+        ),
+    ),
     (
         "greeting",
         re.compile(

@@ -1332,7 +1332,9 @@ body {
 /* ── Small service prompts ───────────────────────────────────────── */
 
 .class-claim-card {
+  display: block;
   position: relative;
+  width: calc(100% - 2px);
   margin: 16px 1px 0;
   overflow: hidden;
   border: 1px solid #D7E7DE;
@@ -1340,7 +1342,10 @@ body {
   background: #F4FAF7;
   padding: 12px;
   color: #1B1916;
+  font: inherit;
+  text-align: left;
   transition: border-color 0.15s ease, background-color 0.15s ease;
+  cursor: pointer;
 }
 
 .class-claim-card:hover {

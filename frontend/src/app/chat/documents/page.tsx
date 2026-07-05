@@ -390,7 +390,12 @@ export default function DocumentsPage() {
 
   return (
     <div className="chat-layout">
-      <StudentQuickTabs active="documents" uploadedCount={essentialsDone} documentTotal={essentialsTotal} />
+      <StudentQuickTabs
+        active="documents"
+        uploadedCount={essentialsDone}
+        documentTotal={essentialsTotal}
+        onClassClaim={() => setClassBookingOpen(true)}
+      />
 
       <section className="chat-main docs-main">
         <header className="docs-page-header">
