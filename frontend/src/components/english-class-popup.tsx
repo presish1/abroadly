@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import { CheckCircle2, Gift } from "lucide-react";
 
 const SESSION_KEY = "ab_eng_popup_session";
 
@@ -131,7 +132,7 @@ export function EnglishClassPopup() {
   return (
     <div
       ref={ref}
-      className="fixed bottom-6 left-1/2 z-[1000] -translate-x-1/2 w-[92%] max-w-sm touch-pan-y select-none"
+      className="fixed bottom-6 left-1/2 z-[1000] w-[92%] max-w-sm touch-pan-y select-none"
       style={{ transform: "translateX(-50%)" }}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
@@ -152,7 +153,9 @@ export function EnglishClassPopup() {
 
         {claimed ? (
           <div className="py-2 text-center">
-            <div className="text-3xl mb-2">🎉</div>
+            <div className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-emerald-50 text-emerald-700">
+              <CheckCircle2 aria-hidden="true" className="h-5 w-5" />
+            </div>
             <h3 className="text-[17px] font-bold text-slate-900">You're in!</h3>
             <p className="mt-1 text-sm text-slate-500">We'll reach out to schedule your free class.</p>
           </div>
@@ -171,7 +174,7 @@ export function EnglishClassPopup() {
               onClick={handleClaim}
               className="flex w-full items-center justify-center gap-2 rounded-full bg-[#0044FF] py-3 text-sm font-bold text-white shadow-lg shadow-blue-500/30 transition hover:-translate-y-0.5 hover:bg-blue-600 active:scale-95"
             >
-              <span>🎁</span> Claim my free class
+              <Gift aria-hidden="true" className="h-4 w-4" /> Claim my free class
             </button>
           </>
         )}
@@ -257,7 +260,9 @@ export function EnglishClassPopupCompact({
 
         {claimed ? (
           <div className="py-1 text-center">
-            <div className="text-2xl mb-1">🎉</div>
+            <div className="mx-auto mb-1 flex h-8 w-8 items-center justify-center rounded-full bg-emerald-50 text-emerald-700">
+              <CheckCircle2 aria-hidden="true" className="h-4 w-4" />
+            </div>
             <p className="text-sm font-bold text-slate-900">You're in!</p>
             <p className="text-xs text-slate-500 mt-0.5">We'll reach out soon.</p>
           </div>
@@ -277,7 +282,7 @@ export function EnglishClassPopupCompact({
               onClick={handleClaim}
               className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-full bg-[#0044FF] py-2 text-[12px] font-bold text-white shadow-md shadow-blue-500/25 transition hover:-translate-y-0.5 hover:bg-blue-600 active:scale-95"
             >
-              <span>🎁</span> Claim free class
+              <Gift aria-hidden="true" className="h-3.5 w-3.5" /> Claim free class
             </button>
           </>
         )}
@@ -308,7 +313,9 @@ export function EnglishClassPopupCompact({
 
         {claimed ? (
           <div className="py-1 text-center">
-            <div className="text-2xl mb-1">🎉</div>
+            <div className="mx-auto mb-1 flex h-8 w-8 items-center justify-center rounded-full bg-emerald-50 text-emerald-700">
+              <CheckCircle2 aria-hidden="true" className="h-4 w-4" />
+            </div>
             <p className="text-sm font-bold text-slate-900">You're in!</p>
             <p className="text-xs text-slate-500 mt-0.5">We'll reach out soon.</p>
           </div>
@@ -328,7 +335,7 @@ export function EnglishClassPopupCompact({
               onClick={handleClaim}
               className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-full bg-[#0044FF] py-2 text-[12px] font-bold text-white shadow-md shadow-blue-500/25 transition hover:-translate-y-0.5 hover:bg-blue-600 active:scale-95"
             >
-              <span>🎁</span> Claim free class
+              <Gift aria-hidden="true" className="h-3.5 w-3.5" /> Claim free class
             </button>
           </>
         )}
@@ -336,4 +343,3 @@ export function EnglishClassPopupCompact({
     </div>
   );
 }
-
