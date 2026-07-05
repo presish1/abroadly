@@ -137,22 +137,22 @@ export default function Home() {
         {/* Floating Background Images with badges */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden max-w-[1400px] mx-auto z-0 hidden lg:block">
           {/* Top left: UK Flag */}
-          <div className="absolute top-10 left-[2%] xl:left-[8%] w-48 rounded-[24px] overflow-hidden shadow-2xl animate-[abFadeUp_1s_ease-out]">
+          <div className="absolute top-10 left-[-2%] xl:left-[4%] w-48 rounded-[24px] overflow-hidden shadow-2xl animate-[abFadeUp_1s_ease-out]">
              <img src="https://images.unsplash.com/photo-1533228876829-65c94e7b5025?w=400&h=450&fit=crop" alt="UK Flag" className="w-full h-auto object-cover" />
           </div>
 
           {/* Top right: USA (Plane window) */}
-          <div className="absolute top-12 right-[2%] xl:right-[8%] w-56 rounded-[24px] overflow-hidden shadow-2xl animate-[abFadeUp_1.1s_ease-out]">
+          <div className="absolute top-12 right-[-2%] xl:right-[4%] w-56 rounded-[24px] overflow-hidden shadow-2xl animate-[abFadeUp_1.1s_ease-out]">
              <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=400&h=350&fit=crop" alt="Airplane Wing" className="w-full h-auto object-cover" />
           </div>
 
           {/* Bottom right: Australia (Opera House) */}
-          <div className="absolute top-64 right-[0%] xl:right-[5%] w-44 rounded-[24px] overflow-hidden shadow-2xl animate-[abFadeUp_1.3s_ease-out]">
+          <div className="absolute top-64 right-[-4%] xl:right-[1%] w-44 rounded-[24px] overflow-hidden shadow-2xl animate-[abFadeUp_1.3s_ease-out]">
              <img src="https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?w=400&h=500&fit=crop" alt="Australia Opera House" className="w-full h-auto object-cover" />
           </div>
           
           {/* Bottom left: Rocket Launch */}
-          <div className="absolute top-[22rem] left-[5%] xl:left-[10%] w-48 rounded-[24px] overflow-hidden shadow-2xl animate-[abFadeUp_1.4s_ease-out]">
+          <div className="absolute top-[22rem] left-[1%] xl:left-[6%] w-48 rounded-[24px] overflow-hidden shadow-2xl animate-[abFadeUp_1.4s_ease-out]">
              <img src="https://images.unsplash.com/photo-1517976487492-5750f3195933?w=400&h=500&fit=crop" alt="Rocket Launch" className="w-full h-auto object-cover" />
           </div>
         </div>
