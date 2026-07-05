@@ -1496,6 +1496,7 @@ export default function ChatPage() {
   const taRef = useRef<HTMLTextAreaElement>(null);
   const shouldStickToBottom = useRef(true);
   const [showScrollToBottom, setShowScrollToBottom] = useState(false);
+  const [isMobileComposer, setIsMobileComposer] = useState(false);
 
   // Hold a ref to sendMessage so the URL-deep-link effect (below) can call the
   // latest version without re-running every time sendMessage's deps change.
@@ -1649,6 +1650,14 @@ export default function ChatPage() {
   useEffect(() => {
     if (studentId && window.matchMedia("(min-width: 768px)").matches) taRef.current?.focus();
   }, [studentId]);
+
+  useEffect(() => {
+    const query = window.matchMedia("(max-width: 767px)");
+    const update = () => setIsMobileComposer(query.matches);
+    update();
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, []);
 
   useEffect(() => {
     const root = chatLayoutRef.current;
@@ -2291,7 +2300,7 @@ export default function ChatPage() {
               <textarea
                 ref={taRef}
                 className="chat-input"
-                placeholder={firstName ? `Ask anything, ${firstName} — eligibility, costs, visa, scholarships…` : "Ask anything — eligibility, costs, visa, scholarships…"}
+                placeholder={isMobileComposer ? "Message Abroadly..." : firstName ? `Ask anything, ${firstName} — eligibility, costs, visa, scholarships…` : "Ask anything — eligibility, costs, visa, scholarships…"}
                 value={input}
                 onChange={(e) => { setInput(e.target.value); growTextarea(); }}
                 onKeyDown={onKey}
@@ -2301,7 +2310,7 @@ export default function ChatPage() {
                 autoCapitalize="sentences"
                 inputMode="text"
               />
-              <div className="flex items-center gap-1.5 px-2 pb-2">
+              <div className="chat-input-actions">
                 <button type="button" onClick={() => setAttachmentMenuOpen((open) => !open)} title="Reference an uploaded document" aria-label="Reference an uploaded document" aria-expanded={attachmentMenuOpen} className={`ab-focus chat-action-btn ${attachmentMenuOpen ? "is-active" : ""}`}>
                   <PaperclipIcon />
                 </button>
