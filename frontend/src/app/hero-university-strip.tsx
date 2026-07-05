@@ -73,7 +73,7 @@ function UniItem({ name, logo, fallbackDomain }: { name: string; logo: string; f
 
   return (
     <div
-      className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-[18px] border border-slate-200 bg-white shadow-sm transition hover:scale-110 hover:shadow-md grayscale opacity-60 hover:grayscale-0 hover:opacity-100 mx-4"
+      className="mx-2.5 flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-[15px] border border-slate-200/80 bg-white shadow-[0_10px_24px_-18px_rgba(15,23,42,0.42)] opacity-100 transition duration-200 hover:scale-105 hover:shadow-md sm:mx-4 sm:h-16 sm:w-16 sm:rounded-[18px] md:grayscale md:opacity-60 md:hover:grayscale-0 md:hover:opacity-100"
       title={name}
     >
       <img
@@ -90,7 +90,7 @@ function UniItem({ name, logo, fallbackDomain }: { name: string; logo: string; f
             setFailed(true);
           }
         }}
-        className="h-9 w-9 object-contain"
+        className="h-8 w-8 object-contain sm:h-9 sm:w-9"
       />
     </div>
   );

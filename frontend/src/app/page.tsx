@@ -1,5 +1,6 @@
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import { BadgeCheck, FileCheck2, Route, WalletCards } from "lucide-react";
 import { HeroIntentForm } from "./hero-intent-form";
 import { HeroUniversityStrip } from "./hero-university-strip";
 import { NavBar } from "./nav-bar";
@@ -45,32 +46,36 @@ const steps = [
 
 const studentProblems = [
   {
-    icon: "\u{1F3AF}",
+    icon: BadgeCheck,
     title: "Am I eligible?",
     body: "See whether your grades, level, and goals look realistic before you spend money applying.",
-    span: "col-span-1 sm:col-span-2 xl:col-span-2 row-span-2",
+    span: "sm:col-span-2 xl:col-span-2 xl:row-span-2",
     theme: "bg-gradient-to-br from-[#E3F2FD] to-[#BBDEFB] border-blue-200",
+    iconTheme: "bg-white/80 text-blue-700 ring-blue-200/80",
   },
   {
-    icon: "\u{1F4CB}",
+    icon: FileCheck2,
     title: "Which documents?",
     body: "A checklist for transcripts, passport, SOP, recommendation letters, finances, and English tests.",
-    span: "col-span-1 sm:col-span-1 xl:col-span-1",
+    span: "",
     theme: "bg-gradient-to-br from-[#FFF3E0] to-[#FFE0B2] border-orange-200",
+    iconTheme: "bg-white/80 text-orange-700 ring-orange-200/80",
   },
   {
-    icon: "\u{1F4B0}",
+    icon: WalletCards,
     title: "How much will it cost?",
     body: "Tuition, living costs, deposits, proof of funds, scholarships, and safer budget planning.",
-    span: "col-span-1 sm:col-span-1 xl:col-span-1",
+    span: "",
     theme: "bg-gradient-to-br from-[#E8F5E9] to-[#C8E6C9] border-green-200",
+    iconTheme: "bg-white/80 text-emerald-700 ring-emerald-200/80",
   },
   {
-    icon: "\u{1F9ED}",
+    icon: Route,
     title: "What do I do next?",
     body: "Turn confusion into a short action plan you can talk through with family or universities.",
-    span: "col-span-1 sm:col-span-2 xl:col-span-2",
+    span: "sm:col-span-2 xl:col-span-2",
     theme: "bg-gradient-to-br from-[#F3E5F5] to-[#E1BEE7] border-purple-200",
+    iconTheme: "bg-white/80 text-violet-700 ring-violet-200/80",
   },
 ];
 
@@ -204,7 +209,7 @@ export default function Home() {
       {/* ── What it helps with ───────────────────────────────────────── */}
       <section id="student-problems" className="ab-section bg-[#fafafa] border-t border-slate-200">
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
-          <div className="max-w-2xl text-center mx-auto mb-16">
+          <div className="mx-auto mb-10 max-w-2xl text-center sm:mb-16">
             <Eyebrow className="!text-blue-600 !bg-blue-50">What it helps with</Eyebrow>
             <h2 className="ab-display-2 mt-3 text-slate-900">
               The questions students actually ask.
@@ -215,21 +220,26 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4 auto-rows-min">
-            {studentProblems.map((item) => (
+          <div className="grid auto-rows-min gap-3.5 sm:grid-cols-2 sm:gap-4 xl:grid-cols-4">
+            {studentProblems.map((item) => {
+              const Icon = item.icon;
+              return (
               <article
                 key={item.title}
-                className={`group rounded-[32px] border transition hover:-translate-y-1 hover:shadow-xl duration-300 overflow-hidden ${item.span} ${item.theme}`}
+                className={`group overflow-hidden rounded-[24px] border transition duration-300 hover:-translate-y-1 hover:shadow-xl sm:rounded-[32px] ${item.span} ${item.theme}`}
               >
-                <div className="p-8 h-full flex flex-col justify-between">
+                <div className="flex h-full min-h-[154px] flex-col justify-between p-5 sm:min-h-[188px] sm:p-8">
                   <div>
-                    <span className="text-4xl drop-shadow-sm">{item.icon}</span>
-                    <h3 className="ab-h3 mt-6 text-[22px] text-slate-900 font-bold leading-tight">{item.title}</h3>
+                    <span className={`inline-flex h-12 w-12 items-center justify-center rounded-[16px] shadow-sm ring-1 ${item.iconTheme}`}>
+                      <Icon aria-hidden="true" className="h-6 w-6" strokeWidth={2.15} />
+                    </span>
+                    <h3 className="ab-h3 mt-5 text-[20px] font-bold leading-tight text-slate-900 sm:mt-6 sm:text-[22px]">{item.title}</h3>
                   </div>
                   <p className="ab-body mt-4 text-[15px] leading-relaxed text-slate-800/80 font-medium">{item.body}</p>
                 </div>
               </article>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>

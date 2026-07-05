@@ -2242,35 +2242,49 @@ body {
   .home-hero {
     min-height: auto;
     justify-content: flex-start;
-    padding-top: 1rem;
-    padding-bottom: 1.25rem;
+    padding-top: 1.65rem;
+    padding-bottom: 2rem;
+    background:
+      radial-gradient(circle at 50% 0%, rgba(226, 241, 255, 0.94) 0%, rgba(250, 250, 250, 0) 46%),
+      #FAFAFA;
   }
   .home-hero-inner {
     width: 100%;
     min-width: 0;
     max-width: 100%;
-    margin-top: 1.25rem;
+    margin-top: 0;
+    padding-inline: 1.125rem;
   }
   .home-hero-inner > * {
     min-width: 0;
     max-width: 100%;
   }
   .home-hero h1 {
-    font-size: 2.05rem;
-    line-height: 1.04;
-    margin-bottom: 1rem;
+    max-width: 11ch;
+    font-size: clamp(2.18rem, 11vw, 2.85rem);
+    line-height: 1.02;
+    margin-bottom: 1.1rem;
+    text-wrap: balance;
   }
   .home-hero .ab-fade-up > div {
     gap: 12px;
   }
   .home-hero .ab-fade-up + .ab-fade-up {
-    margin-top: 1.25rem;
+    margin-top: 1.45rem;
+  }
+  .home-hero .ab-fade-up + .ab-fade-up p {
+    max-width: 21rem;
+    padding-inline: 0.5rem;
+    line-height: 1.6;
   }
   .home-hero .marquee-mask {
-    width: 100%;
+    width: calc(100% + 2.25rem);
     max-width: 100vw;
-    padding-top: 0.5rem;
+    margin-inline: -1.125rem;
+    padding-top: 0.35rem;
     padding-bottom: 0.5rem;
+    mask-image: linear-gradient(to right, transparent, black 7%, black 93%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 7%, black 93%, transparent);
   }
 }
 
