@@ -40,7 +40,7 @@ function GoogleMark() {
 }
 
 const selectClass =
-  "ab-focus min-h-12 cursor-pointer appearance-none rounded-full border border-slate-300 bg-white py-3 pl-5 pr-11 text-[16px] font-bold text-slate-800 shadow-sm transition hover:border-[#0044FF]/50 focus:border-[#0044FF] focus:ring-4 focus:ring-[#0044FF]/15 sm:text-[17px]";
+  "ab-focus min-h-12 cursor-pointer appearance-none rounded-[14px] border border-slate-200 bg-[#F8FAFC] py-3 pl-4 pr-11 text-[16px] font-bold text-slate-800 shadow-sm transition hover:border-[#0044FF]/45 focus:border-[#0044FF] focus:bg-white focus:ring-4 focus:ring-[#0044FF]/15 sm:rounded-full sm:bg-white sm:pl-5 sm:text-[17px]";
 
 const OPTION_CLASS = "bg-white text-slate-900";
 
@@ -61,10 +61,10 @@ export function HeroIntentForm() {
   };
 
   return (
-    <div className="flex w-full flex-col items-center gap-6">
+    <div className="flex w-full flex-col items-center gap-4 sm:gap-6">
       {/* selector sentence */}
-      <div className="flex w-full max-w-[28rem] flex-col items-stretch justify-center gap-3 rounded-[24px] border border-slate-300 bg-white px-4 py-4 text-[16px] font-medium text-slate-700 shadow-xl sm:max-w-none sm:flex-row sm:flex-wrap sm:items-center sm:justify-center sm:gap-x-3 sm:gap-y-3 sm:rounded-full sm:px-6 sm:py-4 sm:text-[20px]">
-        <span className="text-center sm:text-left">I want to study</span>
+      <div className="flex w-full max-w-[24rem] flex-col items-stretch justify-center gap-2.5 rounded-[22px] border border-slate-200 bg-white/95 px-3.5 py-3.5 text-[15px] font-semibold text-slate-700 shadow-[0_22px_55px_-34px_rgba(15,23,42,0.45)] sm:max-w-none sm:flex-row sm:flex-wrap sm:items-center sm:justify-center sm:gap-x-3 sm:gap-y-3 sm:rounded-full sm:px-6 sm:py-4 sm:text-[20px]">
+        <span className="text-center leading-tight sm:text-left">I want to study</span>
 
         <div className="relative w-full sm:w-auto">
           <label className="sr-only" htmlFor="hero-degree">Degree</label>
@@ -83,7 +83,7 @@ export function HeroIntentForm() {
           <Chevron />
         </div>
 
-        <span className="text-center text-slate-400">in</span>
+        <span className="text-center text-[13px] font-bold uppercase tracking-[0.12em] text-slate-400 sm:text-[20px] sm:normal-case sm:tracking-normal">in</span>
 
         <div className="relative w-full sm:w-auto">
           <label className="sr-only" htmlFor="hero-country">Country</label>
@@ -105,7 +105,7 @@ export function HeroIntentForm() {
 
       <button
         onClick={start}
-        className="ab-focus inline-flex h-14 w-full max-w-[28rem] items-center justify-center gap-3 rounded-full bg-[#0044FF] px-8 text-[16px] font-bold text-white shadow-xl shadow-blue-500/30 transition hover:-translate-y-0.5 hover:bg-blue-600 duration-300 sm:w-auto sm:max-w-none sm:text-[18px]"
+        className="ab-focus inline-flex min-h-[52px] w-full max-w-[24rem] items-center justify-center gap-3 rounded-full bg-[#0044FF] px-8 text-[16px] font-bold text-white shadow-xl shadow-blue-500/25 transition duration-200 hover:-translate-y-0.5 hover:bg-blue-600 active:scale-[0.99] sm:h-14 sm:w-auto sm:max-w-none sm:text-[18px]"
       >
         <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-sm">
           <GoogleMark />
