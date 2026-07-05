@@ -163,6 +163,45 @@ export const UNIVERSITIES: University[] = [
   { id: "syracuse", name: "Syracuse University", country: "USA", city: "Syracuse NY", tier: "mid_research", tuition_min: 55000, tuition_max: 60000, tuition_currency: "USD", entry_pct_min: 65, ielts_min: 6.5, strengths: ["business", "social_science", "design"], official_url: "https://www.syracuse.edu/" },
   { id: "umass", name: "UMass Amherst", country: "USA", city: "Amherst MA", tier: "mid_research", tuition_min: 38000, tuition_max: 42000, tuition_currency: "USD", entry_pct_min: 65, ielts_min: 6.5, strengths: ["cs", "engineering", "business"], official_url: "https://www.umass.edu/" },
   { id: "iastate", name: "Iowa State University", country: "USA", city: "Ames IA", tier: "regional", tuition_min: 26000, tuition_max: 30000, tuition_currency: "USD", entry_pct_min: 55, ielts_min: 6.5, strengths: ["engineering", "business", "cs"], official_url: "https://www.iastate.edu/" },
+
+  // --- Australia ---
+  { id: "canberra", name: "University of Canberra", country: "Australia", city: "Canberra", tier: "regional", tuition_min: 29000, tuition_max: 38000, tuition_currency: "AUD", entry_pct_min: 60, ielts_min: 6.0, strengths: ["cs", "business", "engineering", "medicine"], official_url: "https://www.canberra.edu.au/" },
+  { id: "cqu", name: "CQUniversity", country: "Australia", city: "Rockhampton", tier: "regional", tuition_min: 26000, tuition_max: 33000, tuition_currency: "AUD", entry_pct_min: 55, ielts_min: 6.0, strengths: ["cs", "engineering", "business", "nursing"], official_url: "https://www.cqu.edu.au/" },
+  { id: "jcu", name: "James Cook University", country: "Australia", city: "Townsville", tier: "regional", tuition_min: 30000, tuition_max: 38000, tuition_currency: "AUD", entry_pct_min: 60, ielts_min: 6.0, strengths: ["cs", "engineering", "medicine", "nursing"], official_url: "https://www.jcu.edu.au/" },
+  { id: "newcastle_aus", name: "University of Newcastle", country: "Australia", city: "Newcastle", tier: "regional", tuition_min: 31000, tuition_max: 41000, tuition_currency: "AUD", entry_pct_min: 65, ielts_min: 6.0, strengths: ["engineering", "cs", "medicine", "design"], official_url: "https://www.newcastle.edu.au/" },
+  { id: "usc", name: "University of the Sunshine Coast", country: "Australia", city: "Sunshine Coast", tier: "regional", tuition_min: 25000, tuition_max: 30000, tuition_currency: "AUD", entry_pct_min: 55, ielts_min: 6.0, strengths: ["business", "nursing", "design"], official_url: "https://www.usc.edu.au/" },
+  { id: "csu", name: "Charles Sturt University", country: "Australia", city: "Bathurst", tier: "regional", tuition_min: 24000, tuition_max: 32000, tuition_currency: "AUD", entry_pct_min: 55, ielts_min: 6.0, strengths: ["business", "cs", "nursing"], official_url: "https://www.csu.edu.au/" },
+  { id: "scu", name: "Southern Cross University", country: "Australia", city: "Lismore", tier: "regional", tuition_min: 25000, tuition_max: 33000, tuition_currency: "AUD", entry_pct_min: 55, ielts_min: 6.0, strengths: ["business", "nursing", "engineering"], official_url: "https://www.scu.edu.au/" },
+  { id: "ecu", name: "Edith Cowan University", country: "Australia", city: "Perth", tier: "modern", tuition_min: 29000, tuition_max: 37000, tuition_currency: "AUD", entry_pct_min: 60, ielts_min: 6.0, strengths: ["cs", "engineering", "nursing", "design"], official_url: "https://www.ecu.edu.au/" },
+  { id: "utas", name: "University of Tasmania", country: "Australia", city: "Hobart", tier: "regional", tuition_min: 29000, tuition_max: 38000, tuition_currency: "AUD", entry_pct_min: 60, ielts_min: 6.0, strengths: ["cs", "engineering", "business", "medicine"], official_url: "https://www.utas.edu.au/" },
+  { id: "kbs", name: "Kaplan Business School", country: "Australia", city: "Sydney", tier: "regional", tuition_min: 18000, tuition_max: 24000, tuition_currency: "AUD", entry_pct_min: 50, ielts_min: 6.0, strengths: ["business", "data_science"], official_url: "https://www.kbs.edu.au/" },
+  { id: "usq", name: "University of Southern Queensland", country: "Australia", city: "Toowoomba", tier: "regional", tuition_min: 24000, tuition_max: 32000, tuition_currency: "AUD", entry_pct_min: 55, ielts_min: 6.0, strengths: ["engineering", "cs", "business"], official_url: "https://www.usq.edu.au/" },
+  // USA
+  { id: "wsu", name: "Wichita State University", country: "USA", city: "Wichita KS", tier: "regional", tuition_min: 15000, tuition_max: 19000, tuition_currency: "USD", entry_pct_min: 55, ielts_min: 6.0, strengths: ["engineering", "cs", "business"], official_url: "https://www.wichita.edu/" },
+  { id: "humboldt", name: "Cal Poly Humboldt", country: "USA", city: "Arcata CA", tier: "regional", tuition_min: 17000, tuition_max: 21000, tuition_currency: "USD", entry_pct_min: 55, ielts_min: 6.0, strengths: ["engineering", "design", "social_science"], official_url: "https://www.humboldt.edu/" },
+  { id: "csub", name: "California State University, Bakersfield", country: "USA", city: "Bakersfield CA", tier: "regional", tuition_min: 16000, tuition_max: 19000, tuition_currency: "USD", entry_pct_min: 55, ielts_min: 6.0, strengths: ["business", "cs", "social_science"], official_url: "https://www.csub.edu/" },
+  { id: "ust", name: "University of St. Thomas", country: "USA", city: "St. Paul MN", tier: "regional", tuition_min: 42000, tuition_max: 48000, tuition_currency: "USD", entry_pct_min: 65, ielts_min: 6.5, strengths: ["business", "cs", "engineering"], official_url: "https://www.stthomas.edu/" },
+  { id: "unl", name: "University of Nebraska-Lincoln", country: "USA", city: "Lincoln NE", tier: "mid_research", tuition_min: 25000, tuition_max: 30000, tuition_currency: "USD", entry_pct_min: 65, ielts_min: 6.0, strengths: ["cs", "engineering", "business", "law"], official_url: "https://www.unl.edu/" },
+  { id: "westcliff", name: "Westcliff University", country: "USA", city: "Irvine CA", tier: "regional", tuition_min: 14000, tuition_max: 18000, tuition_currency: "USD", entry_pct_min: 50, ielts_min: 6.0, strengths: ["business", "cs", "law"], official_url: "https://www.westcliff.edu/" },
+  { id: "manhattanville", name: "Manhattanville University", country: "USA", city: "Purchase NY", tier: "regional", tuition_min: 38000, tuition_max: 43000, tuition_currency: "USD", entry_pct_min: 60, ielts_min: 6.0, strengths: ["business", "design", "social_science"], official_url: "https://www.mville.edu/" },
+  { id: "cmu_co", name: "Colorado Mesa University", country: "USA", city: "Grand Junction CO", tier: "regional", tuition_min: 20000, tuition_max: 24000, tuition_currency: "USD", entry_pct_min: 55, ielts_min: 6.0, strengths: ["business", "nursing", "design"], official_url: "https://www.coloradomesa.edu/" },
+  { id: "csc", name: "Chadron State College", country: "USA", city: "Chadron NE", tier: "regional", tuition_min: 12000, tuition_max: 15000, tuition_currency: "USD", entry_pct_min: 50, ielts_min: 6.0, strengths: ["business", "social_science"], official_url: "https://www.csc.edu/" },
+  { id: "tampa", name: "The University of Tampa", country: "USA", city: "Tampa FL", tier: "regional", tuition_min: 30000, tuition_max: 34000, tuition_currency: "USD", entry_pct_min: 65, ielts_min: 6.5, strengths: ["business", "design", "social_science"], official_url: "https://www.ut.edu/" },
+  // UK
+  { id: "bathspa", name: "Bath Spa University", country: "UK", city: "Bath", tier: "modern", tuition_min: 14000, tuition_max: 16500, tuition_currency: "GBP", entry_pct_min: 50, ielts_min: 6.0, strengths: ["design", "social_science", "business"], official_url: "https://www.bathspa.ac.uk/" },
+  { id: "stmarys", name: "St Mary's University, Twickenham", country: "UK", city: "London", tier: "modern", tuition_min: 14500, tuition_max: 17000, tuition_currency: "GBP", entry_pct_min: 50, ielts_min: 6.0, strengths: ["business", "social_science", "nursing"], official_url: "https://www.stmarys.ac.uk/" },
+  { id: "uwtsd", name: "University of Wales Trinity Saint David", country: "UK", city: "Carmarthen", tier: "modern", tuition_min: 13500, tuition_max: 15000, tuition_currency: "GBP", entry_pct_min: 50, ielts_min: 6.0, strengths: ["business", "design", "engineering"], official_url: "https://www.uwtsd.ac.uk/" },
+  { id: "ulaw", name: "The University of Law", country: "UK", city: "London", tier: "regional", tuition_min: 14000, tuition_max: 17500, tuition_currency: "GBP", entry_pct_min: 55, ielts_min: 6.5, strengths: ["law", "business"], official_url: "https://www.law.ac.uk/" },
+  { id: "lsbu", name: "London South Bank University", country: "UK", city: "London", tier: "modern", tuition_min: 15000, tuition_max: 18500, tuition_currency: "GBP", entry_pct_min: 50, ielts_min: 6.0, strengths: ["engineering", "cs", "nursing", "business"], official_url: "https://www.lsbu.ac.uk/" },
+  { id: "cardiffmet", name: "Cardiff Metropolitan University", country: "UK", city: "Cardiff", tier: "modern", tuition_min: 14000, tuition_max: 16000, tuition_currency: "GBP", entry_pct_min: 50, ielts_min: 6.0, strengths: ["business", "design", "cs"], official_url: "https://www.cardiffmet.ac.uk/" },
+  { id: "ulster", name: "Ulster University", country: "UK", city: "Belfast", tier: "mid_research", tuition_min: 15500, tuition_max: 19000, tuition_currency: "GBP", entry_pct_min: 55, ielts_min: 6.0, strengths: ["cs", "engineering", "business", "nursing"], official_url: "https://www.ulster.ac.uk/" },
+  { id: "chester", name: "University of Chester", country: "UK", city: "Chester", tier: "modern", tuition_min: 13500, tuition_max: 15500, tuition_currency: "GBP", entry_pct_min: 50, ielts_min: 6.0, strengths: ["business", "cs", "nursing"], official_url: "https://www.chester.ac.uk/" },
+  { id: "plymouth", name: "University of Plymouth", country: "UK", city: "Plymouth", tier: "mid_research", tuition_min: 15000, tuition_max: 18000, tuition_currency: "GBP", entry_pct_min: 55, ielts_min: 6.0, strengths: ["medicine", "engineering", "cs", "business"], official_url: "https://www.plymouth.ac.uk/" },
+  { id: "northampton", name: "University of Northampton", country: "UK", city: "Northampton", tier: "modern", tuition_min: 14000, tuition_max: 16500, tuition_currency: "GBP", entry_pct_min: 50, ielts_min: 6.0, strengths: ["business", "nursing", "design"], official_url: "https://www.northampton.ac.uk/" },
+  { id: "bedfordshire", name: "University of Bedfordshire", country: "UK", city: "Luton", tier: "modern", tuition_min: 13500, tuition_max: 15500, tuition_currency: "GBP", entry_pct_min: 50, ielts_min: 6.0, strengths: ["business", "cs", "nursing"], official_url: "https://www.beds.ac.uk/" },
+  { id: "sunderland", name: "University of Sunderland", country: "UK", city: "Sunderland", tier: "modern", tuition_min: 13000, tuition_max: 16000, tuition_currency: "GBP", entry_pct_min: 50, ielts_min: 6.0, strengths: ["nursing", "cs", "business"], official_url: "https://www.sunderland.ac.uk/" },
+  { id: "brunel", name: "Brunel University London", country: "UK", city: "London", tier: "mid_research", tuition_min: 18500, tuition_max: 23000, tuition_currency: "GBP", entry_pct_min: 60, ielts_min: 6.5, strengths: ["engineering", "cs", "business", "design"], official_url: "https://www.brunel.ac.uk/" },
+  { id: "cccu", name: "Canterbury Christ Church University", country: "UK", city: "Canterbury", tier: "modern", tuition_min: 14000, tuition_max: 16000, tuition_currency: "GBP", entry_pct_min: 50, ielts_min: 6.0, strengths: ["nursing", "business", "social_science"], official_url: "https://www.canterbury.ac.uk/" }
 ];
 
 /* ── Courses (representative — students will search specific names anyway) ── */
@@ -225,6 +264,48 @@ export const COURSES: Course[] = [
   { id: "cmu-ms-cs", university_id: "cmu", level: "postgraduate", name: "MS Computer Science", field: "cs", duration_years: 2 },
   { id: "purdue-bs-cs", university_id: "purdue", level: "undergraduate", name: "BS Computer Science", field: "cs", duration_years: 4 },
   { id: "asu-bs-cs", university_id: "asu", level: "undergraduate", name: "BS Computer Science", field: "cs", duration_years: 4 },
+
+  // --- Australia New Courses ---
+  { id: "canberra-b-cs", university_id: "canberra", level: "undergraduate", name: "Bachelor of Computer Science", field: "cs", duration_years: 3 },
+  { id: "canberra-b-bus", university_id: "canberra", level: "undergraduate", name: "Bachelor of Business", field: "business", duration_years: 3 },
+  { id: "cqu-m-it", university_id: "cqu", level: "postgraduate", name: "Master of Information Technology", field: "cs", duration_years: 2 },
+  { id: "jcu-b-nursing", university_id: "jcu", level: "undergraduate", name: "Bachelor of Nursing", field: "nursing", duration_years: 3 },
+  { id: "newcastle-b-eng", university_id: "newcastle_aus", level: "undergraduate", name: "Bachelor of Engineering (Honours)", field: "engineering", duration_years: 4 },
+  { id: "usc-b-design", university_id: "usc", level: "undergraduate", name: "Bachelor of Design", field: "design", duration_years: 3 },
+  { id: "csu-b-it", university_id: "csu", level: "undergraduate", name: "Bachelor of Information Technology", field: "cs", duration_years: 3 },
+  { id: "scu-m-mba", university_id: "scu", level: "postgraduate", name: "Master of Business Administration", field: "business", duration_years: 2 },
+  { id: "ecu-b-cs", university_id: "ecu", level: "undergraduate", name: "Bachelor of Computer Science", field: "cs", duration_years: 3 },
+  { id: "utas-m-it", university_id: "utas", level: "postgraduate", name: "Master of Information Technology", field: "cs", duration_years: 2 },
+  { id: "kbs-m-mba", university_id: "kbs", level: "postgraduate", name: "Master of Business Administration", field: "business", duration_years: 2 },
+  { id: "usq-b-eng", university_id: "usq", level: "undergraduate", name: "Bachelor of Engineering Science", field: "engineering", duration_years: 3 },
+
+  // --- USA New Courses ---
+  { id: "wsu-ms-cs", university_id: "wsu", level: "postgraduate", name: "MS Computer Science", field: "cs", duration_years: 2 },
+  { id: "humboldt-bs-eng", university_id: "humboldt", level: "undergraduate", name: "BS Environmental Engineering", field: "engineering", duration_years: 4 },
+  { id: "csub-bs-cs", university_id: "csub", level: "undergraduate", name: "BS Computer Science", field: "cs", duration_years: 4 },
+  { id: "ust-ms-se", university_id: "ust", level: "postgraduate", name: "MS Software Engineering", field: "cs", duration_years: 2 },
+  { id: "unl-bs-bus", university_id: "unl", level: "undergraduate", name: "BS Business Administration", field: "business", duration_years: 4 },
+  { id: "westcliff-mba", university_id: "westcliff", level: "postgraduate", name: "Master of Business Administration", field: "business", duration_years: 2 },
+  { id: "manhattanville-ba-design", university_id: "manhattanville", level: "undergraduate", name: "BA Graphic Design", field: "design", duration_years: 4 },
+  { id: "cmu-co-bsn", university_id: "cmu_co", level: "undergraduate", name: "Bachelor of Science in Nursing (BSN)", field: "nursing", duration_years: 4 },
+  { id: "csc-ba-bus", university_id: "csc", level: "undergraduate", name: "BA Business Administration", field: "business", duration_years: 4 },
+  { id: "tampa-bs-marketing", university_id: "tampa", level: "undergraduate", name: "BS Marketing", field: "business", duration_years: 4 },
+
+  // --- UK New Courses ---
+  { id: "bathspa-ba-creative", university_id: "bathspa", level: "undergraduate", name: "BA Creative Arts", field: "design", duration_years: 3 },
+  { id: "stmarys-bsc-nursing", university_id: "stmarys", level: "undergraduate", name: "BSc Adult Nursing", field: "nursing", duration_years: 3 },
+  { id: "uwtsd-beng", university_id: "uwtsd", level: "undergraduate", name: "BEng Mechanical Engineering", field: "engineering", duration_years: 3 },
+  { id: "ulaw-llb", university_id: "ulaw", level: "undergraduate", name: "LLB (Honours) Law", field: "law", duration_years: 3 },
+  { id: "lsbu-msc-cs", university_id: "lsbu", level: "postgraduate", name: "MSc Computer Science", field: "cs", duration_years: 1 },
+  { id: "cardiffmet-mba", university_id: "cardiffmet", level: "postgraduate", name: "Master of Business Administration", field: "business", duration_years: 1 },
+  { id: "ulster-msc-cs", university_id: "ulster", level: "postgraduate", name: "MSc Data Science", field: "data_science", duration_years: 1 },
+  { id: "chester-bsc-cs", university_id: "chester", level: "undergraduate", name: "BSc Computer Science", field: "cs", duration_years: 3 },
+  { id: "plymouth-bsc-computing", university_id: "plymouth", level: "undergraduate", name: "BSc Computing & Software Development", field: "cs", duration_years: 3 },
+  { id: "northampton-bsc-nursing", university_id: "northampton", level: "undergraduate", name: "BSc Nursing (Mental Health)", field: "nursing", duration_years: 3 },
+  { id: "bedfordshire-msc-it", university_id: "bedfordshire", level: "postgraduate", name: "MSc Information Technology", field: "cs", duration_years: 1 },
+  { id: "sunderland-bsc-nursing", university_id: "sunderland", level: "undergraduate", name: "BSc Nursing", field: "nursing", duration_years: 3 },
+  { id: "brunel-msc-cs", university_id: "brunel", level: "postgraduate", name: "MSc Advanced Computer Science", field: "cs", duration_years: 1 },
+  { id: "cccu-bsc-cs", university_id: "cccu", level: "undergraduate", name: "BSc Computer Science", field: "cs", duration_years: 3 }
 ];
 
 export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
@@ -1007,6 +1088,397 @@ export const UNIVERSITY_PROFILES: Record<string, UniversityProfile> = {
     admissions_url: "https://www.admissions.iastate.edu/apply",
     campus_image_url: "https://images.unsplash.com/photo-1592284619077-d779f0f90769?auto=format&fit=crop&w=1200&q=80",
     logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Iowa_State_Cyclones_logo.svg/256px-Iowa_State_Cyclones_logo.svg.png"
+  },
+
+  // --- Australia ---
+  canberra: {
+    summary: "Known for practical, industry-focused degrees and excellent graduate outcomes in Australia's capital.",
+    best_for: ["Employment focus", "Capital city network", "Practical design / IT"],
+    campus_note: "Bruce campus, Canberra. Safe, green environment with lower accommodation costs than Sydney.",
+    international_url: "https://www.canberra.edu.au/future-students/study-at-uc/international-students",
+    courses_url: "https://www.canberra.edu.au/future-students/study-at-uc/find-a-course",
+    scholarships_url: "https://www.canberra.edu.au/future-students/scholarships-and-financial-aid",
+    admissions_url: "https://www.canberra.edu.au/future-students/apply-to-uc",
+    campus_image_url: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/e/ea/University_of_Canberra_logo.png"
+  },
+  cqu: {
+    summary: "Highly accessible regional university with multiple campuses across Australia, offering great flexibility.",
+    best_for: ["Regional pathway", "Flexible entry", "Diverse study locations"],
+    campus_note: "Rockhampton HQ, with major metro campuses. Affordable living and extensive student support networks.",
+    international_url: "https://www.cqu.edu.au/international-students",
+    courses_url: "https://www.cqu.edu.au/courses",
+    scholarships_url: "https://www.cqu.edu.au/courses/scholarships",
+    admissions_url: "https://www.cqu.edu.au/courses/how-to-apply",
+    campus_image_url: "https://images.unsplash.com/photo-1527891751199-7225231a68dd?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/CQUniversity_logo.svg/256px-CQUniversity_logo.svg.png"
+  },
+  jcu: {
+    summary: "A world leader in marine science and environmental research located in tropical North Queensland.",
+    best_for: ["Marine Science / STEM", "Tropical lifestyle", "Strong research focus"],
+    campus_note: "Townsville and Cairns. Laid-back tropical atmosphere, close to the Great Barrier Reef. Low living costs.",
+    international_url: "https://www.jcu.edu.au/international-students",
+    courses_url: "https://www.jcu.edu.au/courses",
+    scholarships_url: "https://www.jcu.edu.au/international-students/fees-and-financial-aid",
+    admissions_url: "https://www.jcu.edu.au/international-students/how-to-apply",
+    campus_image_url: "https://images.unsplash.com/photo-1517842645767-c639042777db?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/en/thumb/d/d4/James_Cook_University_logo.svg/256px-James_Cook_University_logo.svg.png"
+  },
+  newcastle_aus: {
+    summary: "Ranked among the top 200 globally, boasting world-class engineering, computing, and medicine programs.",
+    best_for: ["Top 200 ranking", "Engineering / Medicine", "Coastal lifestyle"],
+    campus_note: "Newcastle, NSW. Lush forest-like Callaghan campus. Close to beautiful beaches and a highly active regional economy.",
+    international_url: "https://www.newcastle.edu.au/international",
+    courses_url: "https://www.newcastle.edu.au/study",
+    scholarships_url: "https://www.newcastle.edu.au/international/scholarships",
+    admissions_url: "https://www.newcastle.edu.au/study/international/apply",
+    campus_image_url: "https://images.unsplash.com/photo-1590086782957-93c06ef21604?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/a/af/University_of_Newcastle_logo.png"
+  },
+  usc: {
+    summary: "Modern and friendly campus in Queensland, offering high levels of student satisfaction and affordable tuition.",
+    best_for: ["Affordability", "Eco-friendly campus", "High student satisfaction"],
+    campus_note: "Sunshine Coast, Queensland. Sprawling modern campus famous for its native wildlife (including kangaroos).",
+    international_url: "https://www.usc.edu.au/study/international-students",
+    courses_url: "https://www.usc.edu.au/study/courses",
+    scholarships_url: "https://www.usc.edu.au/study/scholarships",
+    admissions_url: "https://www.usc.edu.au/study/how-to-apply",
+    campus_image_url: "https://images.unsplash.com/photo-1569336415962-a4bd9f69cd83?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/b/b3/UniSC_logo.png"
+  },
+  csu: {
+    summary: "Australia's largest regional university, famous for hands-on business, agricultural, and veterinary science.",
+    best_for: ["Practical work placements", "Regional campus lifestyle", "High graduate salaries"],
+    campus_note: "Multiple campuses in regional NSW (Bathurst, Wagga Wagga). Very supportive community and high affordability.",
+    international_url: "https://study.csu.edu.au/international",
+    courses_url: "https://study.csu.edu.au/courses",
+    scholarships_url: "https://study.csu.edu.au/international/scholarships",
+    admissions_url: "https://study.csu.edu.au/international/apply",
+    campus_image_url: "https://images.unsplash.com/photo-1498243691581-b145c3f54a5c?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/en/thumb/e/e6/Charles_Sturt_University_logo.svg/256px-Charles_Sturt_University_logo.svg.png"
+  },
+  scu: {
+    summary: "Progressive, modern campuses situated in iconic coastal and regional hubs of eastern Australia.",
+    best_for: ["Affordable tuition", "Tourism / Environment", "Supportive environment"],
+    campus_note: "Lismore, Gold Coast, and Coffs Harbour. Excellent student support services and close to the beach.",
+    international_url: "https://www.scu.edu.au/study-at-scu/international-students/",
+    courses_url: "https://www.scu.edu.au/study-at-scu/courses/",
+    scholarships_url: "https://www.scu.edu.au/study-at-scu/scholarships/",
+    admissions_url: "https://www.scu.edu.au/study-at-scu/how-to-apply/",
+    campus_image_url: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/d/de/Southern_Cross_University_logo.png"
+  },
+  ecu: {
+    summary: "A modern, rapidly rising Perth university, world-renowned for cyber security, engineering, and nursing.",
+    best_for: ["Cyber Security / IT", "State-of-the-art facilities", "Perth lifestyle"],
+    campus_note: "Perth (Joondalup and Mount Lawley). Sleek, technologically advanced campus. Perth offers excellent post-study pathways.",
+    international_url: "https://www.ecu.edu.au/degrees/international",
+    courses_url: "https://www.ecu.edu.au/degrees/our-courses",
+    scholarships_url: "https://www.ecu.edu.au/scholarships/offers",
+    admissions_url: "https://www.ecu.edu.au/degrees/applying",
+    campus_image_url: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/e/ec/Edith_Cowan_University_logo.png"
+  },
+  utas: {
+    summary: "The sole university in Tasmania, offering unique research resources, scholarships, and regional migration incentives.",
+    best_for: ["Tasmania migration path", "Environmental research", "Generous scholarships"],
+    campus_note: "Hobart and Launceston. Safe, beautiful island setting with fresh air and historic charm. Lower living costs.",
+    international_url: "https://www.utas.edu.au/study/international-students",
+    courses_url: "https://www.utas.edu.au/study",
+    scholarships_url: "https://www.utas.edu.au/study/scholarships-fees-and-costs/international-scholarships",
+    admissions_url: "https://www.utas.edu.au/study/applying",
+    campus_image_url: "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/b/be/University_of_Tasmania_Logo.png"
+  },
+  kbs: {
+    summary: "A private higher education provider offering highly affordable, career-focused business and postgraduate courses.",
+    best_for: ["Low tuition fees", "Metropolitan centers", "MBA & Accounting"],
+    campus_note: "Sydney, Melbourne, Brisbane, and Adelaide. Urban high-rise campuses. Excellent timetable flexibility.",
+    international_url: "https://www.kbs.edu.au/international-students",
+    courses_url: "https://www.kbs.edu.au/courses",
+    scholarships_url: "https://www.kbs.edu.au/international-students/scholarships",
+    admissions_url: "https://www.kbs.edu.au/how-to-apply",
+    campus_image_url: "https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/d/de/Kaplan_Inc_logo.svg"
+  },
+  usq: {
+    summary: "Award-winning regional university in Queensland, highly ranked for graduate starting salaries.",
+    best_for: ["Graduate salary outcomes", "Flexible study options", "Friendly community"],
+    campus_note: "Toowoomba and Ipswich. Beautiful garden city setting. Highly affordable student housing and low living costs.",
+    international_url: "https://www.unisq.edu.au/study/international",
+    courses_url: "https://www.unisq.edu.au/study/degrees",
+    scholarships_url: "https://www.unisq.edu.au/study/scholarships",
+    admissions_url: "https://www.unisq.edu.au/study/apply",
+    campus_image_url: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/e/ee/University_of_Southern_Queensland_logo.png"
+  },
+
+  // --- USA ---
+  wsu: {
+    summary: "Located in the largest city of Kansas, famous for aerospace engineering partnership and low tuition costs.",
+    best_for: ["Aerospace partnerships", "Affordable US tuition", "Co-op opportunities"],
+    campus_note: "Wichita, Kansas. Sprawling university campus with outstanding lab facilities. Affordable Midwestern living.",
+    international_url: "https://www.wichita.edu/admissions/international/",
+    courses_url: "https://www.wichita.edu/academics/index.php",
+    scholarships_url: "https://www.wichita.edu/admissions/international/scholarships.php",
+    admissions_url: "https://www.wichita.edu/admissions/international/apply.php",
+    campus_image_url: "https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/en/thumb/f/ff/Wichita_State_University_seal.svg/256px-Wichita_State_University_seal.svg.png"
+  },
+  humboldt: {
+    summary: "Stunning coastal campus nestled in California's redwood forests, focusing on ecology and sciences.",
+    best_for: ["Ecology / Science", "Redwood forest campus", "Nature access"],
+    campus_note: "Arcata, California. Safe, green campus on a hillside overlooking the Humboldt Bay.",
+    international_url: "https://www.humboldt.edu/admissions/international",
+    courses_url: "https://www.humboldt.edu/academics/programs",
+    scholarships_url: "https://finaid.humboldt.edu/scholarships",
+    admissions_url: "https://www.humboldt.edu/apply",
+    campus_image_url: "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/en/thumb/8/87/California_State_Polytechnic_University%2C_Humboldt_logo.svg/256px-California_State_Polytechnic_University%2C_Humboldt_logo.svg.png"
+  },
+  csub: {
+    summary: "Part of the CSU system, providing affordable education in the fertile San Joaquin Valley.",
+    best_for: ["CSU state school benefits", "Affordable California option", "Valley location"],
+    campus_note: "Bakersfield, California. Safe, suburban 375-acre campus. Significantly cheaper than coastal California campuses.",
+    international_url: "https://www.csub.edu/international",
+    courses_url: "https://www.csub.edu/degrees",
+    scholarships_url: "https://www.csub.edu/finaid/types/scholarships",
+    admissions_url: "https://www.csub.edu/apply",
+    campus_image_url: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/en/thumb/e/e0/CSU_Bakersfield_seal.svg/256px-CSU_Bakersfield_seal.svg.png"
+  },
+  ust: {
+    summary: "Largest private university in Minnesota, offering robust career ties, engineering, and business pipelines.",
+    best_for: ["Twin Cities network", "Private school resources", "Strong business center"],
+    campus_note: "St. Paul, Minnesota. Beautiful collegiate campus along the Mississippi River. Twin Cities offers great tech/business jobs.",
+    international_url: "https://www.stthomas.edu/admissions/international/",
+    courses_url: "https://www.stthomas.edu/academics/",
+    scholarships_url: "https://www.stthomas.edu/admissions/international/costs-scholarships/",
+    admissions_url: "https://www.stthomas.edu/admissions/international/apply/",
+    campus_image_url: "https://images.unsplash.com/photo-1519074069444-1ba4e6663104?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/d/de/St._Thomas_Shield.png"
+  },
+  unl: {
+    summary: "A Big Ten research university with highly respected programs, massive campus resources, and generous scholarships.",
+    best_for: ["Big Ten athletics/network", "Research infrastructure", "Generous merit aid"],
+    campus_note: "Lincoln, Nebraska. Vibrant, safe mid-sized city. Excellent student facilities and very low cost of living.",
+    international_url: "https://admissions.unl.edu/international/",
+    courses_url: "https://catalog.unl.edu/undergraduate/",
+    scholarships_url: "https://admissions.unl.edu/cost-aid/scholarships/international/",
+    admissions_url: "https://admissions.unl.edu/apply/",
+    campus_image_url: "https://images.unsplash.com/photo-1506970845246-18f21d533b20?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Nebraska_Huskers_logo.svg/256px-Nebraska_Huskers_logo.svg.png"
+  },
+  westcliff: {
+    summary: "Innovative, highly pragmatic private university in Southern California with strong corporate training programs.",
+    best_for: ["Practical work experience", "Irvine tech hub", "Affordable private tuition"],
+    campus_note: "Irvine, California. Modern, office-style urban campus. Close to massive tech and finance employers in Orange County.",
+    international_url: "https://www.westcliff.edu/admissions/international-admissions/",
+    courses_url: "https://www.westcliff.edu/academics/",
+    scholarships_url: "https://www.westcliff.edu/financial-aid/scholarships/",
+    admissions_url: "https://www.westcliff.edu/admissions/apply/",
+    campus_image_url: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/e/ea/Westcliff_University_Logo.png"
+  },
+  manhattanville: {
+    summary: "Historic private liberal arts university located just 30 miles north of New York City.",
+    best_for: ["NYC access", "Intimate class sizes", "Creative arts / Business"],
+    campus_note: "Purchase, New York. Suburban 100-acre estate campus. Offers a quiet study environment with direct train links to Manhattan.",
+    international_url: "https://www.mville.edu/admissions/international-admissions/",
+    courses_url: "https://www.mville.edu/academics/undergraduate/",
+    scholarships_url: "https://www.mville.edu/admissions/financial-aid-tuition/",
+    admissions_url: "https://www.mville.edu/apply/",
+    campus_image_url: "https://images.unsplash.com/photo-1513829096999-701939374585?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/en/2/23/Manhattanville_College_seal.gif"
+  },
+  cmu_co: {
+    summary: "Fast-growing state university in western Colorado, offering beautiful outdoor settings and state-of-the-art facilities.",
+    best_for: ["Outdoor recreation", "Modern facilities", "Affordable Western state study"],
+    campus_note: "Grand Junction, Colorado. Surrounded by mountains, red rocks, and canyons. Excellent student center and labs.",
+    international_url: "https://www.coloradomesa.edu/admissions/international.html",
+    courses_url: "https://www.coloradomesa.edu/academics/",
+    scholarships_url: "https://www.coloradomesa.edu/admissions/scholarships/",
+    admissions_url: "https://www.coloradomesa.edu/apply.html",
+    campus_image_url: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/e/ea/Colorado_Mesa_University_logo.png"
+  },
+  csc: {
+    summary: "One of the most affordable public colleges in the United States, offering practical business and education paths.",
+    best_for: ["Ultra-low tuition", "Midwest values", "Safe, quiet setting"],
+    campus_note: "Chadron, Nebraska. Safe college town in the beautiful Pine Ridge region. Low living costs.",
+    international_url: "https://www.csc.edu/international/",
+    courses_url: "https://www.csc.edu/academics/",
+    scholarships_url: "https://www.csc.edu/financialaid/",
+    admissions_url: "https://www.csc.edu/apply/",
+    campus_image_url: "https://images.unsplash.com/photo-1592284619077-d779f0f90769?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/en/a/a4/Chadron_State_College_seal.png"
+  },
+  tampa: {
+    summary: "Stunning private campus located in downtown Tampa, offering excellent business, marketing, and creative programs.",
+    best_for: ["Downtown Florida lifestyle", "Strong business center", "Beautiful historic campus"],
+    campus_note: "Tampa, Florida. Landmark campus centered around Plant Hall, featuring minarets. Excellent internship opportunities.",
+    international_url: "https://www.ut.edu/admissions/international-admissions",
+    courses_url: "https://www.ut.edu/academics/degrees-and-majors",
+    scholarships_url: "https://www.ut.edu/admissions/financial-aid/scholarships-and-grants",
+    admissions_url: "https://www.ut.edu/admissions/apply-to-ut",
+    campus_image_url: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/e/e0/University_of_Tampa_logo.png"
+  },
+
+  // --- UK ---
+  bathspa: {
+    summary: "A creative, culture-focused modern university based in a historic UNESCO World Heritage city.",
+    best_for: ["Creative arts / Design", "UNESCO World Heritage city", "Historic campus estate"],
+    campus_note: "Bath, UK. Stunning Newton Park campus featuring lakes and historic buildings. Highly creative student community.",
+    international_url: "https://www.bathspa.ac.uk/international/",
+    courses_url: "https://www.bathspa.ac.uk/courses/",
+    scholarships_url: "https://www.bathspa.ac.uk/international/funding-and-scholarships/",
+    admissions_url: "https://www.bathspa.ac.uk/international/how-to-apply/",
+    campus_image_url: "https://images.unsplash.com/photo-1543783207-ec64e4d95325?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/0/0b/Bath_Spa_University_Logo.png"
+  },
+  stmarys: {
+    summary: "A friendly, close-knit campus university located in West London, with excellent sports facilities.",
+    best_for: ["London location", "Tight-knit community", "Sports science & Business"],
+    campus_note: "Strawberry Hill, Twickenham. Green, historic campus in one of London's safest and leafiest boroughs.",
+    international_url: "https://www.stmarys.ac.uk/international/overview.aspx",
+    courses_url: "https://www.stmarys.ac.uk/courses/",
+    scholarships_url: "https://www.stmarys.ac.uk/international/scholarships.aspx",
+    admissions_url: "https://www.stmarys.ac.uk/study/applying/",
+    campus_image_url: "https://images.unsplash.com/photo-1513829096999-701939374585?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/3/30/St_Mary%27s_University_Twickenham_logo.png"
+  },
+  uwtsd: {
+    summary: "One of the oldest institutions in Wales, offering supportive learning environments and highly practical programs.",
+    best_for: ["Low tuition fees", "Supportive environment", "Practical / Vocations"],
+    campus_note: "Carmarthen and Swansea, Wales. Safe, peaceful surroundings with very affordable living costs.",
+    international_url: "https://www.uwtsd.ac.uk/international/",
+    courses_url: "https://www.uwtsd.ac.uk/courses/",
+    scholarships_url: "https://www.uwtsd.ac.uk/international/scholarships/",
+    admissions_url: "https://www.uwtsd.ac.uk/international/how-to-apply/",
+    campus_image_url: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/e/ea/UWTSD_logo.png"
+  },
+  ulaw: {
+    summary: "The UK's longest-established specialist provider of legal and business education with high employment rates.",
+    best_for: ["Legal careers / SQE", "Corporate partnerships", "City centre locations"],
+    campus_note: "Multiple campuses in London, Birmingham, Manchester. Excellent professional network and mock courtrooms.",
+    international_url: "https://www.law.ac.uk/study/international/",
+    courses_url: "https://www.law.ac.uk/courses/",
+    scholarships_url: "https://www.law.ac.uk/study/scholarships/",
+    admissions_url: "https://www.law.ac.uk/study/postgraduate/how-to-apply/",
+    campus_image_url: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/en/thumb/f/f6/The_University_of_Law_logo.svg/256px-The_University_of_Law_logo.svg.png"
+  },
+  lsbu: {
+    summary: "Based in the heart of London, offering highly practical degrees designed for direct corporate employment.",
+    best_for: ["Central London campus", "Practical / Accredited", "Diverse student body"],
+    campus_note: "Southwark, London. Urban campus located steps away from London's South Bank. Active internship hub.",
+    international_url: "https://www.lsbu.ac.uk/study/international",
+    courses_url: "https://www.lsbu.ac.uk/study/course-finder",
+    scholarships_url: "https://www.lsbu.ac.uk/study/international/funding-and-fees/scholarships",
+    admissions_url: "https://www.lsbu.ac.uk/study/howtoapply",
+    campus_image_url: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/f/ff/LSBU_Logo.png"
+  },
+  cardiffmet: {
+    summary: "Highly progressive Welsh university focusing on innovation, practical design, and business management.",
+    best_for: ["Cardiff city life", "Innovative design labs", "Employability support"],
+    campus_note: "Cardiff, Wales. Sprawling modern campuses. Cardiff is one of the UK's most affordable capital cities.",
+    international_url: "https://www.cardiffmet.ac.uk/international/Pages/default.aspx",
+    courses_url: "https://www.cardiffmet.ac.uk/study/Pages/default.aspx",
+    scholarships_url: "https://www.cardiffmet.ac.uk/international/study/Pages/Scholarships.aspx",
+    admissions_url: "https://www.cardiffmet.ac.uk/international/study/applying/Pages/default.aspx",
+    campus_image_url: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/3/3d/Cardiff_Metropolitan_University_logo.png"
+  },
+  ulster: {
+    summary: "Large Northern Irish university known for computing, software engineering, and modern new Belfast campus.",
+    best_for: ["Belfast tech hub", "Affordable living costs", "Excellent computing / IT"],
+    campus_note: "Belfast City Centre. Sleek brand new multi-million pound vertical campus. Low student living costs.",
+    international_url: "https://www.ulster.ac.uk/global",
+    courses_url: "https://www.ulster.ac.uk/courses",
+    scholarships_url: "https://www.ulster.ac.uk/global/apply/scholarships",
+    admissions_url: "https://www.ulster.ac.uk/global/apply",
+    campus_image_url: "https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Ulster_University_logo.svg/256px-Ulster_University_logo.svg.png"
+  },
+  chester: {
+    summary: "Friendly collegiate atmosphere in a stunning historic city, focusing on business and health sciences.",
+    best_for: ["Historic city vibe", "Supportive environment", "High student safety"],
+    campus_note: "Chester, UK. Compact, traditional campuses integrated with the historic walled city. Low living costs.",
+    international_url: "https://www.chester.ac.uk/international/",
+    courses_url: "https://www.chester.ac.uk/study/",
+    scholarships_url: "https://www.chester.ac.uk/international/fees-and-scholarships/scholarships/",
+    admissions_url: "https://www.chester.ac.uk/international/how-to-apply/",
+    campus_image_url: "https://images.unsplash.com/photo-1449034446853-66c86144b0ad?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/e/ea/University_of_Chester_logo.png"
+  },
+  plymouth: {
+    summary: "A major coastal research university in the South West, strong in engineering, computing, and marine sciences.",
+    best_for: ["Ocean-side city", "Engineering / STEM", "Vibrant student union"],
+    campus_note: "Plymouth, Devon. Large city-center campus next to the historic harbor. Vibrant marine research networks.",
+    international_url: "https://www.plymouth.ac.uk/international",
+    courses_url: "https://www.plymouth.ac.uk/study",
+    scholarships_url: "https://www.plymouth.ac.uk/international/funding-and-scholarships",
+    admissions_url: "https://www.plymouth.ac.uk/study/apply",
+    campus_image_url: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/en/thumb/e/e0/University_of_Plymouth_logo.svg/256px-University_of_Plymouth_logo.svg.png"
+  },
+  northampton: {
+    summary: "Features the modern Waterside Campus near London, focusing on business, social enterprise, and health.",
+    best_for: ["Brand new Waterside campus", "Business / Logistics", "Close to London"],
+    campus_note: "Northampton, UK. Ultra-modern green campus right on the riverbank. Highly eco-friendly infrastructure.",
+    international_url: "https://www.northampton.ac.uk/international/",
+    courses_url: "https://www.northampton.ac.uk/courses/",
+    scholarships_url: "https://www.northampton.ac.uk/international/fees-and-funding/",
+    admissions_url: "https://www.northampton.ac.uk/study/how-to-apply/",
+    campus_image_url: "https://images.unsplash.com/photo-1492534513006-37715f336a39?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/a/af/University_of_Northampton_logo.png"
+  },
+  bedfordshire: {
+    summary: "Modern, highly diverse university offering career-focused education with convenient London connections.",
+    best_for: ["Accessible entry", "Career orientation", "Luton / London links"],
+    campus_note: "Luton and Bedford. Active urban settings with fast rail links directly into Central London. Low-cost study.",
+    international_url: "https://www.beds.ac.uk/international/",
+    courses_url: "https://www.beds.ac.uk/howtoapply/courses/",
+    scholarships_url: "https://www.beds.ac.uk/international/scholarships/",
+    admissions_url: "https://www.beds.ac.uk/howtoapply/apply/",
+    campus_image_url: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/4/4e/University_of_Bedfordshire_logo.png"
+  },
+  sunderland: {
+    summary: "Known for outstanding nursing, health sciences, and digital media, with highly competitive tuition rates.",
+    best_for: ["Low tuition fees", "Nursing & Health", "Friendly North East city"],
+    campus_note: "Sunderland, UK. Coastal campus with river views and a secondary campus in London. Extremely low living cost region.",
+    international_url: "https://www.sunderland.ac.uk/study/international/",
+    courses_url: "https://www.sunderland.ac.uk/study/courses/",
+    scholarships_url: "https://www.sunderland.ac.uk/study/international/scholarships-fees/",
+    admissions_url: "https://www.sunderland.ac.uk/study/international/how-to-apply/",
+    campus_image_url: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/en/thumb/e/e0/University_of_Sunderland_Logo.svg/256px-University_of_Sunderland_Logo.svg.png"
+  },
+  brunel: {
+    summary: "A major research university in West London, famous for engineering, computing, and design programs.",
+    best_for: ["London location", "Engineering & Design", "Industry placement years"],
+    campus_note: "Uxbridge, West London. Large self-contained campus, offering the convenience of London with a green collegiate setting.",
+    international_url: "https://www.brunel.ac.uk/international",
+    courses_url: "https://www.brunel.ac.uk/study",
+    scholarships_url: "https://www.brunel.ac.uk/international/scholarships-and-funding",
+    admissions_url: "https://www.brunel.ac.uk/study/how-to-apply",
+    campus_image_url: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/1/15/Brunel_University_logo.png"
+  },
+  cccu: {
+    summary: "Located in a historic cathedral city, offering strong vocational nursing, education, and business courses.",
+    best_for: ["Canterbury historic setting", "Nursing & Social work", "Friendly campus support"],
+    campus_note: "Canterbury, Kent. Historic setting close to the famous cathedral. Safe, walking-friendly student city.",
+    international_url: "https://www.canterbury.ac.uk/study-here/international",
+    courses_url: "https://www.canterbury.ac.uk/study-here/courses",
+    scholarships_url: "https://www.canterbury.ac.uk/study-here/fees-and-funding/international-scholarships",
+    admissions_url: "https://www.canterbury.ac.uk/study-here/applying",
+    campus_image_url: "https://images.unsplash.com/photo-1507537297725-24a1c029d3ca?auto=format&fit=crop&w=1200&q=80",
+    logo_url: "https://upload.wikimedia.org/wikipedia/commons/f/ff/CCCU_logo.png"
   }
 };;
 
