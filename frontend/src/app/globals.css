@@ -1858,7 +1858,8 @@ body {
     padding-bottom: var(--student-mobile-nav-height);
   }
 
-  .chat-layout.is-keyboard-open .chat-main {
+  .chat-layout.is-keyboard-open .chat-main,
+  .chat-layout:has(.chat-input:focus) .chat-main {
     padding-bottom: 0;
   }
 
@@ -1909,12 +1910,14 @@ body {
     backdrop-filter: blur(18px);
   }
 
-  .chat-layout.is-keyboard-open .chat-footer {
+  .chat-layout.is-keyboard-open .chat-footer,
+  .chat-layout:has(.chat-input:focus) .chat-footer {
     padding: 6px 10px max(8px, env(safe-area-inset-bottom));
     background: rgba(251, 250, 247, 0.98);
   }
 
-  .chat-layout.is-keyboard-open .chat-messages {
+  .chat-layout.is-keyboard-open .chat-messages,
+  .chat-layout:has(.chat-input:focus) .chat-messages {
     padding-bottom: 6px;
   }
 
@@ -1927,7 +1930,8 @@ body {
     scroll-padding-inline: 10px;
   }
   .chat-suggestion-rail::-webkit-scrollbar { display: none; }
-  .chat-layout.is-keyboard-open .chat-suggestion-rail {
+  .chat-layout.is-keyboard-open .chat-suggestion-rail,
+  .chat-layout:has(.chat-input:focus) .chat-suggestion-rail {
     display: none;
   }
   .chat-suggestion-chip {
@@ -2039,7 +2043,8 @@ body {
     will-change: opacity, transform;
   }
 
-  .chat-layout.is-keyboard-open .chat-mobile-nav {
+  .chat-layout.is-keyboard-open .chat-mobile-nav,
+  .chat-layout:has(.chat-input:focus) .chat-mobile-nav {
     opacity: 0;
     pointer-events: none;
     transform: translateY(calc(100% + 16px));
@@ -2066,7 +2071,8 @@ body {
     box-shadow: 0 10px 24px rgba(15,15,15,0.14);
   }
 
-  .chat-layout.is-keyboard-open .chat-scroll-newest {
+  .chat-layout.is-keyboard-open .chat-scroll-newest,
+  .chat-layout:has(.chat-input:focus) .chat-scroll-newest {
     bottom: 104px;
   }
 
