@@ -101,7 +101,7 @@ def _clean_response(text: str) -> str:
     return text.strip()
 
 
-_WORD_LIMITS = {"short": 45, "medium": 75, "long": 125}
+_WORD_LIMITS = {"short": 32, "medium": 58, "long": 90}
 
 
 def _enforce_length(text: str, length: str) -> str:
