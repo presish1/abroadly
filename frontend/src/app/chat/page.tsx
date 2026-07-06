@@ -1475,6 +1475,7 @@ export default function ChatPage() {
   const [documents, setDocuments] = useState<StudentDocument[]>([]);
   const [uploadPrompt, setUploadPrompt] = useState<{ slotId: string; label: string } | null>(null);
   const [classBookingPrompt, setClassBookingPrompt] = useState<{ test: string } | null>(null);
+  const [counselorPrompt, setCounselorPrompt] = useState<Omit<CounselorCardMessage, "role" | "auto"> | null>(null);
   const [profileOpen, setProfileOpen] = useState(false);
   const [callConsented, setCallConsented] = useState(false);
   const [uploadingSlot, setUploadingSlot] = useState<string | null>(null);
@@ -1498,7 +1499,6 @@ export default function ChatPage() {
   const [showScrollToBottom, setShowScrollToBottom] = useState(false);
   const [isMobileComposer, setIsMobileComposer] = useState(false);
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
-  const [composerFocused, setComposerFocused] = useState(false);
   const [historyRestored, setHistoryRestored] = useState(false);
   const didInitialHistoryScroll = useRef(false);
   const sessionDocumentPromptShown = useRef(false);
@@ -1721,7 +1721,7 @@ export default function ChatPage() {
     };
   }, []);
 
-  const mobileKeyboardMode = isKeyboardOpen || (isMobileComposer && composerFocused);
+  const mobileKeyboardMode = isKeyboardOpen;
 
   function growTextarea() {
     const el = taRef.current;
@@ -1739,7 +1739,10 @@ export default function ChatPage() {
     }
     setInput("");
     requestAnimationFrame(() => {
-      if (taRef.current) { taRef.current.style.height = "auto"; taRef.current.focus(); }
+      if (taRef.current) {
+        taRef.current.style.height = "auto";
+        if (!isMobileComposer) taRef.current.focus();
+      }
     });
     setMessages((m) => [...m, { role: "user", text }]);
     setChatHistory((h) => [
@@ -1823,6 +1826,8 @@ export default function ChatPage() {
       const fallbackHandoff =
         fallbackAnswer.includes("i'm not sure i can help with that one")
         || fallbackAnswer.includes("im not sure i can help with that one");
+      const answerHandoffSignal =
+        /\b(prisma can walk|real person|human (?:counsellor|counselor|help|advisor)|talk to (?:a )?(?:human|person|counsellor|counselor|advisor)|connect with someone|personal walkthrough|walk through this with you)\b/i.test(fallbackAnswer);
       const directHumanRequest = /\b(i want to talk|talk to (?:someone|a human|human|person|counsell?or|advisor)|need (?:a )?(?:human|person|counsell?or)|request (?:a )?call|call me|counsell?or|real person|human help)\b/i.test(text);
       const frustrationSignal =
         enoughTurns
@@ -1839,7 +1844,7 @@ export default function ChatPage() {
       const bypassCard = hasPriorityDoc.current && enoughTurns && !callConsented;
       const fallbackCounselorCard = res.decision === "out_of_scope" && fallbackHandoff;
       const confusedAnswerCard = res.decision === "low_confidence" && res.reason === "scope_unknown_history";
-      const humanIntentCard = directHumanRequest || frustrationSignal || ambiguousShortFollowup || confusedAnswerCard;
+      const humanIntentCard = directHumanRequest || frustrationSignal || ambiguousShortFollowup || confusedAnswerCard || answerHandoffSignal;
       const shouldShowCounselorCard =
         !callConsented
         && (
@@ -1859,11 +1864,12 @@ export default function ChatPage() {
           ? "bypass"
           : directHumanRequest || frustrationSignal
             ? "qualified"
-          : fallbackCounselorCard || ambiguousShortFollowup || confusedAnswerCard
+          : fallbackCounselorCard || ambiguousShortFollowup || confusedAnswerCard || answerHandoffSignal
             ? "question"
           : res.offer_reason === "question" ? "question"
           : res.offer_reason === "qualified" ? "qualified"
           : "sequence";
+        setCounselorPrompt({ reason: cardReason, tier, handoff_target: res.handoff_target });
         setMessages((m) =>
           m.length && m[m.length - 1].role === "counselor_card"
             ? m
@@ -1885,7 +1891,9 @@ export default function ChatPage() {
       ]);
     } finally {
       setThinking(false);
-      requestAnimationFrame(() => taRef.current?.focus());
+      requestAnimationFrame(() => {
+        if (!isMobileComposer) taRef.current?.focus();
+      });
     }
   }
 
@@ -1953,6 +1961,7 @@ export default function ChatPage() {
       const updated = await requestCounselorCall(studentId, student?.phone || undefined);
       setStudent(updated);
       setCallConsented(updated.call_consent);
+      if (updated.call_consent) window.setTimeout(() => setCounselorPrompt(null), 1100);
     } catch (err: unknown) {
       setCallConsented(false);
       const message = err instanceof Error ? err.message : "We could not save the callback request.";
@@ -2374,8 +2383,6 @@ export default function ChatPage() {
                 value={input}
                 onChange={(e) => { setInput(e.target.value); growTextarea(); }}
                 onKeyDown={onKey}
-                onFocus={() => setComposerFocused(true)}
-                onBlur={() => window.setTimeout(() => setComposerFocused(false), 120)}
                 disabled={thinking}
                 rows={1}
                 autoCorrect="on"
@@ -2490,6 +2497,34 @@ export default function ChatPage() {
           onBrowse={() => { setUploadPrompt(null); setDocPanelOpen(true); }}
           onClose={() => setUploadPrompt(null)}
         />
+      )}
+
+      {counselorPrompt && (
+        <ModalShell
+          open
+          onClose={() => setCounselorPrompt(null)}
+          titleId="counselor-prompt-title"
+          panelClassName="counselor-popup-modal"
+          closeLabel="Close counselor popup"
+          mobileSheet
+        >
+          <div className="counselor-popup-copy">
+            <p className="text-[10.5px] font-extrabold uppercase tracking-[0.14em] text-[#0A6E45]">Human help</p>
+            <h2 id="counselor-prompt-title" className="mt-1 text-[19px] font-extrabold tracking-[-0.02em] text-[var(--ab-ink)]">
+              Let Prisma handle this with you
+            </h2>
+            <p className="mt-1.5 text-[13px] leading-6 text-[#6B655C]">
+              If the chat feels unclear, request a free callback and a real Abroadly counsellor can walk through your exact situation.
+            </p>
+          </div>
+          <CounselorCard
+            consented={callConsented}
+            onGrant={grantCounselorCall}
+            reason={counselorPrompt.reason ?? "question"}
+            tier={counselorPrompt.tier ?? "strong"}
+            handoff_target={counselorPrompt.handoff_target}
+          />
+        </ModalShell>
       )}
 
       {classBookingPrompt && student && (

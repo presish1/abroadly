@@ -5,6 +5,8 @@ FastAPI route dependencies.
 """
 from __future__ import annotations
 
+import re
+
 from app.eval.types import Decision
 from app.qeval.lead import counselor_tier
 
@@ -16,6 +18,19 @@ _CONFUSED_HANDOFF_REASONS = {
     "grounding_below_threshold",
     "grounding_below_threshold_partial",
 }
+
+_ANSWER_HANDOFF_RE = re.compile(
+    r"\b("
+    r"prisma can walk|"
+    r"real person|"
+    r"human (?:counsell?or|help|advisor)|"
+    r"talk to (?:a )?(?:human|person|counsell?or|advisor)|"
+    r"connect with someone|"
+    r"personal walkthrough|"
+    r"walk through this with you"
+    r")\b",
+    re.IGNORECASE,
+)
 
 
 def counselor_offer_for_response(
@@ -34,6 +49,8 @@ def counselor_offer_for_response(
     if response_decision == Decision.LOW_CONFIDENCE and response_answer:
         if response_reason in _CONFUSED_HANDOFF_REASONS:
             return True, "question", "strong"
+    if response_answer and _ANSWER_HANDOFF_RE.search(response_answer):
+        return True, "question", "strong"
 
     tier = counselor_tier(lead_score or 0)
     if not tier:
