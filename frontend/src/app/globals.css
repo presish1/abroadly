@@ -1645,6 +1645,7 @@ body {
 .counselor-card {
   max-width: 420px;
   width: 100%;
+  min-width: 0;
   padding: 16px 18px;
   border-radius: 20px 20px 20px 4px;
   background: #fff;
@@ -1901,6 +1902,11 @@ body {
   .chat-bubble-user { max-width: calc(100vw - 72px); padding: 10px 13px; border-radius: 14px 14px 4px 14px; }
   .chat-bubble-ai { max-width: calc(100vw - 58px); padding: 12px 13px; border-radius: 4px 14px 14px 14px; }
   .chat-bubble-text { font-size: 13.5px; line-height: 1.65; }
+  .counselor-card {
+    max-width: calc(100vw - 58px);
+    padding: 14px 13px;
+    border-radius: 16px 16px 16px 4px;
+  }
 
   .chat-footer {
     padding: 7px 10px 10px;
