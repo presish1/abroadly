@@ -1476,6 +1476,8 @@ export default function ChatPage() {
   const [uploadPrompt, setUploadPrompt] = useState<{ slotId: string; label: string } | null>(null);
   const [classBookingPrompt, setClassBookingPrompt] = useState<{ test: string } | null>(null);
   const [counselorPrompt, setCounselorPrompt] = useState<Omit<CounselorCardMessage, "role" | "auto"> | null>(null);
+  const [queuedUploadPrompt, setQueuedUploadPrompt] = useState<{ slotId: string; label: string } | null>(null);
+  const [queuedClassBookingPrompt, setQueuedClassBookingPrompt] = useState<{ test: string } | null>(null);
   const [profileOpen, setProfileOpen] = useState(false);
   const [callConsented, setCallConsented] = useState(false);
   const [uploadingSlot, setUploadingSlot] = useState<string | null>(null);
@@ -1771,6 +1773,9 @@ export default function ChatPage() {
         { id: res.request_id || `local-ai-${Date.now()}`, role: "assistant", content: res.answer || "", eval_decision: res.decision, created_at: new Date().toISOString() },
       ]);
 
+      let stagedUploadPrompt: { slotId: string; label: string } | null = null;
+      let stagedClassBookingPrompt: { test: string } | null = null;
+
       // Deterministic engagement engine. It uses the student's question,
       // profile, document state and total history instead of hoping the LLM
       // writes an exact trigger phrase. Only one modal can be selected here.
@@ -1795,11 +1800,11 @@ export default function ChatPage() {
           engagementPrompted = true;
           if (decision.kind === "document") {
             sessionDocumentPromptShown.current = true;
-            setClassBookingPrompt(null);
-            setUploadPrompt({ slotId: decision.slotId, label: decision.label });
+            stagedUploadPrompt = { slotId: decision.slotId, label: decision.label };
+            stagedClassBookingPrompt = null;
           } else {
-            setUploadPrompt(null);
-            setClassBookingPrompt({ test: decision.test });
+            stagedUploadPrompt = null;
+            stagedClassBookingPrompt = { test: decision.test };
           }
         }
       }
@@ -1810,14 +1815,14 @@ export default function ChatPage() {
         && !docPanelOpen
         && !uploadPrompt
         && !classBookingPrompt
-        && res.decision !== "out_of_scope"
         && totalUserTurns >= 2
         && documents.length === 0
       ) {
         const slot = ESSENTIAL_SLOTS.find((item) => item.id === "grade_sheet") || ESSENTIAL_SLOTS[0];
         if (slot) {
           sessionDocumentPromptShown.current = true;
-          setUploadPrompt({ slotId: slot.id, label: slot.shortLabel || slot.label });
+          stagedUploadPrompt = { slotId: slot.id, label: slot.shortLabel || slot.label };
+          stagedClassBookingPrompt = null;
         }
       }
 
@@ -1844,14 +1849,14 @@ export default function ChatPage() {
       const bypassCard = hasPriorityDoc.current && enoughTurns && !callConsented;
       const fallbackCounselorCard = res.decision === "out_of_scope" && fallbackHandoff;
       const confusedAnswerCard = res.decision === "low_confidence" && res.reason === "scope_unknown_history";
+      const earlyConversationSafetyNet =
+        !counselorOffered.current
+        && (sessionTypedCount.current >= 2 || totalUserTurns >= 3);
       const humanIntentCard = directHumanRequest || frustrationSignal || ambiguousShortFollowup || confusedAnswerCard || answerHandoffSignal;
       const shouldShowCounselorCard =
-        !callConsented
-        && (
-          fallbackCounselorCard
-          || humanIntentCard
-          || (!counselorOffered.current && (backendOffersCard || bypassCard))
-        );
+        fallbackCounselorCard
+        || humanIntentCard
+        || (!counselorOffered.current && (backendOffersCard || bypassCard || earlyConversationSafetyNet));
 
       if (shouldShowCounselorCard) {
         counselorOffered.current = true;
@@ -1859,6 +1864,8 @@ export default function ChatPage() {
           ? "bypass"
           : fallbackCounselorCard || humanIntentCard
             ? "strong"
+          : earlyConversationSafetyNet
+            ? "medium"
             : (res.offer_counselor_tier as CounselorCardMessage["tier"]) ?? null;
         const cardReason: CounselorCardMessage["reason"] = bypassCard
           ? "bypass"
@@ -1866,15 +1873,25 @@ export default function ChatPage() {
             ? "qualified"
           : fallbackCounselorCard || ambiguousShortFollowup || confusedAnswerCard || answerHandoffSignal
             ? "question"
+          : earlyConversationSafetyNet
+            ? "sequence"
           : res.offer_reason === "question" ? "question"
           : res.offer_reason === "qualified" ? "qualified"
           : "sequence";
+        setQueuedUploadPrompt(stagedUploadPrompt);
+        setQueuedClassBookingPrompt(stagedClassBookingPrompt);
         setCounselorPrompt({ reason: cardReason, tier, handoff_target: res.handoff_target });
         setMessages((m) =>
           m.length && m[m.length - 1].role === "counselor_card"
             ? m
             : [...m, { role: "counselor_card", reason: cardReason, tier, handoff_target: res.handoff_target }]
         );
+      } else if (stagedUploadPrompt) {
+        setClassBookingPrompt(null);
+        setUploadPrompt(stagedUploadPrompt);
+      } else if (stagedClassBookingPrompt) {
+        setUploadPrompt(null);
+        setClassBookingPrompt(stagedClassBookingPrompt);
       }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Error contacting server.";
@@ -1951,6 +1968,25 @@ export default function ChatPage() {
     }
   }, [studentId, refreshDocuments]);
 
+  const closeCounselorPrompt = useCallback(() => {
+    const nextUpload = queuedUploadPrompt;
+    const nextClassBooking = queuedClassBookingPrompt;
+    setCounselorPrompt(null);
+    setQueuedUploadPrompt(null);
+    setQueuedClassBookingPrompt(null);
+    if (nextUpload) {
+      window.setTimeout(() => {
+        setClassBookingPrompt(null);
+        setUploadPrompt(nextUpload);
+      }, 180);
+    } else if (nextClassBooking) {
+      window.setTimeout(() => {
+        setUploadPrompt(null);
+        setClassBookingPrompt(nextClassBooking);
+      }, 180);
+    }
+  }, [queuedClassBookingPrompt, queuedUploadPrompt]);
+
   async function grantCounselorCall() {
     if (phoneRequired) {
       setProfileOpen(true);
@@ -1961,7 +1997,7 @@ export default function ChatPage() {
       const updated = await requestCounselorCall(studentId, student?.phone || undefined);
       setStudent(updated);
       setCallConsented(updated.call_consent);
-      if (updated.call_consent) window.setTimeout(() => setCounselorPrompt(null), 1100);
+      if (updated.call_consent) window.setTimeout(closeCounselorPrompt, 1100);
     } catch (err: unknown) {
       setCallConsented(false);
       const message = err instanceof Error ? err.message : "We could not save the callback request.";
@@ -2502,7 +2538,7 @@ export default function ChatPage() {
       {counselorPrompt && (
         <ModalShell
           open
-          onClose={() => setCounselorPrompt(null)}
+          onClose={closeCounselorPrompt}
           titleId="counselor-prompt-title"
           panelClassName="counselor-popup-modal"
           closeLabel="Close counselor popup"
