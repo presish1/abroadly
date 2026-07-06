@@ -1827,13 +1827,19 @@ export default function ChatPage() {
       const frustrationSignal =
         enoughTurns
         && /\b(bruh|wtf|cmon|come on|same answer|not helpful|doesn'?t help|not working|you are wrong|wrong answer|useless|why same)\b/i.test(text);
+      const shortFollowup = text.toLowerCase().replace(/[?!.,]+/g, " ").trim();
+      const ambiguousShortFollowup =
+        enoughTurns
+        && shortFollowup.split(/\s+/).filter(Boolean).length <= 3
+        && /^(h+m+|hmm+|uh+|umm+|where|what|why|how|which|what now|now what|kaha|kata|kun|kina|kasari|haina|hoina)$/i.test(shortFollowup);
 
       // Slot A — counselor card. Normal lead offers wait for two typed turns,
       // but strict fallback refusals get an immediate human handoff.
       const backendOffersCard = Boolean(res.offer_counselor);
       const bypassCard = hasPriorityDoc.current && enoughTurns && !callConsented;
       const fallbackCounselorCard = res.decision === "out_of_scope" && fallbackHandoff;
-      const humanIntentCard = directHumanRequest || frustrationSignal;
+      const confusedAnswerCard = res.decision === "low_confidence" && res.reason === "scope_unknown_history";
+      const humanIntentCard = directHumanRequest || frustrationSignal || ambiguousShortFollowup || confusedAnswerCard;
       const shouldShowCounselorCard =
         !callConsented
         && (
@@ -1851,8 +1857,10 @@ export default function ChatPage() {
             : (res.offer_counselor_tier as CounselorCardMessage["tier"]) ?? null;
         const cardReason: CounselorCardMessage["reason"] = bypassCard
           ? "bypass"
-          : fallbackCounselorCard || humanIntentCard
+          : directHumanRequest || frustrationSignal
             ? "qualified"
+          : fallbackCounselorCard || ambiguousShortFollowup || confusedAnswerCard
+            ? "question"
           : res.offer_reason === "question" ? "question"
           : res.offer_reason === "qualified" ? "qualified"
           : "sequence";

@@ -415,6 +415,7 @@ async def chat_endpoint(
         offer_counselor, offer_reason, offer_counselor_tier = counselor_offer_for_response(
             response_decision=resp.decision,
             response_answer=resp.answer,
+            response_reason=resp.reason,
             call_consent=student_model.call_consent,
             lead_score=student_model.lead_score,
         )
