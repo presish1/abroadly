@@ -1498,6 +1498,10 @@ export default function ChatPage() {
   const [showScrollToBottom, setShowScrollToBottom] = useState(false);
   const [isMobileComposer, setIsMobileComposer] = useState(false);
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+  const [composerFocused, setComposerFocused] = useState(false);
+  const [historyRestored, setHistoryRestored] = useState(false);
+  const didInitialHistoryScroll = useRef(false);
+  const sessionDocumentPromptShown = useRef(false);
 
   // Hold a ref to sendMessage so the URL-deep-link effect (below) can call the
   // latest version without re-running every time sendMessage's deps change.
@@ -1605,6 +1609,7 @@ export default function ChatPage() {
           };
         });
         setMessages(restored);
+        setHistoryRestored(true);
       } catch { /* empty history is fine */ }
     }
     restoreSession();
@@ -1636,6 +1641,24 @@ export default function ChatPage() {
     if (!container) return;
     container.scrollTo({ top: container.scrollHeight, behavior });
   }, []);
+
+  const forceScrollMessagesToBottom = useCallback((behavior: ScrollBehavior = "auto") => {
+    shouldStickToBottom.current = true;
+    requestAnimationFrame(() => {
+      scrollMessagesToBottom(behavior);
+      requestAnimationFrame(() => scrollMessagesToBottom(behavior));
+      window.setTimeout(() => {
+        scrollMessagesToBottom(behavior);
+        syncScrollState();
+      }, 180);
+    });
+  }, [scrollMessagesToBottom]);
+
+  useEffect(() => {
+    if (!historyRestored || didInitialHistoryScroll.current || messages.length === 0) return;
+    didInitialHistoryScroll.current = true;
+    forceScrollMessagesToBottom("auto");
+  }, [forceScrollMessagesToBottom, historyRestored, messages.length]);
 
   useEffect(() => {
     if (shouldStickToBottom.current) {
@@ -1698,6 +1721,8 @@ export default function ChatPage() {
     };
   }, []);
 
+  const mobileKeyboardMode = isKeyboardOpen || (isMobileComposer && composerFocused);
+
   function growTextarea() {
     const el = taRef.current;
     if (!el) return;
@@ -1746,6 +1771,7 @@ export default function ChatPage() {
       // Deterministic engagement engine. It uses the student's question,
       // profile, document state and total history instead of hoping the LLM
       // writes an exact trigger phrase. Only one modal can be selected here.
+      let engagementPrompted = false;
       if (
         !docPanelOpen
         && !uploadPrompt
@@ -1763,7 +1789,9 @@ export default function ChatPage() {
           const nextMemory = recordChatEngagement(engagementMemory.current, decision, totalUserTurns);
           engagementMemory.current = nextMemory;
           writeChatEngagementMemory(studentId, nextMemory);
+          engagementPrompted = true;
           if (decision.kind === "document") {
+            sessionDocumentPromptShown.current = true;
             setClassBookingPrompt(null);
             setUploadPrompt({ slotId: decision.slotId, label: decision.label });
           } else {
@@ -1773,21 +1801,44 @@ export default function ChatPage() {
         }
       }
 
+      if (
+        !engagementPrompted
+        && !sessionDocumentPromptShown.current
+        && !docPanelOpen
+        && !uploadPrompt
+        && !classBookingPrompt
+        && res.decision !== "out_of_scope"
+        && totalUserTurns >= 2
+        && documents.length === 0
+      ) {
+        const slot = ESSENTIAL_SLOTS.find((item) => item.id === "grade_sheet") || ESSENTIAL_SLOTS[0];
+        if (slot) {
+          sessionDocumentPromptShown.current = true;
+          setUploadPrompt({ slotId: slot.id, label: slot.shortLabel || slot.label });
+        }
+      }
+
       const enoughTurns = sessionTypedCount.current >= 2;
       const fallbackAnswer = `${res.answer ?? ""} ${res.clarifying_question ?? ""}`.toLowerCase();
       const fallbackHandoff =
         fallbackAnswer.includes("i'm not sure i can help with that one")
         || fallbackAnswer.includes("im not sure i can help with that one");
+      const directHumanRequest = /\b(i want to talk|talk to (?:someone|a human|human|person|counsell?or|advisor)|need (?:a )?(?:human|person|counsell?or)|request (?:a )?call|call me|counsell?or|real person|human help)\b/i.test(text);
+      const frustrationSignal =
+        enoughTurns
+        && /\b(bruh|wtf|cmon|come on|same answer|not helpful|doesn'?t help|not working|you are wrong|wrong answer|useless|why same)\b/i.test(text);
 
       // Slot A — counselor card. Normal lead offers wait for two typed turns,
       // but strict fallback refusals get an immediate human handoff.
-      const backendOffersCard = Boolean(res.offer_counselor) && enoughTurns;
+      const backendOffersCard = Boolean(res.offer_counselor);
       const bypassCard = hasPriorityDoc.current && enoughTurns && !callConsented;
       const fallbackCounselorCard = res.decision === "out_of_scope" && fallbackHandoff;
+      const humanIntentCard = directHumanRequest || frustrationSignal;
       const shouldShowCounselorCard =
         !callConsented
         && (
           fallbackCounselorCard
+          || humanIntentCard
           || (!counselorOffered.current && (backendOffersCard || bypassCard))
         );
 
@@ -1795,12 +1846,12 @@ export default function ChatPage() {
         counselorOffered.current = true;
         const tier: CounselorCardMessage["tier"] = bypassCard
           ? "bypass"
-          : fallbackCounselorCard
+          : fallbackCounselorCard || humanIntentCard
             ? "strong"
             : (res.offer_counselor_tier as CounselorCardMessage["tier"]) ?? null;
         const cardReason: CounselorCardMessage["reason"] = bypassCard
           ? "bypass"
-          : fallbackCounselorCard
+          : fallbackCounselorCard || humanIntentCard
             ? "qualified"
           : res.offer_reason === "question" ? "question"
           : res.offer_reason === "qualified" ? "qualified"
@@ -1983,7 +2034,7 @@ export default function ChatPage() {
   }, [messages, student]);
 
   return (
-    <main ref={chatLayoutRef} className={`chat-layout chat-page-shell${isKeyboardOpen ? " is-keyboard-open" : ""}`}>
+    <main ref={chatLayoutRef} className={`chat-layout chat-page-shell${mobileKeyboardMode ? " is-keyboard-open" : ""}`}>
       {/* ── Sidebar ───────────────────────────────────────────────────
           A compact right-side work rail for documents and to-do. The left rail
           owns brand, quick tabs, and human-help CTA.
@@ -2315,6 +2366,8 @@ export default function ChatPage() {
                 value={input}
                 onChange={(e) => { setInput(e.target.value); growTextarea(); }}
                 onKeyDown={onKey}
+                onFocus={() => setComposerFocused(true)}
+                onBlur={() => window.setTimeout(() => setComposerFocused(false), 120)}
                 disabled={thinking}
                 rows={1}
                 autoCorrect="on"
