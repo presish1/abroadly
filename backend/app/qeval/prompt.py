@@ -21,7 +21,7 @@ Output JSON with exactly these keys — no other text, no markdown fences:
 
 Definitions:
   action  : answer=normal study-abroad question; clarify=valid but too vague; ignore=spam/abuse/off-topic
-  length  : short=single fact or yes/no (up to 35 words); medium=typical question (40-70 words); long=explicit multi-part, SOP review, or full checklist (80-120 words)
+  length  : short=single fact or yes/no (up to 40 words); medium=typical question (35-65 words); long=explicit multi-part, SOP review, or full checklist (70-110 words)
   quality : spam=no real content; low=off-topic; standard=routine; good=detailed planning; strong=high-intent (visa, SOP, shortlist, budget, specific intake)
   lead_signal : none=trivial/greeting; standard=general interest; good=specific planning; strong=visa/SOP/shortlist/budget/target-uni/intake
 

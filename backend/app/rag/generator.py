@@ -101,28 +101,67 @@ def _clean_response(text: str) -> str:
     return text.strip()
 
 
-_WORD_LIMITS = {"short": 32, "medium": 58, "long": 90}
+_WORD_LIMITS = {"short": 45, "medium": 75, "long": 120}
+
+# Natural continuation line appended when trimming would lose too much meaning.
+_CONTINUATION = "I can break this down further if you want."
 
 
 def _enforce_length(text: str, length: str) -> str:
-    """Deterministic post-generation word cap for every length bucket."""
-    # SEAM: low-confidence LLM answer-eval — if we later want to validate
-    # factual correctness for uncertain answers before returning, add that call
-    # here (gated on qeval verdict.quality == "low" or confidence below threshold).
+    """Trim a generated reply to the word budget, preferring complete sentences.
+
+    Strategy:
+      1. If the reply is within budget → return unchanged.
+      2. Find the last sentence-ending punctuation within the word budget.
+      3. If that sentence end preserves ≥50% of the budgeted text → trim there.
+      4. Otherwise append a short natural continuation line so the student
+         knows they can ask for more, instead of seeing an awkward "…".
+    """
     limit = _WORD_LIMITS.get(length, _WORD_LIMITS["medium"])
-    matches = list(re.finditer(r"\S+", text))
-    if len(matches) <= limit:
+    words = list(re.finditer(r"\S+", text))
+    if len(words) <= limit:
         return text
 
-    clipped = text[:matches[limit - 1].end()].rstrip()
-    sentence_ends = list(re.finditer(r"[.!?](?:\*\*)?(?=\s|$)", clipped))
-    if sentence_ends and sentence_ends[-1].end() >= int(len(clipped) * 0.6):
-        clipped = clipped[:sentence_ends[-1].end()].rstrip()
-    else:
-        clipped = clipped.rstrip(" ,:;-–—") + "…"
+    # Text up to the word-limit boundary.
+    budget_text = text[:words[limit - 1].end()].rstrip()
+
+    # Find all sentence-ending punctuation (. ! ?) optionally followed by
+    # closing bold markers, within the budgeted window.
+    sentence_ends = list(re.finditer(r"[.!?](?:\*\*)?(?=\s|$)", budget_text))
+
+    if sentence_ends:
+        best = sentence_ends[-1]
+        trimmed = budget_text[:best.end()].rstrip()
+        # Accept if we keep at least 50% of the budgeted text length.
+        if len(trimmed) >= len(budget_text) * 0.50:
+            if trimmed.count("**") % 2:
+                trimmed += "**"
+            return trimmed
+
+    # Sentence-end trim would lose too much meaning → find the last sentence
+    # end in the FULL text (not just the budget window) that is closest to the
+    # budget, then append a continuation hint.
+    all_ends = list(re.finditer(r"[.!?](?:\*\*)?(?=\s|$)", text))
+    for end in reversed(all_ends):
+        candidate = text[:end.end()].rstrip()
+        candidate_words = len(candidate.split())
+        # Allow up to 15% over budget to land on a sentence boundary.
+        if candidate_words <= int(limit * 1.15):
+            if candidate.count("**") % 2:
+                candidate += "**"
+            return candidate
+
+    # Last resort: hard clip at budget + continuation line.
+    clipped = budget_text.rstrip(" ,:;-–—•")
     if clipped.count("**") % 2:
         clipped += "**"
-    return clipped
+    # End on the last complete sentence within the clipped text, if any.
+    inner_ends = list(re.finditer(r"[.!?](?:\*\*)?(?=\s|$)", clipped))
+    if inner_ends:
+        clipped = clipped[:inner_ends[-1].end()].rstrip()
+    else:
+        clipped = clipped.rstrip(" ,:;-–—•") + "."
+    return clipped + "\n\n" + _CONTINUATION
 
 
 async def generate_answer(

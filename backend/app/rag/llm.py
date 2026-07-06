@@ -11,10 +11,10 @@ from app.core.config import settings
 
 # Per-bucket token caps — deliberately tight because this is a chat surface,
 # not a report generator. A deterministic word cap runs after generation too.
-LENGTH_MAX_TOKENS: dict[str, int] = {"short": 70, "medium": 130, "long": 210}
+LENGTH_MAX_TOKENS: dict[str, int] = {"short": 100, "medium": 180, "long": 280}
 
 # Fallback when length bucket is unknown.
-MAX_TOKENS = 220
+MAX_TOKENS = 280
 TEMPERATURE = 0.4
 
 # Generation models, tried in order. gemini-2.5-flash is ~2s/reply; the
@@ -57,18 +57,21 @@ NORMALIZER_MODEL = "gemini-2.0-flash"  # Flash variant — fast, cheap, multilin
 _LENGTH_DIRECTIVES: dict[str, str] = {
     "short": (
         "## Mode: LENGTH=short\n"
-        "Reply in 1–2 sentences and no more than 28 words. No bullets, no headers, no lists. "
-        "Lead with the direct answer. If a fact needs a caveat, fold it into the sentence."
+        "Reply in 1–2 complete sentences, around 20–40 words. No bullets, no headers, no lists. "
+        "Lead with the direct answer. If a fact needs a caveat, fold it into the sentence. "
+        "Always finish your last sentence — never stop mid-thought."
     ),
     "medium": (
         "## Mode: LENGTH=medium\n"
-        "Reply in 30–55 words. Use at most 2 short bullets when a list is essential; "
-        "otherwise use a compact paragraph. Lead with the answer and give one next step."
+        "Reply in 35–65 words. Use at most 2 short bullets when a list is essential; "
+        "otherwise use a compact paragraph. Lead with the answer, add one key detail, "
+        "and end with one next step. Always finish your last sentence completely."
     ),
     "long": (
         "## Mode: LENGTH=long\n"
-        "Reply in 60–90 words. Use this space only for an explicitly multi-part request. "
-        "Use at most 3 concise bullets. Lead with the answer and end with one next step."
+        "Reply in 70–110 words. Use at most 3 concise bullets for multi-part requests. "
+        "Lead with the answer, cover the key points, and end with one next step. "
+        "Always finish your last sentence completely — never stop mid-thought."
     ),
 }
 

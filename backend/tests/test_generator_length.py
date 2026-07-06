@@ -8,18 +8,21 @@ def _words(count: int) -> str:
 
 def test_short_answers_are_hard_capped():
     result = _enforce_length(_words(100), "short")
-    assert len(result.split()) <= 32
-    assert result.endswith("…")
+    # New limit is 45 words; result may include continuation line.
+    word_count = len(result.split())
+    assert word_count <= 55  # 45 + continuation line (~10 words)
 
 
 def test_medium_answers_are_hard_capped():
     result = _enforce_length(_words(150), "medium")
-    assert len(result.split()) <= 58
+    word_count = len(result.split())
+    assert word_count <= 85  # 75 + continuation line (~10 words)
 
 
 def test_long_answers_are_hard_capped():
     result = _enforce_length(_words(220), "long")
-    assert len(result.split()) <= 90
+    word_count = len(result.split())
+    assert word_count <= 148  # 120 + ~15% overflow for sentence boundary + continuation
 
 
 def test_answer_inside_budget_is_unchanged():
@@ -60,3 +63,20 @@ def test_context_formatter_marks_retrieved_numbers_as_general_examples():
     assert "GENERAL reference excerpts" in context
     assert "never treat numbers or examples here as the student's own details" in context
     assert "4 backlogs" in context
+
+
+def test_enforce_length_prefers_sentence_boundaries():
+    """When trimming, the function should prefer ending at a sentence boundary."""
+    text = "IELTS 6.5 is the usual minimum for UK universities. Some accept 6.0 with pre-sessional English. Check the specific course page for exact requirements."
+    result = _enforce_length(text, "short")
+    # Should end at a sentence boundary, not mid-word
+    assert result.rstrip().endswith(".") or result.rstrip().endswith("!")
+
+
+def test_enforce_length_adds_continuation_when_needed():
+    """When sentence trimming would lose too much, append a natural continuation."""
+    # Create text with no sentence ends (no periods) that exceeds the budget.
+    long_no_periods = "word " * 80
+    long_no_periods = long_no_periods.strip()
+    result = _enforce_length(long_no_periods, "short")
+    assert "break this down" in result
