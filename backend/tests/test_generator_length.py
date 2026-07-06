@@ -8,18 +8,18 @@ def _words(count: int) -> str:
 
 def test_short_answers_are_hard_capped():
     result = _enforce_length(_words(100), "short")
-    assert len(result.split()) <= 45
+    assert len(result.split()) <= 32
     assert result.endswith("…")
 
 
 def test_medium_answers_are_hard_capped():
     result = _enforce_length(_words(150), "medium")
-    assert len(result.split()) <= 75
+    assert len(result.split()) <= 58
 
 
 def test_long_answers_are_hard_capped():
     result = _enforce_length(_words(220), "long")
-    assert len(result.split()) <= 125
+    assert len(result.split()) <= 90
 
 
 def test_answer_inside_budget_is_unchanged():

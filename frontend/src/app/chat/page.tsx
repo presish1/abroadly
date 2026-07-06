@@ -1553,6 +1553,10 @@ export default function ChatPage() {
     () => uploadPrompt ? ESSENTIAL_SLOTS.find((slot) => slot.id === uploadPrompt.slotId) || null : null,
     [uploadPrompt],
   );
+  const defaultUploadPrompt = useCallback(() => {
+    const slot = ESSENTIAL_SLOTS.find((item) => item.id === "grade_sheet") || ESSENTIAL_SLOTS[0];
+    return slot ? { slotId: slot.id, label: slot.shortLabel || slot.label } : null;
+  }, []);
 
   const refreshDocuments = useCallback(async (sid: string) => {
     if (!sid) return;
@@ -1582,6 +1586,7 @@ export default function ChatPage() {
         if (!cancelled) {
           setStudent(s);
           setCallConsented(s.call_consent);
+          if (s.call_consent) counselorOffered.current = true;
         }
       } catch {
         router.replace("/onboarding");
@@ -1628,6 +1633,11 @@ export default function ChatPage() {
   useEffect(() => {
     if (phoneRequired) setProfileOpen(true);
   }, [phoneRequired]);
+
+  useEffect(() => {
+    if (!callConsented) return;
+    counselorOffered.current = true;
+  }, [callConsented]);
 
   function syncScrollState() {
     const el = messagesScrollRef.current;
@@ -1818,10 +1828,10 @@ export default function ChatPage() {
         && totalUserTurns >= 2
         && documents.length === 0
       ) {
-        const slot = ESSENTIAL_SLOTS.find((item) => item.id === "grade_sheet") || ESSENTIAL_SLOTS[0];
-        if (slot) {
+        const prompt = defaultUploadPrompt();
+        if (prompt) {
           sessionDocumentPromptShown.current = true;
-          stagedUploadPrompt = { slotId: slot.id, label: slot.shortLabel || slot.label };
+          stagedUploadPrompt = prompt;
           stagedClassBookingPrompt = null;
         }
       }
@@ -1850,13 +1860,17 @@ export default function ChatPage() {
       const fallbackCounselorCard = res.decision === "out_of_scope" && fallbackHandoff;
       const confusedAnswerCard = res.decision === "low_confidence" && res.reason === "scope_unknown_history";
       const earlyConversationSafetyNet =
-        !counselorOffered.current
+        !callConsented
+        && !counselorOffered.current
         && (sessionTypedCount.current >= 2 || totalUserTurns >= 3);
       const humanIntentCard = directHumanRequest || frustrationSignal || ambiguousShortFollowup || confusedAnswerCard || answerHandoffSignal;
       const shouldShowCounselorCard =
-        fallbackCounselorCard
-        || humanIntentCard
-        || (!counselorOffered.current && (backendOffersCard || bypassCard || earlyConversationSafetyNet));
+        !callConsented
+        && (
+          fallbackCounselorCard
+          || humanIntentCard
+          || (!counselorOffered.current && (backendOffersCard || bypassCard || earlyConversationSafetyNet))
+        );
 
       if (shouldShowCounselorCard) {
         counselorOffered.current = true;
@@ -1969,7 +1983,7 @@ export default function ChatPage() {
   }, [studentId, refreshDocuments]);
 
   const closeCounselorPrompt = useCallback(() => {
-    const nextUpload = queuedUploadPrompt;
+    const nextUpload = queuedUploadPrompt || (documents.length === 0 ? defaultUploadPrompt() : null);
     const nextClassBooking = queuedClassBookingPrompt;
     setCounselorPrompt(null);
     setQueuedUploadPrompt(null);
@@ -1985,7 +1999,7 @@ export default function ChatPage() {
         setClassBookingPrompt(nextClassBooking);
       }, 180);
     }
-  }, [queuedClassBookingPrompt, queuedUploadPrompt]);
+  }, [defaultUploadPrompt, documents.length, queuedClassBookingPrompt, queuedUploadPrompt]);
 
   async function grantCounselorCall() {
     if (phoneRequired) {
@@ -1997,7 +2011,14 @@ export default function ChatPage() {
       const updated = await requestCounselorCall(studentId, student?.phone || undefined);
       setStudent(updated);
       setCallConsented(updated.call_consent);
-      if (updated.call_consent) window.setTimeout(closeCounselorPrompt, 1100);
+      if (updated.call_consent) {
+        if (counselorPrompt) {
+          window.setTimeout(closeCounselorPrompt, 1100);
+        } else if (documents.length === 0 && !uploadPrompt && !docPanelOpen) {
+          const nextUpload = defaultUploadPrompt();
+          if (nextUpload) window.setTimeout(() => setUploadPrompt(nextUpload), 350);
+        }
+      }
     } catch (err: unknown) {
       setCallConsented(false);
       const message = err instanceof Error ? err.message : "We could not save the callback request.";
