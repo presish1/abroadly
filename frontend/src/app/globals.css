@@ -1679,6 +1679,47 @@ body {
   box-shadow: 0 10px 22px rgba(10, 110, 69, 0.26);
 }
 
+.counselor-popup-modal {
+  width: min(448px, calc(100vw - 28px));
+  padding: 22px;
+  border: 1px solid #E8E5DD;
+  border-radius: 24px;
+  background: #FFFDF8;
+  box-shadow:
+    0 26px 70px rgba(27, 25, 22, 0.18),
+    0 1px 0 rgba(255, 255, 255, 0.95) inset;
+}
+
+.counselor-popup-copy {
+  padding-right: 42px;
+}
+
+.counselor-popup-modal .counselor-card {
+  margin-top: 14px;
+  max-width: none;
+  border-radius: 16px;
+  border-color: #E8E5DD;
+  box-shadow: 0 10px 26px rgba(15, 15, 15, 0.06);
+}
+
+@media (max-width: 767px) {
+  .modal-shell-panel.modal-shell-mobile-sheet.counselor-popup-modal {
+    padding: 26px 13px calc(14px + env(safe-area-inset-bottom));
+    border-radius: 28px 28px 0 0;
+    background: #FFFDF8;
+  }
+
+  .counselor-popup-copy {
+    padding: 8px 44px 0 3px;
+  }
+
+  .counselor-popup-modal .counselor-card {
+    max-width: none;
+    padding: 14px;
+    border-radius: 16px;
+  }
+}
+
 /* ── Document panel ────────────────────────────────────────────────── */
 
 .doc-panel-layer {
@@ -1859,8 +1900,7 @@ body {
     padding-bottom: var(--student-mobile-nav-height);
   }
 
-  .chat-layout.is-keyboard-open .chat-main,
-  .chat-layout:has(.chat-input:focus) .chat-main {
+  .chat-layout.is-keyboard-open .chat-main {
     padding-bottom: 0;
   }
 
@@ -1916,14 +1956,12 @@ body {
     backdrop-filter: blur(18px);
   }
 
-  .chat-layout.is-keyboard-open .chat-footer,
-  .chat-layout:has(.chat-input:focus) .chat-footer {
+  .chat-layout.is-keyboard-open .chat-footer {
     padding: 6px 10px max(8px, env(safe-area-inset-bottom));
     background: rgba(251, 250, 247, 0.98);
   }
 
-  .chat-layout.is-keyboard-open .chat-messages,
-  .chat-layout:has(.chat-input:focus) .chat-messages {
+  .chat-layout.is-keyboard-open .chat-messages {
     padding-bottom: 6px;
   }
 
@@ -1936,8 +1974,7 @@ body {
     scroll-padding-inline: 10px;
   }
   .chat-suggestion-rail::-webkit-scrollbar { display: none; }
-  .chat-layout.is-keyboard-open .chat-suggestion-rail,
-  .chat-layout:has(.chat-input:focus) .chat-suggestion-rail {
+  .chat-layout.is-keyboard-open .chat-suggestion-rail {
     display: none;
   }
   .chat-suggestion-chip {
@@ -2049,8 +2086,7 @@ body {
     will-change: opacity, transform;
   }
 
-  .chat-layout.is-keyboard-open .chat-mobile-nav,
-  .chat-layout:has(.chat-input:focus) .chat-mobile-nav {
+  .chat-layout.is-keyboard-open .chat-mobile-nav {
     opacity: 0;
     pointer-events: none;
     transform: translateY(calc(100% + 16px));
@@ -2077,8 +2113,7 @@ body {
     box-shadow: 0 10px 24px rgba(15,15,15,0.14);
   }
 
-  .chat-layout.is-keyboard-open .chat-scroll-newest,
-  .chat-layout:has(.chat-input:focus) .chat-scroll-newest {
+  .chat-layout.is-keyboard-open .chat-scroll-newest {
     bottom: 104px;
   }
 

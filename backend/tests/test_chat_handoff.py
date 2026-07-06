@@ -54,3 +54,16 @@ def test_existing_consent_suppresses_low_confidence_handoff():
     assert offer is False
     assert reason is None
     assert tier is None
+
+
+def test_answer_that_mentions_human_walkthrough_offers_handoff():
+    offer, reason, tier = counselor_offer_for_response(
+        response_decision=Decision.PROCEED,
+        response_answer="Prisma can walk through this with you if you want.",
+        call_consent=False,
+        lead_score=0,
+    )
+
+    assert offer is True
+    assert reason == "question"
+    assert tier == "strong"
