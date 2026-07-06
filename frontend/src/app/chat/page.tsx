@@ -1497,6 +1497,7 @@ export default function ChatPage() {
   const shouldStickToBottom = useRef(true);
   const [showScrollToBottom, setShowScrollToBottom] = useState(false);
   const [isMobileComposer, setIsMobileComposer] = useState(false);
+  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
 
   // Hold a ref to sendMessage so the URL-deep-link effect (below) can call the
   // latest version without re-running every time sendMessage's deps change.
@@ -1668,9 +1669,18 @@ export default function ChatPage() {
     const updateViewportHeight = () => {
       if (!mobile.matches) {
         root.style.removeProperty("--chat-viewport-height");
+        setIsKeyboardOpen(false);
         return;
       }
-      root.style.setProperty("--chat-viewport-height", `${Math.round(viewport?.height ?? window.innerHeight)}px`);
+      const viewportHeight = viewport?.height ?? window.innerHeight;
+      root.style.setProperty("--chat-viewport-height", `${Math.round(viewportHeight)}px`);
+      const activeElement = document.activeElement;
+      const isTextInput =
+        activeElement instanceof HTMLTextAreaElement ||
+        activeElement instanceof HTMLInputElement ||
+        activeElement instanceof HTMLSelectElement;
+      const keyboardLikelyOpen = Boolean(viewport && isTextInput && window.innerHeight - viewport.height > 140);
+      setIsKeyboardOpen((current) => (current === keyboardLikelyOpen ? current : keyboardLikelyOpen));
     };
 
     updateViewportHeight();
@@ -1684,6 +1694,7 @@ export default function ChatPage() {
       viewport?.removeEventListener("resize", updateViewportHeight);
       viewport?.removeEventListener("scroll", updateViewportHeight);
       root.style.removeProperty("--chat-viewport-height");
+      setIsKeyboardOpen(false);
     };
   }, []);
 
@@ -1972,7 +1983,7 @@ export default function ChatPage() {
   }, [messages, student]);
 
   return (
-    <main ref={chatLayoutRef} className="chat-layout chat-page-shell">
+    <main ref={chatLayoutRef} className={`chat-layout chat-page-shell${isKeyboardOpen ? " is-keyboard-open" : ""}`}>
       {/* ── Sidebar ───────────────────────────────────────────────────
           A compact right-side work rail for documents and to-do. The left rail
           owns brand, quick tabs, and human-help CTA.
