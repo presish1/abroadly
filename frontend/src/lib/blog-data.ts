@@ -726,50 +726,860 @@ export const BLOG_POSTS: BlogPost[] = [
     ]
   },
   {
-    slug: "common-mistakes-nepali-students-make",
-    title: "10 Common Mistakes Nepali Students Make When Applying to Study Abroad",
-    category: "Visa Guide",
-    metaTitle: "10 Common Study Abroad Mistakes to Avoid",
-    metaDescription: "Learn from the mistakes of others. Check the 10 most common mistakes Nepali students make during study abroad applications and visa filings.",
+    slug: "study-psychology-abroad-from-nepal",
+    title: "Studying Psychology Abroad: Scope, Best Countries, and Requirements",
+    category: "Courses",
+    metaTitle: "Study Psychology Abroad: Guide for Nepali Students",
+    metaDescription: "Interested in studying Psychology abroad? Discover careers, best university options, course structures, and visa requirements for Nepali students.",
     date: "July 8, 2026",
     author: "Abroadly Team",
-    readTime: "7 min read",
-    targetKeywords: ["common mistakes Nepali students make", "study abroad mistakes", "how to avoid student visa refusal"],
-    intro: "Applying to study abroad is a complex process. Even bright students with excellent grades can face university rejection or visa refusal due to simple mistakes. Here are the 10 most common errors to avoid during your application journey.",
+    readTime: "6 min read",
+    targetKeywords: ["study psychology abroad from nepal", "psychology courses entry requirements", "careers in psychology abroad"],
+    intro: "Psychology is a growing field of study for Nepali students seeking to understand human behavior, mental health, and cognitive processes. An international degree in psychology opens doors to careers in clinical counseling, research, human resources, and organizational development.",
     sections: [
       {
-        heading: "1. Blindly Trusting Consultancies",
+        heading: "Overview of Psychology Programs",
         type: "paragraph",
-        content: "Many students rely entirely on consultancies to choose their courses and write their SOPs. This often leads to generic SOPs and poor university matches. Take control of your application; research universities and courses independently."
+        content: "Undergraduate programs typically offer a Bachelor of Science (BSc) or Bachelor of Arts (BA) in Psychology lasting 3-4 years. Post-graduate studies (MSc/PhD) focus on clinical work, counseling, or industrial psychology. Clinical pathways usually require supervised training or board licensing in the destination country."
       },
       {
-        heading: "2. Copying and Pasting the SOP",
-        type: "paragraph",
-        content: "Plagiarism in the SOP is a guaranteed path to rejection. Admission committees and visa offices use sophisticated detection software. Write an original statement that explains your actual profile and future plans in Nepal."
-      },
-      {
-        heading: "3. Name and Date Discrepancies",
+        heading: "Top Countries for Psychology",
         type: "list",
         items: [
-          "Different spelling of your name on passport and high school marksheets.",
-          "Different birth dates on citizenship and academic records.",
-          "Missing middle names on bank sponsorship letters."
+          "USA: Exceptional research facilities and diverse internship options in clinical settings.",
+          "UK: Focuses on British Psychological Society (BPS) accredited courses, offering quick 1-year Master's programs.",
+          "Australia: Excellent post-study work rights and pathways to registration with the Psychology Board of Australia."
         ]
       },
       {
-        heading: "4. Poor Financial Planning",
+        heading: "Important Entry Requirements",
         type: "paragraph",
-        content: "Underestimating living expenses or failing to prove the source of sponsor funds is a major reason for visa refusal. Ensure all financial documents are clear, transparent, and verifiable by immigration authorities."
+        content: "Bachelors courses usually require a Class 12 GPA of 2.8 or above. Masters programs require a relevant Bachelor's degree with a GPA of 3.0 or equivalent. English requirements are typically IELTS 6.5 or PTE 58, though clinical programs may require higher scores."
       }
     ],
     faqs: [
       {
-        question: "What should I do if my name has a typo on my marksheet?",
-        answer: "If you have minor name discrepancies on your marksheet, you can obtain a 'Same Person' affidavit from your local administration or district office in Nepal."
+        question: "Can I practice as a clinical psychologist immediately after my Bachelor's?",
+        answer: "No, clinical psychology is a regulated profession. You generally need at least a Master's degree and supervised clinical hours to obtain a license."
       },
       {
-        question: "Does a study gap affect my application?",
-        answer: "A study gap does not necessarily lead to rejection, provided you have a valid explanation supported by work experience certificates or skill courses."
+        question: "What is the difference between a BA and a BSc in Psychology?",
+        answer: "A BSc focuses more on scientific methodology, neuroscience, and quantitative statistics, while a BA includes more liberal arts, sociology, and humanities."
+      }
+    ]
+  },
+  {
+    slug: "study-engineering-abroad-from-nepal",
+    title: "Studying Engineering Abroad: Top Disciplines, Costs, and Careers",
+    category: "Courses",
+    metaTitle: "Study Engineering Abroad: Guide for Nepali Students",
+    metaDescription: "Thinking of studying Engineering abroad? Learn about top disciplines (Civil, IT, Mechanical), tuition costs, and career paths for Nepali students.",
+    date: "July 8, 2026",
+    author: "Abroadly Team",
+    readTime: "6 min read",
+    targetKeywords: ["study engineering abroad from nepal", "engineering fees abroad", "best country for engineering students"],
+    intro: "Engineering remains one of the most reliable pathways to a global career for Nepali students. International engineering programs emphasize research, hands-on lab work, and industry placements that prepare you for the global job market.",
+    sections: [
+      {
+        heading: "Engineering Disciplines in Demand",
+        type: "paragraph",
+        content: "While Civil and Electrical engineering remain classic choices, disciplines like Software Engineering, Robotics, Renewable Energy Engineering, and Aerospace Engineering are seeing massive demand and offer excellent immigration options."
+      },
+      {
+        heading: "Washington Accord and Accreditation",
+        type: "paragraph",
+        content: "Ensure your chosen engineering program is accredited under the Washington Accord (such as Engineers Australia or ABET in the US). This ensures your degree is recognized in participating countries worldwide, making professional licensing simple."
+      },
+      {
+        heading: "Estimated Costs and Intakes",
+        type: "list",
+        items: [
+          "USA: USD 25,000 to 50,000 per year (significant merit-based scholarships available)",
+          "Australia: AUD 28,000 to 45,000 per year",
+          "Germany: Free tuition at public universities (blocked account required)"
+        ]
+      }
+    ],
+    faqs: [
+      {
+        question: "Is SAT required for engineering in the US?",
+        answer: "While many US universities are test-optional, submitting a strong SAT math score can significantly improve your chances of admission and scholarship allocation."
+      },
+      {
+        question: "Can I work as an engineer in Nepal with a foreign degree?",
+        answer: "Yes, you can register with the Nepal Engineering Council (NEC) to license and practice engineering in Nepal with your accredited foreign degree."
+      }
+    ]
+  },
+  {
+    slug: "study-business-abroad-from-nepal",
+    title: "Studying Business & MBA Abroad: Intakes, Costs, and Career Growth",
+    category: "Courses",
+    metaTitle: "Study Business or MBA Abroad: Guide for Nepal",
+    metaDescription: "Discover how to study Business or secure an MBA abroad. Get details on tuition fees, entry requirements, GMAT requirements, and top countries.",
+    date: "July 8, 2026",
+    author: "Abroadly Team",
+    readTime: "6 min read",
+    targetKeywords: ["study business abroad from nepal", "mba tuition fees abroad", "business courses entry requirements"],
+    intro: "A business degree from a top international business school provides you with leadership skills, an international network, and direct career placement opportunities. From Bachelor of Business Administration (BBA) to Master of Business Administration (MBA), here is what you need to know.",
+    sections: [
+      {
+        heading: "Choosing the Right Business Program",
+        type: "paragraph",
+        content: "Undergraduate programs cover finance, marketing, human resources, and business analytics. For senior professionals, an MBA is the gold standard. Look for business schools accredited by AACSB, AMBA, or EQUIS to ensure premium educational quality."
+      },
+      {
+        heading: "Entry Criteria for Business Courses",
+        type: "list",
+        items: [
+          "Bachelor's: Class 12 score of 60% or GPA 2.8, IELTS 6.0 or PTE 50.",
+          "MBA: Recognised Bachelor's degree, often 2-3 years of professional work experience, and sometimes GMAT/GRE scores."
+        ]
+      },
+      {
+        heading: "Tuition and Work Pathways",
+        type: "paragraph",
+        content: "Tuition fees for business studies vary widely, ranging from £11,000 in regional UK colleges to over USD 60,000 at top-tier US business schools. Graduates benefit from post-study work routes to work in global corporate hubs."
+      }
+    ],
+    faqs: [
+      {
+        question: "Is work experience mandatory for an MBA?",
+        answer: "Many universities offer 'Fresh Graduate MBA' or 'Pre-experience MBA' programs, but traditional high-ranking programs require 2-5 years of professional work experience."
+      },
+      {
+        question: "Do I need GMAT for studying business abroad?",
+        answer: "GMAT is primarily required by top-tier US and European business schools. Many good universities in the UK, Australia, and Canada do not require GMAT for admission."
+      }
+    ]
+  },
+  {
+    slug: "study-hospitality-abroad-from-nepal",
+    title: "Hospitality & Culinary Arts Abroad: Career Scope and Entry Guide",
+    category: "Courses",
+    metaTitle: "Study Hospitality and Culinary Arts Abroad: Guide",
+    metaDescription: "Want a career in global tourism? Learn about Hospitality and Culinary Arts courses abroad, tuition costs, internships, and job scope for Nepali students.",
+    date: "July 8, 2026",
+    author: "Abroadly Team",
+    readTime: "5 min read",
+    targetKeywords: ["study hospitality abroad from nepal", "culinary arts fees abroad", "hospitality management careers"],
+    intro: "Hospitality Management and Culinary Arts are excellent options for hands-on students seeking a career in the global hotel, tourism, and luxury restaurant sectors. Many programs include paid internships, helping you recover a portion of your costs.",
+    sections: [
+      {
+        heading: "What to Expect in Hospitality Courses",
+        type: "paragraph",
+        content: "Programs balance classroom management courses with practical kitchen, front-office, and event placements. Major hubs include Switzerland, Australia, and New Zealand, where the tourism sectors are massive."
+      },
+      {
+        heading: "The Advantage of Paid Internships (Co-op)",
+        type: "paragraph",
+        content: "Many Australian and European hospitality degrees offer mandatory 6-month industry placements. During this period, you can work full-time in hotels or resorts, gaining practical experience and earning money to offset living costs."
+      },
+      {
+        heading: "Entry and Costs",
+        type: "list",
+        items: [
+          "Bachelors: GPA 2.4/2.6 or equivalent Class 12 grades, IELTS 5.5/6.0.",
+          "Cost range: AUD 15,000 to 28,000 per year.",
+          "Pathway options: Diplomas and Advanced Diplomas that credit into Bachelor's programs."
+        ]
+      }
+    ],
+    faqs: [
+      {
+        question: "Is Switzerland best for hospitality studies?",
+        answer: "Switzerland is famous for luxury hotel management schools, but tuition fees can be high. Australia and New Zealand offer more affordable, work-friendly alternatives."
+      },
+      {
+        question: "Can I apply after +2 Humanities or Management?",
+        answer: "Yes, hospitality programs accept students from all streams (+2 Science, Management, or Humanities) without specific prerequisite subjects."
+      }
+    ]
+  },
+  {
+    slug: "study-data-science-abroad-from-nepal",
+    title: "Studying Data Science Abroad: Requirements, Best Countries & Job Outlook",
+    category: "Courses",
+    metaTitle: "Study Data Science Abroad: Requirements & Careers",
+    metaDescription: "Data Science is a top career choice. Explore best countries, tuition costs, prerequisite subjects, and post-study opportunities for Nepali students.",
+    date: "July 8, 2026",
+    author: "Abroadly Team",
+    readTime: "6 min read",
+    targetKeywords: ["study data science abroad from nepal", "data science course requirements", "data scientist salary abroad"],
+    intro: "Data Science, Machine Learning, and Big Data Analytics are transforming global industries. For Nepali students with strong analytical minds and mathematical backgrounds, a degree in Data Science offers high earning potential and job security.",
+    sections: [
+      {
+        heading: "What is Data Science?",
+        type: "paragraph",
+        content: "Data Science merges mathematics, statistics, computer programming, and business intelligence. You will learn to extract actionable insights from large datasets to guide strategic corporate decision-making."
+      },
+      {
+        heading: "Core Entry Prerequisites",
+        type: "paragraph",
+        content: "Prerequisites usually include a strong background in mathematics (or statistics). For a Master's degree, you need a Bachelor's in Computer Science, IT, Engineering, Mathematics, or Physics. English proficiency requirements are typically IELTS 6.5 (or PTE 58)."
+      },
+      {
+        heading: "Top Countries and Career Prospects",
+        type: "list",
+        items: [
+          "USA: Diverse programs with strong connections to global tech giants.",
+          "UK: Fast-track 1-year Master's programs focused on industry-standard coding tools.",
+          "Australia: Excellent migration pathways as Data Analysts are highly valued on national skilled shortage lists."
+        ]
+      }
+    ],
+    faqs: [
+      {
+        question: "Can I study Data Science without programming experience?",
+        answer: "Yes, Bachelor's programs start with introductory programming classes. For a Master's, however, basic coding skills in Python, R, or SQL are usually expected."
+      },
+      {
+        question: "Are Data Scientists in demand in Australia?",
+        answer: "Yes, Data Scientists, Database Administrators, and Business Analysts are listed on Australia's skilled occupation lists, making them eligible for state sponsorship."
+      }
+    ]
+  },
+  {
+    slug: "study-nursing-in-australia-from-nepal",
+    title: "Bachelor of Nursing in Australia from Nepal: Requirements and Fees",
+    category: "Australia",
+    metaTitle: "Bachelor of Nursing in Australia: Guide for Nepal",
+    metaDescription: "The ultimate guide to studying a Bachelor of Nursing in Australia. Learn about entry requirements, clinical placement rules, and AHPRA registration.",
+    date: "July 8, 2026",
+    author: "Abroadly Team",
+    readTime: "6 min read",
+    targetKeywords: ["study nursing in australia from nepal", "bachelor of nursing fees australia", "ahpra registration requirements"],
+    intro: "Nursing is one of the most reliable paths to career growth and residency in Australia. If you want to study nursing in Australia from Nepal, you must prepare for high academic standards and strict English language requirements.",
+    sections: [
+      {
+        heading: "Academic Entry Requirements",
+        type: "paragraph",
+        content: "To secure admission into a Bachelor of Nursing (3-year program), you typically need a Class 12 Science (Biology background) score of 60% or GPA 2.8. If you have completed PCL Nursing or BSc Nursing in Nepal, you may be eligible for credit transfers or direct master's entry."
+      },
+      {
+        heading: "The Strict English Language Hurdle",
+        type: "paragraph",
+        content: "The Australian Nursing and Midwifery Accreditation Council (ANMAC) requires all nursing applicants to demonstrate English proficiency. You must score at least IELTS 7.0 in all bands (or PTE Academic score of 65 in all sections) before admission. Some universities accept combined scores from two sittings."
+      },
+      {
+        heading: "Tuition and Living Costs",
+        type: "list",
+        items: [
+          "Tuition Fee range: AUD 26,000 to 38,000 per year.",
+          "Compulsory health cover (OSHC): ~AUD 2,000 to 3,000 for the visa duration.",
+          "Clinical placements: Mandatory unpaid hours in hospitals as part of your studies."
+        ]
+      }
+    ],
+    faqs: [
+      {
+        question: "Is there any way to study nursing in Australia with IELTS 6.0?",
+        answer: "No, the registration board (NMBA) requires IELTS 7.0. If you have a lower score, you must take ELICOS (English language classes) in Australia before starting your degree."
+      },
+      {
+        question: "What is AHPRA?",
+        answer: "AHPRA is the Australian Health Practitioner Regulation Agency. You must register with AHPRA to work as a Registered Nurse (RN) in Australia."
+      }
+    ]
+  },
+  {
+    slug: "study-it-in-australia-from-nepal",
+    title: "IT & Computer Science in Australia: Tuition Fees, Universities & Visas",
+    category: "Australia",
+    metaTitle: "Study IT in Australia from Nepal: Fees & Visa Guide",
+    metaDescription: "Interested in IT studies in Australia? Get detailed guides on tuition fees, professional year programs, and post-study work rights for Nepali students.",
+    date: "July 8, 2026",
+    author: "Abroadly Team",
+    readTime: "5 min read",
+    targetKeywords: ["study it in australia from nepal", "it tuition fees australia", "professional year program australia"],
+    intro: "Australia is a leading global hub for technology education. With high starting salaries, excellent research facilities, and post-study work options, studying IT or Computer Science in Australia from Nepal is a premier career investment.",
+    sections: [
+      {
+        heading: "Universities and ACS Accreditation",
+        type: "paragraph",
+        content: "Select a program accredited by the Australian Computer Society (ACS). This ensures your coursework meets international standards and qualifies you for a migration skills assessment after graduation."
+      },
+      {
+        heading: "Typical Tuition and Course Durations",
+        type: "list",
+        items: [
+          "Bachelor of Information Technology (3 years): AUD 22,000 to 38,000 per year.",
+          "Master of Information Technology / Data Science (2 years): AUD 24,000 to 45,000 per year."
+        ]
+      },
+      {
+        heading: "Post-Study Work Rights and Professional Year",
+        type: "paragraph",
+        content: "Graduates of a 2-year study program in Australia can apply for a Temporary Graduate Visa (Subclass 485) to work. Additionally, completing a 'Professional Year Program' in IT grants you extra points towards state sponsorship."
+      }
+    ],
+    faqs: [
+      {
+        question: "Can I get credit for previous IT studies in Nepal?",
+        answer: "Yes, if you have completed a diploma or partial bachelor's degree in IT in Nepal, you can apply for credit transfer to shorten your study duration in Australia."
+      },
+      {
+        question: "Is work experience needed for ACS skills assessment?",
+        answer: "Yes, to clear the ACS assessment, you generally need either one year of post-graduation Australian work experience or the completion of a Professional Year."
+      }
+    ]
+  },
+  {
+    slug: "study-it-in-uk-from-nepal",
+    title: "IT & Software Engineering in the UK: Best Universities, Fees & Visas",
+    category: "United Kingdom",
+    metaTitle: "Study IT and Computer Science in the UK: Guide",
+    metaDescription: "Discover top UK universities for IT and Software Engineering. Learn about tuition fees, post-study work routes, and admission criteria for Nepali students.",
+    date: "July 8, 2026",
+    author: "Abroadly Team",
+    readTime: "5 min read",
+    targetKeywords: ["study it in uk from nepal", "uk software engineering fees", "graduate route visa uk"],
+    intro: "The UK tech sector is growing rapidly. From cybersecurity to cloud computing, UK universities offer world-class, focused degrees that help you launch your international career.",
+    sections: [
+      {
+        heading: "Why Study IT in the UK?",
+        type: "paragraph",
+        content: "UK degrees are highly focused, avoiding generic general education classes. A Master's program takes only 1 year, which significantly reduces accommodation and living costs compared to other Western destinations."
+      },
+      {
+        heading: "Top IT Universities in the UK",
+        type: "list",
+        items: [
+          "Research-intensive: University of Edinburgh, University College London (UCL), University of Manchester.",
+          "Modern & Affordable: London South Bank University, Coventry University, University of Bedfordshire."
+        ]
+      },
+      {
+        heading: "Graduate Route and Work Options",
+        type: "paragraph",
+        content: "The UK's Graduate Route allows international students completing a Bachelor's or Master's degree to stay and work at any skill level for 2 years without requiring direct employer sponsorship."
+      }
+    ],
+    faqs: [
+      {
+        question: "Can I study IT in the UK without a math background?",
+        answer: "Yes, many modern universities offer 'Computing' or 'Business IT' courses that do not require high-level mathematics, whereas Software Engineering often does."
+      },
+      {
+        question: "What is the average cost of an IT Master's in the UK?",
+        answer: "Tuition fees range from £13,000 to £22,000 for the full 1-year program depending on the university's location and ranking."
+      }
+    ]
+  },
+  {
+    slug: "study-business-in-uk-from-nepal",
+    title: "Business & Management Studies in the UK: Intakes and Fees",
+    category: "United Kingdom",
+    metaTitle: "Study Business in the UK: Intakes, Fees & Visas",
+    metaDescription: "Get details on studying Business and Management in the UK. Discover entry criteria, popular intakes, and average tuition fees for Nepali students.",
+    date: "July 8, 2026",
+    author: "Abroadly Team",
+    readTime: "5 min read",
+    targetKeywords: ["study business in uk from nepal", "uk MBA fees for Nepali students", "business intakes UK"],
+    intro: "The UK is home to global financial hubs like London. Studying business, finance, or marketing in the UK provides you with practical corporate exposure and networking opportunities.",
+    sections: [
+      {
+        heading: "Business Course Options",
+        type: "paragraph",
+        content: "Popular options include a 3-year Bachelor of Business Administration (BBA), a 1-year MSc in Management, or a specialized Master's in Business Analytics or Finance."
+      },
+      {
+        heading: "Entry Requirements and English Language Waiver",
+        type: "paragraph",
+        content: "Bachelors degrees require a Class 12 score of 55%-65%. Masters programs require a recognized Bachelor's degree with good scores. Some universities offer English waivers if you scored high in Class 12 English."
+      },
+      {
+        heading: "Key Tuition Cost Ranges",
+        type: "list",
+        items: [
+          "Bachelors programs: £11,000 to £18,000 per year.",
+          "MSc and Management: £12,000 to £22,000.",
+          "MBA programs: £14,000 to £35,000."
+        ]
+      }
+    ],
+    faqs: [
+      {
+        question: "Are business internships standard in UK programs?",
+        answer: "Many universities offer 'placement year' or 'sandwich year' programs, extending your Bachelor's to 4 years to include a year of working in a company."
+      },
+      {
+        question: "Is GMAT required for business studies in the UK?",
+        answer: "Most UK universities do not require GMAT/GRE scores for their general business or MBA programs, evaluating you on your academic GPA instead."
+      }
+    ]
+  },
+  {
+    slug: "study-nursing-in-uk-from-nepal",
+    title: "Study Nursing in the UK: NMC Registration, Fees, and Pathways",
+    category: "United Kingdom",
+    metaTitle: "Study Nursing in the UK: Guide for Nepali Students",
+    metaDescription: "Learn how to study Nursing in the UK. Get details on tuition fees, clinical training, and the NMC registration process for Nepali nurses.",
+    date: "July 8, 2026",
+    author: "Abroadly Team",
+    readTime: "6 min read",
+    targetKeywords: ["study nursing in uk from nepal", "nmc registration requirements", "uk nursing visa route"],
+    intro: "The UK's National Health Service (NHS) actively recruits international nurses. By studying nursing in the UK, you gain access to professional clinical training and a stable career route immediately upon graduation.",
+    sections: [
+      {
+        heading: "Nursing Degrees in the UK",
+        type: "paragraph",
+        content: "You can study a 3-year Bachelor of Science (BSc) in Nursing. Master's courses are available for students who completed a general science or nursing program in Nepal."
+      },
+      {
+        heading: "Admission Requirements",
+        type: "list",
+        items: [
+          "Academics: High school science (Biology background), GPA 3.0 or equivalent.",
+          "English scores: IELTS 7.0 (no band less than 6.5 in writing, 7.0 in others) or OET (Occupational English Test) grade B."
+        ]
+      },
+      {
+        heading: "NMC Registration Pathway",
+        type: "paragraph",
+        content: "Graduates are eligible to register with the Nursing and Midwifery Council (NMC). This involves passing a Computer Based Test (CBT) and an Objective Structured Clinical Examination (OSCE) before obtaining your PIN to practice."
+      }
+    ],
+    faqs: [
+      {
+        question: "Can I work in the NHS during my nursing studies?",
+        answer: "Yes, you can work up to 20 hours per week during semesters, often as a healthcare assistant in NHS hospitals or nursing homes."
+      },
+      {
+        question: "Is health insurance required for students in the UK?",
+        answer: "International students must pay the Immigration Health Surcharge (IHS) as part of their visa application, giving them full access to the NHS."
+      }
+    ]
+  },
+  {
+    slug: "bank-balance-requirement-for-australia-student-visa",
+    title: "How to Show Bank Balance for Australian Student Visa from Nepal",
+    category: "Visa Guide",
+    metaTitle: "Australian Student Visa Bank Balance Guide - Nepal",
+    metaDescription: "Ensure visa success. Learn how to calculate and present bank balance, sponsor details, and source of funds for Australian Student Visas.",
+    date: "July 8, 2026",
+    author: "Abroadly Team",
+    readTime: "6 min read",
+    targetKeywords: ["bank balance requirement for australia student visa", "sponsor requirements australia visa nepal", "source of funds australia student visa"],
+    intro: "One of the primary reasons for Australian student visa refusals from Nepal is weak financial documentation. Under the Subclass 500 visa rules, you must prove that you have genuine access to sufficient funds to support your tuition and living costs.",
+    sections: [
+      {
+        heading: "How Much Do You Need to Show?",
+        type: "paragraph",
+        content: "You must show funds covering: 1st-year tuition fees + 1st-year living expenses (currently AUD 29,710) + return airfare (usually AUD 2,000). If you are bringing dependents, you must show additional living costs for them."
+      },
+      {
+        heading: "Acceptable Financial Sources in Nepal",
+        type: "list",
+        items: [
+          "Education Loan from recognized commercial banks (Class A banks in Nepal).",
+          "Genuine Bank Deposits held in a commercial bank for at least 3 months.",
+          "Government Provident Fund (PF) or Citizen Investment Trust (CIT) statements."
+        ]
+      },
+      {
+        heading: "Verifying Source of Funds",
+        type: "paragraph",
+        content: "Simply placing cash in a bank account is not enough. You must show the sources of this money, such as annual salary certificates, business audit reports, agricultural land leases, or property sales, along with tax clearance certificates."
+      }
+    ],
+    faqs: [
+      {
+        question: "Which banks are accepted for Australian visa in Nepal?",
+        answer: "Only commercial banks (Class 'A' banks approved by Nepal Rastra Bank) are accepted. Development banks and cooperatives are not accepted."
+      },
+      {
+        question: "Who can sponsor my studies in Australia?",
+        answer: "Acceptable sponsors include immediate family members: parents, grandparents, siblings, and spouses. Distant relatives are rarely accepted."
+      }
+    ]
+  },
+  {
+    slug: "sop-writing-for-australian-student-visa",
+    title: "SOP for Australian Student Visa: Structure, Guidelines, and Sample Tips",
+    category: "Writing Tips",
+    metaTitle: "SOP for Australian Student Visa: Guidelines & Tips",
+    metaDescription: "Writing an SOP for an Australian student visa? Discover the structure, required details on GS requirements, and common mistakes to avoid.",
+    date: "July 8, 2026",
+    author: "Abroadly Team",
+    readTime: "6 min read",
+    targetKeywords: ["sop writing for australian student visa", "genuine student requirements australia", "sop sample for nepali students"],
+    intro: "Under Australia's new Genuine Student (GS) guidelines, your Statement of Purpose (SOP) is a vital tool to demonstrate that your primary focus is obtaining a high-quality education and that you have realistic career plans.",
+    sections: [
+      {
+        heading: "Crucial Elements of the GS SOP",
+        type: "paragraph",
+        content: "The visa officer wants to know why you chose Australia instead of Nepal, why you selected this specific university, how your course aligns with your past studies, and your economic and social ties to Nepal."
+      },
+      {
+        heading: "Structure of a Strong Australian SOP",
+        type: "list",
+        items: [
+          "Introduction: Clear personal details and your chosen course.",
+          "Academic & Professional History: Explain any gaps or career changes.",
+          "Why Australia?: Explain the educational benefits of Australia over other countries.",
+          "Why this University?: Compare your school with at least two other institutions.",
+          "Career Plan: Detail the specific jobs, salaries, and companies in Nepal where you plan to apply after your degree."
+        ]
+      },
+      {
+        heading: "Be Concrete and Specific",
+        type: "callout",
+        content: "Do not write generic essays. Research real job sites in Nepal (like Merojob) and list actual salary figures to show your career plans are realistic."
+      }
+    ],
+    faqs: [
+      {
+        question: "How long should an SOP for Australia be?",
+        answer: "Usually, keep your SOP between 2 to 3 pages (around 1,000 to 1,500 words), focusing on clear, factual paragraphs."
+      },
+      {
+        question: "What is a study gap and how do I explain it?",
+        answer: "A study gap is the time between your last qualification and your new application. You must explain this gap using work experience letters or certifications."
+      }
+    ]
+  },
+  {
+    slug: "ielts-vs-pte-for-australian-student-visa",
+    title: "IELTS vs. PTE Score Requirements for Australian Student Visa",
+    category: "Australia",
+    metaTitle: "IELTS vs PTE for Australian Visa: Requirements & Scores",
+    metaDescription: "Compare IELTS and PTE score requirements for an Australian student visa. Learn about minimum scores, university entry criteria, and ELICOS options.",
+    date: "July 8, 2026",
+    author: "Abroadly Team",
+    readTime: "5 min read",
+    targetKeywords: ["ielts vs pte for australian student visa", "minimum pte score for australia", "elicos requirements australia"],
+    intro: "Both IELTS and PTE Academic are accepted by Australian universities and the Department of Home Affairs. Here is a comparison of score equivalents and minimum requirements.",
+    sections: [
+      {
+        heading: "Visa Score Equivalents",
+        type: "list",
+        items: [
+          "IELTS 6.5 is roughly equivalent to PTE 58.",
+          "IELTS 6.0 is roughly equivalent to PTE 50.",
+          "IELTS 5.5 is roughly equivalent to PTE 42."
+        ]
+      },
+      {
+        heading: "Minimum Visa Requirements",
+        type: "paragraph",
+        content: "For a direct student visa, the minimum score is usually IELTS 6.0 (or PTE 50). If you score slightly lower, you can still apply by taking an ELICOS (English language package) in Australia before your degree."
+      },
+      {
+        heading: "University Requirements vs. Visa Requirements",
+        type: "paragraph",
+        content: "Note that universities often require higher scores than the immigration office (e.g. demanding IELTS 6.5 for Master's degrees, even if immigration accepts IELTS 6.0)."
+      }
+    ],
+    faqs: [
+      {
+        question: "Can I combine two PTE scores for my visa?",
+        answer: "Australian immigration accepts scores from a single sitting, though some universities may consider combined scores under specific conditions."
+      },
+      {
+        question: "Is online PTE accepted for Australian visa?",
+        answer: "No, Home Affairs only accepts test-center-delivered PTE Academic. PTE Online is not accepted."
+      }
+    ]
+  },
+  {
+    slug: "study-nursing-in-canada-from-nepal",
+    title: "Nursing in Canada for Nepali Students: Colleges, GIC, and Visas",
+    category: "Canada",
+    metaTitle: "Study Nursing in Canada from Nepal: Requirements & Fees",
+    metaDescription: "Thinking of studying Nursing in Canada? Learn about designated learning institutions, GIC requirements, and licensing pathways for Nepali students.",
+    date: "July 8, 2026",
+    author: "Abroadly Team",
+    readTime: "6 min read",
+    targetKeywords: ["study nursing in canada from nepal", "nursing colleges in canada", "gic amount for canada"],
+    intro: "Canada offers high-quality healthcare education and pathways to permanent residency. To study nursing in Canada, you must choose a Designated Learning Institution (DLI) with an approved nursing program.",
+    sections: [
+      {
+        heading: "Nursing Program Options in Canada",
+        type: "paragraph",
+        content: "Options include a 4-year Bachelor of Science in Nursing (BScN), a 2-year Practical Nursing Diploma (RPN), or post-graduate certificates for students who already hold a nursing degree from Nepal."
+      },
+      {
+        heading: "Understanding GIC and SDS Requirements",
+        type: "paragraph",
+        content: "Under the SDS pathway, you must buy a GIC (Guaranteed Investment Certificate) of CAD 20,635 to cover living expenses, pay your first-year tuition, and score at least IELTS 6.0 in all bands."
+      },
+      {
+        heading: "Pathways to Registration",
+        type: "list",
+        items: [
+          "Graduate from an approved Canadian nursing program.",
+          "Clear the NCLEX-RN exam (for Registered Nurses) or CPNRE (for Practical Nurses).",
+          "Apply for registration with the nursing college in your province (e.g., CNO in Ontario)."
+        ]
+      }
+    ],
+    faqs: [
+      {
+        question: "Can I get a PGWP after nursing studies in Canada?",
+        answer: "Yes, graduating from a full-time nursing program at an eligible public community college qualifies you for a Post-Graduation Work Permit (PGWP)."
+      },
+      {
+        question: "Do Canadian nursing colleges require math in +2?",
+        answer: "Yes, most programs require high school level mathematics, biology, chemistry, and English."
+      }
+    ]
+  },
+  {
+    slug: "study-it-in-canada-from-nepal",
+    title: "IT & Software Studies in Canada: Colleges, PGWP & Fees",
+    category: "Canada",
+    metaTitle: "Study IT in Canada from Nepal: Colleges, PGWP & Fees",
+    metaDescription: "Learn about IT and software studies in Canada. Compare top public colleges, tuition fees, PGWP durations, and requirements for Nepali students.",
+    date: "July 8, 2026",
+    author: "Abroadly Team",
+    readTime: "5 min read",
+    targetKeywords: ["study it in canada from nepal", "best colleges in canada for pgwp", "it course fees canada"],
+    intro: "Canada's growing tech sector offers exceptional career opportunities. Selecting a public community college with post-graduation work rights is a key step to a successful application.",
+    sections: [
+      {
+        heading: "University vs. Public College",
+        type: "paragraph",
+        content: "Universities offer academic, research-focused Computer Science degrees. Public community colleges (like Seneca, Humber, or Conestoga) offer practical, hands-on 2-year diplomas and advanced diplomas with lower tuition fees."
+      },
+      {
+        heading: "PGWP Guidelines",
+        type: "paragraph",
+        content: "Graduating from a program lasting 2 years or more at an eligible DLI qualifies you for a 3-year Post-Graduation Work Permit (PGWP), giving you time to gain Canadian work experience."
+      },
+      {
+        heading: "Typical Cost Outlines",
+        type: "list",
+        items: [
+          "College Diplomas: CAD 15,000 to 20,000 per year.",
+          "University Degrees: CAD 25,000 to 45,000 per year."
+        ]
+      }
+    ],
+    faqs: [
+      {
+        question: "Is IELTS Academic or General needed for study permit?",
+        answer: "You must take the IELTS Academic test (or PTE Academic) for university admission and student permit applications."
+      },
+      {
+        question: "Can I apply to Canada with a 3-year Bachelor's degree from Nepal?",
+        answer: "Yes, many Canadian colleges accept 3-year Bachelor's degrees for admission into post-graduate certificate programs."
+      }
+    ]
+  },
+  {
+    slug: "study-in-usa-with-scholarship-from-nepal",
+    title: "How to Apply to US Universities with Full Scholarships from Nepal",
+    category: "USA",
+    metaTitle: "How to Get Scholarships in the USA: Guide for Nepal",
+    metaDescription: "Learn how to secure full scholarships in the USA. Understand merit-based vs need-based aid, CSS profile guidelines, and tips for Nepali students.",
+    date: "July 8, 2026",
+    author: "Abroadly Team",
+    readTime: "6 min read",
+    targetKeywords: ["study in usa with scholarship from nepal", "how to get full ride scholarship usa", "css profile tips for nepali students"],
+    intro: "The USA offers generous financial aid packages to international students. By building a strong academic profile and submitting early applications, you can secure substantial scholarships or even a full ride.",
+    sections: [
+      {
+        heading: "Merit-Based vs. Need-Based Aid",
+        type: "paragraph",
+        content: "Merit-based scholarships are awarded based on your GPA, SAT scores, and achievements. Need-based financial aid is allocated based on your family's financial situation, often requiring you to submit the CSS Profile."
+      },
+      {
+        heading: "Key Steps to Secure Funding",
+        type: "list",
+        items: [
+          "Maintain a high Class 12 GPA (usually 3.6 or above).",
+          "Aim for a strong SAT score (usually 1400+ for top scholarships).",
+          "Draft unique, personal essays that highlight your background and leadership.",
+          "Apply early (Early Action or Early Decision in November)."
+        ]
+      },
+      {
+        heading: "The CSS Profile",
+        type: "paragraph",
+        content: "The CSS Profile is an online application hosted by the College Board used by private universities to assess your eligibility for need-based aid. You must detail your family's annual income, assets, and expenses in Nepal."
+      }
+    ],
+    faqs: [
+      {
+        question: "What is a 'Full Ride' scholarship?",
+        answer: "A full ride scholarship covers your complete tuition fees, accommodation (dorm rent), meal plans, and sometimes flights and health insurance."
+      },
+      {
+        question: "Do state universities offer financial aid to international students?",
+        answer: "State universities rarely offer need-based aid to international students, but many provide automatic out-of-state tuition waivers or merit scholarships based on GPA."
+      }
+    ]
+  },
+  {
+    slug: "masters-abroad-from-nepal-guide",
+    title: "Master's Degree Abroad: Prerequisites, Intakes, and Funding Guide",
+    category: "General Guide",
+    metaTitle: "Master's Degree Abroad: Guide for Nepali Students",
+    metaDescription: "Planning a Master's degree abroad? Learn about GPA requirements, English tests, 3-year vs 4-year degree acceptance, and funding options.",
+    date: "July 8, 2026",
+    author: "Abroadly Team",
+    readTime: "6 min read",
+    targetKeywords: ["masters abroad from nepal guide", "3 year bachelors acceptance abroad", "masters entry requirements"],
+    intro: "A Master's degree abroad is an excellent way to specialize in your field and gain international work experience. Here is what you need to prepare for a successful postgraduate application.",
+    sections: [
+      {
+        heading: "Academic Prerequisites",
+        type: "paragraph",
+        content: "You need a recognized Bachelor's degree (3 or 4-year program) with a minimum GPA of 2.5 or above (usually equivalent to 2nd division). Some technical programs require specific prerequisite subjects in your undergraduate studies."
+      },
+      {
+        heading: "Is a 3-Year Bachelor's Degree Accepted?",
+        type: "paragraph",
+        content: "The UK and Australia widely accept 3-year Bachelor's degrees (like BBS, BSc, or BA from Tribhuvan University). In contrast, most US universities require a 4-year degree, though many US colleges now offer pathway programs for 3-year graduates."
+      },
+      {
+        heading: "Typical Cost & Funding Outline",
+        type: "list",
+        items: [
+          "UK: £12,000 to £24,000 for the full 1-year program.",
+          "Australia: AUD 24,000 to 45,000 per year (2-year programs).",
+          "US/Canada: USD/CAD 20,000 to 45,000 per year (1.5 to 2-year programs)."
+        ]
+      }
+    ],
+    faqs: [
+      {
+        question: "Do I need work experience to apply for a Master's abroad?",
+        answer: "Most academic Master's programs do not require work experience, but professional degrees (like MBA or clinical counseling) often do."
+      },
+      {
+        question: "Can I switch my study field for my Master's?",
+        answer: "Yes, some programs (like MBA, IT Conversion, or Data Science Conversion) are open to students from all academic backgrounds."
+      }
+    ]
+  },
+  {
+    slug: "study-after-plus-two-from-nepal-guide",
+    title: "Studying Abroad After Class 12 (+2): Choosing the Right Path",
+    category: "General Guide",
+    metaTitle: "Study Abroad After Class 12 (+2) from Nepal: Guide",
+    metaDescription: "Completed Class 12 (+2) or A-levels? Discover popular study-abroad options, tuition costs, intakes, and requirements for Nepali students.",
+    date: "July 8, 2026",
+    author: "Abroadly Team",
+    readTime: "6 min read",
+    targetKeywords: ["study after plus two from nepal guide", "bachelors admission requirements nepal", "study abroad options after 12"],
+    intro: "Completing high school (Class 12 (+2) or A-levels) is the most common time for Nepali students to apply for study abroad. Choosing the right country and course early helps you build a stable career path.",
+    sections: [
+      {
+        heading: "Popular Bachelor's Pathways",
+        type: "paragraph",
+        content: "You can apply for a direct 3-4 year Bachelor's degree. If your grades or English scores are slightly lower, you can take a pathway option: a 1-year Diploma that leads directly into the second year of a Bachelor's degree."
+      },
+      {
+        heading: "Estimated Requirements",
+        type: "list",
+        items: [
+          "Academics: Minimum GPA of 2.4 to 2.8 in Class 12.",
+          "English Scores: IELTS 6.0 (no band less than 5.5) or PTE Academic score of 50."
+        ]
+      },
+      {
+        heading: "Timeline to Apply",
+        type: "paragraph",
+        content: "Start your application process immediately after receiving your Class 12 results or provisional certificates. This gives you time to take your English tests, translate documents, and arrange sponsorships."
+      }
+    ],
+    faqs: [
+      {
+        question: "Can I apply to study abroad with pending Class 12 results?",
+        answer: "Yes, you can apply for a conditional offer letter using your Class 11 marksheets and predicted Class 12 grades, but you must submit final results to secure admission."
+      },
+      {
+        question: "What is a pathway course?",
+        answer: "A pathway course (like Foundation or Diploma) is a preparatory program designed to help you meet the academic or English entry requirements for a Bachelor's degree."
+      }
+    ]
+  },
+  {
+    slug: "visa-success-rate-for-nepali-students",
+    title: "How to Improve Your Student Visa Success Rate from Nepal",
+    category: "Visa Guide",
+    metaTitle: "How to Avoid Student Visa Rejection: Guide for Nepal",
+    metaDescription: "Want to secure your student visa? Discover key tips to avoid visa refusal, present clean financial documents, and write strong SOPs.",
+    date: "July 8, 2026",
+    author: "Abroadly Team",
+    readTime: "6 min read",
+    targetKeywords: ["visa success rate for nepali students", "how to avoid student visa refusal", "genuine student check nepal"],
+    intro: "Securing a visa is the final hurdle in your study abroad journey. Visa officers reject applications that show weak financial capacity, plagiarized SOPs, or poor academic planning. Here are tips to maximize your visa success rate.",
+    sections: [
+      {
+        heading: "1. Show Clear Academic Progression",
+        type: "paragraph",
+        content: "Your chosen course should make logical sense for your academic history. If you completed a Bachelor's in Business, applying for an IT diploma can raise red flags. Always explain any study gaps or field switches in your SOP."
+      },
+      {
+        heading: "2. Present Transparent Financial Documents",
+        type: "paragraph",
+        content: "Ensure all sponsor incomes are verifiable, backed by tax clearance certificates and bank statements showing steady transactions. Avoid sudden, large deposits in your accounts that cannot be explained."
+      },
+      {
+        heading: "3. Avoid Generic or Plagiarized SOPs",
+        type: "list",
+        items: [
+          "Write the SOP yourself instead of copying templates.",
+          "Detail why you selected the university and course.",
+          "List concrete career goals in Nepal after graduation."
+        ]
+      }
+    ],
+    faqs: [
+      {
+        question: "Can I apply again after a student visa refusal?",
+        answer: "Yes, you can reapply, but you must address the specific reasons for refusal listed in your refusal letter and submit improved documentation."
+      },
+      {
+        question: "Does having relatives in the destination country affect my visa?",
+        answer: "It depends on the country. For the USA, it is best to declare relatives honestly. For Australia or Canada, having close relatives can sometimes raise queries about your return intentions."
+      }
+    ]
+  },
+  {
+    slug: "post-study-work-rights-comparison",
+    title: "Post-Study Work Rights: Comparing Australia, UK, Canada & USA",
+    category: "General Guide",
+    metaTitle: "Post-Study Work Rights Comparison: UK, USA, AUS, CAN",
+    metaDescription: "Compare post-study work rights across top destinations. Learn about work permit durations, eligibility criteria, and pathways to residency.",
+    date: "July 8, 2026",
+    author: "Abroadly Team",
+    readTime: "6 min read",
+    targetKeywords: ["post study work rights comparison", "graduate work permit australia", "stem opt extension usa"],
+    intro: "Gaining international work experience after graduation is a top priority for most students. Destination countries offer post-study work permits to international graduates. Here is a comparison of current guidelines.",
+    sections: [
+      {
+        heading: "Comparison of Work Permit Durations",
+        type: "list",
+        items: [
+          "Australia (Subclass 485): 2-4 years depending on degree level and campus location (extra points for regional areas).",
+          "United Kingdom (Graduate Route): 2 years for Bachelors/Masters graduates, 3 years for PhDs.",
+          "Canada (PGWP): Up to 3 years depending on the duration of your study program.",
+          "USA (OPT): 1 year of OPT, plus an additional 2-year extension for STEM-designated degrees (totaling 3 years)."
+        ]
+      },
+      {
+        heading: "Key Eligibility Guidelines",
+        type: "paragraph",
+        content: "To qualify, you must graduate from an accredited institution (DLI in Canada, CRICOS-registered in Australia) and apply within the designated period after completing your studies."
+      },
+      {
+        heading: "Important Visa Advice",
+        type: "callout",
+        content: "Immigration rules change frequently. Always check the official government immigration portals for the most current post-study work guidelines."
+      }
+    ],
+    faqs: [
+      {
+        question: "Can I work in any sector on a post-study work visa?",
+        answer: "Most post-study work visas (like Australia's 485 or UK's Graduate Route) are open, allowing you to work for any employer in any sector."
+      },
+      {
+        question: "Does studying in a regional area give any benefits?",
+        answer: "Yes, in Australia, studying at a regional campus can qualify you for an extra 1 to 2 years of post-study work rights."
       }
     ]
   }
