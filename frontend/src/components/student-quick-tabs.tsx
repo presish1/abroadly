@@ -98,8 +98,7 @@ export function StudentQuickTabs({
     <>
       <aside className="chat-right-rail" aria-label="Student quick tabs">
         <Link href="/" className="ab-focus chat-left-brand">
-          <Image src="/images/abroadly-logo.png" alt="" width={40} height={40} priority aria-hidden />
-          <span>Abroadly</span>
+          <Image src="/images/Abroadly_logo.svg" alt="Abroadly" width={140} height={40} priority className="!w-auto !h-9 object-contain" />
         </Link>
 
         <nav className="chat-left-nav" aria-label="Student workspace">

@@ -28,12 +28,8 @@ export default function OnboardingPage() {
       {/* Left Side: Brand Text Overlay & Mock UI Widget (Hidden on Mobile) */}
       <section className="hidden md:flex md:w-[48%] lg:w-[50%] xl:w-[55%] flex-col justify-between p-12 lg:p-16 text-[#1B1916] select-none z-10 relative">
         {/* Top: Logo & Name */}
-        <Link href="/" className="inline-flex items-center gap-3 text-[#1B1916] font-extrabold text-[22px] tracking-tight hover:opacity-90 transition group">
-          <div className="relative">
-            <div className="absolute -inset-1 rounded-lg bg-gradient-to-r from-blue-500 to-emerald-500 opacity-20 blur-sm group-hover:opacity-40 transition duration-300"></div>
-            <img src="/images/abroadly-logo.svg" alt="Abroadly" className="relative h-9 w-9 object-contain bg-white rounded-lg p-1.5 shadow-sm border border-[#E8E5DD]" />
-          </div>
-          <span className="font-extrabold tracking-tight text-[#1B1916]">Abroadly</span>
+        <Link href="/" className="ab-focus inline-block hover:opacity-90 transition">
+          <img src="/images/Abroadly_logo.svg" alt="Abroadly" className="h-10 w-auto object-contain" />
         </Link>
 
         {/* Middle/Bottom: Premium Typography & Widget */}
@@ -126,12 +122,9 @@ export default function OnboardingPage() {
             </div>
 
             {/* Mobile Logo Header */}
-            <div className="flex items-center gap-3 md:hidden mb-8 bg-[#FAF9F6] p-3 rounded-xl border border-[#EFECE4]">
-              <img src="/images/abroadly-logo.svg" alt="Abroadly" className="h-8 w-8 object-contain bg-white rounded-lg p-1.5 shadow-sm border border-[#E8E5DD]" />
-              <div>
-                <span className="text-[17px] font-black tracking-tight text-[#1B1916]">Abroadly</span>
-                <p className="text-[9.5px] font-bold uppercase tracking-wider text-slate-400">Free study planning</p>
-              </div>
+            <div className="flex items-center justify-between md:hidden mb-8 bg-[#FAF9F6] p-3 rounded-xl border border-[#EFECE4]">
+              <img src="/images/Abroadly_logo.svg" alt="Abroadly" className="h-9 w-auto object-contain" />
+              <p className="text-[9.5px] font-bold uppercase tracking-wider text-slate-400">Free study planning</p>
             </div>
 
             <h2 className="text-[30px] font-black tracking-tight text-[#1B1916] leading-none">Sign in</h2>
