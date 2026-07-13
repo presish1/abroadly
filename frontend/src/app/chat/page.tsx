@@ -1701,34 +1701,58 @@ export default function ChatPage() {
     const mobile = window.matchMedia("(max-width: 767px)");
     const viewport = window.visualViewport;
 
+    const isEditableElement = (element: Element | null) =>
+      element instanceof HTMLTextAreaElement ||
+      element instanceof HTMLInputElement ||
+      element instanceof HTMLSelectElement ||
+      (element instanceof HTMLElement && element.isContentEditable);
+
     const updateViewportHeight = () => {
       if (!mobile.matches) {
         root.style.removeProperty("--chat-viewport-height");
+        root.style.removeProperty("--chat-viewport-offset-top");
         setIsKeyboardOpen(false);
         return;
       }
       const viewportHeight = viewport?.height ?? window.innerHeight;
       root.style.setProperty("--chat-viewport-height", `${Math.round(viewportHeight)}px`);
-      const activeElement = document.activeElement;
-      const isTextInput =
-        activeElement instanceof HTMLTextAreaElement ||
-        activeElement instanceof HTMLInputElement ||
-        activeElement instanceof HTMLSelectElement;
-      const keyboardLikelyOpen = Boolean(viewport && isTextInput && window.innerHeight - viewport.height > 140);
+      root.style.setProperty("--chat-viewport-offset-top", `${Math.round(viewport?.offsetTop ?? 0)}px`);
+
+      // iOS Chrome often shrinks both innerHeight and visualViewport.height,
+      // making their difference nearly zero even while the keyboard is open.
+      // Focus is the reliable signal; the visual viewport still supplies the
+      // exact height and offset needed to keep the composer above the keyboard.
+      const keyboardLikelyOpen = isEditableElement(document.activeElement);
       setIsKeyboardOpen((current) => (current === keyboardLikelyOpen ? current : keyboardLikelyOpen));
+    };
+
+    let blurTimer: number | undefined;
+    const handleFocusChange = () => {
+      if (blurTimer) window.clearTimeout(blurTimer);
+      window.requestAnimationFrame(updateViewportHeight);
+    };
+    const handleFocusOut = () => {
+      if (blurTimer) window.clearTimeout(blurTimer);
+      blurTimer = window.setTimeout(updateViewportHeight, 120);
     };
 
     updateViewportHeight();
     mobile.addEventListener("change", updateViewportHeight);
     window.addEventListener("resize", updateViewportHeight);
+    document.addEventListener("focusin", handleFocusChange);
+    document.addEventListener("focusout", handleFocusOut);
     viewport?.addEventListener("resize", updateViewportHeight);
     viewport?.addEventListener("scroll", updateViewportHeight);
     return () => {
+      if (blurTimer) window.clearTimeout(blurTimer);
       mobile.removeEventListener("change", updateViewportHeight);
       window.removeEventListener("resize", updateViewportHeight);
+      document.removeEventListener("focusin", handleFocusChange);
+      document.removeEventListener("focusout", handleFocusOut);
       viewport?.removeEventListener("resize", updateViewportHeight);
       viewport?.removeEventListener("scroll", updateViewportHeight);
       root.style.removeProperty("--chat-viewport-height");
+      root.style.removeProperty("--chat-viewport-offset-top");
       setIsKeyboardOpen(false);
     };
   }, []);

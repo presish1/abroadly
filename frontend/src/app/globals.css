@@ -1905,8 +1905,13 @@ body {
   }
 
   .chat-page-shell {
+    position: fixed;
+    inset: 0 auto auto 0;
+    width: 100%;
     height: var(--chat-viewport-height, 100dvh);
     min-height: 0;
+    transform: translateY(var(--chat-viewport-offset-top, 0px));
+    overscroll-behavior: none;
   }
 
   .chat-conversation-main {
@@ -1957,7 +1962,7 @@ body {
   }
 
   .chat-layout.is-keyboard-open .chat-footer {
-    padding: 6px 10px max(8px, env(safe-area-inset-bottom));
+    padding: 6px 10px 8px;
     background: rgba(251, 250, 247, 0.98);
   }
 
@@ -2087,9 +2092,7 @@ body {
   }
 
   .chat-layout.is-keyboard-open .chat-mobile-nav {
-    opacity: 0;
-    pointer-events: none;
-    transform: translateY(calc(100% + 16px));
+    display: none;
   }
 
   .chat-mobile-nav svg {
