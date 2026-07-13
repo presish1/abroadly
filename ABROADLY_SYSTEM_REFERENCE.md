@@ -19,7 +19,7 @@ Abroadly is a free, open-source AI study-abroad guidance app for Nepali and Sout
 The live deployment is Docker/Caddy/GitHub Actions on Hostinger.
 
 - Live site: `https://abroadly.online`
-- Admin panel: `https://abroadly.online/admin/login`
+- Admin panel: `https://abroadly.online/ab1/admin/login`
 - VPS IP: `193.203.162.63`
 - VPS OS: Ubuntu 24.04 with Docker
 - VPS project root: `/opt/abroadly`
@@ -105,10 +105,10 @@ Framework: Next.js 14 App Router, React 18, Tailwind CSS 4, Plus Jakarta Sans fo
 | `/onboarding/details` | `onboarding/details/page.tsx` | One-time post-Google profile details form |
 | `/chat` | `chat/page.tsx` | AI chat with document upload panel |
 | `/auth/google/callback` | `auth/google/callback/page.tsx` | Google OAuth callback page; exchanges code through backend |
-| `/admin/login` | `admin/login/page.tsx` | Admin login |
-| `/admin` | `admin/page.tsx` | Admin dashboard with stats |
-| `/admin/students` | `admin/students/page.tsx` | Student list with search, last message preview |
-| `/admin/students/[id]` | `admin/students/[id]/page.tsx` | Student detail: chat, documents, profile tabs |
+| `/ab1/admin/login` | `ab1/admin/login/page.tsx` | Admin login |
+| `/ab1/admin` | `ab1/admin/page.tsx` | Admin dashboard with stats |
+| `/ab1/admin/students` | `ab1/admin/students/page.tsx` | Student list with search, last message preview |
+| `/ab1/admin/students/[id]` | `ab1/admin/students/[id]/page.tsx` | Student detail: chat, documents, profile tabs |
 
 ### Key Frontend Files
 
@@ -352,7 +352,7 @@ When Presish asks for backend/AI:
 
 When Presish asks for admin:
 
-- Admin pages under `frontend/src/app/admin/`.
+- Admin pages under `frontend/src/app/ab1/admin/`.
 - Admin API under `backend/app/api/admin.py`.
 - Auth via `backend/app/core/auth.py` (JWT + bcrypt).
 - Default credentials: username/7654321a.

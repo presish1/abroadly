@@ -81,7 +81,7 @@ export default function AdminRequestsPage() {
                     <span className="rounded-full bg-[#ECF5EF] px-2 py-0.5 text-[10px] font-bold text-[#0A6E45]">{requestLabel(item.request_type)}</span>
                     <span className="text-[11px] text-[#8A847B]">{new Date(item.created_at).toLocaleString()}</span>
                   </div>
-                  <Link href={`/admin/students/${item.student_id}`} className="mt-2 inline-block truncate text-[14px] font-bold text-[#1B1916] hover:text-[#0A6E45]">
+                  <Link href={`/ab1/admin/students/${item.student_id}`} className="mt-2 inline-block truncate text-[14px] font-bold text-[#1B1916] hover:text-[#0A6E45]">
                     {item.full_name}
                   </Link>
                   <p className="mt-0.5 text-[11.5px] text-[#6B655C]">{item.phone || "No phone"} · {item.email}</p>

@@ -256,7 +256,7 @@ export function AntdDashboard({ student, documents, activeCountry, countries, on
               {countries.length > 1 && (
                 <Segmented value={activeCountry} onChange={(v) => onSelectCountry(v as CountryCode)} options={countries.map((c) => ({ label: COUNTRY_PROFILES[c].name, value: c }))} />
               )}
-              <Link href="/chat"><Button type="primary">Open chat →</Button></Link>
+              <Link href="/chat" className="dashboard-mobile-chat-link"><Button type="primary">Open chat →</Button></Link>
             </div>
           </div>
         </header>
@@ -264,7 +264,7 @@ export function AntdDashboard({ student, documents, activeCountry, countries, on
         <div className="mx-auto max-w-[1280px] px-5 py-6 lg:px-8">
           <div className="grid gap-5 xl:grid-cols-[300px_minmax(0,1fr)]">
             {/* ── Left rail ───────────────────────────────────────── */}
-            <aside className="order-2 xl:order-1 grid gap-5 md:grid-cols-3 xl:sticky xl:top-[84px] xl:flex xl:flex-col xl:self-start">
+            <aside className="dashboard-summary-rail order-2 xl:order-1 grid gap-5 md:grid-cols-3 xl:sticky xl:top-[84px] xl:flex xl:flex-col xl:self-start">
               {/* profile */}
               <Panel bodyPad={18}>
                 <div className="flex items-center gap-3">
@@ -343,7 +343,7 @@ export function AntdDashboard({ student, documents, activeCountry, countries, on
             </aside>
 
             {/* ── Main grid ───────────────────────────────────────── */}
-            <main className="order-1 xl:order-2 flex flex-col gap-5 pb-20 md:pb-5">
+            <main className="dashboard-primary-flow order-1 xl:order-2 flex flex-col gap-5 pb-20 md:pb-5">
               {/* greeting */}
               <div className="flex flex-wrap items-end justify-between gap-2">
                 <div>
@@ -353,7 +353,7 @@ export function AntdDashboard({ student, documents, activeCountry, countries, on
               </div>
 
               {/* focus hero */}
-              <div className="overflow-hidden rounded-2xl bg-gradient-to-br from-[#0E2A4D] via-[#12315b] to-[#0E2A4D] p-[22px] text-white sm:p-7">
+              <div className="dashboard-focus-card overflow-hidden rounded-2xl bg-gradient-to-br from-[#0E2A4D] via-[#12315b] to-[#0E2A4D] p-[22px] text-white sm:p-7">
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 text-[10.5px] font-bold uppercase tracking-[0.08em] text-[#7DDBB1]">
                   <span className="h-1.5 w-1.5 rounded-full bg-[#7DDBB1]" /> Today&apos;s focus · {focus.tag}
                 </span>
@@ -370,7 +370,7 @@ export function AntdDashboard({ student, documents, activeCountry, countries, on
               </div>
 
               {/* fact tiles */}
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+              <div className="dashboard-fact-grid grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
                 {country.factStrip.map((f) => (
                   <div key={f.label} className="rounded-xl border border-[#E8E5DD] bg-white p-3.5">
                     <p className="text-[9.5px] font-bold uppercase tracking-[0.05em] text-[#8A847B]">{f.label}</p>

@@ -6,9 +6,9 @@ import { useEffect, useState } from "react";
 import { isAdminLoggedIn, adminLogout } from "@/lib/admin-api";
 
 const navItems = [
-  { href: "/admin", label: "Dashboard", icon: "\u{1F4CA}" },
-  { href: "/admin/requests", label: "Requests", icon: "\u{1F514}" },
-  { href: "/admin/students", label: "Students", icon: "\u{1F393}" },
+  { href: "/ab1/admin", label: "Dashboard", icon: "\u{1F4CA}" },
+  { href: "/ab1/admin/requests", label: "Requests", icon: "\u{1F514}" },
+  { href: "/ab1/admin/students", label: "Students", icon: "\u{1F393}" },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -17,24 +17,24 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    if (pathname === "/admin/login") {
+    if (pathname === "/ab1/admin/login") {
       setReady(true);
       return;
     }
     if (!isAdminLoggedIn()) {
-      router.push("/admin/login");
+      router.push("/ab1/admin/login");
     } else {
       setReady(true);
     }
   }, [pathname, router]);
 
-  if (pathname === "/admin/login") return <>{children}</>;
+  if (pathname === "/ab1/admin/login") return <>{children}</>;
   if (!ready) return null;
 
   return (
     <div className="flex h-screen bg-[#f5f4f2]">
       <aside className="hidden lg:flex w-56 shrink-0 flex-col bg-[#0f0b1a] p-4">
-        <Link href="/admin" className="flex items-center gap-2.5 px-2 mb-6">
+        <Link href="/ab1/admin" className="flex items-center gap-2.5 px-2 mb-6">
           <div className="h-8 w-8 shrink-0 rounded-lg overflow-hidden">
             <img src="/images/abroadly-logo.png" alt="Ab" className="h-full w-full object-cover" />
           </div>
@@ -43,7 +43,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
         <nav className="space-y-1 flex-1">
           {navItems.map((item) => {
-            const active = pathname === item.href || (item.href !== "/admin" && pathname.startsWith(item.href));
+            const active = pathname === item.href || (item.href !== "/ab1/admin" && pathname.startsWith(item.href));
             return (
               <Link
                 key={item.href}
@@ -62,7 +62,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </nav>
 
         <button
-          onClick={() => { adminLogout(); router.push("/admin/login"); }}
+          onClick={() => { adminLogout(); router.push("/ab1/admin/login"); }}
           className="flex items-center gap-2 px-3 py-2 rounded-lg text-[12px] font-medium text-white/30 hover:text-white/60 hover:bg-white/[0.05] transition"
         >
           Logout

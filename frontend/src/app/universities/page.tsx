@@ -556,7 +556,7 @@ export default function UniversitiesPage() {
                 </p>
               </div>
 
-              <div className="flex flex-wrap gap-2">
+              <div className="universities-country-tabs flex flex-wrap gap-2">
                 {supportedCountries.map((country) => (
                   <button
                     key={country}
@@ -579,7 +579,7 @@ export default function UniversitiesPage() {
           </header>
 
           <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
-            <div className="flex flex-wrap gap-2">
+            <div className="universities-fit-tabs flex flex-wrap gap-2">
               {visibleFilters.map((filter) => (
                 <button
                   key={filter}
@@ -595,7 +595,7 @@ export default function UniversitiesPage() {
                 </button>
               ))}
             </div>
-            <p className="text-[11.5px] font-semibold text-[#6B655C]">
+            <p className="universities-result-count text-[11.5px] font-semibold text-[#6B655C]">
               {filteredUniversities.length} universities · {courseRows.length} course starters
             </p>
           </div>

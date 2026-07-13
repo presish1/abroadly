@@ -250,7 +250,7 @@ function DocumentCard({
       onDragLeave={() => setDragOver(false)}
       onDrop={(e) => { e.preventDefault(); setDragOver(false); const f = e.dataTransfer.files[0]; if (f) onFile(f); }}
     >
-      <button type="button" onClick={uploaded ? undefined : openPicker} disabled={isBusy} className="relative mb-3 flex h-[84px] w-full items-center justify-center overflow-hidden rounded-xl" style={{ background: tint }}>
+      <button type="button" onClick={uploaded ? undefined : openPicker} disabled={isBusy} className="docs-card-preview relative mb-3 flex h-[84px] w-full items-center justify-center overflow-hidden rounded-xl" style={{ background: tint }}>
         {thumb ? (
           <img src={thumb} alt="" aria-hidden className="h-full w-full object-cover" />
         ) : (

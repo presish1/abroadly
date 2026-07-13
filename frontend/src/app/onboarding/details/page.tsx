@@ -490,11 +490,11 @@ export default function ProfileDetailsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[var(--ab-paper-2)] text-[var(--ab-ink)]">
+    <main className="onboarding-details min-h-screen bg-[var(--ab-paper-2)] text-[var(--ab-ink)]">
       <NavBar showSignIn={false} primary={{ href: "/", label: "Home" }} />
 
-      <div className="mx-auto max-w-6xl px-4 py-8 sm:px-8 sm:py-12">
-        <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+      <div className="onboarding-details-inner mx-auto max-w-6xl px-4 py-8 sm:px-8 sm:py-12">
+        <header className="onboarding-details-header flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="ab-eyebrow">One-time setup</p>
             <h1 className="mt-2 text-[28px] font-black leading-tight tracking-[-0.035em] sm:text-[34px]">Your study profile</h1>
@@ -503,7 +503,7 @@ export default function ProfileDetailsPage() {
           <p className="text-[12px] font-semibold text-[var(--ab-muted-soft)]">Google-verified: {verifiedEmail}</p>
         </header>
 
-        <ol className="mt-7 grid grid-cols-3 gap-2" aria-label="Profile setup progress">
+        <ol className="onboarding-progress mt-7 grid grid-cols-3 gap-2" aria-label="Profile setup progress">
           {STEPS.map((item) => {
             const active = item.id === step;
             const complete = item.id < step;
@@ -530,10 +530,10 @@ export default function ProfileDetailsPage() {
           })}
         </ol>
 
-        <form onSubmit={handleSubmit} className="mt-6 overflow-hidden rounded-lg border border-[var(--ab-line)] bg-white shadow-[var(--shadow-sm)]">
-          <div className="min-h-[470px] p-5 sm:p-8 lg:p-10">
+        <form onSubmit={handleSubmit} className="onboarding-form mt-6 overflow-hidden rounded-lg border border-[var(--ab-line)] bg-white shadow-[var(--shadow-sm)]">
+          <div className="onboarding-form-body min-h-[470px] p-5 sm:p-8 lg:p-10">
             {step === 1 && (
-              <section aria-labelledby="step-one-title">
+              <section className="onboarding-step" aria-labelledby="step-one-title">
                 <p className="ab-eyebrow">Step 1</p>
                 <h2 id="step-one-title" className="mt-2 text-xl font-black tracking-[-0.02em]">Your details</h2>
                 <p className="mt-1 text-[13px] text-[var(--ab-muted)]">Use the contact details you want attached to your study profile.</p>
@@ -567,7 +567,7 @@ export default function ProfileDetailsPage() {
             )}
 
             {step === 2 && (
-              <section aria-labelledby="step-two-title">
+              <section className="onboarding-step" aria-labelledby="step-two-title">
                 <p className="ab-eyebrow">Step 2</p>
                 <h2 id="step-two-title" className="mt-2 text-xl font-black tracking-[-0.02em]">Academic information</h2>
                 <p className="mt-1 text-[13px] text-[var(--ab-muted)]">This helps Abroadly separate admission requirements from visa requirements.</p>
@@ -676,7 +676,7 @@ export default function ProfileDetailsPage() {
             )}
 
             {step === 3 && (
-              <section aria-labelledby="step-three-title">
+              <section className="onboarding-step" aria-labelledby="step-three-title">
                 <p className="ab-eyebrow">Step 3</p>
                 <h2 id="step-three-title" className="mt-2 text-xl font-black tracking-[-0.02em]">Destination and support</h2>
                 <p className="mt-1 text-[13px] text-[var(--ab-muted)]">Choose what you are aiming for. You can refine this later in chat.</p>
@@ -813,7 +813,7 @@ export default function ProfileDetailsPage() {
             )}
           </div>
 
-          <footer className="flex flex-col-reverse gap-3 border-t border-[var(--ab-line)] bg-[#FAFAF8] px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-8">
+          <footer className="onboarding-form-footer flex flex-col-reverse gap-3 border-t border-[var(--ab-line)] bg-[#FAFAF8] px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-8">
             <p className="text-[11px] leading-5 text-[var(--ab-muted-soft)]">Your account is created only after this form is completed.</p>
             <div className="flex gap-2">
               {step > 1 && (

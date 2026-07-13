@@ -17,7 +17,7 @@ export default function AdminLoginPage() {
     setLoading(true);
     try {
       await adminLogin(username, password);
-      router.push("/admin");
+      router.push("/ab1/admin");
     } catch {
       setError("Invalid credentials");
     } finally {

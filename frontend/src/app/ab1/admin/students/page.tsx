@@ -65,7 +65,7 @@ export default function StudentsListPage() {
         {students.map((s) => (
           <Link
             key={s.id}
-            href={`/admin/students/${s.id}`}
+            href={`/ab1/admin/students/${s.id}`}
             className="flex items-center gap-4 bg-white rounded-2xl border border-gray-100 p-4 hover:border-gray-200 hover:shadow-sm transition"
           >
             {/* Avatar */}
