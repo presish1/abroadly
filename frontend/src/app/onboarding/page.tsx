@@ -11,9 +11,9 @@ const nextChips = [
 
 export default function OnboardingPage() {
   return (
-    <main className="relative min-h-screen flex flex-col md:flex-row items-stretch text-[#1B1916] font-sans bg-[#FAF9F6] overflow-x-hidden">
+    <main className="onboarding-entry relative min-h-screen flex flex-col md:flex-row items-stretch text-[#1B1916] font-sans bg-[#FAF9F6] overflow-x-hidden">
       {/* Background decorative elements matching hero layout */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+      <div className="onboarding-entry-backdrop absolute inset-0 pointer-events-none overflow-hidden z-0">
         {/* Subtle radial light gradient */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-50/60 via-[#FAF9F6] to-[#FAF9F6]"></div>
 
@@ -107,14 +107,14 @@ export default function OnboardingPage() {
       </section>
 
       {/* Right Side: Centered/Floating glassmorphic card */}
-      <section className="flex-1 flex items-center justify-center p-4 sm:p-10 lg:p-16 xl:p-24 z-10">
-        <div className="w-full max-w-[460px] bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.045)] p-6 sm:p-8 md:p-10 flex flex-col justify-between border border-[#E8E5DD] relative overflow-hidden">
+      <section className="onboarding-entry-main flex-1 flex items-center justify-center p-4 sm:p-10 lg:p-16 xl:p-24 z-10">
+        <div className="onboarding-entry-card w-full max-w-[460px] bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.045)] p-6 sm:p-8 md:p-10 flex flex-col justify-between border border-[#E8E5DD] relative overflow-hidden">
           {/* Decorative blue top highlight line */}
-          <div className="absolute top-0 left-0 right-0 h-[4px] bg-[#0044FF]"></div>
+          <div className="onboarding-entry-highlight absolute top-0 left-0 right-0 h-[4px] bg-[#0044FF]"></div>
 
           <div>
             {/* Back Button */}
-            <div className="flex justify-between items-center mb-6">
+            <div className="onboarding-entry-back flex justify-between items-center mb-6">
               <Link href="/" className="ab-focus inline-flex items-center gap-1.5 text-xs font-bold text-slate-400 hover:text-slate-700 transition group/back">
                 <ArrowLeft className="h-3.5 w-3.5 transition-transform group-hover/back:-translate-x-1" />
                 <span>Back to home</span>
@@ -122,18 +122,18 @@ export default function OnboardingPage() {
             </div>
 
             {/* Mobile Logo Header */}
-            <div className="flex items-center justify-between md:hidden mb-8 bg-[#FAF9F6] p-3 rounded-xl border border-[#EFECE4]">
+            <div className="onboarding-entry-brand flex items-center justify-between md:hidden mb-8 bg-[#FAF9F6] p-3 rounded-xl border border-[#EFECE4]">
               <img src="/images/Abroadly_logo.svg" alt="Abroadly" className="h-9 w-auto object-contain" />
               <p className="text-[9.5px] font-bold uppercase tracking-wider text-slate-400">Free study planning</p>
             </div>
 
-            <h2 className="text-[30px] font-black tracking-tight text-[#1B1916] leading-none">Sign in</h2>
-            <p className="mt-3 text-[14px] font-semibold text-slate-500 leading-relaxed">
+            <h2 className="onboarding-entry-title text-[30px] font-black tracking-tight text-[#1B1916] leading-none">Sign in</h2>
+            <p className="onboarding-entry-copy mt-3 text-[14px] font-semibold text-slate-500 leading-relaxed">
               New to Abroadly? We&apos;ll create your profile after the one-time setup.
             </p>
 
             {/* Google Sign-in Card */}
-            <div className="mt-8 relative group/gbutton">
+            <div className="onboarding-entry-google mt-8 relative group/gbutton">
               <div className="absolute -inset-1 rounded-xl bg-gradient-to-r from-blue-500 to-emerald-500 opacity-10 blur group-hover/gbutton:opacity-20 transition duration-300"></div>
               <GoogleSignInButton
                 variant="outline"
@@ -143,7 +143,7 @@ export default function OnboardingPage() {
               />
             </div>
 
-            <div className="mt-6 flex items-start gap-2.5 bg-[#FAF9F6]/60 p-3.5 rounded-xl border border-[#EFECE4] text-[12px] leading-relaxed text-slate-500 font-medium">
+            <div className="onboarding-entry-security mt-6 flex items-start gap-2.5 bg-[#FAF9F6]/60 p-3.5 rounded-xl border border-[#EFECE4] text-[12px] leading-relaxed text-slate-500 font-medium">
               <ShieldCheck className="h-4.5 w-4.5 text-emerald-600 shrink-0 mt-0.5" />
               <span>
                 Abroadly secures your session using Google authentication. We never see your password, and store only the fields you choose to share.
@@ -151,7 +151,7 @@ export default function OnboardingPage() {
             </div>
 
             {/* Up Next List */}
-            <div className="mt-8 border-t border-[#EFECE4] pt-6">
+            <div className="onboarding-entry-next mt-8 border-t border-[#EFECE4] pt-6">
               <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-slate-400 mb-3.5">Up next in profile setup</p>
               <div className="grid grid-cols-2 gap-2 text-[11px] font-bold text-[#1B1916]">
                 {nextChips.map((chip, idx) => {
@@ -179,7 +179,7 @@ export default function OnboardingPage() {
             </div>
           </div>
 
-          <p className="mt-8 text-center text-[12.5px] text-slate-400 border-t border-[#EFECE4] pt-5 font-semibold">
+          <p className="onboarding-entry-return mt-8 text-center text-[12.5px] text-slate-400 border-t border-[#EFECE4] pt-5 font-semibold">
             Already onboarded?{" "}
             <Link
               href="/chat"

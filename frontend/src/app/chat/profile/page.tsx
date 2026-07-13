@@ -302,7 +302,7 @@ export default function ChatProfilePage() {
                   <p className="mt-2 text-[14px] leading-7 text-[#6B655C]">{headerNote}</p>
                 </div>
 
-                <div className="grid gap-3 sm:grid-cols-2">
+                <div className="profile-summary-grid grid gap-3 sm:grid-cols-2">
                   <div className="rounded-[18px] border border-[#E8E5DD] bg-white px-4 py-3">
                     <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#8A847B]">Progress</p>
                     <p className="mt-1 text-[24px] font-black leading-none text-[#1B1916]">{profilePct}%</p>
@@ -318,7 +318,7 @@ export default function ChatProfilePage() {
             </div>
 
             <div className="grid gap-0 xl:grid-cols-[320px_minmax(0,1fr)]">
-              <aside className="border-b border-[#E8E5DD] bg-[#FCFBF8] p-5 xl:border-b-0 xl:border-r">
+              <aside className="profile-summary-rail border-b border-[#E8E5DD] bg-[#FCFBF8] p-5 xl:border-b-0 xl:border-r">
                 <div className="space-y-4">
                   <section className="rounded-[20px] border border-[#E8E5DD] bg-white p-4">
                     <div className="flex items-center justify-between gap-3">
@@ -417,7 +417,7 @@ export default function ChatProfilePage() {
                     <div>
                       <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#0A6E45]">Edit profile</p>
                       <h2 className="mt-1 text-[22px] font-black tracking-[-0.03em] text-[#1B1916]">Only the essentials are editable here</h2>
-                      <p className="mt-1.5 text-[13.5px] leading-6 text-[#6B655C]">
+                      <p className="profile-edit-helper mt-1.5 text-[13.5px] leading-6 text-[#6B655C]">
                         The rest of your onboarding data stays visible in the sidebar, so this stays clean and focused.
                       </p>
                       </div>

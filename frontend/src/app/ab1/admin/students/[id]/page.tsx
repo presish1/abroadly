@@ -166,7 +166,7 @@ export default function StudentDetailPage() {
     setDeleteError(null);
     try {
       await deleteStudent(id);
-      router.replace("/admin/students");
+      router.replace("/ab1/admin/students");
     } catch (err: unknown) {
       setDeleteError(err instanceof Error ? err.message : "Failed to delete this student account.");
       setDeleting(false);
@@ -205,7 +205,7 @@ export default function StudentDetailPage() {
       {/* Left sidebar — profile summary */}
       <div className="lg:w-72 shrink-0 border-b lg:border-b-0 lg:border-r border-gray-100 bg-white overflow-y-auto">
         <div className="p-5">
-          <Link href="/admin/students" className="text-[11px] font-medium text-gray-400 hover:text-[var(--ab-plum)]">
+          <Link href="/ab1/admin/students" className="text-[11px] font-medium text-gray-400 hover:text-[var(--ab-plum)]">
             &larr; All students
           </Link>
 

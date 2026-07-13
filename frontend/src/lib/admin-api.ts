@@ -25,7 +25,7 @@ async function adminFetch<T>(path: string, options: RequestInit = {}): Promise<T
   });
   if (res.status === 401) {
     adminLogout();
-    if (typeof window !== "undefined") window.location.href = "/admin/login";
+    if (typeof window !== "undefined") window.location.href = "/ab1/admin/login";
     throw new Error("Unauthorized");
   }
   if (!res.ok) {

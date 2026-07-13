@@ -61,7 +61,7 @@ export default function AdminDashboard() {
       </div>
 
       <Link
-        href="/admin/requests"
+        href="/ab1/admin/requests"
         className="mt-4 flex items-center justify-between rounded-xl border border-[#E8E5DD] bg-white px-4 py-3 transition hover:border-[#0A6E45]"
       >
         <div>
@@ -114,7 +114,7 @@ export default function AdminDashboard() {
         <div className="rounded-2xl bg-white p-5 border border-gray-100">
           <div className="flex items-center justify-between">
             <h3 className="text-[13px] font-bold text-[var(--ab-ink)]">Recent Students</h3>
-            <Link href="/admin/students" className="text-[11px] font-medium text-[var(--ab-plum)]">View all</Link>
+            <Link href="/ab1/admin/students" className="text-[11px] font-medium text-[var(--ab-plum)]">View all</Link>
           </div>
           {stats.recent_students.length === 0 ? (
             <p className="mt-3 text-[12px] text-gray-400">No students yet</p>
@@ -123,7 +123,7 @@ export default function AdminDashboard() {
               {stats.recent_students.map((s) => (
                 <Link
                   key={s.id}
-                  href={`/admin/students/${s.id}`}
+                  href={`/ab1/admin/students/${s.id}`}
                   className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-gray-50 transition"
                 >
                   <div>

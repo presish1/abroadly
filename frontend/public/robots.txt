@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /ab1/admin/
 
 Sitemap: https://abroadly.online/sitemap.xml

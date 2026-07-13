@@ -49,9 +49,9 @@ function MobileAction({
   badge?: string;
   ariaLabel?: string;
 }) {
-  const className = `ab-focus group relative flex min-h-[58px] min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-[14px] px-0.5 py-1.5 text-[9.5px] font-bold transition-[background-color,color,box-shadow,transform] duration-150 active:scale-[0.98] sm:text-[10.5px] ${
+  const className = `student-mobile-action ab-focus group relative flex min-h-[54px] min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-[10px] px-0.5 py-1.5 text-[9.5px] font-bold transition-[background-color,color,transform] duration-150 active:scale-[0.98] sm:text-[10.5px] ${
     active
-      ? "bg-white text-[#0A6E45] shadow-[0_5px_16px_rgba(15,15,15,0.06)] ring-1 ring-[#E3EFE8]"
+      ? "bg-[#EDF7F1] text-[#0A6E45]"
       : "text-[#746E65] hover:bg-[#F6F5F1] hover:text-[#3F3A33]"
   }`;
 

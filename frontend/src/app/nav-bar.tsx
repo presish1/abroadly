@@ -6,7 +6,7 @@ import { googleLoginUrl } from "@/lib/api";
 
 /**
  * Shared public NavBar — used by /, /onboarding, /privacy, /terms.
- * Internal surfaces (/chat, /admin/*) have their own internal designs and
+ * Internal surfaces (/chat, /ab1/admin/*) have their own internal designs and
  * deliberately do NOT use this component.
  *
  * Variants are driven by props rather than by which page renders it:

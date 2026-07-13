@@ -3166,3 +3166,322 @@ body {
   mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
   -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
 }
+
+/* Final mobile refinement layer. Desktop behavior remains owned by the
+   component classes above and the existing min-width breakpoints. */
+@media (max-width: 767px) {
+  :root {
+    --student-mobile-nav-height: calc(72px + env(safe-area-inset-bottom));
+  }
+
+  /* Onboarding entry: one clear task, visually aligned with the public hero. */
+  .onboarding-entry {
+    min-height: 100dvh;
+    background: #FAF9F6;
+  }
+
+  .onboarding-entry-backdrop > div:nth-child(n + 3),
+  .onboarding-entry-highlight {
+    display: none;
+  }
+
+  .onboarding-entry-main {
+    min-height: 100dvh;
+    align-items: flex-start;
+    padding: max(18px, env(safe-area-inset-top)) 18px 28px;
+  }
+
+  .onboarding-entry-card {
+    min-height: calc(100dvh - 46px);
+    max-width: 440px;
+    overflow: visible;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    padding: 0;
+    box-shadow: none;
+  }
+
+  .onboarding-entry-back {
+    margin-bottom: 28px;
+  }
+
+  .onboarding-entry-brand {
+    margin-bottom: 38px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    padding: 0;
+  }
+
+  .onboarding-entry-brand img {
+    height: 38px;
+  }
+
+  .onboarding-entry-brand p,
+  .onboarding-entry-next {
+    display: none;
+  }
+
+  .onboarding-entry-title {
+    text-align: center;
+    font-size: 32px;
+    line-height: 1.08;
+    letter-spacing: -0.025em;
+  }
+
+  .onboarding-entry-copy {
+    max-width: 330px;
+    margin: 12px auto 0;
+    text-align: center;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  .onboarding-entry-google {
+    margin-top: 28px;
+  }
+
+  .onboarding-entry-security {
+    margin-top: 18px;
+    border: 0;
+    background: transparent;
+    padding: 0 4px;
+    font-size: 12px;
+  }
+
+  .onboarding-entry-return {
+    margin-top: 30px;
+    padding-top: 18px;
+  }
+
+  /* Onboarding details: compact progress and one stable action row. */
+  .onboarding-details {
+    min-height: 100dvh;
+    background: #FAF9F6;
+  }
+
+  .onboarding-details-inner {
+    padding: 20px 14px calc(20px + env(safe-area-inset-bottom));
+  }
+
+  .onboarding-details-header {
+    gap: 6px;
+  }
+
+  .onboarding-details-header h1 {
+    margin-top: 5px;
+    font-size: 26px;
+    line-height: 1.12;
+  }
+
+  .onboarding-details-header p:last-child {
+    display: none;
+  }
+
+  .onboarding-details-header > div > p:last-child {
+    display: block;
+    margin-top: 7px;
+    font-size: 13px;
+    line-height: 1.55;
+  }
+
+  .onboarding-progress {
+    margin-top: 18px;
+    gap: 5px;
+  }
+
+  .onboarding-progress button {
+    min-height: 50px;
+    gap: 6px;
+    border: 1px solid #E8E5DD !important;
+    border-radius: 10px;
+    background: #FFFFFF;
+    padding: 7px !important;
+  }
+
+  .onboarding-progress button:not(:disabled) {
+    background: #F0F7F3;
+  }
+
+  .onboarding-progress button > span:first-child {
+    width: 22px;
+    height: 22px;
+    font-size: 10px;
+  }
+
+  .onboarding-progress button > span:last-child > span:first-child {
+    font-size: 11px;
+  }
+
+  .onboarding-form {
+    margin-top: 12px;
+    overflow: visible;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .onboarding-form-body {
+    min-height: 0;
+    border: 1px solid #E8E5DD;
+    border-radius: 14px;
+    background: #FFFFFF;
+    padding: 18px 14px;
+  }
+
+  .onboarding-step > .ab-eyebrow {
+    display: none;
+  }
+
+  .onboarding-step h2 {
+    margin-top: 0;
+    font-size: 21px;
+    line-height: 1.18;
+  }
+
+  .onboarding-step > p {
+    margin-top: 6px;
+    line-height: 1.55;
+  }
+
+  .onboarding-step input:not([type="checkbox"]):not([type="radio"]),
+  .onboarding-step select {
+    min-height: 48px;
+  }
+
+  .onboarding-step button[type="button"] {
+    min-height: 46px;
+  }
+
+  .onboarding-form-footer {
+    position: sticky;
+    bottom: 0;
+    z-index: 20;
+    margin: 12px -14px -20px;
+    flex-direction: row;
+    border-top-color: rgba(232, 229, 221, 0.9);
+    background: rgba(250, 249, 246, 0.96);
+    padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  .onboarding-form-footer > p {
+    display: none;
+  }
+
+  .onboarding-form-footer > div {
+    display: flex;
+    width: 100%;
+    gap: 8px;
+  }
+
+  .onboarding-form-footer button {
+    min-height: 48px;
+    height: 48px;
+    flex: 1;
+  }
+
+  /* Shared student shell: lighter navigation and fewer duplicated panels. */
+  .chat-mobile-nav {
+    min-height: var(--student-mobile-nav-height);
+    padding: 5px 6px calc(7px + env(safe-area-inset-bottom));
+    box-shadow: 0 -7px 22px rgba(15, 15, 15, 0.055);
+  }
+
+  .student-mobile-action {
+    min-height: 54px;
+  }
+
+  .dashboard-mobile-chat-link,
+  .dashboard-summary-rail,
+  .profile-summary-grid,
+  .profile-summary-rail,
+  .profile-edit-helper,
+  .universities-result-count {
+    display: none !important;
+  }
+
+  .dashboard-primary-flow {
+    gap: 14px !important;
+  }
+
+  .dashboard-focus-card {
+    border-radius: 12px !important;
+    padding: 18px !important;
+  }
+
+  .dashboard-focus-card h2 {
+    font-size: 20px;
+  }
+
+  .dashboard-focus-card p {
+    font-size: 13px;
+  }
+
+  .dashboard-focus-card .ant-btn {
+    min-height: 44px;
+  }
+
+  .dashboard-fact-grid {
+    gap: 8px;
+  }
+
+  .profile-page .docs-main > div > div {
+    border-radius: 12px;
+  }
+
+  .profile-page .docs-main section,
+  .profile-page form > div {
+    border-radius: 12px !important;
+  }
+
+  .docs-page-header > div > p:last-child,
+  .docs-page-header > a,
+  .docs-card-preview {
+    display: none;
+  }
+
+  .docs-page-header h1 {
+    font-size: 19px;
+  }
+
+  .docs-card {
+    min-height: 0;
+  }
+
+  .docs-card-button {
+    min-height: 48px;
+  }
+
+  .docs-mobile-class-card {
+    flex-direction: column;
+  }
+
+  .docs-mobile-class-card button {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  .universities-country-tabs,
+  .universities-fit-tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .universities-country-tabs::-webkit-scrollbar,
+  .universities-fit-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .universities-country-tabs button,
+  .universities-fit-tabs button {
+    min-height: 44px;
+    flex: 0 0 auto;
+  }
+}
